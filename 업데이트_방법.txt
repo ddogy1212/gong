@@ -1,0 +1,29 @@
+공 배틀 GitHub Pages 업데이트 방법
+
+[처음 업로드]
+1. GitHub에서 새 Public 저장소를 만든다.
+2. 저장소 이름은 gong-battle을 권장한다.
+3. 이 ZIP을 압축 해제한다.
+4. 압축을 푼 폴더 안의 파일 3개를 저장소에 업로드한다.
+   - index.html
+   - .nojekyll
+   - README.md
+5. Commit changes를 누른다.
+6. Settings > Pages로 이동한다.
+7. Source는 Deploy from a branch를 선택한다.
+8. Branch는 main, 폴더는 /(root)를 선택한다.
+9. Save를 누른다.
+10. 몇 분 뒤 표시되는 github.io 주소로 접속한다.
+
+[다음 버전 업데이트]
+1. 새 버전 HTML을 다운로드한다.
+2. 파일 이름을 index.html로 바꾼다.
+3. GitHub 저장소의 기존 index.html을 삭제하거나 교체한다.
+4. 새 index.html을 업로드하고 Commit changes를 누른다.
+5. 기존 게임 링크를 새로고침한다.
+6. 이전 버전이 보이면 Ctrl+F5를 누른다.
+
+[중요]
+- GitHub 저장소는 Public으로 설정해야 무료 GitHub Pages 사용이 쉽다.
+- 게임 파일 안에 친구 사진이 포함되어 있으므로 공개 링크 공유 전에 사진 사용 동의를 확인한다.
+- 저장소에 비밀번호, API 키 같은 비밀 정보는 올리지 않는다.
