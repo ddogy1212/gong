@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ddogy1212.github.io/gong/sitemap.xml
