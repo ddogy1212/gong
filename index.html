@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="ko">
 <head>
+  <!-- BUILD: V97_PERSISTENCE_BRIDGE -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>수원외고 공게임</title>
+  <title>수원외고 공게임 V97</title>
   <style>
     html,body{width:100%;height:100%;margin:0;background:#fff;overflow:hidden}
     #gameFrame{display:block;width:100%;height:100%;border:0;background:#fff;opacity:0;transition:opacity .12s ease}
@@ -12,7 +13,7 @@
 </head>
 <body>
   <div id="patchError"></div>
-  <iframe id="gameFrame" src="about:blank" title="수원외고 공게임"></iframe>
+  <iframe id="gameFrame" src="about:blank" title="수원외고 공게임 V97"></iframe>
   <script>
   const frame=document.getElementById('gameFrame');
   const errorBox=document.getElementById('patchError');
@@ -24,6 +25,149 @@
 
   let sourceReady=false;
   let loadFinished=false;
+
+  const GONG_BUILD='V97';
+  const OUTER_STATE_DB='gong-v97-live-state-db';
+  const OUTER_STATE_STORE='live-state';
+  const OUTER_STATE_KEY='current';
+  const OUTER_LOCAL_KEY='gong-v97-live-state-v1';
+  const LEGACY_LOCAL_KEYS=[];
+  let outerLatestLiveState='';
+  let outerWriteTimer=null;
+  let outerWriteChain=Promise.resolve();
+
+  function openOuterStateDb(){
+    return new Promise((resolve,reject)=>{
+      if(!('indexedDB' in window)){reject(new Error('IndexedDB 미지원'));return}
+      const request=indexedDB.open(OUTER_STATE_DB,1);
+      request.onupgradeneeded=()=>{
+        const db=request.result;
+        if(!db.objectStoreNames.contains(OUTER_STATE_STORE))db.createObjectStore(OUTER_STATE_STORE);
+      };
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error||new Error('IndexedDB 열기 실패'));
+      request.onblocked=()=>reject(new Error('IndexedDB가 다른 탭에 의해 차단됨'));
+    });
+  }
+
+  async function readOuterStateFromDb(){
+    const db=await openOuterStateDb();
+    try{
+      return await new Promise((resolve,reject)=>{
+        const tx=db.transaction(OUTER_STATE_STORE,'readonly');
+        const request=tx.objectStore(OUTER_STATE_STORE).get(OUTER_STATE_KEY);
+        request.onsuccess=()=>resolve(typeof request.result==='string'?request.result:'');
+        request.onerror=()=>reject(request.error||new Error('저장 데이터 읽기 실패'));
+      });
+    }finally{db.close()}
+  }
+
+  async function writeOuterStateToDb(encoded){
+    if(typeof encoded!=='string'||!encoded)return;
+    const db=await openOuterStateDb();
+    try{
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(OUTER_STATE_STORE,'readwrite');
+        tx.objectStore(OUTER_STATE_STORE).put(encoded,OUTER_STATE_KEY);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error||new Error('저장 데이터 쓰기 실패'));
+        tx.onabort=()=>reject(tx.error||new Error('저장 데이터 쓰기 중단'));
+      });
+    }finally{db.close()}
+  }
+
+  async function clearOuterStateDb(){
+    const db=await openOuterStateDb();
+    try{
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(OUTER_STATE_STORE,'readwrite');
+        tx.objectStore(OUTER_STATE_STORE).delete(OUTER_STATE_KEY);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error||new Error('저장 데이터 삭제 실패'));
+        tx.onabort=()=>reject(tx.error||new Error('저장 데이터 삭제 중단'));
+      });
+    }finally{db.close()}
+  }
+
+  function readOuterLocalFallback(){
+    try{
+      const current=localStorage.getItem(OUTER_LOCAL_KEY);
+      if(current)return current;
+      for(const key of LEGACY_LOCAL_KEYS){
+        const legacy=localStorage.getItem(key);
+        if(legacy)return legacy;
+      }
+    }catch(error){}
+    return '';
+  }
+
+  function writeOuterLocalFallback(encoded){
+    try{
+      // localStorage는 용량이 작으므로 충분히 작을 때만 보조 저장으로 사용한다.
+      if(encoded.length<3800000)localStorage.setItem(OUTER_LOCAL_KEY,encoded);
+    }catch(error){}
+  }
+
+  async function loadOuterLiveState(){
+    let saved='';
+    try{saved=await readOuterStateFromDb()}catch(error){
+      console.warn('[공게임 V97] IndexedDB 읽기 실패, 보조 저장소 사용',error);
+    }
+    if(!saved)saved=readOuterLocalFallback();
+    outerLatestLiveState=saved||'';
+    return outerLatestLiveState;
+  }
+
+  function persistOuterLiveState(encoded){
+    if(typeof encoded!=='string'||!encoded)return Promise.resolve(false);
+    outerLatestLiveState=encoded;
+    writeOuterLocalFallback(encoded);
+    outerWriteChain=outerWriteChain
+      .catch(()=>{})
+      .then(()=>writeOuterStateToDb(outerLatestLiveState))
+      .then(()=>true)
+      .catch(error=>{
+        console.warn('[공게임 V97] 진행 저장 실패',error);
+        return false;
+      });
+    return outerWriteChain;
+  }
+
+  function queueOuterLiveState(encoded,immediate=false){
+    if(typeof encoded!=='string'||!encoded)return false;
+    outerLatestLiveState=encoded;
+    if(outerWriteTimer){clearTimeout(outerWriteTimer);outerWriteTimer=null}
+    if(immediate){persistOuterLiveState(outerLatestLiveState);return true}
+    outerWriteTimer=setTimeout(()=>{
+      outerWriteTimer=null;
+      persistOuterLiveState(outerLatestLiveState);
+    },100);
+    return true;
+  }
+
+  window.__GONG_V97_SAVE_STATE__=(encoded,immediate=false)=>queueOuterLiveState(encoded,Boolean(immediate));
+  window.__GONG_V97_LOAD_STATE__=()=>outerLatestLiveState;
+  window.__GONG_V97_CLEAR_STATE__=()=>{
+    outerLatestLiveState='';
+    try{localStorage.removeItem(OUTER_LOCAL_KEY)}catch(error){}
+    for(const key of LEGACY_LOCAL_KEYS){try{localStorage.removeItem(key)}catch(error){}}
+    clearOuterStateDb().catch(()=>{});
+    return true;
+  };
+  const outerStateReady=loadOuterLiveState();
+
+  function requestImmediateInnerSave(){
+    try{frame.contentWindow?.__GONG_V97_FORCE_SAVE__?.(true)}catch(error){}
+    if(outerLatestLiveState)queueOuterLiveState(outerLatestLiveState,true);
+  }
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden')requestImmediateInnerSave();
+  });
+  window.addEventListener('pagehide',requestImmediateInnerSave);
+  window.addEventListener('beforeunload',requestImmediateInnerSave);
+  window.addEventListener('blur',requestImmediateInnerSave);
+  document.addEventListener('freeze',requestImmediateInnerSave);
 
   async function fetchWithTimeout(url,timeoutMs=90000){
     const controller=new AbortController();
@@ -66,11 +210,13 @@
     throw new Error('공게임 원본을 내려받지 못했습니다. 인터넷 연결을 확인한 뒤 다시 열어주세요. ('+errors.join(' / ')+')');
   }
 
-  frame.addEventListener('load',()=>{
+  frame.addEventListener('load',async()=>{
     if(!sourceReady||loadFinished)return;
     try{
+      await outerStateReady;
       const doc=frame.contentDocument;
       if(!doc||!doc.body)throw new Error('기존 게임 문서를 불러오지 못했습니다.');
+      try{frame.contentWindow.__GONG_V97_BOOT_STATE__=outerLatestLiveState}catch(error){}
 
       const style=doc.createElement('style');
       style.textContent=`
@@ -183,7 +329,7 @@
         let autoCountdownRemaining=0;
         let restoringLiveState=false;
         let liveSaveTimer=null;
-        const LIVE_STATE_KEY='gong-v90-live-state-v2';
+        const LIVE_STATE_KEY='gong-v97-live-state-v3';
 
         function encodeLiveGraph(root){
           const seen=new Map();
@@ -297,6 +443,7 @@
           const inBattle=isBattleScreenActive();
           return {
             version:2,
+            build:'V97',
             savedAt:Date.now(),
             screen:inBattle?'battle':'setup',
             mode,
@@ -316,19 +463,39 @@
           };
         }
 
-        function saveLiveState(){
-          if(restoringLiveState)return;
+        function saveLiveState(immediate=false){
+          if(restoringLiveState)return false;
           try{
             const encoded=encodeLiveGraph(makeLiveSnapshot());
-            localStorage.setItem(LIVE_STATE_KEY,encoded);
+            let bridged=false;
+            try{
+              if(window.parent&&window.parent!==window&&typeof window.parent.__GONG_V97_SAVE_STATE__==='function'){
+                bridged=window.parent.__GONG_V97_SAVE_STATE__(encoded,Boolean(immediate))!==false;
+              }
+            }catch(error){}
+            if(!bridged){
+              try{localStorage.setItem(LIVE_STATE_KEY,encoded);bridged=true}catch(error){}
+            }
+            return bridged;
           }catch(error){
-            console.warn('[공게임 저장 실패]',error);
+            console.warn('[공게임 V97 저장 실패]',error);
+            return false;
           }
         }
 
         function restoreLiveState(){
           let raw='';
-          try{raw=localStorage.getItem(LIVE_STATE_KEY)||''}catch(error){return false}
+          try{raw=String(window.__GONG_V97_BOOT_STATE__||'')}catch(error){}
+          if(!raw){
+            try{
+              if(window.parent&&window.parent!==window&&typeof window.parent.__GONG_V97_LOAD_STATE__==='function'){
+                raw=String(window.parent.__GONG_V97_LOAD_STATE__()||'');
+              }
+            }catch(error){}
+          }
+          if(!raw){
+            try{raw=localStorage.getItem(LIVE_STATE_KEY)||localStorage.getItem('gong-v90-live-state-v2')||''}catch(error){}
+          }
           if(!raw)return false;
           restoringLiveState=true;
           try{
@@ -389,6 +556,8 @@
           }catch(error){
             console.warn('[공게임 복구 실패]',error);
             try{localStorage.removeItem(LIVE_STATE_KEY)}catch(removeError){}
+            try{window.__GONG_V97_BOOT_STATE__=''}catch(clearError){}
+            try{window.parent?.__GONG_V97_CLEAR_STATE__?.()}catch(clearParentError){}
             return false;
           }finally{
             restoringLiveState=false;
@@ -397,13 +566,17 @@
 
         function installLivePersistence(){
           if(liveSaveTimer)clearInterval(liveSaveTimer);
-          liveSaveTimer=setInterval(saveLiveState,1200);
+          // 안드로이드가 탭을 갑자기 정지해도 최근 장면이 남도록 자주 저장한다.
+          liveSaveTimer=setInterval(()=>saveLiveState(false),700);
           document.addEventListener('visibilitychange',()=>{
-            if(document.visibilityState==='hidden')saveLiveState();
+            if(document.visibilityState==='hidden')saveLiveState(true);
           });
-          window.addEventListener('pagehide',saveLiveState);
-          window.addEventListener('beforeunload',saveLiveState);
-          window.setTimeout(saveLiveState,300);
+          window.addEventListener('pagehide',()=>saveLiveState(true));
+          window.addEventListener('beforeunload',()=>saveLiveState(true));
+          window.addEventListener('blur',()=>saveLiveState(true));
+          document.addEventListener('freeze',()=>saveLiveState(true));
+          window.__GONG_V97_FORCE_SAVE__=(immediate=true)=>saveLiveState(Boolean(immediate));
+          window.setTimeout(()=>saveLiveState(true),150);
         }
 
         function removeNaeonseongRuntime(){
@@ -793,8 +966,8 @@
         if(restoredLiveState&&autoBattleRunning&&game?.over&&!resultModal.classList.contains('hidden')){
           startResultCountdown(autoCountdownRemaining||3);
         }
-        document.title='수원외고 공게임';
-        console.info('[공게임 V90] 자동 배틀·문의·나언성 삭제·가로형 광고·진행 저장 적용 완료');
+        document.title='수원외고 공게임 V97';
+        console.info('[공게임 V97] IndexedDB 진행 저장·자동 배틀·문의·나언성 삭제·가로형 광고 적용 완료');
       })();`;
       doc.body.appendChild(patch);
       loadFinished=true;
