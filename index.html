@@ -180,6 +180,231 @@
         let autoCountdownTimer=null;
         let resultRoundToken=0;
         let internalBackMove=false;
+        let autoCountdownRemaining=0;
+        let restoringLiveState=false;
+        let liveSaveTimer=null;
+        const LIVE_STATE_KEY='gong-v90-live-state-v2';
+
+        function encodeLiveGraph(root){
+          const seen=new Map();
+          const nodes=[];
+          const skipped=new Set(['imageObj','partnerImageObj','im','img','partnerImg']);
+          const visualArrays=new Set(['particles','floaters','attackFx']);
+
+          function encode(value,key=''){
+            if(value===undefined)return {g:'u'};
+            if(typeof value==='number'&&!Number.isFinite(value))return {g:'n',v:String(value)};
+            if(typeof value==='bigint')return {g:'b',v:String(value)};
+            if(typeof value==='function')return {g:'u'};
+            if(value===null||typeof value!=='object')return value;
+            if(typeof HTMLImageElement!=='undefined'&&value instanceof HTMLImageElement)return {g:'i'};
+            if(typeof Node!=='undefined'&&value instanceof Node)return {g:'d'};
+            if(seen.has(value))return {g:'r',v:seen.get(value)};
+
+            const index=nodes.length;
+            seen.set(value,index);
+            let kind='o';
+            if(Array.isArray(value))kind='a';
+            else if(value instanceof Date)kind='t';
+            else if(value instanceof Map)kind='m';
+            else if(value instanceof Set)kind='s';
+            const node={k:kind,v:null};
+            nodes.push(node);
+
+            if(kind==='a'){
+              node.v=value.map((item,i)=>encode(item,String(i)));
+            }else if(kind==='t'){
+              node.v=value.toISOString();
+            }else if(kind==='m'){
+              node.v=[...value.entries()].map(entry=>[encode(entry[0]),encode(entry[1])]);
+            }else if(kind==='s'){
+              node.v=[...value.values()].map(item=>encode(item));
+            }else{
+              const out={};
+              for(const prop of Object.keys(value)){
+                if(skipped.has(prop))continue;
+                if(visualArrays.has(prop)){out[prop]=[];continue}
+                try{out[prop]=encode(value[prop],prop)}catch(error){}
+              }
+              node.v=out;
+            }
+            return {g:'r',v:index};
+          }
+
+          return JSON.stringify({version:2,root:encode(root),nodes});
+        }
+
+        function decodeLiveGraph(text){
+          const packed=JSON.parse(text);
+          if(!packed||packed.version!==2||!Array.isArray(packed.nodes))throw new Error('저장 형식이 맞지 않습니다.');
+          const made=packed.nodes.map(node=>{
+            if(node.k==='a')return [];
+            if(node.k==='m')return new Map();
+            if(node.k==='s')return new Set();
+            if(node.k==='t')return new Date(node.v);
+            return {};
+          });
+
+          function decode(token){
+            if(token===null||typeof token!=='object'||!Object.prototype.hasOwnProperty.call(token,'g'))return token;
+            if(token.g==='r')return made[token.v];
+            if(token.g==='u'||token.g==='i'||token.g==='d')return undefined;
+            if(token.g==='b')return BigInt(token.v);
+            if(token.g==='n'){
+              if(token.v==='NaN')return NaN;
+              if(token.v==='Infinity')return Infinity;
+              if(token.v==='-Infinity')return -Infinity;
+            }
+            return undefined;
+          }
+
+          packed.nodes.forEach((node,index)=>{
+            const target=made[index];
+            if(node.k==='a'){
+              node.v.forEach(item=>target.push(decode(item)));
+            }else if(node.k==='m'){
+              node.v.forEach(entry=>target.set(decode(entry[0]),decode(entry[1])));
+            }else if(node.k==='s'){
+              node.v.forEach(item=>target.add(decode(item)));
+            }else if(node.k==='o'){
+              for(const [key,value] of Object.entries(node.v||{}))target[key]=decode(value);
+            }
+          });
+          return decode(packed.root);
+        }
+
+        function repairRestoredGame(){
+          if(!game||!Array.isArray(game.players))return;
+          for(const player of game.players){
+            const def=DEFS[player.id];
+            if(!def)continue;
+            player.img=def.img;
+            if(def.partnerImg)player.partnerImg=def.partnerImg;
+            const image=new Image();
+            image.src=def.img;
+            player.imageObj=image;
+            player.im=image;
+            const partnerImage=new Image();
+            if(def.partnerImg)partnerImage.src=def.partnerImg;
+            player.partnerImageObj=partnerImage;
+          }
+          if(!Array.isArray(game.particles))game.particles=[];
+          if(!Array.isArray(game.floaters))game.floaters=[];
+          if(!Array.isArray(game.attackFx))game.attackFx=[];
+        }
+
+        function makeLiveSnapshot(){
+          const inBattle=isBattleScreenActive();
+          return {
+            version:2,
+            savedAt:Date.now(),
+            screen:inBattle?'battle':'setup',
+            mode,
+            assignments,
+            activeZone,
+            selectedBoss,
+            currentConfig,
+            paused,
+            timeScale,
+            battleGeneration,
+            game:inBattle?game:null,
+            resultOpen:Boolean(resultModal&&!resultModal.classList.contains('hidden')),
+            autoBattleRunning,
+            autoCountdownRemaining,
+            killfeedHtml:killfeed?.innerHTML||'',
+            logHtml:logText?.innerHTML||''
+          };
+        }
+
+        function saveLiveState(){
+          if(restoringLiveState)return;
+          try{
+            const encoded=encodeLiveGraph(makeLiveSnapshot());
+            localStorage.setItem(LIVE_STATE_KEY,encoded);
+          }catch(error){
+            console.warn('[공게임 저장 실패]',error);
+          }
+        }
+
+        function restoreLiveState(){
+          let raw='';
+          try{raw=localStorage.getItem(LIVE_STATE_KEY)||''}catch(error){return false}
+          if(!raw)return false;
+          restoringLiveState=true;
+          try{
+            const state=decodeLiveGraph(raw);
+            if(!state||state.version!==2)return false;
+
+            if(state.mode)mode=state.mode;
+            if(state.assignments)assignments=state.assignments;
+            if(state.activeZone)activeZone=state.activeZone;
+            if(state.selectedBoss&&state.selectedBoss!=='naeonseong')selectedBoss=state.selectedBoss;
+            currentConfig=state.currentConfig||null;
+            paused=Boolean(state.paused);
+            timeScale=Number(state.timeScale)||1;
+            battleGeneration=Number(state.battleGeneration)||0;
+            autoBattleRunning=Boolean(state.autoBattleRunning);
+            autoCountdownRemaining=Math.max(0,Number(state.autoCountdownRemaining)||0);
+
+            document.querySelectorAll('.mode-btn').forEach(button=>{
+              button.classList.toggle('active',button.dataset.mode===mode);
+            });
+            teamOptions.classList.toggle('hidden',mode!=='team');
+            bossSelectWrap.classList.toggle('show',mode==='boss');
+            document.body.classList.toggle('boss-setup',mode==='boss'&&state.screen!=='battle');
+            try{renderBossInfo(selectedBoss)}catch(error){}
+
+            if(state.screen==='battle'&&state.game&&currentConfig){
+              game=state.game;
+              repairRestoredGame();
+              setup.classList.add('hidden');
+              battle.classList.remove('hidden');
+              document.body.classList.toggle('boss-battle',currentConfig.mode==='boss');
+              document.body.classList.remove('boss-setup');
+              resize();
+              last=0;
+              document.getElementById('pause').textContent=paused?'계속하기':'일시정지';
+              if(state.killfeedHtml)killfeed.innerHTML=state.killfeedHtml;
+              if(state.logHtml)logText.innerHTML=state.logHtml;
+              try{updateUI()}catch(error){}
+              if(game.over)openResultsBtn.classList.remove('hidden');
+              else openResultsBtn.classList.add('hidden');
+              if(state.resultOpen&&game.over){
+                try{openResultModal()}catch(error){}
+              }else{
+                try{closeResultModal()}catch(error){}
+              }
+              syncAutoButtons();
+              window.scrollTo({top:0,behavior:'auto'});
+            }else{
+              game=null;
+              battle.classList.add('hidden');
+              setup.classList.remove('hidden');
+              document.body.classList.remove('boss-battle');
+              renderSetup();
+              syncAutoButtons();
+            }
+            console.info('[공게임] 저장된 진행 상황을 복구했습니다.');
+            return true;
+          }catch(error){
+            console.warn('[공게임 복구 실패]',error);
+            try{localStorage.removeItem(LIVE_STATE_KEY)}catch(removeError){}
+            return false;
+          }finally{
+            restoringLiveState=false;
+          }
+        }
+
+        function installLivePersistence(){
+          if(liveSaveTimer)clearInterval(liveSaveTimer);
+          liveSaveTimer=setInterval(saveLiveState,1200);
+          document.addEventListener('visibilitychange',()=>{
+            if(document.visibilityState==='hidden')saveLiveState();
+          });
+          window.addEventListener('pagehide',saveLiveState);
+          window.addEventListener('beforeunload',saveLiveState);
+          window.setTimeout(saveLiveState,300);
+        }
 
         function removeNaeonseongRuntime(){
           try{delete DEFS.naeonseong}catch(error){}
@@ -246,11 +471,13 @@
 
         function stopAutoBattle(){
           autoBattleRunning=false;
+          autoCountdownRemaining=0;
           resultRoundToken+=1;
           clearAutoTimers();
           document.getElementById('gongAutoCountdown')?.classList.add('hidden');
           syncAutoButtons();
           try{if(game&&!game.over)log('<b>자동 배틀을 그만했습니다.</b> 현재 경기는 계속됩니다.')}catch(error){}
+          saveLiveState();
         }
 
         function activateShowdownThroughUI(){
@@ -297,6 +524,7 @@
             startButton.click();
             if(!isBattleScreenActive())throw new Error('전투 화면으로 전환되지 않았습니다.');
             syncAutoButtons();
+            window.setTimeout(saveLiveState,80);
             console.info('[자동 배틀] '+picked.length+'명 시작:',picked);
           }catch(error){
             console.error('[자동 배틀 오류]',error);
@@ -353,29 +581,34 @@
           syncAutoButtons();
         }
 
-        function startResultCountdown(){
+        function startResultCountdown(initialRemaining=3){
           if(!autoBattleRunning)return;
           const token=++resultRoundToken;
           clearAutoTimers();
           const countdown=ensureAutoCountdown();
-          let remaining=3;
-          countdown.textContent='3초 후 배틀 재개';
+          let remaining=Math.max(1,Math.min(3,Math.ceil(Number(initialRemaining)||3)));
+          autoCountdownRemaining=remaining;
+          countdown.textContent=remaining+'초 후 배틀 재개';
           countdown.classList.remove('hidden');
           syncAutoButtons();
+          saveLiveState();
 
           autoCountdownTimer=setInterval(()=>{
             if(token!==resultRoundToken||!autoBattleRunning)return;
             remaining-=1;
+            autoCountdownRemaining=Math.max(0,remaining);
             if(remaining>=1)countdown.textContent=remaining+'초 후 배틀 재개';
+            saveLiveState();
           },1000);
 
           autoAdvanceTimer=setTimeout(()=>{
             if(token!==resultRoundToken||!autoBattleRunning)return;
             clearAutoTimers();
+            autoCountdownRemaining=0;
             countdown.classList.add('hidden');
             try{closeResultModal()}catch(error){}
             startNextAutoBattle();
-          },3000);
+          },remaining*1000);
         }
 
         function installAutoBattleWatcher(){
@@ -552,11 +785,16 @@
 
         removeNaeonseongRuntime();
         installAutoBattleUI();
-        installAutoBattleWatcher();
         installPromoBanner();
         installContactUI();
+        const restoredLiveState=restoreLiveState();
+        installAutoBattleWatcher();
+        installLivePersistence();
+        if(restoredLiveState&&autoBattleRunning&&game?.over&&!resultModal.classList.contains('hidden')){
+          startResultCountdown(autoCountdownRemaining||3);
+        }
         document.title='수원외고 공게임';
-        console.info('[공게임 V90] 자동 배틀·문의·나언성 삭제·가로형 광고 적용 완료');
+        console.info('[공게임 V90] 자동 배틀·문의·나언성 삭제·가로형 광고·진행 저장 적용 완료');
       })();`;
       doc.body.appendChild(patch);
       loadFinished=true;
