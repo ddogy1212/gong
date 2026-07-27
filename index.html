@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN -->
+<!-- BUILD: V145_BOSS_SKILL_TEXT_LIGHTWEIGHT_BOSS_PERFORMANCE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -3470,8 +3470,10 @@ function resize(){
 
   W=displayW*arenaLogicalScale;
   H=displayH*arenaLogicalScale;
+  const bossCount=currentConfig?.mode==='boss'?count:0;
+  const bossDprCap=bossCount>=45?1.25:(bossCount>=24?1.5:2);
   dpr=Math.min(
-    2,
+    bossDprCap,
     devicePixelRatio||1
   );
 
@@ -3502,10 +3504,22 @@ function enemies(p){return game.players.filter(q=>q.alive&&!q.hidden&&isEnemy(p,
 function living(){return game.players.filter(p=>p.alive)}
 function livingTeams(){return [...new Set(living().map(p=>p.team))]}
 function nearest(p){
-  const es=enemies(p);if(!es.length)return null;
-  return es.reduce((a,b)=>dist(p,a)<=dist(p,b)?a:b)
+  if(!game?.players)return null;
+  let best=null,bestD=Infinity;
+  for(const q of game.players){
+    if(!q.alive||q.hidden||!isEnemy(p,q))continue;
+    const dx=p.x-q.x,dy=p.y-q.y,d2=dx*dx+dy*dy;
+    if(d2<bestD){bestD=d2;best=q;}
+  }
+  return best;
 }
-function floater(x,y,text,color='#111',size=18,life=1){game.floaters.push({x,y,text,color,size,life,max:life})}
+function floater(x,y,text,color='#111',size=18,life=1){
+  if(!game?.floaters)return;
+  const count=currentConfig?.participants?.length||0;
+  const cap=currentConfig?.mode==='boss'?(count>=45?34:count>=24?48:90):180;
+  if(game.floaters.length>=cap)game.floaters.splice(0,game.floaters.length-cap+1);
+  game.floaters.push({x,y,text,color,size,life,max:life});
+}
 function log(msg){logText.innerHTML=msg}
 
 function spawnSkillBanner(text,color='#ff5f93'){
@@ -3516,6 +3530,9 @@ function spawnSkillBanner(text,color='#ff5f93'){
 
 function spawnAttackFx(x,y,color,label,scale=1){
   if(!game?.attackFx)return;
+  const count=currentConfig?.participants?.length||0;
+  const cap=currentConfig?.mode==='boss'?(count>=45?18:count>=24?28:70):100;
+  if(game.attackFx.length>=cap)game.attackFx.splice(0,game.attackFx.length-cap+1);
   game.attackFx.push({
     x,y,color:color||'#ff416c',
     label:String(label||'공격').slice(0,16),
@@ -16422,6 +16439,12 @@ function trimBattleObjects(){
   const large=count>=14;
   const caps=large?{shots:180,waves:70,particles:220,floaters:100,attackFx:55,bricks:80,lasers:50,slams:50,pigeons:45,pigeonPoops:80,subinPulses:35,constellations:18,yangTeas:30,yangDummies:9,dasarangDrops:18}:{shots:420,waves:150,particles:500,floaters:180,attackFx:100,bricks:150,lasers:100,slams:100,pigeons:90,pigeonPoops:160,subinPulses:70,constellations:30,yangTeas:45,yangDummies:12,dasarangDrops:30};
   for(const [key,cap] of Object.entries(caps)){const arr=game[key];if(Array.isArray(arr)&&arr.length>cap)game[key]=arr.slice(-cap);}
+  if(currentConfig?.mode==='boss'){
+    const bossVisualCaps=count>=45?{particles:90,floaters:34,attackFx:18}:{particles:150,floaters:48,attackFx:28};
+    for(const [key,cap] of Object.entries(bossVisualCaps)){
+      const arr=game[key];if(Array.isArray(arr)&&arr.length>cap)game[key]=arr.slice(-cap);
+    }
+  }
 }
 function collidePlayersFast(vis){
   if(vis.length<14){for(let i=0;i<vis.length;i++)for(let j=i+1;j<vis.length;j++)collide(vis[i],vis[j]);return;}
@@ -16852,7 +16875,10 @@ function tick(dt){
   checkEnd();
   trimBattleObjects();
   game.uiAcc=(game.uiAcc||0)+dt;
-  const uiInterval=(currentConfig?.participants?.length||0)>=14?.14:.035;
+  const v145Count=currentConfig?.participants?.length||0;
+  const uiInterval=currentConfig?.mode==='boss'
+    ?(v145Count>=45?.28:(v145Count>=24?.20:.10))
+    :(v145Count>=14?.14:.035);
   if(game.uiAcc>=uiInterval||game.over){game.uiAcc=0;updateUI();}
 }
 
@@ -16864,7 +16890,9 @@ function drawBall(p){
     return;
   }
   ctx.save();ctx.globalAlpha=p.alive?1:.25;ctx.translate(p.x,p.y);
-  ctx.shadowColor='#0005';ctx.shadowBlur=8;ctx.shadowOffsetY=3;
+  const v145BossPerf=currentConfig?.mode==='boss'&&(currentConfig?.participants?.length||0)>=24;
+  if(v145BossPerf){ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;}
+  else{ctx.shadowColor='#0005';ctx.shadowBlur=8;ctx.shadowOffsetY=3;}
   ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.shadowColor='transparent';
   ctx.save();ctx.beginPath();ctx.arc(0,0,p.r-2,0,Math.PI*2);ctx.clip();
 
@@ -19294,6 +19322,7 @@ else if(s.type==='bus19'){
   }
 }
 
+let v145LastCanvasDraw=0;
 function frame(ts){
   if(!last)last=ts;
 
@@ -19308,7 +19337,13 @@ function frame(ts){
     }
   }
 
-  draw();
+  const v145Count=currentConfig?.participants?.length||0;
+  const v145BossHeavy=currentConfig?.mode==='boss'&&v145Count>=24;
+  const v145DrawGap=v145BossHeavy?(v145Count>=45?33.3:25):0;
+  if(!v145DrawGap||ts-v145LastCanvasDraw>=v145DrawGap||game?.over||paused){
+    draw();
+    v145LastCanvasDraw=ts;
+  }
   requestAnimationFrame(frame);
 }
 
@@ -20028,7 +20063,7 @@ drawBall=function(p){
    - 사망·숨김·재시작 뒤 특수 상태 잔류 정리
    - 투사체/장판/효과 배열의 손상 객체 정리
    ========================================================= */
-const V138_BUILD='V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
+const V138_BUILD='V145_BOSS_SKILL_TEXT_LIGHTWEIGHT_BOSS_PERFORMANCE';
 
 function v138DuoRadius(){
   return Math.max(12,v137StandardPlayerRadius()*.5);
@@ -20425,15 +20460,16 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
 /* V144 FIX: integrated inside the main game scope so internal state and boss functions are accessible. */
 /* =========================================================
-   V144
-   - V142(기존 V138.4 내용)에서 버전 번호 정정 후 연속 개발
+   V145
+   - V144 기능 유지 + 보스 스킬 글씨 간소화 + 대규모 보스전 성능 최적화
    - 보스전 도전자 전체 추가/삭제
    - 모든 보스 스킬 중앙 대형 다중 배너
    - 선제공격기 없는 생존자만 남을 때 중앙 충격 지형
    ========================================================= */
 (function(){
-  const V144_BUILD='V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
+  const V144_BUILD='V145_BOSS_SKILL_TEXT_LIGHTWEIGHT_BOSS_PERFORMANCE';
   window.__GONG_V144_BUILD__=V144_BUILD;
+  window.__GONG_V145_BUILD__=V144_BUILD;
 
   /* ---------- 보스전 전체 추가/삭제 버튼 ---------- */
   const setupActions=document.querySelector('.setup-actions');
@@ -20469,10 +20505,10 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   /* ---------- 모든 보스 스킬 중앙 대형 표시 ---------- */
   const style=document.createElement('style');
   style.textContent=`
-    .v144-boss-skill-stack{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);z-index:24;width:min(88%,760px);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;text-align:center}
-    .v144-boss-skill-line{max-width:100%;padding:11px 22px;border:2px solid rgba(255,255,255,.92);border-radius:16px;background:rgba(8,10,16,.82);color:#fff;font-size:clamp(24px,4.4vw,46px);font-weight:1000;line-height:1.12;letter-spacing:-.03em;text-shadow:0 3px 8px #000;box-shadow:0 8px 24px rgba(0,0,0,.48),inset 0 0 0 2px color-mix(in srgb,var(--boss-skill-color,#ff8a3d) 62%,transparent);animation:v144BossSkillIn .16s ease-out;overflow-wrap:anywhere}
-    .v144-boss-skill-line small{display:block;margin-bottom:3px;color:#e6e8ee;font-size:clamp(12px,1.8vw,17px);font-weight:900;letter-spacing:0}
-    @keyframes v144BossSkillIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .v144-boss-skill-stack{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);z-index:24;width:min(90%,760px);display:flex;flex-direction:column;align-items:center;gap:3px;pointer-events:none;text-align:center}
+    .v144-boss-skill-line{max-width:100%;padding:0;border:0;background:transparent;color:#fff;font-size:clamp(20px,3.5vw,36px);font-weight:1000;line-height:1.08;letter-spacing:-.03em;text-shadow:-2px -2px 0 #111,2px -2px 0 #111,-2px 2px 0 #111,2px 2px 0 #111,0 4px 8px rgba(0,0,0,.9);box-shadow:none;animation:v144BossSkillIn .14s ease-out;overflow-wrap:anywhere}
+    .v144-boss-skill-line small{display:inline;margin-right:7px;color:var(--boss-skill-color,#fff);font-size:.55em;font-weight:1000;letter-spacing:0}
+    @keyframes v144BossSkillIn{from{opacity:0;transform:scale(.9) translateY(5px)}to{opacity:1;transform:scale(1) translateY(0)}}
     .v144-passive-terrain-note{font-weight:1000}
   `;
   document.head.appendChild(style);
@@ -20491,27 +20527,38 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     if(!bossSkillStack)return;
     bossSkillStack.innerHTML=v144BossAnnouncements.map(item=>`<div class="v144-boss-skill-line" style="--boss-skill-color:${item.color}"><small>👑 ${item.bossName}</small>${item.skill}</div>`).join('');
   }
-  function announceBossSkill(boss,skill,duration=1.65){
+  function v145ExpireBossAnnouncement(key,expiresAt){
+    const wait=Math.max(0,expiresAt-performance.now());
+    setTimeout(()=>{
+      const item=v144BossAnnouncements.find(entry=>entry.key===key);
+      if(!item||item.expiresAt!==expiresAt)return;
+      if(performance.now()+8<expiresAt){v145ExpireBossAnnouncement(key,expiresAt);return;}
+      v144BossAnnouncements=v144BossAnnouncements.filter(entry=>entry!==item);
+      v144RenderBossAnnouncements();
+    },wait+12);
+  }
+  function announceBossSkill(boss,skill,duration=1.35){
     if(currentConfig?.mode!=='boss'||!boss?.isBoss||!boss.alive)return;
+    duration=clamp(Number(duration)||1.35,1,3);
     const key=`${boss.id}:${skill}`;
+    const expiresAt=performance.now()+duration*1000;
     const existing=v144BossAnnouncements.find(item=>item.key===key);
-    if(existing){existing.life=Math.max(existing.life,duration);existing.max=Math.max(existing.max,duration);}
+    if(existing){existing.expiresAt=expiresAt;}
     else{
-      v144BossAnnouncements.push({key,bossName:boss.name,skill,color:V144_BOSS_COLORS[boss.id]||boss.color||'#ff8a3d',life:duration,max:duration});
-      if(v144BossAnnouncements.length>9)v144BossAnnouncements.shift();
+      v144BossAnnouncements.push({key,bossName:boss.name,skill,color:V144_BOSS_COLORS[boss.id]||boss.color||'#ff8a3d',expiresAt});
+      if(v144BossAnnouncements.length>4)v144BossAnnouncements.shift();
     }
     v144RenderBossAnnouncements();
+    v145ExpireBossAnnouncement(key,expiresAt);
   }
-  function v144UpdateBossAnnouncements(dt){
+  function v144UpdateBossAnnouncements(){
     if(currentConfig?.mode!=='boss'||!game){
       if(v144BossAnnouncements.length){v144BossAnnouncements=[];v144RenderBossAnnouncements();}
       return;
     }
-    /* 마지막 일격으로 전투가 끝나도 해당 보스 스킬명은 결과 화면까지 남긴다. */
-    if(game.over)return;
-    let changed=false;
-    for(const item of v144BossAnnouncements){item.life-=dt;if(item.life<=0)changed=true;}
-    if(changed){v144BossAnnouncements=v144BossAnnouncements.filter(item=>item.life>0);v144RenderBossAnnouncements();}
+    const now=performance.now();
+    const next=v144BossAnnouncements.filter(item=>item.expiresAt>now);
+    if(next.length!==v144BossAnnouncements.length){v144BossAnnouncements=next;v144RenderBossAnnouncements();}
   }
 
   const _v144StartJamesTaunt=startJamesTaunt;
@@ -20691,7 +20738,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     forceBossSkill(skill='V144 테스트'){
       const boss=game?.players?.find(p=>p.isBoss&&p.alive);
       if(!boss)return false;
-      announceBossSkill(boss,skill,5);
+      announceBossSkill(boss,skill,3);
       return true;
     },
     forceTerrainHit(){
@@ -20706,7 +20753,11 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       return {id:target.id,before,after:target.hp,damage:before-target.hp,active:terrain.active};
     },
     get announcements(){return v144BossAnnouncements;},
-    get terrain(){return game?.v144PassiveTerrain||null;}
+    get terrain(){return game?.v144PassiveTerrain||null;},
+    get performanceMode(){
+      const count=currentConfig?.participants?.length||0;
+      return {active:currentConfig?.mode==='boss'&&count>=24,count,dpr,drawFps:count>=45?30:(count>=24?40:60)};
+    }
   };
 })();
 
