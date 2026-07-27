@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V143_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN -->
+<!-- BUILD: V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -20028,7 +20028,7 @@ drawBall=function(p){
    - 사망·숨김·재시작 뒤 특수 상태 잔류 정리
    - 투사체/장판/효과 배열의 손상 객체 정리
    ========================================================= */
-const V138_BUILD='V143_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
+const V138_BUILD='V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
 
 function v138DuoRadius(){
   return Math.max(12,v137StandardPlayerRadius()*.5);
@@ -20421,6 +20421,295 @@ window.__GONG_V138_TEST__.expandTargets=v1383ExpandTargets;
 window.__GONG_V138_TEST__.damage=damage;
 window.__GONG_V138_TEST__.enemies=enemies;
 window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAttackFx=()=>{};spawnSkillBanner=()=>{};log=()=>{};openResultModal=()=>{};showKill=(killer)=>{if(killer)killer.kills=(killer.kills||0)+1;};};
+
+
+/* V144 FIX: integrated inside the main game scope so internal state and boss functions are accessible. */
+/* =========================================================
+   V144
+   - V142(기존 V138.4 내용)에서 버전 번호 정정 후 연속 개발
+   - 보스전 도전자 전체 추가/삭제
+   - 모든 보스 스킬 중앙 대형 다중 배너
+   - 선제공격기 없는 생존자만 남을 때 중앙 충격 지형
+   ========================================================= */
+(function(){
+  const V144_BUILD='V144_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
+  window.__GONG_V144_BUILD__=V144_BUILD;
+
+  /* ---------- 보스전 전체 추가/삭제 버튼 ---------- */
+  const setupActions=document.querySelector('.setup-actions');
+  if(setupActions&&!document.getElementById('bossBulkActions')){
+    const wrap=document.createElement('div');
+    wrap.id='bossBulkActions';
+    wrap.className='showdown-bulk-actions hidden';
+    wrap.innerHTML='<button id="addAllBossHeroes" class="add-all-btn" type="button">➕ 보스전에 모든 캐릭터 추가</button><button id="removeAllBossHeroes" class="remove-all-btn" type="button">🗑 보스전에서 모든 캐릭터 삭제</button>';
+    const showdownActions=setupActions.querySelector('.showdown-bulk-actions');
+    if(showdownActions?.nextSibling)setupActions.insertBefore(wrap,showdownActions.nextSibling);
+    else setupActions.prepend(wrap);
+
+    document.getElementById('addAllBossHeroes').addEventListener('click',()=>{
+      if(mode!=='boss')return;
+      orderedCharacterIds().forEach(id=>assignments[id]='heroes');
+      activeZone='heroes';
+      renderSetup();
+    });
+    document.getElementById('removeAllBossHeroes').addEventListener('click',()=>{
+      if(mode!=='boss')return;
+      orderedCharacterIds().forEach(id=>assignments[id]='pool');
+      activeZone='heroes';
+      renderSetup();
+    });
+  }
+  function v144SyncBulkButtons(){
+    const bossBulk=document.getElementById('bossBulkActions');
+    if(bossBulk)bossBulk.classList.toggle('hidden',mode!=='boss');
+  }
+  document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(v144SyncBulkButtons,0)));
+  v144SyncBulkButtons();
+
+  /* ---------- 모든 보스 스킬 중앙 대형 표시 ---------- */
+  const style=document.createElement('style');
+  style.textContent=`
+    .v144-boss-skill-stack{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);z-index:24;width:min(88%,760px);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;text-align:center}
+    .v144-boss-skill-line{max-width:100%;padding:11px 22px;border:2px solid rgba(255,255,255,.92);border-radius:16px;background:rgba(8,10,16,.82);color:#fff;font-size:clamp(24px,4.4vw,46px);font-weight:1000;line-height:1.12;letter-spacing:-.03em;text-shadow:0 3px 8px #000;box-shadow:0 8px 24px rgba(0,0,0,.48),inset 0 0 0 2px color-mix(in srgb,var(--boss-skill-color,#ff8a3d) 62%,transparent);animation:v144BossSkillIn .16s ease-out;overflow-wrap:anywhere}
+    .v144-boss-skill-line small{display:block;margin-bottom:3px;color:#e6e8ee;font-size:clamp(12px,1.8vw,17px);font-weight:900;letter-spacing:0}
+    @keyframes v144BossSkillIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .v144-passive-terrain-note{font-weight:1000}
+  `;
+  document.head.appendChild(style);
+
+  const arenaWrap=document.querySelector('.arena-wrap');
+  let bossSkillStack=document.getElementById('v144BossSkillStack');
+  if(arenaWrap&&!bossSkillStack){
+    bossSkillStack=document.createElement('div');
+    bossSkillStack.id='v144BossSkillStack';
+    bossSkillStack.className='v144-boss-skill-stack';
+    arenaWrap.appendChild(bossSkillStack);
+  }
+  let v144BossAnnouncements=[];
+  const V144_BOSS_COLORS={james:'#ff8a3d',yoogeon:'#3b82f6',youngsik:'#3f7f63',naeonseong:'#a855f7'};
+  function v144RenderBossAnnouncements(){
+    if(!bossSkillStack)return;
+    bossSkillStack.innerHTML=v144BossAnnouncements.map(item=>`<div class="v144-boss-skill-line" style="--boss-skill-color:${item.color}"><small>👑 ${item.bossName}</small>${item.skill}</div>`).join('');
+  }
+  function announceBossSkill(boss,skill,duration=1.65){
+    if(currentConfig?.mode!=='boss'||!boss?.isBoss||!boss.alive)return;
+    const key=`${boss.id}:${skill}`;
+    const existing=v144BossAnnouncements.find(item=>item.key===key);
+    if(existing){existing.life=Math.max(existing.life,duration);existing.max=Math.max(existing.max,duration);}
+    else{
+      v144BossAnnouncements.push({key,bossName:boss.name,skill,color:V144_BOSS_COLORS[boss.id]||boss.color||'#ff8a3d',life:duration,max:duration});
+      if(v144BossAnnouncements.length>9)v144BossAnnouncements.shift();
+    }
+    v144RenderBossAnnouncements();
+  }
+  function v144UpdateBossAnnouncements(dt){
+    if(currentConfig?.mode!=='boss'||!game){
+      if(v144BossAnnouncements.length){v144BossAnnouncements=[];v144RenderBossAnnouncements();}
+      return;
+    }
+    /* 마지막 일격으로 전투가 끝나도 해당 보스 스킬명은 결과 화면까지 남긴다. */
+    if(game.over)return;
+    let changed=false;
+    for(const item of v144BossAnnouncements){item.life-=dt;if(item.life<=0)changed=true;}
+    if(changed){v144BossAnnouncements=v144BossAnnouncements.filter(item=>item.life>0);v144RenderBossAnnouncements();}
+  }
+
+  const _v144StartJamesTaunt=startJamesTaunt;
+  startJamesTaunt=function(boss){const result=_v144StartJamesTaunt(boss);if(boss?.data?.tauntTimer>0)announceBossSkill(boss,'도발');return result;};
+  const _v144FireJamesBadMeal=fireJamesBadMeal;
+  fireJamesBadMeal=function(boss){const before=game?.jamesMealShots?.length||0;const result=_v144FireJamesBadMeal(boss);if((game?.jamesMealShots?.length||0)>before)announceBossSkill(boss,'형편없는식사');return result;};
+  const _v144DropJamesMeat=dropJamesMeat;
+  dropJamesMeat=function(boss){const before=game?.jamesMeats?.length||0;const result=_v144DropJamesMeat(boss);if((game?.jamesMeats?.length||0)>before)announceBossSkill(boss,'중국가라오케',1.2);return result;};
+
+  function v144CooldownFired(before,after,key,dt){
+    const b=Number(before?.[key]??0),a=Number(after?.[key]??0);
+    return b<=dt+.025&&a>Math.max(.08,b+.08);
+  }
+  const _v144UpdateYooBoss=updateYooBoss;
+  updateYooBoss=function(boss,dt){
+    const beforeCool={...(boss?.cool||{})};
+    const beforePhase=boss?.data?.phase;
+    const result=_v144UpdateYooBoss(boss,dt);
+    if(!boss?.alive)return result;
+    const after=boss.cool||{};
+    const map={dropout:'자퇴 선언',attendance:'출석부 찢기',selfStudy:'보충수업 거부',officeRaid:'교무실 습격',diploma:'졸업장 파쇄',nightEscape:'야자 탈주',ruleChange:'교칙 무시',expulsion:'퇴학 통지서 반송',principal:'교장실 무단침입'};
+    for(const [key,name] of Object.entries(map))if(v144CooldownFired(beforeCool,after,key,dt))announceBossSkill(boss,name);
+    if(beforePhase!==boss.data.phase&&boss.data.phase===3)announceBossSkill(boss,'보충수업 거부');
+    return result;
+  };
+
+  const _v144YoungWriting=castYoungsikWriting;
+  castYoungsikWriting=function(boss){const result=_v144YoungWriting(boss);if(result?.length)announceBossSkill(boss,'작문시키기');return result;};
+  const _v144YoungSleep=castYoungsikSleep;
+  castYoungsikSleep=function(boss){const before=game?.waves?.length||0;const result=_v144YoungSleep(boss);if((game?.waves?.length||0)>before)announceBossSkill(boss,'잠들게하기');return result;};
+  const _v144YoungIce=fireYoungsikIcecream;
+  fireYoungsikIcecream=function(boss){const before=game?.shots?.length||0;const result=_v144YoungIce(boss);if((game?.shots?.length||0)>before)announceBossSkill(boss,'아이스크림 선물');return result;};
+  const _v144YoungSong=castYoungsikSong;
+  castYoungsikSong=function(boss){const result=_v144YoungSong(boss);if(result?.length)announceBossSkill(boss,'노래추천');return result;};
+  const _v144YoungGuitar=fireYoungsikGuitar;
+  fireYoungsikGuitar=function(boss){const before=game?.shots?.length||0;const result=_v144YoungGuitar(boss);if((game?.shots?.length||0)>before)announceBossSkill(boss,'기타치기');return result;};
+  const _v144YoungPull=startYoungsikPull;
+  startYoungsikPull=function(boss){const result=_v144YoungPull(boss);if(result)announceBossSkill(boss,'학탈 잡기');return result;};
+
+  const _v144DamageForBossBanner=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    const rootTarget=target?._sunhaOwner||target;
+    const beforeNull=rootTarget?.id==='youngsik'?(rootTarget.data?.nullifyCount||0):0;
+    const result=_v144DamageForBossBanner(target,amount,source,skill,opts);
+    if(rootTarget?.id==='youngsik'&&rootTarget.isBoss&&(rootTarget.data?.nullifyCount||0)>beforeNull)announceBossSkill(rootTarget,'수원외고잔나비',1.25);
+    return result;
+  };
+
+  /* ---------- 선제공격기 없는 캐릭터 전용 중앙 충격 지형 ---------- */
+  const V144_NO_INITIATIVE_IDS=new Set([
+    'ira',          // 이라온: 아군/자신 피격 반격
+    'geun',         // 김근수: 피격 누적 분노·지랄발광
+    'junghoon',     // 오정훈: 2회 피격 뒤 장판
+    'nakyung',      // 이나경: 3회 피격 춤추기
+    'jungdayeon',   // 정다연: 피격 시 입술박치기
+    'yeeun',        // 최예은: 피격 누적 투덜거리기
+    'haewon'        // 오해원: 받은 피해 누적 기타휘두르기
+  ]);
+  const V144_TERRAIN_DELAY=8;
+  const V144_TERRAIN_DAMAGE=10;
+  function v144PassiveOnlyState(){
+    if(!game||game.over||currentConfig?.mode==='boss')return null;
+    const alive=game.players.filter(p=>p.alive);
+    const teams=[...new Set(alive.map(p=>p.team))];
+    if(alive.length<2||teams.length<2)return null;
+    if(!alive.every(p=>V144_NO_INITIATIVE_IDS.has(p.id)))return null;
+    return {alive,teams};
+  }
+  function v144TerrainData(){
+    if(!game)return null;
+    if(!game.v144PassiveTerrain)game.v144PassiveTerrain={timer:0,active:false,hitCd:{},warned:false};
+    return game.v144PassiveTerrain;
+  }
+  function v144NearestEnemySource(target){
+    const candidates=game.players.filter(p=>p.alive&&!p.hidden&&p!==target&&isEnemy(p,target));
+    return candidates.sort((a,b)=>dist(target,a)-dist(target,b))[0]||null;
+  }
+  function v144ResetTerrain(){
+    if(!game?.v144PassiveTerrain)return;
+    game.v144PassiveTerrain.timer=0;
+    game.v144PassiveTerrain.active=false;
+    game.v144PassiveTerrain.hitCd={};
+    game.v144PassiveTerrain.warned=false;
+  }
+  function v144PreTick(dt){
+    const state=v144PassiveOnlyState();
+    if(!state)return;
+    /* V138의 체력비율 시간승리가 이 교착 상황을 덮어쓰지 않도록 결착까지 시간 종료를 잠시 보류한다. */
+    if(game.timeLeft<=dt+.25)game.timeLeft=dt+.25;
+  }
+  function v144UpdatePassiveTerrain(dt){
+    const state=v144PassiveOnlyState();
+    const terrain=v144TerrainData();
+    if(!terrain)return;
+    if(!state){v144ResetTerrain();return;}
+
+    for(const key of Object.keys(terrain.hitCd)){
+      terrain.hitCd[key]=Math.max(0,terrain.hitCd[key]-dt);
+      if(terrain.hitCd[key]===0)delete terrain.hitCd[key];
+    }
+
+    if(!terrain.active){
+      terrain.timer+=dt;
+      if(!terrain.warned&&terrain.timer>=V144_TERRAIN_DELAY-3){
+        terrain.warned=true;
+        floater(W/2,H/2-52,'⚠ 중앙 충격 지형 생성 임박','#d97706',17,1.1);
+      }
+      if(terrain.timer>=V144_TERRAIN_DELAY){
+        terrain.active=true;
+        terrain.hitCd={};
+        spawnAttackFx(W/2,H/2,'#f59e0b','중앙 충격 지형',2.1);
+        const names=state.alive.map(p=>p.name).join(' · ');
+        floater(W/2,H/2-62,'⚡ 중앙 충격 지형 생성','#b45309',21,1.35);
+        log(`<b>교착 방지:</b> 선제공격기가 없는 생존자만 남아 중앙 충격 지형이 생성됨. (${names})`);
+      }
+      return;
+    }
+
+    const cx=W/2,cy=H/2,r=Math.max(38,Math.min(64,Math.min(W,H)*.085));
+    for(const target of state.alive){
+      if(!target.alive||target.hidden||(terrain.hitCd[target.id]||0)>0)continue;
+      let dx=target.x-cx,dy=target.y-cy,d=Math.hypot(dx,dy);
+      if(d>=r+target.r)continue;
+      if(d<.001){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);d=1;}
+      const nx=dx/d,ny=dy/d;
+      const source=v144NearestEnemySource(target);
+      if(source)damage(target,V144_TERRAIN_DAMAGE,source,'중앙 충격 지형',{v144Terrain:true,trueDamage:true,ignoreAttackPenalty:true});
+      const pushSpeed=560;
+      target.x=clamp(cx+nx*(r+target.r+2),target.r,W-target.r);
+      target.y=clamp(cy+ny*(r+target.r+2),target.r,H-target.r);
+      target.vx=nx*pushSpeed;target.vy=ny*pushSpeed;
+      target.knockbackTimer=Math.max(target.knockbackTimer||0,.48);
+      terrain.hitCd[target.id]=.72;
+      spawnAttackFx(target.x,target.y,'#f59e0b','중앙 충격 · 10 피해',1.15);
+      floater(target.x,target.y-target.r-16,'⚡ -10 · 적 공격 판정','#b45309',14,.72);
+    }
+  }
+  function v144DrawPassiveTerrain(){
+    const terrain=game?.v144PassiveTerrain;
+    if(!terrain?.active||currentConfig?.mode==='boss'||game?.over)return;
+    const cx=W/2,cy=H/2,r=Math.max(38,Math.min(64,Math.min(W,H)*.085));
+    ctx.save();
+    ctx.translate(cx,cy);
+    const pulse=1+Math.sin((game.t||0)*7)*.045;
+    ctx.scale(pulse,pulse);
+    ctx.shadowColor='#f59e0b';ctx.shadowBlur=24;
+    ctx.fillStyle='rgba(27,24,18,.94)';ctx.strokeStyle='#f59e0b';ctx.lineWidth=7;
+    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.shadowBlur=0;ctx.strokeStyle='#fde68a';ctx.lineWidth=3;ctx.setLineDash([10,8]);
+    ctx.beginPath();ctx.arc(0,0,r-10,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#fff7d6';ctx.font=`1000 ${Math.max(19,r*.43)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚡',0,-6);
+    ctx.fillStyle='#fde68a';ctx.font=`1000 ${Math.max(11,r*.22)}px Arial`;ctx.fillText('10 DAMAGE',0,r*.38);
+    ctx.restore();
+  }
+
+  const _v144Tick=tick;
+  tick=function(dt){
+    if(game&&!game.over)v144PreTick(dt);
+    const result=_v144Tick(dt);
+    if(game&&!game.over)v144UpdatePassiveTerrain(dt);
+    v144UpdateBossAnnouncements(dt);
+    return result;
+  };
+  const _v144Draw=draw;
+  draw=function(){const result=_v144Draw();v144DrawPassiveTerrain();return result;};
+  const _v144ResetBattle=resetBattle;
+  resetBattle=function(){v144BossAnnouncements=[];v144RenderBossAnnouncements();const result=_v144ResetBattle.apply(this,arguments);if(game)game.v144Build=V144_BUILD;return result;};
+  document.getElementById('back')?.addEventListener('click',()=>{v144BossAnnouncements=[];v144RenderBossAnnouncements();});
+
+  window.__GONG_V144_TEST__={
+    get build(){return V144_BUILD;},
+    get noInitiativeIds(){return [...V144_NO_INITIATIVE_IDS];},
+    passiveOnlyState:v144PassiveOnlyState,
+    updateTerrain:v144UpdatePassiveTerrain,
+    drawTerrain:v144DrawPassiveTerrain,
+    announceBossSkill,
+    forceBossSkill(skill='V144 테스트'){
+      const boss=game?.players?.find(p=>p.isBoss&&p.alive);
+      if(!boss)return false;
+      announceBossSkill(boss,skill,5);
+      return true;
+    },
+    forceTerrainHit(){
+      const state=v144PassiveOnlyState();
+      if(!state?.alive?.length)return null;
+      const terrain=v144TerrainData();
+      terrain.active=true;terrain.timer=V144_TERRAIN_DELAY;terrain.hitCd={};
+      const target=state.alive[0];
+      target.x=W/2;target.y=H/2;
+      const before=target.hp;
+      v144UpdatePassiveTerrain(.016);
+      return {id:target.id,before,after:target.hp,damage:before-target.hp,active:terrain.active};
+    },
+    get announcements(){return v144BossAnnouncements;},
+    get terrain(){return game?.v144PassiveTerrain||null;}
+  };
+})();
+
 })();
 </script>
 
@@ -20456,276 +20745,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 </script>
 
 
-<script>
-/* =========================================================
-   V143
-   - V142(기존 V138.4 내용)에서 버전 번호 정정 후 연속 개발
-   - 보스전 도전자 전체 추가/삭제
-   - 모든 보스 스킬 중앙 대형 다중 배너
-   - 선제공격기 없는 생존자만 남을 때 중앙 충격 지형
-   ========================================================= */
-(function(){
-  const V143_BUILD='V143_BOSS_UI_SKILL_BANNERS_PASSIVE_DEADLOCK_TERRAIN';
-  window.__GONG_V143_BUILD__=V143_BUILD;
 
-  /* ---------- 보스전 전체 추가/삭제 버튼 ---------- */
-  const setupActions=document.querySelector('.setup-actions');
-  if(setupActions&&!document.getElementById('bossBulkActions')){
-    const wrap=document.createElement('div');
-    wrap.id='bossBulkActions';
-    wrap.className='showdown-bulk-actions hidden';
-    wrap.innerHTML='<button id="addAllBossHeroes" class="add-all-btn" type="button">➕ 보스전에 모든 캐릭터 추가</button><button id="removeAllBossHeroes" class="remove-all-btn" type="button">🗑 보스전에서 모든 캐릭터 삭제</button>';
-    const showdownActions=setupActions.querySelector('.showdown-bulk-actions');
-    if(showdownActions?.nextSibling)setupActions.insertBefore(wrap,showdownActions.nextSibling);
-    else setupActions.prepend(wrap);
-
-    document.getElementById('addAllBossHeroes').addEventListener('click',()=>{
-      if(mode!=='boss')return;
-      orderedCharacterIds().forEach(id=>assignments[id]='heroes');
-      activeZone='heroes';
-      renderSetup();
-    });
-    document.getElementById('removeAllBossHeroes').addEventListener('click',()=>{
-      if(mode!=='boss')return;
-      orderedCharacterIds().forEach(id=>assignments[id]='pool');
-      activeZone='heroes';
-      renderSetup();
-    });
-  }
-  function v143SyncBulkButtons(){
-    const bossBulk=document.getElementById('bossBulkActions');
-    if(bossBulk)bossBulk.classList.toggle('hidden',mode!=='boss');
-  }
-  document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>setTimeout(v143SyncBulkButtons,0)));
-  v143SyncBulkButtons();
-
-  /* ---------- 모든 보스 스킬 중앙 대형 표시 ---------- */
-  const style=document.createElement('style');
-  style.textContent=`
-    .v143-boss-skill-stack{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);z-index:24;width:min(88%,760px);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;text-align:center}
-    .v143-boss-skill-line{max-width:100%;padding:11px 22px;border:2px solid rgba(255,255,255,.92);border-radius:16px;background:rgba(8,10,16,.82);color:#fff;font-size:clamp(24px,4.4vw,46px);font-weight:1000;line-height:1.12;letter-spacing:-.03em;text-shadow:0 3px 8px #000;box-shadow:0 8px 24px rgba(0,0,0,.48),inset 0 0 0 2px color-mix(in srgb,var(--boss-skill-color,#ff8a3d) 62%,transparent);animation:v143BossSkillIn .16s ease-out;overflow-wrap:anywhere}
-    .v143-boss-skill-line small{display:block;margin-bottom:3px;color:#e6e8ee;font-size:clamp(12px,1.8vw,17px);font-weight:900;letter-spacing:0}
-    @keyframes v143BossSkillIn{from{opacity:0;transform:scale(.82) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .v143-passive-terrain-note{font-weight:1000}
-  `;
-  document.head.appendChild(style);
-
-  const arenaWrap=document.querySelector('.arena-wrap');
-  let bossSkillStack=document.getElementById('v143BossSkillStack');
-  if(arenaWrap&&!bossSkillStack){
-    bossSkillStack=document.createElement('div');
-    bossSkillStack.id='v143BossSkillStack';
-    bossSkillStack.className='v143-boss-skill-stack';
-    arenaWrap.appendChild(bossSkillStack);
-  }
-  let v143BossAnnouncements=[];
-  const V143_BOSS_COLORS={james:'#ff8a3d',yoogeon:'#3b82f6',youngsik:'#3f7f63',naeonseong:'#a855f7'};
-  function v143RenderBossAnnouncements(){
-    if(!bossSkillStack)return;
-    bossSkillStack.innerHTML=v143BossAnnouncements.map(item=>`<div class="v143-boss-skill-line" style="--boss-skill-color:${item.color}"><small>👑 ${item.bossName}</small>${item.skill}</div>`).join('');
-  }
-  function announceBossSkill(boss,skill,duration=1.65){
-    if(currentConfig?.mode!=='boss'||!boss?.isBoss||!boss.alive)return;
-    const key=`${boss.id}:${skill}`;
-    const existing=v143BossAnnouncements.find(item=>item.key===key);
-    if(existing){existing.life=Math.max(existing.life,duration);existing.max=Math.max(existing.max,duration);}
-    else{
-      v143BossAnnouncements.push({key,bossName:boss.name,skill,color:V143_BOSS_COLORS[boss.id]||boss.color||'#ff8a3d',life:duration,max:duration});
-      if(v143BossAnnouncements.length>9)v143BossAnnouncements.shift();
-    }
-    v143RenderBossAnnouncements();
-  }
-  function v143UpdateBossAnnouncements(dt){
-    if(currentConfig?.mode!=='boss'||!game){
-      if(v143BossAnnouncements.length){v143BossAnnouncements=[];v143RenderBossAnnouncements();}
-      return;
-    }
-    /* 마지막 일격으로 전투가 끝나도 해당 보스 스킬명은 결과 화면까지 남긴다. */
-    if(game.over)return;
-    let changed=false;
-    for(const item of v143BossAnnouncements){item.life-=dt;if(item.life<=0)changed=true;}
-    if(changed){v143BossAnnouncements=v143BossAnnouncements.filter(item=>item.life>0);v143RenderBossAnnouncements();}
-  }
-
-  const _v143StartJamesTaunt=startJamesTaunt;
-  startJamesTaunt=function(boss){const result=_v143StartJamesTaunt(boss);if(boss?.data?.tauntTimer>0)announceBossSkill(boss,'도발');return result;};
-  const _v143FireJamesBadMeal=fireJamesBadMeal;
-  fireJamesBadMeal=function(boss){const before=game?.jamesMealShots?.length||0;const result=_v143FireJamesBadMeal(boss);if((game?.jamesMealShots?.length||0)>before)announceBossSkill(boss,'형편없는식사');return result;};
-  const _v143DropJamesMeat=dropJamesMeat;
-  dropJamesMeat=function(boss){const before=game?.jamesMeats?.length||0;const result=_v143DropJamesMeat(boss);if((game?.jamesMeats?.length||0)>before)announceBossSkill(boss,'중국가라오케',1.2);return result;};
-
-  function v143CooldownFired(before,after,key,dt){
-    const b=Number(before?.[key]??0),a=Number(after?.[key]??0);
-    return b<=dt+.025&&a>Math.max(.08,b+.08);
-  }
-  const _v143UpdateYooBoss=updateYooBoss;
-  updateYooBoss=function(boss,dt){
-    const beforeCool={...(boss?.cool||{})};
-    const beforePhase=boss?.data?.phase;
-    const result=_v143UpdateYooBoss(boss,dt);
-    if(!boss?.alive)return result;
-    const after=boss.cool||{};
-    const map={dropout:'자퇴 선언',attendance:'출석부 찢기',selfStudy:'보충수업 거부',officeRaid:'교무실 습격',diploma:'졸업장 파쇄',nightEscape:'야자 탈주',ruleChange:'교칙 무시',expulsion:'퇴학 통지서 반송',principal:'교장실 무단침입'};
-    for(const [key,name] of Object.entries(map))if(v143CooldownFired(beforeCool,after,key,dt))announceBossSkill(boss,name);
-    if(beforePhase!==boss.data.phase&&boss.data.phase===3)announceBossSkill(boss,'보충수업 거부');
-    return result;
-  };
-
-  const _v143YoungWriting=castYoungsikWriting;
-  castYoungsikWriting=function(boss){const result=_v143YoungWriting(boss);if(result?.length)announceBossSkill(boss,'작문시키기');return result;};
-  const _v143YoungSleep=castYoungsikSleep;
-  castYoungsikSleep=function(boss){const before=game?.waves?.length||0;const result=_v143YoungSleep(boss);if((game?.waves?.length||0)>before)announceBossSkill(boss,'잠들게하기');return result;};
-  const _v143YoungIce=fireYoungsikIcecream;
-  fireYoungsikIcecream=function(boss){const before=game?.shots?.length||0;const result=_v143YoungIce(boss);if((game?.shots?.length||0)>before)announceBossSkill(boss,'아이스크림 선물');return result;};
-  const _v143YoungSong=castYoungsikSong;
-  castYoungsikSong=function(boss){const result=_v143YoungSong(boss);if(result?.length)announceBossSkill(boss,'노래추천');return result;};
-  const _v143YoungGuitar=fireYoungsikGuitar;
-  fireYoungsikGuitar=function(boss){const before=game?.shots?.length||0;const result=_v143YoungGuitar(boss);if((game?.shots?.length||0)>before)announceBossSkill(boss,'기타치기');return result;};
-  const _v143YoungPull=startYoungsikPull;
-  startYoungsikPull=function(boss){const result=_v143YoungPull(boss);if(result)announceBossSkill(boss,'학탈 잡기');return result;};
-
-  const _v143DamageForBossBanner=damage;
-  damage=function(target,amount,source,skill='공격',opts={}){
-    const rootTarget=target?._sunhaOwner||target;
-    const beforeNull=rootTarget?.id==='youngsik'?(rootTarget.data?.nullifyCount||0):0;
-    const result=_v143DamageForBossBanner(target,amount,source,skill,opts);
-    if(rootTarget?.id==='youngsik'&&rootTarget.isBoss&&(rootTarget.data?.nullifyCount||0)>beforeNull)announceBossSkill(rootTarget,'수원외고잔나비',1.25);
-    return result;
-  };
-
-  /* ---------- 선제공격기 없는 캐릭터 전용 중앙 충격 지형 ---------- */
-  const V143_NO_INITIATIVE_IDS=new Set([
-    'ira',          // 이라온: 아군/자신 피격 반격
-    'geun',         // 김근수: 피격 누적 분노·지랄발광
-    'junghoon',     // 오정훈: 2회 피격 뒤 장판
-    'nakyung',      // 이나경: 3회 피격 춤추기
-    'jungdayeon',   // 정다연: 피격 시 입술박치기
-    'yeeun',        // 최예은: 피격 누적 투덜거리기
-    'haewon'        // 오해원: 받은 피해 누적 기타휘두르기
-  ]);
-  const V143_TERRAIN_DELAY=8;
-  const V143_TERRAIN_DAMAGE=10;
-  function v143PassiveOnlyState(){
-    if(!game||game.over||currentConfig?.mode==='boss')return null;
-    const alive=game.players.filter(p=>p.alive);
-    const teams=[...new Set(alive.map(p=>p.team))];
-    if(alive.length<2||teams.length<2)return null;
-    if(!alive.every(p=>V143_NO_INITIATIVE_IDS.has(p.id)))return null;
-    return {alive,teams};
-  }
-  function v143TerrainData(){
-    if(!game)return null;
-    if(!game.v143PassiveTerrain)game.v143PassiveTerrain={timer:0,active:false,hitCd:{},warned:false};
-    return game.v143PassiveTerrain;
-  }
-  function v143NearestEnemySource(target){
-    const candidates=game.players.filter(p=>p.alive&&!p.hidden&&p!==target&&isEnemy(p,target));
-    return candidates.sort((a,b)=>dist(target,a)-dist(target,b))[0]||null;
-  }
-  function v143ResetTerrain(){
-    if(!game?.v143PassiveTerrain)return;
-    game.v143PassiveTerrain.timer=0;
-    game.v143PassiveTerrain.active=false;
-    game.v143PassiveTerrain.hitCd={};
-    game.v143PassiveTerrain.warned=false;
-  }
-  function v143PreTick(dt){
-    const state=v143PassiveOnlyState();
-    if(!state)return;
-    /* V138의 체력비율 시간승리가 이 교착 상황을 덮어쓰지 않도록 결착까지 시간 종료를 잠시 보류한다. */
-    if(game.timeLeft<=dt+.25)game.timeLeft=dt+.25;
-  }
-  function v143UpdatePassiveTerrain(dt){
-    const state=v143PassiveOnlyState();
-    const terrain=v143TerrainData();
-    if(!terrain)return;
-    if(!state){v143ResetTerrain();return;}
-
-    for(const key of Object.keys(terrain.hitCd)){
-      terrain.hitCd[key]=Math.max(0,terrain.hitCd[key]-dt);
-      if(terrain.hitCd[key]===0)delete terrain.hitCd[key];
-    }
-
-    if(!terrain.active){
-      terrain.timer+=dt;
-      if(!terrain.warned&&terrain.timer>=V143_TERRAIN_DELAY-3){
-        terrain.warned=true;
-        floater(W/2,H/2-52,'⚠ 중앙 충격 지형 생성 임박','#d97706',17,1.1);
-      }
-      if(terrain.timer>=V143_TERRAIN_DELAY){
-        terrain.active=true;
-        terrain.hitCd={};
-        spawnAttackFx(W/2,H/2,'#f59e0b','중앙 충격 지형',2.1);
-        const names=state.alive.map(p=>p.name).join(' · ');
-        floater(W/2,H/2-62,'⚡ 중앙 충격 지형 생성','#b45309',21,1.35);
-        log(`<b>교착 방지:</b> 선제공격기가 없는 생존자만 남아 중앙 충격 지형이 생성됨. (${names})`);
-      }
-      return;
-    }
-
-    const cx=W/2,cy=H/2,r=Math.max(38,Math.min(64,Math.min(W,H)*.085));
-    for(const target of state.alive){
-      if(!target.alive||target.hidden||(terrain.hitCd[target.id]||0)>0)continue;
-      let dx=target.x-cx,dy=target.y-cy,d=Math.hypot(dx,dy);
-      if(d>=r+target.r)continue;
-      if(d<.001){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);d=1;}
-      const nx=dx/d,ny=dy/d;
-      const source=v143NearestEnemySource(target);
-      if(source)damage(target,V143_TERRAIN_DAMAGE,source,'중앙 충격 지형',{v143Terrain:true,trueDamage:true,ignoreAttackPenalty:true});
-      const pushSpeed=560;
-      target.x=clamp(cx+nx*(r+target.r+2),target.r,W-target.r);
-      target.y=clamp(cy+ny*(r+target.r+2),target.r,H-target.r);
-      target.vx=nx*pushSpeed;target.vy=ny*pushSpeed;
-      target.knockbackTimer=Math.max(target.knockbackTimer||0,.48);
-      terrain.hitCd[target.id]=.72;
-      spawnAttackFx(target.x,target.y,'#f59e0b','중앙 충격 · 10 피해',1.15);
-      floater(target.x,target.y-target.r-16,'⚡ -10 · 적 공격 판정','#b45309',14,.72);
-    }
-  }
-  function v143DrawPassiveTerrain(){
-    const terrain=game?.v143PassiveTerrain;
-    if(!terrain?.active||currentConfig?.mode==='boss'||game?.over)return;
-    const cx=W/2,cy=H/2,r=Math.max(38,Math.min(64,Math.min(W,H)*.085));
-    ctx.save();
-    ctx.translate(cx,cy);
-    const pulse=1+Math.sin((game.t||0)*7)*.045;
-    ctx.scale(pulse,pulse);
-    ctx.shadowColor='#f59e0b';ctx.shadowBlur=24;
-    ctx.fillStyle='rgba(27,24,18,.94)';ctx.strokeStyle='#f59e0b';ctx.lineWidth=7;
-    ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.shadowBlur=0;ctx.strokeStyle='#fde68a';ctx.lineWidth=3;ctx.setLineDash([10,8]);
-    ctx.beginPath();ctx.arc(0,0,r-10,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle='#fff7d6';ctx.font=`1000 ${Math.max(19,r*.43)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⚡',0,-6);
-    ctx.fillStyle='#fde68a';ctx.font=`1000 ${Math.max(11,r*.22)}px Arial`;ctx.fillText('10 DAMAGE',0,r*.38);
-    ctx.restore();
-  }
-
-  const _v143Tick=tick;
-  tick=function(dt){
-    if(game&&!game.over)v143PreTick(dt);
-    const result=_v143Tick(dt);
-    if(game&&!game.over)v143UpdatePassiveTerrain(dt);
-    v143UpdateBossAnnouncements(dt);
-    return result;
-  };
-  const _v143Draw=draw;
-  draw=function(){const result=_v143Draw();v143DrawPassiveTerrain();return result;};
-  const _v143ResetBattle=resetBattle;
-  resetBattle=function(){v143BossAnnouncements=[];v143RenderBossAnnouncements();const result=_v143ResetBattle.apply(this,arguments);if(game)game.v143Build=V143_BUILD;return result;};
-  document.getElementById('back')?.addEventListener('click',()=>{v143BossAnnouncements=[];v143RenderBossAnnouncements();});
-
-  window.__GONG_V143_TEST__={
-    get build(){return V143_BUILD;},
-    get noInitiativeIds(){return [...V143_NO_INITIATIVE_IDS];},
-    passiveOnlyState:v143PassiveOnlyState,
-    updateTerrain:v143UpdatePassiveTerrain,
-    drawTerrain:v143DrawPassiveTerrain,
-    announceBossSkill,
-    get announcements(){return v143BossAnnouncements;},
-    get terrain(){return game?.v143PassiveTerrain||null;}
-  };
-})();
-</script>
 
 </body>
 </html>
