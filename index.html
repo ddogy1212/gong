@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V149_GAHYEON_3_WALL_HITS_ULTRA_FAST_BOOK_SONGHYEON250 -->
+<!-- BUILD: V150_GUARDIAN_RANDOM_2_5_POEM_DAMAGE6 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -2424,7 +2424,7 @@ chaewon:{
     hp:'250',speed:'80',
     skills:[
       {kind:'특수 상호작용 패시브',type:'passive',name:'개구리',desc:'맹주영의 맹꽁이 투사체에 맞으면 포박과 피해 대신 체력을 회복한다.',points:['맹주영의 맹꽁이 적중 시 HP 60 회복','포박 및 1.5초 뒤 피해는 적용되지 않음','최대 체력을 넘겨 회복하지 않음']},
-      {kind:'순환 아군 회복',type:'defense',name:'수호천사',desc:'아군 한 명을 선택해 5초 동안 매초 HP 15를 회복시킨 뒤 1초 후 다른 아군을 선택한다.',points:['1초마다 HP 15, 총 5회 회복(총 75)','5초 회복 후 재선택 대기시간 1초','가능하면 직전 대상과 다른 살아 있는 아군 선택','아군이 없다면 윤송현 자신에게 적용']},
+      {kind:'순환 아군 회복',type:'defense',name:'수호천사',desc:'아군 한 명을 선택해 5초 동안 매초 HP 15를 회복시킨 뒤 무작위 2~5초 후 다른 아군을 선택한다.',points:['1초마다 HP 15, 총 5회 회복(총 75)','5초 회복 후 재선택 대기시간 무작위 2~5초','가능하면 직전 대상과 다른 살아 있는 아군 선택','아군이 없다면 윤송현 자신에게 적용']},
       {kind:'충돌 회복·지연 투사체',type:'attack',name:'똥현',desc:'적과 충돌하면 HP 10을 회복하고, 2초 뒤 충돌한 적 방향으로 똥을 발사한다.',points:['적과 충돌할 때 윤송현 HP 10 회복','충돌 2초 뒤 해당 적의 현재 방향으로 발사','똥 적중 피해: 10','적중한 적은 2초 동안 이동속도 80% 감소','대상별 짧은 충돌 재발동 방지 적용']},
       {kind:'전장 조합 패시브',type:'passive',name:'102다플 삼인방',desc:'이유민·윤송현·이나경이 한 경기에 모두 참가하면 세 명이 함께 강화된다.',points:['세 명 모두 참가 시 전투 시작과 동시에 발동','세 명의 모든 공격 피해 1.5배','세 명의 이동속도 2배','한 명이 탈락해도 해당 경기 동안 버프 유지']}
     ]
@@ -20878,7 +20878,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     if(!target?.alive||target.hidden||(target!==owner&&target.team!==owner.team)){
       owner.data.guardianTarget=null;
       owner.data.guardianPhase='cooldown';
-      owner.data.guardianTimer=1;
+      owner.data.guardianTimer=rand(2,5);
       return;
     }
     owner.data.guardianTimer=Math.max(0,owner.data.guardianTimer-dt);
@@ -20891,7 +20891,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     if(owner.data.guardianTimer<=1e-9){
       owner.data.guardianTarget=null;
       owner.data.guardianPhase='cooldown';
-      owner.data.guardianTimer=1;
+      owner.data.guardianTimer=rand(2,5);
     }
   }
 
@@ -21194,7 +21194,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     skills:[
       {kind:'글자 공격 완전 무효',type:'passive',name:'문학소녀',desc:'화면에 글자나 문자 자체가 날아오는 모든 공격을 완전히 무효화한다.',points:['박효빈 중국어하기 무효','박서영 일본어쓰기 무효','장은채 디스랩하기·러시아어하기 무효','김경준 험한입·김민재 말풍선·우지연 알파벳 공격 포함','다른 이가현의 시 글자도 무효']},
       {kind:'벽 충돌 시전·설치·회복',type:'defense',name:'시쓰기',desc:'벽에 3번 부딪힐 때마다 3초 동안 시를 쓴 뒤 무작위 위치에 회전하는 시집을 설치한다.',points:['시전 시간 3초','시전 중 받는 모든 피해를 1/3만 받음','이가현 1명당 시집 최대 5개','시집은 서로 충분한 거리를 두고 고정 설치','시집이 이미 5개면 누적 받은 실제 피해의 60%만큼 회복']},
-      {kind:'무작위 주기 회전 문자 포탑',type:'attack',name:'도파민찾기',desc:'2~5초마다 설치된 모든 시집이 바라보는 방향으로 김소월 「진달래꽃」의 12글자를 한 글자씩 발사한다.',points:['사용 글자: 나보기가역겨워가실때에는','시집 1개당 12발','글자 1개당 피해 3.5','시집이 빠르게 회전하므로 발사 방향도 계속 변함','글자 투사체는 다른 적에게도 적중 가능']}
+      {kind:'무작위 주기 회전 문자 포탑',type:'attack',name:'도파민찾기',desc:'2~5초마다 설치된 모든 시집이 바라보는 방향으로 김소월 「진달래꽃」의 12글자를 한 글자씩 발사한다.',points:['사용 글자: 나보기가역겨워가실때에는','시집 1개당 12발','글자 1개당 피해 6','시집이 빠르게 회전하므로 발사 방향도 계속 변함','글자 투사체는 다른 적에게도 적중 가능']}
     ]
   };
 
@@ -21353,7 +21353,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
         if(isChaewonDashing(target))continue;
         if(tryChaewonEatProjectile(target,letter)){letter.life=0;break;}
         letter.life=0;
-        const dealt=damage(target,3.5,letter.owner,'도파민찾기 · 시 글자',{textAttack:true,languageAttack:true});
+        const dealt=damage(target,6,letter.owner,'도파민찾기 · 시 글자',{textAttack:true,languageAttack:true});
         floater(target.x,target.y-target.r-14,`${letter.char} ${dealt.toFixed(1)}`,'#6673a8',12,.58);
         if(target.id==='jongyeop'&&target.alive)heal(target,3,target,'캐리어피하기',true);
         break;
@@ -21430,12 +21430,17 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const note=v132TeamSelect.parentElement?.querySelector('span');if(note)note.textContent=`현재 ${needed}명 기준 최대 ${needed}팀`;
   }
 
+  /* V150: 수호천사 재선택 대기 2~5초 · 이가현 시 글자 피해 6 */
+  const V150_BUILD='V150_GUARDIAN_RANDOM_2_5_POEM_DAMAGE6';
+  window.__GONG_V150_BUILD__=V150_BUILD;
+  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V150_BUILD;
+
   /* V149: 이가현 시쓰기 벽 충돌 3회 발동 · 시집 회전속도 7.2~9.0rad/s · 윤송현 HP 250 */
   const V149_BUILD='V149_GAHYEON_3_WALL_HITS_ULTRA_FAST_BOOK_SONGHYEON250';
   window.__GONG_V149_BUILD__=V149_BUILD;
   if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V149_BUILD;
   window.__GONG_V147_TEST__={
-    get build(){return V149_BUILD;},
+    get build(){return V150_BUILD;},
     get gahyeon(){const p=game?.players?.find(x=>x.id==='gahyeon');return p?{hp:p.hp,maxHp:p.maxHp,wallHits:p.data.gahyeonWallHits,writing:p.data.gahyeonWritingTimer,books:v147BooksOf(p).length,cooldown:p.data.gahyeonDopamineCooldown,letters:game.v147PoemLetters?.length||0}:null;},
     get books(){return (game?.v147PoemBooks||[]).map(b=>({x:b.x,y:b.y,angle:b.angle,owner:b.owner?.id}));},
     get letters(){return (game?.v147PoemLetters||[]).map(l=>({char:l.char,x:l.x,y:l.y,owner:l.owner?.id}));},
