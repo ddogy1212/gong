@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V154_HOMING_TEARS_TRIPLE_BIRDS_SUMMON_RANK_HIDE_HEART8 -->
+<!-- BUILD: V155_AMIBIRD_DPS2_DOYEJIN260_MINJI_NO_LIBERATION_HP5_PASS_PROJECTILE_HALF_YOON3 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -21491,8 +21491,8 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   Object.assign(DEFS,{
     kimgaeun:{id:'kimgaeun',name:'김가은',generation:20,color:'#7d79d8',hp:200,speed:200,img:IMAGES.kimgaeun,role:'취약 부여·누적 피격 유도탄·벽 점검·시전 회복형',skills:'오리발사 · F파워 · 아웃공격 · 제이팝듣기'},
     ochaeun:{id:'ochaeun',name:'오채은',generation:20,color:'#3a6fa8',hp:200,speed:180,img:IMAGES.ochaeun,role:'초장거리 파동 음파·누적 피해 반격형',skills:'엄청난성량 · 비상보컬'},
-    seominji:{id:'seominji',name:'서민지',generation:20,color:'#5f7f68',hp:200,speed:240,img:IMAGES.seominji,role:'충돌 가속·최대 체력 성장·피해 저장 반격·이탈 회복형',skills:'저는못생긴걸보면토를해요 · 수원외고최대공헌자 · 잼얘컬렉터 · 해방'},
-    doyejin:{id:'doyejin',name:'도예진',generation:20,color:'#d96a8b',hp:220,speed:300,img:IMAGES.doyejin,role:'충돌 지속 피해·관통 문자·주기 통과·불사 새 소환형',skills:'멘헤라 · 프랑스어고수 · L’essentiel est invisible pour les yeux · 아미새'},
+    seominji:{id:'seominji',name:'서민지',generation:20,color:'#5f7f68',hp:200,speed:240,img:IMAGES.seominji,role:'충돌 가속·최대 체력 성장·피해 저장 반격형',skills:'저는못생긴걸보면토를해요 · 수원외고최대공헌자 · 잼얘컬렉터'},
+    doyejin:{id:'doyejin',name:'도예진',generation:20,color:'#d96a8b',hp:260,speed:300,img:IMAGES.doyejin,role:'충돌 지속 피해·관통 문자·주기 통과·불사 새 소환형',skills:'멘헤라 · 프랑스어고수 · L’essentiel est invisible pour les yeux · 아미새'},
     kimsihu:{id:'kimsihu',name:'김시후',generation:21,color:'#4f9fca',hp:200,speed:300,img:IMAGES.kimsihu,role:'영구 포옹 표식·야구 유도·강한 타격·확률 역회복형',skills:'포옹하기 · 야구하기(투수) · 야구하기(타자) · 야구하기(수비)'},
     kimeunwoo:{id:'kimeunwoo',name:'김은우',generation:20,color:'#4ba9c8',hp:200,speed:300,img:IMAGES.kimeunwoo,role:'강제 원거리 넉백 바람·취약 하트·고속 축구공형',skills:'숨이잘쉬어지는밴드 · 달달한 연애 · 수원외고축구천재'},
     yoonseoyoung:{id:'yoonseoyoung',name:'윤서영',generation:20,color:'#785d93',hp:200,speed:250,img:IMAGES.yoonseoyoung,role:'충돌 회복·취약 부여·피격 가시·누적 성장 시전형',skills:'잘뽑은반장 · 독설하기 · 호통치기 · 슬라임만지기'},
@@ -21512,17 +21512,16 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       {kind:'벽 충돌 파동 공격',type:'attack',name:'엄청난성량',desc:'벽에 4번 부딪힐 때마다 가장 가까운 적 방향으로 맵 끝까지 주파수 형태의 음파를 발사한다.',points:['음파 피해 30','적을 매우 강하게 튕겨냄','5초 동안 0.5초마다 0.5 지속 피해']},
       {kind:'누적 피격 반격',type:'attack',name:'비상보컬',desc:'실제 피해를 누적 30 받을 때마다 자신을 중심으로 8방향 얇은 음파를 발사한다.',points:['음파 1개당 피해 15','3초 동안 이동속도 70% 감소']}
     ]},
-    seominji:{summary:'충돌 가속·최대 체력 성장·피해 저장 반격·이탈 회복형',hp:'200',speed:'240',skills:[
+    seominji:{summary:'충돌 가속·최대 체력 성장·피해 저장 반격형',hp:'200',speed:'240',skills:[
       {kind:'충돌 패시브',type:'passive',name:'저는못생긴걸보면토를해요',desc:'적과 충돌하면 2초 동안 이동속도가 4배가 된다.',points:['기본 속도 240 → 960','다시 충돌하면 지속시간 갱신']},
-      {kind:'벽 충돌 성장',type:'defense',name:'수원외고최대공헌자',desc:'벽에 5번 부딪힐 때마다 최대 HP가 20 증가하고 현재 HP가 증가한 최대 HP까지 가득 찬다.',points:['최대 HP는 400까지 증가','400에 도달하면 더 이상 증가하지 않음','발동 즉시 완전 회복']},
-      {kind:'피해 저장 반격',type:'attack',name:'잼얘컬렉터',desc:'받은 실제 스킬 피해를 각각 1.1배로 환산해 경기 내내 누적 저장한다.',points:['벽 6회마다 가장 가까운 적에게 말풍선 3개 발사','저장된 전체 피해를 3개가 똑같이 나눠 가짐','발사해도 저장 피해는 사라지지 않음']},
-      {kind:'고위력 피격 이탈',type:'defense',name:'해방',desc:'한 번에 실제 피해 30 이상을 받고 살아남으면 5초 동안 전장에서 사라진다.',points:['사라질 때 HP 20 회복','5초 후 기존 위치로 복귀','사라진 동안 공격·충돌 대상에서 제외']}
+      {kind:'벽 충돌 성장',type:'defense',name:'수원외고최대공헌자',desc:'벽에 5번 부딪힐 때마다 최대 HP가 5 증가하고 현재 HP가 증가한 최대 HP까지 가득 찬다.',points:['최대 HP는 400까지 증가','400에 도달하면 더 이상 증가하지 않음','발동 즉시 완전 회복']},
+      {kind:'피해 저장 반격',type:'attack',name:'잼얘컬렉터',desc:'받은 실제 스킬 피해를 각각 1.1배로 환산해 경기 내내 누적 저장한다.',points:['벽 6회마다 가장 가까운 적에게 말풍선 3개 발사','저장된 전체 피해를 3개가 똑같이 나눠 가짐','발사해도 저장 피해는 사라지지 않음']}
     ]},
-    doyejin:{summary:'충돌 지속 피해·관통 문자·주기 통과·불사 새 소환형',hp:'220',speed:'300',skills:[
+    doyejin:{summary:'충돌 지속 피해·관통 문자·주기 통과·불사 새 소환형',hp:'260',speed:'300',skills:[
       {kind:'대상별 충돌 패시브',type:'attack',name:'멘헤라',desc:'같은 적과 세 번째 이상 충돌할 때마다 10초 지속 피해를 부여한다.',points:['1초마다 피해 1','추가 충돌 시 지속시간 갱신']},
       {kind:'주기 문자 공격',type:'attack',name:'프랑스어고수',desc:'4초마다 “cochon” 단어를 가장 가까운 적 방향으로 통째로 던진다.',points:['적중 1회당 피해 15','적을 멀리 튕겨냄','적중해도 사라지지 않고 경기장 끝에서 제거','적중할 때마다 도예진 HP 15 회복']},
-      {kind:'주기 통과 상태',type:'defense',name:'L’essentiel est invisible pour les yeux',desc:'2~8초 무작위 쿨타임 후 5초 동안 통과 상태가 된다.',points:['다른 공과 충돌·접촉 공격 판정 없음','평소처럼 이동하고 벽 충돌은 정상 판정','통과 중 반투명 표시']},
-      {kind:'저체력 소환',type:'attack',name:'아미새',desc:'HP가 처음 100 미만이 되면 속도 500의 무적 새 3마리를 소환한다.',points:['새 3마리는 경기 종료 전까지 사라지지 않음','주기적으로 방향을 꺾고 벽에서 불규칙하게 반사','적이 닿으면 아미새! 표시','접촉한 적은 10초 동안 1초마다 피해 1']}
+      {kind:'주기 통과 상태',type:'defense',name:'L’essentiel est invisible pour les yeux',desc:'2~8초 무작위 쿨타임 후 5초 동안 통과 상태가 된다.',points:['다른 공과 충돌·접촉 공격 판정 없음','평소처럼 이동하고 벽 충돌은 정상 판정','통과 중 반투명 표시','통과 중 투사체 피해는 1/2만 받음']},
+      {kind:'저체력 소환',type:'attack',name:'아미새',desc:'HP가 처음 130 미만이 되면 속도 500의 무적 새 3마리를 소환한다.',points:['새 3마리는 경기 종료 전까지 사라지지 않음','주기적으로 방향을 꺾고 벽에서 불규칙하게 반사','적이 닿으면 아미새! 표시','접촉한 적은 10초 동안 1초마다 피해 2']}
     ]},
     kimsihu:{summary:'영구 포옹 표식·야구 유도·강한 타격·확률 역회복형',hp:'200',speed:'300',skills:[
       {kind:'충돌 표식',type:'passive',name:'포옹하기',desc:'충돌한 적을 경기 종료까지 포옹 상태로 만든다.',points:['포옹 상태는 제거되지 않음']},
@@ -21552,7 +21551,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       {kind:'벽 충돌 자해 강화',type:'special',name:'베트남홍고추',desc:'벽에 4번 부딪힐 때마다 HP 5를 잃고 6초 동안 공격력이 1.5배가 된다.',points:['강화 지속시간은 다시 먹으면 갱신','자해 피해는 취약 배율을 받지 않음']}
     ]},
     choiyujin:{summary:'윤현 소환·확률 무효·독서 회복·추적 하트형',hp:'280',speed:'200',skills:[
-      {kind:'피격 소환 패시브',type:'special',name:'운명론적멘토멘티',desc:'실제 공격을 3번 받을 때마다 HP 10인 윤현 2페이즈를 아군으로 소환한다.',points:['전장에 기존 윤현이 있어도 발동','최대 10명까지 누적 소환','소환 윤현은 속도 240·2페이즈 능력 적용']},
+      {kind:'피격 소환 패시브',type:'special',name:'운명론적멘토멘티',desc:'실제 공격을 3번 받을 때마다 HP 10인 윤현 2페이즈를 아군으로 소환한다.',points:['전장에 기존 윤현이 있어도 발동','최대 3명까지 누적 소환','소환 윤현은 속도 240·2페이즈 능력 적용']},
       {kind:'확률 방어',type:'defense',name:'퀸의마인드',desc:'적의 공격을 받을 때 30% 확률로 완전히 무효화한다.',points:['자해에는 적용되지 않음']},
       {kind:'벽 충돌 시전',type:'defense',name:'독서하기',desc:'벽에 3번 부딪힐 때마다 2초 시전 후 HP 10을 회복하고 모든 적에게 5초 취약을 부여한다.',points:['시전 중 제자리 고정','피격되어도 취소되지 않음']},
       {kind:'주기 추적 공격',type:'attack',name:'예쁜언니따라가기',desc:'3초마다 가장 가까운 적에게 눈 2개를 던진다.',points:['눈 적중 시 해당 적을 예쁜언니로 지정','2초 동안 대상을 추적','추적 중 0.2초마다 비유도 하트 발사','하트 1개당 피해 8']}
@@ -21622,15 +21621,15 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     return {x:x+dx*t,y:y+dy*t};
   }
   function v151SegmentHit(x1,y1,x2,y2,target,r){return pointSegDist(target.x,target.y,x1,y1,x2,y2)<=target.r+r;}
-  function v151AddDot(target,key,owner,duration,interval,damageAmount,skill){
+  function v151AddDot(target,key,owner,duration,interval,damageAmount,skill,opts={}){
     if(!target?.alive)return;
     if(!target.data.v151Dots)target.data.v151Dots={};
     const ticks=Math.max(1,Math.round(duration/interval));
     const prev=target.data.v151Dots[key];
     if(prev){
-      prev.owner=owner;prev.timer=Math.max(prev.timer||0,duration);prev.interval=interval;prev.damage=damageAmount;prev.skill=skill;
+      prev.owner=owner;prev.timer=Math.max(prev.timer||0,duration);prev.interval=interval;prev.damage=damageAmount;prev.skill=skill;prev.opts={...(prev.opts||{}),...(opts||{})};
       prev.ticksLeft=Math.max(prev.ticksLeft||0,ticks);
-    }else target.data.v151Dots[key]={owner,timer:duration,interval,acc:0,ticksLeft:ticks,damage:damageAmount,skill};
+    }else target.data.v151Dots[key]={owner,timer:duration,interval,acc:0,ticksLeft:ticks,damage:damageAmount,skill,opts:{...(opts||{})}};
   }
 
   function v151InitPlayer(p){
@@ -21639,7 +21638,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     p.data.v151Dots={};
     if(p.id==='kimgaeun')Object.assign(p.data,{duckWalls:0,fMeter:0,inspectionCd:{},jpopBySource:{},jpopTimer:0,jpopPending:0,jpopCastX:p.x,jpopCastY:p.y});
     if(p.id==='ochaeun')Object.assign(p.data,{voiceWalls:0,emergencyDamageMeter:0});
-    if(p.id==='seominji')Object.assign(p.data,{boostTimer:0,maxWalls:0,collectorWalls:0,storedDamage:0,liberationTimer:0,liberationX:p.x,liberationY:p.y});
+    if(p.id==='seominji')Object.assign(p.data,{boostTimer:0,maxWalls:0,collectorWalls:0,storedDamage:0});
     if(p.id==='doyejin')Object.assign(p.data,{collisionCounts:{},collisionCd:{},passCooldown:rand(2,8),passTimer:0,birdSpawned:false,cochonCooldown:4});
     if(p.id==='kimsihu')Object.assign(p.data,{pitchWalls:0,huggedTargets:{},contactCd:{}});
     if(p.id==='kimeunwoo')Object.assign(p.data,{heartWalls:0,footballWalls:0});
@@ -21731,11 +21730,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     floater(p.x,p.y-p.r-18,`💬 총 ${total.toFixed(1)} → 3개 분할`,'#5f7f68',14,.95);
     v152Burst(p.x,p.y,'bubble','#5f7f68',.9);
   }
-  function v151StartMinjiLiberation(p){
-    if(!p.alive||p.hp<=0||p.data.liberationTimer>0)return;
-    p.data.liberationTimer=5;p.data.liberationX=p.x;p.data.liberationY=p.y;p.hidden=true;p.vx=0;p.vy=0;
-    heal(p,20,p,'해방');spawnAttackFx(p.x,p.y,'#5f7f68','해방',1.45);
-  }
   function v151ThrowCochon(p){
     const t=v151Nearest(p);if(!t)return;
     v151FireShot(p,'cochon',t,{angle:Math.atan2(t.y-p.y,t.x-p.x),speed:440,r:16,life:8,dmg:15,word:'cochon'});
@@ -21809,10 +21803,10 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     return summon;
   }
   function v151SpawnMentorYoon(p){
-    if(p.data.mentorSummons>=10)return;
+    if(p.data.mentorSummons>=3)return;
     p.data.mentorSummons++;const summon=v151CreateSummon(p,'mentor');game.players.push(summon);
     spawnAttackFx(p.x,p.y,'#3579d8','운명론적멘토멘티',1.45);
-    floater(p.x,p.y-p.r-24,`🔷 윤현 2페이즈 소환 ${p.data.mentorSummons}/10`,'#3579d8',14,.95);
+    floater(p.x,p.y-p.r-24,`🔷 윤현 2페이즈 소환 ${p.data.mentorSummons}/3`,'#3579d8',14,.95);
   }
   function v151RollExcitement(p){
     p.data.excitement=Math.floor(rand(2,13));p.data.exciteCooldown=rand(1,3);
@@ -21864,7 +21858,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     if(target.id==='ochaeun'&&target.hp>0&&source!==target&&!opts.selfDamage){target.data.emergencyDamageMeter=(target.data.emergencyDamageMeter||0)+dealt;while(target.data.emergencyDamageMeter>=30){target.data.emergencyDamageMeter-=30;v151FireEmergencyVocal(target);}}
     if(target.id==='seominji'&&source!==target&&!opts.selfDamage){
       target.data.storedDamage=Math.round((target.data.storedDamage+dealt*1.1)*10)/10;
-      if(dealt>=30&&target.hp>0)v151StartMinjiLiberation(target);
     }
     if(target.id==='kimsihu'&&target.hp>0&&source!==target&&!opts.selfDamage&&Math.random()<.50){
       const recovered=heal(target,dealt*1.1,target,'야구하기(수비)');
@@ -21896,7 +21889,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       p.data.maxWalls++;p.data.collectorWalls++;
       if(p.data.maxWalls>=5){
         p.data.maxWalls=0;
-        if(p.maxHp<400){p.maxHp=Math.min(400,p.maxHp+20);p.hp=p.maxHp;floater(p.x,p.y-p.r-22,`🏫 최대 HP ${p.maxHp} · 완전 회복`,'#5f7f68',14,.9);}
+        if(p.maxHp<400){p.maxHp=Math.min(400,p.maxHp+5);p.hp=p.maxHp;floater(p.x,p.y-p.r-22,`🏫 최대 HP ${p.maxHp} · 완전 회복`,'#5f7f68',14,.9);}
         else floater(p.x,p.y-p.r-22,'🏫 최대 HP 상한 400','#5f7f68',13,.7);
       }
       if(p.data.collectorWalls>=6){p.data.collectorWalls=0;v151FireMinjiBubble(p);}
@@ -22013,7 +22006,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     if(!p.data?.v151Dots)return;
     for(const [key,dot] of Object.entries(p.data.v151Dots)){
       dot.timer=Math.max(0,dot.timer-dt);dot.acc+=dt;
-      while(dot.acc+1e-9>=dot.interval&&(dot.ticksLeft??1)>0&&p.alive){dot.acc-=dot.interval;dot.ticksLeft--;damage(p,dot.damage,dot.owner,dot.skill,{allowDeadSource:true});}
+      while(dot.acc+1e-9>=dot.interval&&(dot.ticksLeft??1)>0&&p.alive){dot.acc-=dot.interval;dot.ticksLeft--;damage(p,dot.damage,dot.owner,dot.skill,{allowDeadSource:true,...(dot.opts||{})});}
       if((dot.ticksLeft??0)<=0||(!p.alive)||(dot.timer<=0&&dot.acc+1e-9<dot.interval))delete p.data.v151Dots[key];
     }
   }
@@ -22041,13 +22034,12 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     }
     if(p.id==='seominji'){
       if(p.data.boostTimer>0){p.data.boostTimer=Math.max(0,p.data.boostTimer-dt);if(p.data.boostTimer<=0&&p.alive)normalizeSpeed(p,normalSpeed(p));}
-      if(p.data.liberationTimer>0){p.data.liberationTimer=Math.max(0,p.data.liberationTimer-dt);if(p.data.liberationTimer<=0&&p.alive){p.hidden=false;p.x=clamp(p.data.liberationX,p.r,W-p.r);p.y=clamp(p.data.liberationY,p.r,H-p.r);normalizeSpeed(p,normalSpeed(p));floater(p.x,p.y-p.r-18,'🔓 해방 복귀','#5f7f68',14,.75);}}
     }
     if(p.id==='doyejin'){
       p.data.cochonCooldown-=dt;if(p.data.cochonCooldown<=0&&p.alive&&!p.hidden){p.data.cochonCooldown+=4;v151ThrowCochon(p);}
       if(p.data.passTimer>0){p.data.passTimer=Math.max(0,p.data.passTimer-dt);if(p.data.passTimer<=0)p.data.passCooldown=rand(2,8);}
       else{p.data.passCooldown-=dt;if(p.data.passCooldown<=0&&p.alive&&!p.hidden){p.data.passTimer=5;floater(p.x,p.y-p.r-22,'중요한 것은 눈에 보이지 않아!','#d96a8b',13,.9);}}
-      if(p.alive&&p.hp<100&&!p.data.birdSpawned)v151SpawnBird(p);
+      if(p.alive&&p.hp<130&&!p.data.birdSpawned)v151SpawnBird(p);
     }
     if(p.id==='yoonseoyoung'&&p.data.slimeCastTimer>0){
       p.data.slimeCastTimer=Math.max(0,p.data.slimeCastTimer-dt);p.x=p.data.slimeCastX;p.y=p.data.slimeCastY;p.vx=0;p.vy=0;
@@ -22109,7 +22101,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
         else if(s.type==='thinSonic'){damage(q,15,s.owner,'비상보컬');q.data.v151VocalSlowTimer=Math.max(q.data.v151VocalSlowTimer||0,3);normalizeSpeed(q,normalSpeed(q)*effectiveScale(q));s.life=0;}
         else if(s.type==='minjiBubble'){damage(q,s.dmg,s.owner,'잼얘컬렉터');s.life=0;}
         else if(s.type==='cochon'){s.hit.add(uid);damage(q,15,s.owner,'프랑스어고수');v151Knock(q,s.owner.x,s.owner.y,850);heal(s.owner,15,s.owner,'프랑스어고수 적중');}
-        else if(s.type==='baseball'){v151AddDot(q,`baseball_${v151Uid(s.owner)}`,s.owner,5,1,5,'야구하기(투수)');s.life=0;floater(q.x,q.y-q.r-16,'⚾ 5초 투구 지속','#4f9fca',13,.7);}
+        else if(s.type==='baseball'){v151AddDot(q,`baseball_${v151Uid(s.owner)}`,s.owner,5,1,5,'야구하기(투수)',{projectile:true});s.life=0;floater(q.x,q.y-q.r-16,'⚾ 5초 투구 지속','#4f9fca',13,.7);}
         else if(s.type==='eunwooHeart'){damage(q,s.dmg,s.owner,'달달한 연애');v151ApplyVulnerable(q,4,s.owner);s.life=0;}
         else if(s.type==='yoonseoSpike'){damage(q,10,s.owner,'호통치기');s.life=0;}
         else if(s.type==='exclamation'){damage(q,7,s.owner,'신남 표출하기');if(Math.random()<.20)v151ApplyVulnerable(q,4,s.owner);s.life=0;}
@@ -22155,7 +22147,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       for(const q of game.players){
         if(!q.alive||q.hidden||!isEnemy(b.owner,q)||dist(b,q)>b.r+q.r)continue;
         const uid=v151Uid(q);if((b.hitCd[uid]||0)>game.t)continue;b.hitCd[uid]=game.t+.7;
-        v151AddDot(q,`bird_${v151Uid(b.owner)}`,b.owner,10,1,1,'아미새',{allowDeadSource:true});
+        v151AddDot(q,`bird_${v151Uid(b.owner)}`,b.owner,10,1,2,'아미새',{allowDeadSource:true});
         floater((b.x+q.x)/2,(b.y+q.y)/2,'아미새!','#d96a8b',17,.8);v151Knock(q,b.x,b.y,650);
         const a=Math.atan2(b.vy,b.vx)+Math.PI+rand(-.8,.8);b.vx=Math.cos(a)*b.speed;b.vy=Math.sin(a)*b.speed;b.turnTimer=rand(.2,.55);v152Burst(b.x,b.y,'birdHit','#d96a8b',.7);
       }
@@ -22358,15 +22350,14 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       a.push(`📢 비상보컬 ${(p.data.emergencyDamageMeter||0).toFixed(1)}/30`);
     }
     if(p.id==='seominji'){
-      a.push(`🏫 최대HP ${p.data.maxWalls||0}/5 · ${remain(p.data.maxWalls,5)}회 남음`);
+      a.push(`🏫 최대HP ${p.data.maxWalls||0}/5 · ${remain(p.data.maxWalls,5)}회 남음 · 발동 시 +5`);
       a.push(`💬 잼얘 ${p.data.collectorWalls||0}/6 · 저장 ${(p.data.storedDamage||0).toFixed(1)}`);
-      if(p.data.liberationTimer>0)a.push(`🔓 해방 ${p.data.liberationTimer.toFixed(1)}s`);
       if(p.data.boostTimer>0)a.push(`🤢 속도×4 ${p.data.boostTimer.toFixed(1)}s`);
     }
     if(p.id==='doyejin'){
       a.push(`🇫🇷 cochon ${Math.max(0,p.data.cochonCooldown||0).toFixed(1)}s · 타격 15`);
       a.push(p.data.passTimer>0?`👻 통과 ${p.data.passTimer.toFixed(1)}s`:`👻 통과 쿨 ${Math.max(0,p.data.passCooldown||0).toFixed(1)}s`);
-      a.push(`🐦 아미새 ${p.data.birdSpawned?'활동 중':'HP 100 미만 대기'}`);
+      a.push(`🐦 아미새 ${p.data.birdSpawned?'활동 중':'HP 130 미만 대기'} · 초당 2`);
     }
     if(p.id==='kimsihu'){
       const hugged=Object.values(p.data.huggedTargets||{}).filter(Boolean).length;
@@ -22395,7 +22386,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       a.push(p.data.chiliTimer>0?`🌶 강화×1.5 ${p.data.chiliTimer.toFixed(1)}s`:`🌶 고추 ${p.data.chiliWalls||0}/4`);
     }
     if(p.id==='choiyujin'){
-      a.push(`🔷 멘토멘티 피격 ${p.data.receivedHits||0}/3 · 소환 ${p.data.mentorSummons||0}/10`);
+      a.push(`🔷 멘토멘티 피격 ${p.data.receivedHits||0}/3 · 소환 ${p.data.mentorSummons||0}/3`);
       a.push(p.data.readCastTimer>0?`📖 독서 시전 ${p.data.readCastTimer.toFixed(1)}s`:`📖 독서 ${p.data.readWalls||0}/3 · ${remain(p.data.readWalls,3)}회 남음`);
       a.push(p.data.prettyTimer>0&&p.data.prettyTarget?.alive?`👀 ${p.data.prettyTarget.name} 추적 ${p.data.prettyTimer.toFixed(1)}s`:`👁 눈 ${Math.max(0,p.data.eyeCooldown||0).toFixed(1)}s`);
     }
@@ -22599,6 +22590,86 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     resultNames(){return [...document.querySelectorAll('#resultBody .result-name')].map(el=>el.textContent.trim());},
     birds(ownerId='doyejin'){const owner=game?.players?.find(p=>p.id===ownerId);return (game?.v151Birds||[]).filter(b=>b.owner===owner);},
     shots(type){return (game?.v151Shots||[]).filter(s=>!type||s.type===type);},
+    finite(){return window.__GONG_V151_TEST__.finite();}
+  };
+
+
+  /* =========================================================
+     V155 · 아미새 초당 2 · 도예진 HP 260/투사체 반감 · 서민지 해방 삭제/HP+5 · 소환 윤현 3명
+     ========================================================= */
+  const V155_BUILD='V155_AMIBIRD_DPS2_DOYEJIN260_MINJI_NO_LIBERATION_HP5_PASS_PROJECTILE_HALF_YOON3';
+  window.__GONG_V155_BUILD__=V155_BUILD;
+
+  // 도예진 통과 상태에서 실제 투사체 처리 루프가 호출한 피해만 절반으로 줄인다.
+  let v155ProjectileDepth=0;
+  function v155WrapProjectileUpdater(fn){
+    if(typeof fn!=='function')return fn;
+    return function(...args){v155ProjectileDepth++;try{return fn.apply(this,args);}finally{v155ProjectileDepth=Math.max(0,v155ProjectileDepth-1);}};
+  }
+  updateShots=v155WrapProjectileUpdater(updateShots);
+  updateBricks=v155WrapProjectileUpdater(updateBricks);
+  updateYoonBricks=v155WrapProjectileUpdater(updateYoonBricks);
+  updateJamesMealShots=v155WrapProjectileUpdater(updateJamesMealShots);
+  updateJamesMeats=v155WrapProjectileUpdater(updateJamesMeats);
+  updateYooObjects=v155WrapProjectileUpdater(updateYooObjects);
+  updateNaObjects=v155WrapProjectileUpdater(updateNaObjects);
+  updateYangObjects=v155WrapProjectileUpdater(updateYangObjects);
+  updateNahyunEggplants=v155WrapProjectileUpdater(updateNahyunEggplants);
+  updateHyobinSneezes=v155WrapProjectileUpdater(updateHyobinSneezes);
+  updatePigeons=v155WrapProjectileUpdater(updatePigeons);
+  updateDawonConstellations=v155WrapProjectileUpdater(updateDawonConstellations);
+  updateJiyeonCrosses=v155WrapProjectileUpdater(updateJiyeonCrosses);
+  v147UpdatePoetry=v155WrapProjectileUpdater(v147UpdatePoetry);
+  v151UpdateShots=v155WrapProjectileUpdater(v151UpdateShots);
+  v151UpdateFootballs=v155WrapProjectileUpdater(v151UpdateFootballs);
+
+  const _v155Damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    if(target?.id==='doyejin'&&(target.data?.passTimer||0)>0&&amount>0&&!opts.selfDamage&&!opts.trueDamage&&(opts.projectile||v155ProjectileDepth>0)){
+      amount=Math.round(amount*.5*10)/10;
+      floater(target.x,target.y-target.r-14,'👻 투사체 피해 1/2','#d96a8b',12,.4);
+    }
+    return _v155Damage(target,amount,source,skill,opts);
+  };
+
+  const _v155ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v155ResetBattle();
+    for(const p of game.players||[]){
+      if(p.id==='doyejin'){p.maxHp=260;p.hp=Math.min(260,Math.max(p.hp,260));}
+      if(p.id==='seominji'){
+        p.hidden=false;
+        if(p.data){delete p.data.liberationTimer;delete p.data.liberationX;delete p.data.liberationY;}
+      }
+      if(p.id==='choiyujin'&&p.data)p.data.mentorSummons=Math.min(3,p.data.mentorSummons||0);
+    }
+    renderScores();renderBossAllies();updateUI();
+    return result;
+  };
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V155_BUILD;
+    window.__GONG_V138_TEST__.tick=tick;
+    window.__GONG_V138_TEST__.damage=damage;
+    window.__GONG_V138_TEST__.collide=collide;
+    window.__GONG_V138_TEST__.resetBattle=resetBattle;
+    window.__GONG_V138_TEST__.checkEnd=checkEnd;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V155_BUILD;}});
+  window.__GONG_V155_TEST__={
+    get build(){return V155_BUILD;},
+    get game(){return game;},
+    start(ids,modeName='showdown',teams=null){return window.__GONG_V151_TEST__.start(ids,modeName,teams);},
+    reset(){return window.__GONG_V151_TEST__.reset();},
+    advance(seconds=1,step=.05){return window.__GONG_V151_TEST__.advance(seconds,step);},
+    player(id){return game?.players?.find(x=>x.id===id)||null;},
+    wall(id,times=1){return window.__GONG_V151_TEST__.wall(id,times);},
+    contact(a,b,times=1){return window.__GONG_V151_TEST__.contact(a,b,times);},
+    hit(target,source,amount=30,skill='테스트 공격',opts={}){const t=typeof target==='string'?this.player(target):target;const s=typeof source==='string'?this.player(source):source;return damage(t,amount,s,skill,opts);},
+    setPass(seconds=5){const p=this.player('doyejin');if(p)p.data.passTimer=seconds;return p;},
+    status(id){const p=this.player(id);return p?statusText(p):null;},
+    birds(){return (game?.v151Birds||[]).filter(b=>b.owner?.id==='doyejin');},
+    mentorSummons(){return (game?.players||[]).filter(p=>p.alive&&p.data?.v151MentorYoon);},
     finite(){return window.__GONG_V151_TEST__.finite();}
   };
 
