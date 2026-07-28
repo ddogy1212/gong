@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V147_IGAHYEON_POETRY_GUARDIAN15 -->
+<!-- BUILD: V148_MOBILE_ROOT_IMAGES_FAST_POETRY_BOOK -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1519,7 +1519,7 @@ const IMAGES={
   sia:'assets/4ed9f96b4cd9bd43.png',
   woojiyeon:'assets/deb57cd15bca169a.png',
   youngsik:'assets/8353d39b9ebce728.png',
-  songhyeon:'assets/yunsonghyeon.jpg',
+  songhyeon:'yunsonghyeon.jpg',
 };
 
 const DEFS={
@@ -21183,7 +21183,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const V147_BUILD='V147_IGAHYEON_POETRY_GUARDIAN15';
   window.__GONG_V147_BUILD__=V147_BUILD;
 
-  IMAGES.gahyeon='assets/igahyeon.jpg';
+  IMAGES.gahyeon='igahyeon.jpg';
   DEFS.gahyeon={
     id:'gahyeon',name:'이가현',generation:21,color:'#6673a8',hp:250,speed:150,img:IMAGES.gahyeon,
     role:'글자 공격 무효·벽 시전 시집 설치·회전 문자 포탑형',
@@ -21194,7 +21194,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     skills:[
       {kind:'글자 공격 완전 무효',type:'passive',name:'문학소녀',desc:'화면에 글자나 문자 자체가 날아오는 모든 공격을 완전히 무효화한다.',points:['박효빈 중국어하기 무효','박서영 일본어쓰기 무효','장은채 디스랩하기·러시아어하기 무효','김경준 험한입·김민재 말풍선·우지연 알파벳 공격 포함','다른 이가현의 시 글자도 무효']},
       {kind:'벽 충돌 시전·설치·회복',type:'defense',name:'시쓰기',desc:'벽에 6번 부딪힐 때마다 3초 동안 시를 쓴 뒤 무작위 위치에 회전하는 시집을 설치한다.',points:['시전 시간 3초','시전 중 받는 모든 피해를 1/3만 받음','이가현 1명당 시집 최대 5개','시집은 서로 충분한 거리를 두고 고정 설치','시집이 이미 5개면 누적 받은 실제 피해의 60%만큼 회복']},
-      {kind:'무작위 주기 회전 문자 포탑',type:'attack',name:'도파민찾기',desc:'2~5초마다 설치된 모든 시집이 바라보는 방향으로 김소월 「진달래꽃」의 12글자를 한 글자씩 발사한다.',points:['사용 글자: 나보기가역겨워가실때에는','시집 1개당 12발','글자 1개당 피해 3.5','시집이 회전하므로 발사 방향도 계속 변함','글자 투사체는 다른 적에게도 적중 가능']}
+      {kind:'무작위 주기 회전 문자 포탑',type:'attack',name:'도파민찾기',desc:'2~5초마다 설치된 모든 시집이 바라보는 방향으로 김소월 「진달래꽃」의 12글자를 한 글자씩 발사한다.',points:['사용 글자: 나보기가역겨워가실때에는','시집 1개당 12발','글자 1개당 피해 3.5','시집이 빠르게 회전하므로 발사 방향도 계속 변함','글자 투사체는 다른 적에게도 적중 가능']}
     ]
   };
 
@@ -21250,7 +21250,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   function v147InstallBook(owner){
     if(!game||!owner?.alive)return null;
     const pos=v147RandomBookPosition(owner);
-    const book={owner,x:pos.x,y:pos.y,r:23,angle:rand(0,Math.PI*2),spin:(Math.random()<.5?-1:1)*rand(.95,1.45),pulse:rand(0,Math.PI*2)};
+    const book={owner,x:pos.x,y:pos.y,r:23,angle:rand(0,Math.PI*2),spin:(Math.random()<.5?-1:1)*rand(2.6,3.4),pulse:rand(0,Math.PI*2)};
     game.v147PoemBooks.push(book);
     spawnAttackFx(book.x,book.y,'#6673a8','시집 설치',1.3);
     floater(book.x,book.y-30,`📖 시집 ${v147BooksOf(owner).length}/${V147_BOOK_LIMIT}`,'#53608f',15,.85);
@@ -21430,9 +21430,11 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const note=v132TeamSelect.parentElement?.querySelector('span');if(note)note.textContent=`현재 ${needed}명 기준 최대 ${needed}팀`;
   }
 
-  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V147_BUILD;
+  const V148_BUILD='V148_MOBILE_ROOT_IMAGES_FAST_POETRY_BOOK';
+  window.__GONG_V148_BUILD__=V148_BUILD;
+  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V148_BUILD;
   window.__GONG_V147_TEST__={
-    get build(){return V147_BUILD;},
+    get build(){return V148_BUILD;},
     get gahyeon(){const p=game?.players?.find(x=>x.id==='gahyeon');return p?{hp:p.hp,maxHp:p.maxHp,wallHits:p.data.gahyeonWallHits,writing:p.data.gahyeonWritingTimer,books:v147BooksOf(p).length,cooldown:p.data.gahyeonDopamineCooldown,letters:game.v147PoemLetters?.length||0}:null;},
     get books(){return (game?.v147PoemBooks||[]).map(b=>({x:b.x,y:b.y,angle:b.angle,owner:b.owner?.id}));},
     get letters(){return (game?.v147PoemLetters||[]).map(l=>({char:l.char,x:l.x,y:l.y,owner:l.owner?.id}));},
