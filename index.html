@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V155_AMIBIRD_DPS2_DOYEJIN260_MINJI_NO_LIBERATION_HP5_PASS_PROJECTILE_HALF_YOON3 -->
+<!-- BUILD: V156_MINJI_CURRENT_HP_PLUS5_MENTOR_YOON_ACTIVE_CAP3 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -21514,7 +21514,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     ]},
     seominji:{summary:'충돌 가속·최대 체력 성장·피해 저장 반격형',hp:'200',speed:'240',skills:[
       {kind:'충돌 패시브',type:'passive',name:'저는못생긴걸보면토를해요',desc:'적과 충돌하면 2초 동안 이동속도가 4배가 된다.',points:['기본 속도 240 → 960','다시 충돌하면 지속시간 갱신']},
-      {kind:'벽 충돌 성장',type:'defense',name:'수원외고최대공헌자',desc:'벽에 5번 부딪힐 때마다 최대 HP가 5 증가하고 현재 HP가 증가한 최대 HP까지 가득 찬다.',points:['최대 HP는 400까지 증가','400에 도달하면 더 이상 증가하지 않음','발동 즉시 완전 회복']},
+      {kind:'벽 충돌 성장',type:'defense',name:'수원외고최대공헌자',desc:'벽에 5번 부딪힐 때마다 최대 HP와 현재 HP가 각각 5 증가한다.',points:['최대 HP는 400까지 증가','현재 HP는 회복이 아니라 기존 값에서 5만 증가','400에 도달하면 최대 HP는 더 이상 증가하지 않음']},
       {kind:'피해 저장 반격',type:'attack',name:'잼얘컬렉터',desc:'받은 실제 스킬 피해를 각각 1.1배로 환산해 경기 내내 누적 저장한다.',points:['벽 6회마다 가장 가까운 적에게 말풍선 3개 발사','저장된 전체 피해를 3개가 똑같이 나눠 가짐','발사해도 저장 피해는 사라지지 않음']}
     ]},
     doyejin:{summary:'충돌 지속 피해·관통 문자·주기 통과·불사 새 소환형',hp:'260',speed:'300',skills:[
@@ -21551,7 +21551,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       {kind:'벽 충돌 자해 강화',type:'special',name:'베트남홍고추',desc:'벽에 4번 부딪힐 때마다 HP 5를 잃고 6초 동안 공격력이 1.5배가 된다.',points:['강화 지속시간은 다시 먹으면 갱신','자해 피해는 취약 배율을 받지 않음']}
     ]},
     choiyujin:{summary:'윤현 소환·확률 무효·독서 회복·추적 하트형',hp:'280',speed:'200',skills:[
-      {kind:'피격 소환 패시브',type:'special',name:'운명론적멘토멘티',desc:'실제 공격을 3번 받을 때마다 HP 10인 윤현 2페이즈를 아군으로 소환한다.',points:['전장에 기존 윤현이 있어도 발동','최대 3명까지 누적 소환','소환 윤현은 속도 240·2페이즈 능력 적용']},
+      {kind:'피격 소환 패시브',type:'special',name:'운명론적멘토멘티',desc:'실제 공격을 3번 받을 때마다 HP 10인 윤현 2페이즈를 아군으로 소환한다.',points:['전장에 기존 윤현이 있어도 발동','동시에 존재하는 소환 윤현은 최대 3명','소환 윤현이 죽으면 이후 다시 보충 소환 가능','소환 윤현은 속도 240·2페이즈 능력 적용']},
       {kind:'확률 방어',type:'defense',name:'퀸의마인드',desc:'적의 공격을 받을 때 30% 확률로 완전히 무효화한다.',points:['자해에는 적용되지 않음']},
       {kind:'벽 충돌 시전',type:'defense',name:'독서하기',desc:'벽에 3번 부딪힐 때마다 2초 시전 후 HP 10을 회복하고 모든 적에게 5초 취약을 부여한다.',points:['시전 중 제자리 고정','피격되어도 취소되지 않음']},
       {kind:'주기 추적 공격',type:'attack',name:'예쁜언니따라가기',desc:'3초마다 가장 가까운 적에게 눈 2개를 던진다.',points:['눈 적중 시 해당 적을 예쁜언니로 지정','2초 동안 대상을 추적','추적 중 0.2초마다 비유도 하트 발사','하트 1개당 피해 8']}
@@ -21889,7 +21889,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       p.data.maxWalls++;p.data.collectorWalls++;
       if(p.data.maxWalls>=5){
         p.data.maxWalls=0;
-        if(p.maxHp<400){p.maxHp=Math.min(400,p.maxHp+5);p.hp=p.maxHp;floater(p.x,p.y-p.r-22,`🏫 최대 HP ${p.maxHp} · 완전 회복`,'#5f7f68',14,.9);}
+        if(p.maxHp<400){const oldMax=p.maxHp;p.maxHp=Math.min(400,p.maxHp+5);const gain=p.maxHp-oldMax;p.hp=Math.min(p.maxHp,p.hp+gain);floater(p.x,p.y-p.r-22,`🏫 최대 HP +${gain} · 현재 HP +${gain}`,'#5f7f68',14,.9);}
         else floater(p.x,p.y-p.r-22,'🏫 최대 HP 상한 400','#5f7f68',13,.7);
       }
       if(p.data.collectorWalls>=6){p.data.collectorWalls=0;v151FireMinjiBubble(p);}
@@ -22670,6 +22670,83 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     status(id){const p=this.player(id);return p?statusText(p):null;},
     birds(){return (game?.v151Birds||[]).filter(b=>b.owner?.id==='doyejin');},
     mentorSummons(){return (game?.players||[]).filter(p=>p.alive&&p.data?.v151MentorYoon);},
+    finite(){return window.__GONG_V151_TEST__.finite();}
+  };
+
+
+  /* =========================================================
+     V156 · 서민지 현재 HP +5 · 소환 윤현 동시 존재 최대 3명
+     ========================================================= */
+  const V156_BUILD='V156_MINJI_CURRENT_HP_PLUS5_MENTOR_YOON_ACTIVE_CAP3';
+  window.__GONG_V156_BUILD__=V156_BUILD;
+
+  function v156ActiveMentorYoons(owner){
+    return (game?.players||[]).filter(p=>p.alive&&!p.hidden&&p.data?.v151MentorYoon&&p.data.v151Summoner===owner);
+  }
+  function v156SyncMentorCount(owner){
+    if(owner?.id==='choiyujin'&&owner.data)owner.data.mentorSummons=v156ActiveMentorYoons(owner).length;
+    return owner?.data?.mentorSummons||0;
+  }
+
+  const _v156SpawnMentorYoon=v151SpawnMentorYoon;
+  v151SpawnMentorYoon=function(p){
+    if(!p?.alive||!p.data)return null;
+    const active=v156SyncMentorCount(p);
+    if(active>=3){
+      floater(p.x,p.y-p.r-24,'🔷 소환 윤현 동시 최대 3명','#3579d8',13,.7);
+      return null;
+    }
+    p.data.mentorSummons=active;
+    const before=new Set(v156ActiveMentorYoons(p));
+    _v156SpawnMentorYoon(p);
+    const after=v156ActiveMentorYoons(p);
+    p.data.mentorSummons=after.length;
+    return after.find(x=>!before.has(x))||null;
+  };
+
+  const _v156Tick=tick;
+  tick=function(dt){
+    for(const p of game?.players||[])if(p.id==='choiyujin')v156SyncMentorCount(p);
+    const result=_v156Tick(dt);
+    for(const p of game?.players||[])if(p.id==='choiyujin')v156SyncMentorCount(p);
+    return result;
+  };
+
+  const _v156StatusText=statusText;
+  statusText=function(p){
+    if(p?.id==='choiyujin')v156SyncMentorCount(p);
+    return _v156StatusText(p);
+  };
+
+  const _v156ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v156ResetBattle();
+    for(const p of game?.players||[])if(p.id==='choiyujin'&&p.data)p.data.mentorSummons=v156ActiveMentorYoons(p).length;
+    renderScores();renderBossAllies();updateUI();
+    return result;
+  };
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V156_BUILD;
+    window.__GONG_V138_TEST__.tick=tick;
+    window.__GONG_V138_TEST__.damage=damage;
+    window.__GONG_V138_TEST__.collide=collide;
+    window.__GONG_V138_TEST__.resetBattle=resetBattle;
+    window.__GONG_V138_TEST__.checkEnd=checkEnd;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V156_BUILD;}});
+  window.__GONG_V156_TEST__={
+    get build(){return V156_BUILD;},
+    get game(){return game;},
+    start(ids,modeName='showdown',teams=null){return window.__GONG_V151_TEST__.start(ids,modeName,teams);},
+    reset(){return window.__GONG_V151_TEST__.reset();},
+    advance(seconds=1,step=.05){return window.__GONG_V151_TEST__.advance(seconds,step);},
+    player(id){return game?.players?.find(x=>x.id===id)||null;},
+    wall(id,times=1){return window.__GONG_V151_TEST__.wall(id,times);},
+    hit(target,source,amount=30,skill='테스트 공격',opts={}){const t=typeof target==='string'?this.player(target):target;const s=typeof source==='string'?this.player(source):source;return damage(t,amount,s,skill,opts);},
+    activeMentors(){const owner=this.player('choiyujin');return owner?v156ActiveMentorYoons(owner):[];},
+    syncMentors(){const owner=this.player('choiyujin');return owner?v156SyncMentorCount(owner):0;},
+    status(id){const p=this.player(id);return p?statusText(p):null;},
     finite(){return window.__GONG_V151_TEST__.finite();}
   };
 
