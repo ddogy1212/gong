@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V175_HP_BALANCE_JO_CONTACT_FIX -->
+<!-- BUILD: V176_HALL_TABS_FIX -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1513,7 +1513,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V175_HP_BALANCE_JO_CONTACT_FIX -->
+<!-- BUILD: V176_HALL_TABS_FIX -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -19846,7 +19846,7 @@ function frame(ts){
    V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
+  const BUILD='V176_HALL_TABS_FIX';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -19953,8 +19953,22 @@ function frame(ts){
     const hall=loadHall(),sizeHall=hall.sizes[hallViewSize]||emptySizeHall(),top=hallTop5(hallViewSize),legacy=loadLegacyHall(),legacyTop=top5FromChampions(legacy.champions);
     return `<div class="t-hall-head"><div><strong>🏛 규모별 명예의 전당 TOP 5</strong><small>V174부터 규모별로 따로 누적</small></div><small>${hallViewSize}인 완료 ${sizeHall.totalTournaments}회</small></div><div class="t-hall-tabs">${HALL_SIZES.map(size=>`<button type="button" class="t-hall-tab ${size===hallViewSize?'active':''}" data-hall-size="${size}">${size}인</button>`).join('')}</div>${hallRows(top,`${hallViewSize}인 토너먼트 우승 기록이 아직 없어.<br>첫 우승자가 여기에 등록돼!`)}<details class="t-hall-legacy"><summary>이전 통합 기록 · 완료 ${legacy.totalTournaments}회</summary>${hallRows(legacyTop,'이전 통합 우승 기록이 없어.')}</details>`;
   }
-  function bindHallTabs(root){root?.querySelectorAll('[data-hall-size]').forEach(button=>button.addEventListener('click',()=>{hallViewSize=Number(button.dataset.hallSize)||8;if(root.id==='tournamentHallOfFame')renderHall();else{root.innerHTML=hallHTML()+='<button class="t-modal-skip" data-hall-close>확인</button>';bindHallTabs(root);root.querySelector('[data-hall-close]')?.addEventListener('click',closeModal);}}));}
-  function renderHall(){const box=el('tournamentHallOfFame');if(box){box.innerHTML=hallHTML();bindHallTabs(box);}}
+  function renderHallInto(root,{modal=false}={}){
+    if(!root)return;
+    root.innerHTML=hallHTML()+(modal?'<button class="t-modal-skip" data-hall-close>확인</button>':'');
+    root.querySelectorAll('[data-hall-size]').forEach(button=>{
+      button.addEventListener('click',event=>{
+        event.preventDefault();
+        event.stopPropagation();
+        const nextSize=Number(button.getAttribute('data-hall-size'));
+        if(HALL_SIZES.includes(nextSize))hallViewSize=nextSize;
+        renderHallInto(root,{modal});
+      });
+    });
+    if(modal)root.querySelector('[data-hall-close]')?.addEventListener('click',closeModal);
+  }
+  function bindHallTabs(root){renderHallInto(root,{modal:root?.id!=='tournamentHallOfFame'});}
+  function renderHall(){renderHallInto(el('tournamentHallOfFame'));}
   function recordChampion(id){
     if(!id||!DEFS[id]||state?.hallRecorded)return false;
     const size=HALL_SIZES.includes(Number(state?.size))?Number(state.size):8,hall=loadHall(),bucket=hall.sizes[size]||emptySizeHall(),row=bucket.champions[id]||{wins:0,lastWin:0};
@@ -19962,7 +19976,7 @@ function frame(ts){
     if(state)state.hallRecorded=true;
     const ok=saveHall(hall);renderHall();return ok;
   }
-  function openHall(){openModal('🏛 규모별 토너먼트 명예의 전당',`${hallHTML()}<button class="t-modal-skip" data-hall-close>확인</button>`);bindHallTabs(tModalBody);tModalBody.querySelector('[data-hall-close]').addEventListener('click',closeModal);}
+  function openHall(){openModal('🏛 규모별 토너먼트 명예의 전당','');renderHallInto(tModalBody,{modal:true});}
 
   function renderPicker(){
     const ids=orderedCharacterIds();
@@ -20432,11 +20446,12 @@ function frame(ts){
   };
   window.__GONG_V174_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V175_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V176_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
-  console.info('[V175] 64인 토너먼트·규모별 명예의 전당 및 신규 캐릭터 로드 완료');
+  console.info('[V176] 규모별 명예의 전당 탭 전환 수정 완료');
 })();
 
 
@@ -24972,7 +24987,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
+  const V166_BUILD='V176_HALL_TABS_FIX';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
@@ -25227,7 +25242,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 /* =========================================================
    V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
    ========================================================= */
-const V174_BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
+const V174_BUILD='V176_HALL_TABS_FIX';
 window.__GONG_V174_BUILD__=V174_BUILD;
 window.__GONG_V175_BUILD__=V174_BUILD;
 
@@ -25500,7 +25515,8 @@ Object.defineProperties(v174Test,{
 });
 window.__GONG_V174_TEST__=v174Test;
 window.__GONG_V175_TEST__=v174Test;
-console.info('[V175] 신지민·박한울 HP 조정 및 조소현 검도 비접촉 피해 수정 완료');
+window.__GONG_V176_TEST__=v174Test;
+console.info('[V176] V175 밸런스·검도 수정 유지 및 명예의 전당 탭 수정 완료');
 
 
 })();
