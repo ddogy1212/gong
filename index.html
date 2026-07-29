@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V164_MENTEE_CROSS_HP1500_SHARED_COLLISIONS -->
+<!-- BUILD: V166_TEAM_AUTO_ASSIGN_SHOWDOWN_CLEAN -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1187,6 +1187,233 @@ body.boss-battle #scores{display:none!important}
 }
 
 
+
+
+/* V165 · 모바일 캐릭터 스크롤 · 통합 모드 허브 · 전투 화면 자동 포커스 */
+html,body{
+  overscroll-behavior-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.mode-row{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.mode-btn,.mode-hub-btn{
+  min-width:0;
+  min-height:72px;
+  border:2px solid #d0d0d0;
+  border-radius:14px;
+  background:#f3f3f3;
+  padding:10px 7px;
+  font-weight:1000;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  line-height:1.15;
+  text-align:center;
+  touch-action:manipulation;
+}
+.mode-btn small,.mode-hub-btn small{
+  display:block;
+  font-size:9px;
+  line-height:1.25;
+  font-weight:850;
+  color:#737373;
+}
+.mode-btn.active small{color:#e5e7eb}
+.mode-auto-btn{
+  border-color:#e6ad3c;
+  background:linear-gradient(145deg,#fff4ce,#ffd98c);
+  color:#4a2a00;
+  box-shadow:0 3px 0 #d5a13d;
+}
+.mode-auto-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #d5a13d}
+.mode-coming-btn{
+  grid-column:1/-1;
+  border-style:dashed;
+  border-color:#b8a7d9;
+  background:linear-gradient(145deg,#f5efff,#eee8f8);
+  color:#6b5a86;
+  cursor:default;
+  opacity:.82;
+  box-shadow:none;
+}
+.setup-actions>.skill-help-btn{grid-column:1/-1}
+.char-card{
+  cursor:pointer;
+  touch-action:pan-y pinch-zoom;
+  -webkit-user-drag:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.char-card:active{cursor:pointer}
+.card-skill-info{touch-action:manipulation}
+.pool,.pool-cards{touch-action:pan-y pinch-zoom}
+.quick-target-bar{
+  position:sticky;
+  top:0;
+  z-index:18;
+  margin:0 -2px 9px;
+  padding:7px;
+  border:2px solid #111;
+  border-radius:12px;
+  background:rgba(255,255,255,.97);
+  box-shadow:0 4px 12px rgba(0,0,0,.10);
+  backdrop-filter:blur(8px);
+}
+.quick-target-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:6px;
+  font-size:10px;
+  font-weight:1000;
+  color:#555;
+}
+.quick-target-title strong{color:#111;font-size:11px}
+.quick-target-buttons{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding-bottom:1px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.quick-target-buttons::-webkit-scrollbar{display:none}
+.quick-target-btn{
+  flex:0 0 auto;
+  border:2px solid #d7d7dc;
+  border-radius:999px;
+  background:#f3f4f6;
+  color:#333;
+  padding:8px 11px;
+  font-size:11px;
+  line-height:1;
+  font-weight:1000;
+  white-space:nowrap;
+  touch-action:manipulation;
+}
+.quick-target-btn.active{
+  border-color:var(--target-color,#111);
+  background:var(--target-color,#111);
+  color:#fff;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--target-color,#111) 22%,transparent);
+}
+.drop-zone{scroll-margin-top:78px}
+@media(min-width:560px){
+  .mode-row{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .mode-coming-btn{grid-column:auto}
+}
+@media(max-width:470px){
+  .mode-btn,.mode-hub-btn{min-height:68px;padding:9px 5px;font-size:13px}
+  .quick-target-bar{top:0}
+}
+
+
+
+/* V166 · 개인전 빠른 배정 바 숨김 · 팀전 자동 편성 */
+.team-options.v166-team-options{
+  display:block;
+  margin-top:10px;
+}
+.team-auto-card{
+  border:2px solid #111;
+  border-radius:14px;
+  background:linear-gradient(145deg,#ffffff,#f4f6fb);
+  padding:11px;
+  box-shadow:0 3px 0 #d7d9df;
+}
+.team-auto-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+}
+.team-auto-title{font-size:13px;font-weight:1000;color:#111}
+.team-auto-desc{font-size:9px;font-weight:800;color:#686b73;line-height:1.45;margin-top:3px}
+.team-auto-inputs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.team-auto-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  min-width:0;
+  font-size:10px;
+  font-weight:1000;
+  color:#474b55;
+}
+.team-auto-field select,.team-auto-field input{
+  width:100%;
+  min-height:40px;
+  box-sizing:border-box;
+  border:2px solid #111;
+  border-radius:10px;
+  background:#fff;
+  padding:8px 10px;
+  font-size:13px;
+  font-weight:1000;
+  color:#111;
+}
+.team-auto-mode-label{font-size:10px;font-weight:1000;color:#474b55;margin:10px 0 6px}
+.team-auto-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.team-auto-mode{
+  border:2px solid #d6d8df;
+  border-radius:11px;
+  background:#fff;
+  padding:9px 7px;
+  font-size:11px;
+  font-weight:1000;
+  color:#555;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.team-auto-mode.active{
+  border-color:#111;
+  background:#111;
+  color:#fff;
+  box-shadow:0 3px 0 #777;
+}
+.team-auto-run{
+  width:100%;
+  margin-top:9px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(135deg,#3867ff,#6a47e8);
+  color:#fff;
+  padding:12px 10px;
+  font-size:13px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 4px 0 #283b9c;
+  touch-action:manipulation;
+}
+.team-auto-run:active{transform:translateY(2px);box-shadow:0 2px 0 #283b9c}
+.team-auto-summary{
+  margin-top:8px;
+  border-radius:9px;
+  background:#eaf0ff;
+  color:#26396f;
+  padding:8px 9px;
+  font-size:9px;
+  line-height:1.45;
+  font-weight:900;
+}
+.team-auto-summary.success{background:#e6f8ec;color:#166534}
+.team-auto-summary.error{background:#ffe8e8;color:#a31b1b}
+@media(max-width:470px){
+  .team-auto-card{padding:10px}
+  .team-auto-head{display:block}
+  .team-auto-desc{margin-top:4px}
+  .team-auto-field select,.team-auto-field input{min-height:42px;font-size:14px}
+}
+
 /* V152 신규 캐릭터 실시간 상태창 가독성 */
 .score .status,.boss-ally-status{min-height:28px!important;line-height:1.35!important;white-space:normal!important;overflow-wrap:anywhere;color:#3f4650!important}
 .score .status:empty::after,.boss-ally-status:empty::after{content:'상태 계산 중';opacity:.55}
@@ -1200,18 +1427,17 @@ body.boss-battle #scores{display:none!important}
 
 <section id="setup" class="screen">
   <h1>수원외고 공게임 🏟️</h1>
-  <div class="lead">쇼다운·팀전 또는 보스전을 선택하고 아래 캐릭터를 드래그해 배정해. 보스 캐릭터는 보스전에서만 적으로 등장해.</div>
+  <div class="lead">자동전투·개인전·팀전·보스전을 한곳에서 선택해. 모바일에서는 빠른 배정 버튼을 고른 뒤 캐릭터 카드를 누르면 편하게 참가시킬 수 있어.</div>
   <div class="setup-actions">
     <div class="showdown-bulk-actions">
-      <button id="addAllShowdown" class="add-all-btn">➕ 쇼다운에 모두 추가</button>
-      <button id="removeAllShowdown" class="remove-all-btn">🗑 쇼다운에서 모두 삭제</button>
+      <button id="addAllShowdown" class="add-all-btn">➕ 개인전에 모두 추가</button>
+      <button id="removeAllShowdown" class="remove-all-btn">🗑 개인전에서 모두 삭제</button>
     </div>
     <button id="openSkillsSetup" class="skill-help-btn">📖 캐릭터 스킬 설명</button>
-    <button id="autoBattleStart" class="auto-battle-btn" type="button">🤖 자동 전투</button>
   </div>
 
   <div class="panel">
-    <div class="panel-title">1. 전투 모드</div>
+    <div class="panel-title">1. 전투 방식 선택</div>
 
     <div id="bossSelectWrap" class="boss-select-wrap">
       <div class="boss-select-shell">
@@ -1234,10 +1460,12 @@ body.boss-battle #scores{display:none!important}
       </div>
     </div>
 
-    <div class="mode-row">
-      <button class="mode-btn active" data-mode="showdown">⚔️ 쇼다운<br><small>모두 개인전</small></button>
-      <button class="mode-btn" data-mode="team">🤝 다중 팀전<br><small>팀 수 직접 설정</small></button>
-      <button class="mode-btn" data-mode="boss">👑 보스전<br><small>보스와 전투</small></button>
+    <div class="mode-row" id="modeHub" aria-label="전투 방식 선택">
+      <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투<small>무작위 연속 전투</small></button>
+      <button class="mode-btn active" data-mode="showdown">⚔️ 개인전<small>모두 적으로 전투</small></button>
+      <button class="mode-btn" data-mode="team">🤝 팀전<small>팀 수 직접 설정</small></button>
+      <button class="mode-btn" data-mode="boss">👑 보스전<small>보스와 전투</small></button>
+      <button class="mode-hub-btn mode-coming-btn" type="button" disabled aria-disabled="true">✨ 곧 추가됩니다!<small>새 모드 준비 중</small></button>
     </div>
     <div id="teamOptions" class="team-options hidden">
       <label for="teamCount">팀 개수</label>
@@ -1287,13 +1515,14 @@ body.boss-battle #scores{display:none!important}
 
   <div class="panel">
     <div class="pool" data-zone="pool" style="--zone:#111">
-      <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">드래그 또는 칸 선택 후 카드 클릭</span></div>
+      <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">세로 스크롤 · 빠른 배정 후 카드 탭</span></div>
+      <div id="quickTargetBar" class="quick-target-bar" aria-label="캐릭터 빠른 배정 대상"></div>
       <div id="poolCards" class="pool-cards"></div>
     </div>
   </div>
 
   <button id="start" class="start-btn">배정한 캐릭터로 전투 시작 🔥</button>
-  <div class="help">쇼다운은 2명 이상 · 팀전은 생성한 모든 팀에 최소 1명씩 필요</div>
+  <div class="help">개인전은 2명 이상 · 팀전은 생성한 모든 팀에 최소 1명씩 필요</div>
 </section>
 
 <section id="battle" class="screen hidden">
@@ -1302,7 +1531,7 @@ body.boss-battle #scores{display:none!important}
     <div class="battle-actions">
       <button id="openResults" class="result-btn hidden">📊 결과</button>
       <button id="openSkillsBattle" class="skill-help-btn">📖 스킬</button>
-      <div id="modeBadge" class="badge">쇼다운</div>
+      <div id="modeBadge" class="badge">개인전</div>
     </div>
   </div>
 
@@ -3247,7 +3476,7 @@ document.querySelectorAll('.boss-card').forEach(card=>{
 });
 
 function zoneList(){
-  if(mode==='showdown')return [{id:'showdown',name:'쇼다운 참가자',color:'#111'}];
+  if(mode==='showdown')return [{id:'showdown',name:'개인전 참가자',color:'#111'}];
   if(mode==='boss')return [{id:'heroes',name:'보스 도전자',color:'#b11f38'}];
   const n=Number(teamCount.value);
   return Array.from({length:n},(_,i)=>({id:`T${i+1}`,name:`팀 ${i+1}`,color:TEAM_COLORS[i]}));
@@ -3276,25 +3505,75 @@ function syncCharacterAssignments(){
   }
 }
 
+function v165ActiveZoneInfo(zones=zoneList()){
+  return zones.find(z=>z.id===activeZone)||zones[0]||null;
+}
+
+function v165SyncActiveZoneUI(zones=zoneList()){
+  const active=v165ActiveZoneInfo(zones);
+  if(active&&activeZone!==active.id)activeZone=active.id;
+  document.querySelectorAll('.drop-zone[data-zone]').forEach(zone=>{
+    zone.classList.toggle('active-target',zone.dataset.zone===activeZone);
+  });
+  const bar=$('quickTargetBar');
+  if(bar){
+    bar.querySelectorAll('.quick-target-btn').forEach(btn=>{
+      const selected=btn.dataset.targetZone===activeZone;
+      btn.classList.toggle('active',selected);
+      btn.setAttribute('aria-pressed',selected?'true':'false');
+    });
+    const label=bar.querySelector('[data-active-zone-label]');
+    if(label)label.textContent=active?.name||'배정 칸';
+  }
+}
+
+function v165SetActiveZone(nextZone,{scrollToZone=false}={}){
+  const zones=zoneList();
+  if(!zones.some(z=>z.id===nextZone))return false;
+  activeZone=nextZone;
+  v165SyncActiveZoneUI(zones);
+  if(scrollToZone){
+    const target=document.querySelector(`.drop-zone[data-zone="${CSS.escape(nextZone)}"]`);
+    target?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  return true;
+}
+
+function v165RenderQuickTargets(zones){
+  const bar=$('quickTargetBar');
+  if(!bar)return;
+  const active=v165ActiveZoneInfo(zones);
+  bar.innerHTML=`<div class="quick-target-title"><span>카드를 누르면 이동</span><strong data-active-zone-label>${active?.name||'배정 칸'}</strong></div>
+    <div class="quick-target-buttons">${zones.map(z=>`<button type="button" class="quick-target-btn ${z.id===activeZone?'active':''}" data-target-zone="${z.id}" aria-pressed="${z.id===activeZone?'true':'false'}" style="--target-color:${z.color}">${z.name}</button>`).join('')}</div>`;
+  bar.querySelectorAll('.quick-target-btn').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      v165SetActiveZone(btn.dataset.targetZone);
+    });
+  });
+}
+
 function renderSetup(){
   syncCharacterAssignments();
   const zones=zoneList();
   // Return assignments from removed team zones to pool.
   const valid=new Set(['pool',...zones.map(z=>z.id)]);
   Object.keys(assignments).forEach(id=>{if(!valid.has(assignments[id]))assignments[id]='pool'});
+  if(!zones.some(z=>z.id===activeZone))activeZone=zones[0]?.id||'showdown';
 
   board.innerHTML=zones.map(z=>{
     const ids=orderedCharacterIds().filter(id=>assignments[id]===z.id);
     return `<div class="drop-zone ${activeZone===z.id?'active-target':''}" data-zone="${z.id}" style="--zone:${z.color}">
       <div class="zone-head"><span class="zone-title">${z.name}</span><span class="zone-count">${ids.length}명</span></div>
-      <div class="zone-cards">${ids.length?ids.map(cardHTML).join(''):'<div class="zone-hint">캐릭터를 여기에 드래그</div>'}</div>
+      <div class="zone-cards">${ids.length?ids.map(cardHTML).join(''):'<div class="zone-hint">캐릭터를 여기에 드래그하거나 아래에서 탭</div>'}</div>
     </div>`;
   }).join('');
 
   const poolIds=orderedCharacterIds().filter(id=>assignments[id]==='pool');
   poolCards.innerHTML=poolIds.map(cardHTML).join('');
-
+  v165RenderQuickTargets(zones);
   bindDnD();
+  v165SyncActiveZoneUI(zones);
 }
 
 function moveCard(id,zone){
@@ -3302,21 +3581,42 @@ function moveCard(id,zone){
 }
 
 function bindDnD(){
+  const touchFirst=('ontouchstart' in window)||(navigator.maxTouchPoints||0)>0||matchMedia('(pointer:coarse)').matches;
   document.querySelectorAll('.char-card').forEach(card=>{
+    card.draggable=!touchFirst;
+    let gestureMoved=false,startX=0,startY=0,gestureTimer=0;
+    const delayClear=()=>{
+      clearTimeout(gestureTimer);
+      gestureTimer=setTimeout(()=>{gestureMoved=false},420);
+    };
+    card.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='touch'||e.pointerType==='pen'){
+        startX=e.clientX;startY=e.clientY;gestureMoved=false;
+      }
+    },{passive:true});
+    card.addEventListener('pointermove',e=>{
+      if((e.pointerType==='touch'||e.pointerType==='pen')&&Math.hypot(e.clientX-startX,e.clientY-startY)>9){
+        gestureMoved=true;delayClear();
+      }
+    },{passive:true});
+    card.addEventListener('pointercancel',()=>{gestureMoved=true;delayClear()},{passive:true});
     card.addEventListener('dragstart',e=>{
+      if(touchFirst){e.preventDefault();return}
       e.dataTransfer.setData('text/plain',card.dataset.char);
       card.classList.add('dragging');
     });
     card.addEventListener('dragend',()=>card.classList.remove('dragging'));
     card.addEventListener('click',e=>{
+      if(gestureMoved){e.preventDefault();e.stopPropagation();gestureMoved=false;return}
       if(e.target.closest('.card-skill-info'))return;
-      // Click fallback: move to currently selected target, or back to pool if already there.
+      // Tap fallback: move to selected target, or return to pool when already in that target.
       const id=card.dataset.char;
       if(assignments[id]===activeZone)moveCard(id,'pool');
       else moveCard(id,activeZone);
     });
   });
 
+  // Desktop drag/drop remains available, including dropping back into the pool.
   document.querySelectorAll('[data-zone]').forEach(zone=>{
     zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over')});
     zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
@@ -3324,9 +3624,13 @@ function bindDnD(){
       e.preventDefault();zone.classList.remove('drag-over');
       const id=e.dataTransfer.getData('text/plain');if(id)moveCard(id,zone.dataset.zone);
     });
+  });
+
+  // Blank clicks select only real battle destinations. The pool background no longer clears the target.
+  document.querySelectorAll('.drop-zone[data-zone]').forEach(zone=>{
     zone.addEventListener('click',e=>{
       if(e.target.closest('.char-card'))return;
-      activeZone=zone.dataset.zone;renderSetup();
+      v165SetActiveZone(zone.dataset.zone);
     });
   });
 
@@ -3375,11 +3679,20 @@ teamCount.addEventListener('change',()=>{
 });
 renderSetup();
 
+function v165FocusBattleScreen(){
+  const focus=()=>{
+    window.scrollTo(0,0);
+    battle.scrollIntoView({behavior:'auto',block:'start',inline:'nearest'});
+  };
+  focus();
+  requestAnimationFrame(()=>requestAnimationFrame(focus));
+}
+
 $('start').addEventListener('click',()=>{
   const zones=zoneList();
   if(mode==='showdown'){
     const ids=orderedCharacterIds().filter(id=>assignments[id]==='showdown');
-    if(ids.length<2){alert('쇼다운 참가자 칸에 최소 2명을 넣어줘!');return}
+    if(ids.length<2){alert('개인전 참가자 칸에 최소 2명을 넣어줘!');return}
     currentConfig={mode,participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{}};
   }else if(mode==='boss'){
     const heroes=orderedCharacterIds().filter(id=>assignments[id]==='heroes');
@@ -3416,6 +3729,7 @@ $('start').addEventListener('click',()=>{
   battle.classList.remove('hidden');
   resize();
   resetBattle();
+  v165FocusBattleScreen();
 });
 
 $('back').addEventListener('click',()=>{
@@ -4059,8 +4373,8 @@ if(p.id==='gyumin'){p.cool={lips:2.2};p.data={collisionCount:0,contactCd:{},cast
       ?`👑 ${DEFS[selectedBoss].name} 보스전`
       :currentConfig.mode==='showdown'
         ?expanded
-          ?`⚔️ 쇼다운 · 전장 ${arenaLogicalScale.toFixed(1)}×`
-          :'⚔️ 쇼다운'
+          ?`⚔️ 개인전 · 전장 ${arenaLogicalScale.toFixed(1)}×`
+          :'⚔️ 개인전'
         :expanded
           ?`🤝 ${livingTeams().length}팀전 · 전장 ${arenaLogicalScale.toFixed(1)}×`
           :`🤝 ${livingTeams().length}팀전`;
@@ -4068,8 +4382,8 @@ if(p.id==='gyumin'){p.cool={lips:2.2};p.data={collisionCount:0,contactCd:{},cast
   log(
     currentConfig.mode==='showdown'
       ?expanded
-        ?`<b>대규모 쇼다운 시작!</b> ${currentConfig.participants.length}명에 맞춰 경기장을 ${arenaLogicalScale.toFixed(1)}배 확장.`
-        :'<b>쇼다운 시작!</b> 마지막 한 명이 승리.'
+        ?`<b>대규모 개인전 시작!</b> ${currentConfig.participants.length}명에 맞춰 경기장을 ${arenaLogicalScale.toFixed(1)}배 확장.`
+        :'<b>개인전 시작!</b> 마지막 한 명이 승리.'
       :expanded
         ?`<b>대규모 팀전 시작!</b> 경기장을 ${arenaLogicalScale.toFixed(1)}배 확장 · 같은 팀은 서로 공격하지 않음.`
         :'<b>다중 팀전 시작!</b> 같은 팀은 서로 공격하지 않음.'
@@ -23851,6 +24165,253 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   });
   window.__GONG_V164_TEST__=v164Test;
 
+})();
+
+/* ============================================================
+   V165 · 모바일 UI 개선 · 5개 모드 허브 · 전투 시작 화면 포커스
+   ============================================================ */
+(function(){
+  const V165_BUILD='V165_MOBILE_UI_MODE_HUB_BATTLE_FOCUS';
+  window.__GONG_V165_BUILD__=V165_BUILD;
+
+  // 보스 선택부는 모드 허브 아래에 위치시켜 다섯 모드가 항상 한 카테고리로 먼저 보이게 한다.
+  const hub=$('modeHub');
+  if(hub&&bossSelectWrap&&bossSelectWrap.previousElementSibling!==hub)hub.after(bossSelectWrap);
+
+  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V165_BUILD;
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V165_BUILD;}});
+  const v165Test=Object.create(window.__GONG_V164_TEST__||null);
+  Object.defineProperties(v165Test,{
+    build:{configurable:true,get(){return V165_BUILD;}},
+    ui:{configurable:true,get(){
+      const active=v165ActiveZoneInfo();
+      return {
+        modeTileCount:$('modeHub')?.querySelectorAll('button').length||0,
+        autoInsideModeHub:!!$('modeHub')?.contains($('autoBattleStart')),
+        comingDisabled:!!$('modeHub')?.querySelector('.mode-coming-btn:disabled'),
+        activeZone,
+        activeZoneName:active?.name||null,
+        quickTargetCount:$('quickTargetBar')?.querySelectorAll('.quick-target-btn').length||0,
+        cardTouchAction:document.querySelector('.char-card')?getComputedStyle(document.querySelector('.char-card')).touchAction:null,
+        mobileCardsDraggable:[...document.querySelectorAll('.char-card')].slice(0,3).map(card=>card.draggable)
+      };
+    }},
+    selectTarget:{configurable:true,value(zone){return v165SetActiveZone(zone);}},
+    focusBattle:{configurable:true,value(){v165FocusBattleScreen();return {scrollY:window.scrollY,battleTop:battle.getBoundingClientRect().top};}}
+  });
+  window.__GONG_V165_TEST__=v165Test;
+})();
+
+
+/* ============================================================
+   V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
+   ============================================================ */
+(function(){
+  const V166_BUILD='V166_TEAM_AUTO_ASSIGN_SHOWDOWN_CLEAN';
+  const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
+  const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
+  let v166AutoMode='balance';
+  let v166LastResult=null;
+
+  window.__GONG_V166_BUILD__=V166_BUILD;
+
+  function v166Shuffle(list){
+    const a=[...list];
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function v166BasePower(id){
+    const score=Number(V166_TEAM_POWER[id]);
+    if(Number.isFinite(score))return 55+score*100;
+    const d=DEFS[id];
+    return 80+Math.min(35,(d?.hp||200)/12)+Math.min(20,(d?.speed||100)/20);
+  }
+  function v166TeamPower(ids){
+    let total=ids.reduce((sum,id)=>sum+v166BasePower(id),0);
+    if(V166_CROSS_TRIO.every(id=>ids.includes(id)))total+=230;
+    return total;
+  }
+  function v166PowerSpread(teams){
+    const values=teams.map(v166TeamPower);
+    const mean=values.reduce((a,b)=>a+b,0)/Math.max(1,values.length);
+    return {values,ratio:mean>0?(Math.max(...values)-Math.min(...values))/mean:0};
+  }
+  function v166RandomTeams(selected,teamN,size){
+    const mixed=v166Shuffle(selected);
+    return Array.from({length:teamN},(_,i)=>mixed.slice(i*size,(i+1)*size));
+  }
+  function v166BalancedTeams(selected,teamN,size){
+    let best=null;
+    for(let attempt=0;attempt<180;attempt++){
+      const ordered=selected.map(id=>({id,key:v166BasePower(id)*(0.94+Math.random()*0.12)}))
+        .sort((a,b)=>b.key-a.key);
+      const teams=Array.from({length:teamN},()=>[]);
+      for(const item of ordered){
+        const available=[];
+        for(let i=0;i<teamN;i++){
+          if(teams[i].length>=size)continue;
+          const projected=v166TeamPower([...teams[i],item.id]);
+          available.push({i,projected,tie:Math.random()});
+        }
+        available.sort((a,b)=>a.projected-b.projected||a.tie-b.tie);
+        const close=available.filter(x=>x.projected<=available[0].projected+3.5);
+        const chosen=close[Math.floor(Math.random()*close.length)]||available[0];
+        teams[chosen.i].push(item.id);
+      }
+      const shuffledLabels=v166Shuffle(teams);
+      const spread=v166PowerSpread(shuffledLabels);
+      const variance=spread.values.reduce((sum,v)=>{
+        const mean=spread.values.reduce((a,b)=>a+b,0)/spread.values.length;
+        return sum+(v-mean)*(v-mean);
+      },0)/spread.values.length;
+      const score=spread.ratio+Math.sqrt(variance)/10000;
+      if(!best||score<best.score)best={teams:shuffledLabels,score,spread};
+    }
+    return best?.teams||v166RandomTeams(selected,teamN,size);
+  }
+
+  const originalQuickTargets=v165RenderQuickTargets;
+  v165RenderQuickTargets=function(zones){
+    const bar=$('quickTargetBar');
+    if(mode==='showdown'){
+      if(bar){bar.classList.add('hidden');bar.innerHTML='';}
+      return;
+    }
+    if(bar)bar.classList.remove('hidden');
+    return originalQuickTargets(zones);
+  };
+
+  const poolSub=document.querySelector('.pool-sub');
+  const originalRenderSetup=renderSetup;
+  renderSetup=function(){
+    originalRenderSetup();
+    if(poolSub)poolSub.textContent=mode==='showdown'?'카드를 누르면 개인전에 추가 · 세로 스크롤':'세로 스크롤 · 빠른 배정 후 카드 탭';
+    v166UpdateTeamAutoLimit();
+  };
+
+  function v166CreateTeamAutoUI(){
+    if(!teamOptions||$('teamMemberCount'))return;
+    teamOptions.classList.add('v166-team-options');
+    const card=document.createElement('div');
+    card.className='team-auto-card';
+    const countField=document.createElement('label');
+    countField.className='team-auto-field';
+    countField.innerHTML='<span>팀 수</span>';
+    countField.appendChild(teamCount);
+    card.innerHTML=`<div class="team-auto-head"><div><div class="team-auto-title">⚡ 팀전 자동 편성</div><div class="team-auto-desc">현재 배정 인원이 정확히 맞으면 그 캐릭터들을 재편성하고, 아니면 전체 캐릭터 중 필요한 인원을 무작위로 뽑습니다.</div></div></div>`;
+    const inputs=document.createElement('div');
+    inputs.className='team-auto-inputs';
+    inputs.appendChild(countField);
+    const memberField=document.createElement('label');
+    memberField.className='team-auto-field';
+    memberField.innerHTML='<span>한 팀당 팀원 수</span><input id="teamMemberCount" type="number" inputmode="numeric" min="1" value="3" aria-label="한 팀당 팀원 수">';
+    inputs.appendChild(memberField);
+    card.appendChild(inputs);
+    const modeLabel=document.createElement('div');
+    modeLabel.className='team-auto-mode-label';
+    modeLabel.textContent='편성 방식';
+    card.appendChild(modeLabel);
+    const modes=document.createElement('div');
+    modes.className='team-auto-modes';
+    modes.innerHTML='<button type="button" class="team-auto-mode active" data-auto-team-mode="balance">⚖️ 밸런스 모드</button><button type="button" class="team-auto-mode" data-auto-team-mode="random">🎲 랜덤 모드</button>';
+    card.appendChild(modes);
+    const run=document.createElement('button');
+    run.id='autoAssignTeams';run.type='button';run.className='team-auto-run';run.textContent='선택한 조건으로 자동 편성';
+    card.appendChild(run);
+    const summary=document.createElement('div');
+    summary.id='teamAutoSummary';summary.className='team-auto-summary';summary.textContent='팀 수와 팀원 수를 정한 뒤 편성 방식을 선택해.';
+    card.appendChild(summary);
+    teamOptions.replaceChildren(card);
+
+    modes.querySelectorAll('[data-auto-team-mode]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        v166AutoMode=btn.dataset.autoTeamMode;
+        modes.querySelectorAll('[data-auto-team-mode]').forEach(b=>b.classList.toggle('active',b===btn));
+      });
+    });
+    run.addEventListener('click',()=>v166AutoAssignTeams());
+    $('teamMemberCount').addEventListener('input',v166UpdateTeamAutoLimit);
+    teamCount.addEventListener('change',v166UpdateTeamAutoLimit);
+    v166UpdateTeamAutoLimit();
+  }
+
+  function v166UpdateTeamAutoLimit(){
+    const input=$('teamMemberCount');
+    const summary=$('teamAutoSummary');
+    if(!input)return;
+    const teamN=Math.max(2,Number(teamCount.value)||2);
+    const max=Math.max(1,Math.floor(orderedCharacterIds().length/teamN));
+    input.max=String(max);
+    let value=Math.floor(Number(input.value)||1);
+    value=Math.max(1,Math.min(max,value));
+    input.value=String(value);
+    if(summary&&!v166LastResult)summary.textContent=`최대 ${max}명/팀 · 현재 조건은 총 ${teamN*value}명`;
+  }
+
+  function v166SetSummary(text,type=''){
+    const box=$('teamAutoSummary');
+    if(!box)return;
+    box.textContent=text;
+    box.classList.remove('success','error');
+    if(type)box.classList.add(type);
+  }
+
+  function v166AutoAssignTeams(forcedMode=v166AutoMode,forcedTeamN=null,forcedSize=null){
+    if(mode!=='team'){v166SetSummary('팀전 모드를 먼저 선택해 줘.','error');return null;}
+    const teamN=Math.max(2,Math.floor((forcedTeamN??Number(teamCount.value))||2));
+    const size=Math.max(1,Math.floor((forcedSize??Number($('teamMemberCount')?.value))||1));
+    const all=orderedCharacterIds();
+    const total=teamN*size;
+    if(teamN!==Number(teamCount.value))teamCount.value=String(teamN);
+    v166UpdateTeamAutoLimit();
+    const maxSize=Math.floor(all.length/teamN);
+    if(size>maxSize||total>all.length){
+      v166SetSummary(`전체 ${all.length}명이라 ${teamN}팀에는 팀당 최대 ${maxSize}명까지 가능해.`, 'error');
+      return null;
+    }
+    if($('teamMemberCount'))$('teamMemberCount').value=String(size);
+    const selectedNow=all.filter(id=>String(assignments[id]||'').startsWith('T'));
+    const reused=selectedNow.length===total;
+    const selected=reused?v166Shuffle(selectedNow):v166Shuffle(all).slice(0,total);
+    const teams=forcedMode==='random'?v166RandomTeams(selected,teamN,size):v166BalancedTeams(selected,teamN,size);
+    all.forEach(id=>assignments[id]='pool');
+    teams.forEach((ids,i)=>ids.forEach(id=>assignments[id]=`T${i+1}`));
+    activeZone='T1';
+    v166LastResult={mode:forcedMode,teamN,size,total,reused,teams,power:v166PowerSpread(teams)};
+    renderSetup();
+    const spread=(v166LastResult.power.ratio*100).toFixed(1);
+    const source=reused?'현재 선택 캐릭터 재편성':'전체 캐릭터 중 무작위 선발';
+    const modeName=forcedMode==='random'?'랜덤':'밸런스';
+    v166SetSummary(`${modeName} 편성 완료 · ${teamN}팀 × ${size}명 · ${source}${forcedMode==='balance'?` · 예상 전력차 ${spread}%`:''}`,'success');
+    return v166LastResult;
+  }
+
+  v166CreateTeamAutoUI();
+  renderSetup();
+
+  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V166_BUILD;
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V166_BUILD;}});
+  const v166Test=Object.create(window.__GONG_V165_TEST__||null);
+  Object.defineProperties(v166Test,{
+    build:{configurable:true,get(){return V166_BUILD;}},
+    ui:{configurable:true,get(){
+      const base=window.__GONG_V165_TEST__?.ui||{};
+      return {...base,quickTargetHidden:$('quickTargetBar')?.classList.contains('hidden')||false,teamAutoVisible:!teamOptions?.classList.contains('hidden'),teamMemberCount:Number($('teamMemberCount')?.value||0),autoMode:v166AutoMode,lastAuto:v166LastResult};
+    }},
+    autoAssign:{configurable:true,value(autoMode='balance',teamN=2,size=3){
+      const teamBtn=document.querySelector('.mode-btn[data-mode="team"]');
+      if(mode!=='team')teamBtn?.click();
+      teamCount.value=String(teamN);
+      teamCount.dispatchEvent(new Event('change',{bubbles:true}));
+      if($('teamMemberCount'))$('teamMemberCount').value=String(size);
+      return v166AutoAssignTeams(autoMode,teamN,size);
+    }},
+    teamPowers:{configurable:true,value(){return v166LastResult?.power||null;}}
+  });
+  window.__GONG_V166_TEST__=v166Test;
 })();
 
 })();
