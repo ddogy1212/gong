@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V157_CHOIJUJIN_HP200 -->
+<!-- BUILD: V159_SITAEJONG_VULNERABLE_CROSS_ATK14 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -22769,6 +22769,358 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const v157Test=Object.create(window.__GONG_V156_TEST__||null);
   Object.defineProperty(v157Test,'build',{configurable:true,get(){return V157_BUILD;}});
   window.__GONG_V157_TEST__=v157Test;
+
+
+
+  /* =========================================================
+     V158 · 윤현멘티크로스 · 최유진·김예원·임서윤 동일 팀 공유 HP 1200
+     ========================================================= */
+  const V158_BUILD='V158_YOON_MENTEE_CROSS_SHARED_HP1200';
+  window.__GONG_V158_BUILD__=V158_BUILD;
+  const V158_CROSS_IDS=['choiyujin','yewon','limseoyoon'];
+  const V158_CROSS_MAX_HP=1200;
+
+  for(const id of V158_CROSS_IDS){
+    const def=DEFS[id];
+    if(def&&!String(def.skills||'').includes('윤현멘티크로스'))def.skills=`윤현멘티크로스 · ${def.skills||''}`;
+    if(def&&!String(def.role||'').includes('3인 공유 체력'))def.role=`3인 공유 체력·${def.role||''}`;
+    const info=SKILL_INFO[id];
+    if(info){
+      if(!String(info.summary||'').includes('3인 공유 체력'))info.summary=`3인 공유 체력·${info.summary||''}`;
+      info.hp=id==='limseoyoon'?'210 / 크로스 1200':'200 / 크로스 1200';
+    }
+    if(info&&Array.isArray(info.skills)&&!info.skills.some(skill=>skill?.name==='윤현멘티크로스')){
+      info.skills.unshift({
+        kind:'3인 팀 연계 패시브',
+        type:'passive',
+        name:'윤현멘티크로스',
+        desc:'최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 세 명이 하나의 체력을 공유한다.',
+        points:[
+          '세 명이 모두 같은 팀일 때만 전투 시작과 동시에 활성화',
+          '공유 최대 체력과 시작 체력: 1200',
+          '세 명 중 누구든 받은 실제 피해가 공유 체력에서 차감',
+          '세 명 중 누구든 받은 회복이 공유 체력에 반영',
+          '공유 체력이 0이 되면 세 명이 동시에 탈락'
+        ]
+      });
+    }
+  }
+
+  function v158CrossMembers(){
+    if(!game?.players)return [];
+    return V158_CROSS_IDS.map(id=>game.players.find(p=>p.id===id&&!p.data?.v151MentorYoon)).filter(Boolean);
+  }
+  function v158CrossGroupFor(player){
+    const group=game?.v158MentorCross;
+    if(!group?.active||!player||!V158_CROSS_IDS.includes(player.id))return null;
+    return group.members.includes(player)?group:null;
+  }
+  function v158SyncCross(group,authoritativeHp=group?.hp){
+    if(!group?.active)return;
+    const next=clamp(Number(authoritativeHp)||0,0,group.maxHp);
+    group.hp=Math.round(next*10)/10;
+    for(const member of group.members){
+      member.maxHp=group.maxHp;
+      if(member.alive)member.hp=group.hp;
+      member.data.v158MentorCross=true;
+      member.data.v158MentorCrossTeam=group.team;
+    }
+  }
+  function v158ActivateMentorCross(){
+    if(!game)return null;
+    game.v158MentorCross={active:false,members:[],team:null,hp:0,maxHp:V158_CROSS_MAX_HP,transactionDepth:0,cascading:false};
+    if(currentConfig?.mode==='showdown')return game.v158MentorCross;
+    const members=v158CrossMembers();
+    if(members.length!==3)return game.v158MentorCross;
+    const team=members[0].team;
+    if(team==null||!members.every(member=>member.team===team))return game.v158MentorCross;
+    const group=game.v158MentorCross;
+    group.active=true;
+    group.members=members;
+    group.team=team;
+    group.hp=group.maxHp;
+    v158SyncCross(group,group.maxHp);
+    for(const member of members){
+      spawnAttackFx(member.x,member.y,'#7b6fe3','윤현멘티크로스',1.7);
+      floater(member.x,member.y-member.r-28,'🔗 공유 HP 1200','#6758c1',15,1.15);
+    }
+    log('<b>윤현멘티크로스 발동!</b> 최유진·김예원·임서윤이 공유 체력 1200으로 연결되었다.');
+    return group;
+  }
+  function v158EliminateCrossMember(member,source,skill){
+    if(!member?.alive)return;
+    recordElimination(member);
+    member.hp=0;
+    member.alive=false;
+    member.hidden=false;
+    member.frozen=0;
+    member.strongSlow=0;
+    member.weakSlow=0;
+    member.vx=0;
+    member.vy=0;
+    spawnSeoyoonCrows(member);
+    floater(member.x,member.y,'🔗 공유 체력 소진','#6758c1',20,1.3);
+    if(source){
+      showKill(source,member,`${skill} · 윤현멘티크로스`);
+      log(`<b>${source.name}</b>의 ${skill}(으)로 윤현멘티크로스 공유 체력이 소진되어 <b>${member.name}</b> 탈락!`);
+    }
+  }
+  function v158CollapseCross(group,source,skill,alreadyDead){
+    if(!group?.active||group.cascading)return;
+    group.cascading=true;
+    group.hp=0;
+    for(const member of group.members){
+      member.maxHp=group.maxHp;
+      member.hp=0;
+      if(member!==alreadyDead)v158EliminateCrossMember(member,source,skill);
+    }
+    group.active=false;
+    group.cascading=false;
+  }
+
+  const _v158CheckEnd=checkEnd;
+  checkEnd=function(){
+    if((game?.v158MentorCross?.transactionDepth||0)>0){
+      game.pendingEndCheck=true;
+      return;
+    }
+    return _v158CheckEnd();
+  };
+
+  const _v158Heal=heal;
+  heal=function(target,amount,source,skill='회복',show=true){
+    const group=v158CrossGroupFor(target);
+    if(!group||group.cascading)return _v158Heal(target,amount,source,skill,show);
+    if(group.transactionDepth<=0)v158SyncCross(group,group.hp);
+    const actual=_v158Heal(target,amount,source,skill,show);
+    group.hp=clamp(target.hp,0,group.maxHp);
+    v158SyncCross(group,group.hp);
+    if(actual>0)floater(target.x,target.y-target.r-28,`🔗 공유 HP +${actual.toFixed(1)}`,'#6758c1',12,.55);
+    return actual;
+  };
+
+  const _v158Damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    const group=v158CrossGroupFor(target);
+    if(!group||group.cascading)return _v158Damage(target,amount,source,skill,opts);
+    v158SyncCross(group,group.hp);
+    group.transactionDepth++;
+    const previousDefer=game.deferEndCheck;
+    game.deferEndCheck=true;
+    let dealt=0;
+    try{
+      dealt=_v158Damage(target,amount,source,skill,opts);
+      group.hp=clamp(target.hp,0,group.maxHp);
+      if(group.hp<=0||!target.alive)v158CollapseCross(group,source,skill,target);
+      else{
+        v158SyncCross(group,group.hp);
+        if(dealt>0)floater(target.x,target.y-target.r-28,`🔗 공유 HP ${group.hp.toFixed(1)}/${group.maxHp}`,'#6758c1',12,.55);
+      }
+    }finally{
+      group.transactionDepth=Math.max(0,group.transactionDepth-1);
+      game.deferEndCheck=previousDefer;
+    }
+    if(group.transactionDepth===0&&!previousDefer&&!game.over){
+      game.pendingEndCheck=false;
+      checkEnd();
+    }
+    updateUI();
+    return dealt;
+  };
+
+  const _v158StatusText=statusText;
+  statusText=function(p){
+    const base=_v158StatusText(p);
+    const group=v158CrossGroupFor(p);
+    if(!group)return base;
+    const cross=`🔗 윤현멘티크로스 ${group.hp.toFixed(1)}/${group.maxHp}`;
+    return base&&base!=='정상'?`${cross} · ${base}`:cross;
+  };
+
+  function v158DrawMentorCross(){
+    const group=game?.v158MentorCross;
+    if(!group?.active)return;
+    const live=group.members.filter(member=>member.alive&&!member.hidden);
+    if(live.length<2)return;
+    ctx.save();
+    ctx.strokeStyle='#7b6fe3';
+    ctx.fillStyle='#6758c1';
+    ctx.lineWidth=3;
+    ctx.globalAlpha=.42+.12*Math.sin((game.t||0)*5);
+    ctx.setLineDash([8,7]);
+    ctx.beginPath();
+    live.forEach((member,index)=>index?ctx.lineTo(member.x,member.y):ctx.moveTo(member.x,member.y));
+    ctx.closePath();
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const cx=live.reduce((sum,p)=>sum+p.x,0)/live.length;
+    const cy=live.reduce((sum,p)=>sum+p.y,0)/live.length;
+    ctx.globalAlpha=.9;
+    ctx.textAlign='center';
+    ctx.font='1000 14px Arial';
+    ctx.fillText(`🔗 공유 HP ${Math.ceil(group.hp)}/${group.maxHp}`,cx,cy-10);
+    ctx.restore();
+  }
+
+  const _v158Draw=draw;
+  draw=function(){const result=_v158Draw();v158DrawMentorCross();return result;};
+
+  const _v158Tick=tick;
+  tick=function(dt){
+    const group=game?.v158MentorCross;
+    if(group?.active&&group.transactionDepth<=0)v158SyncCross(group,group.hp);
+    const result=_v158Tick(dt);
+    if(group?.active&&group.transactionDepth<=0)v158SyncCross(group,group.hp);
+    return result;
+  };
+
+  const _v158ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v158ResetBattle();
+    v158ActivateMentorCross();
+    renderScores();
+    renderBossAllies();
+    updateUI();
+    return result;
+  };
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V158_BUILD;
+    window.__GONG_V138_TEST__.tick=tick;
+    window.__GONG_V138_TEST__.damage=damage;
+    window.__GONG_V138_TEST__.heal=heal;
+    window.__GONG_V138_TEST__.resetBattle=resetBattle;
+    window.__GONG_V138_TEST__.checkEnd=checkEnd;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V158_BUILD;}});
+  const v158Test=Object.create(window.__GONG_V157_TEST__||null);
+  Object.defineProperty(v158Test,'build',{configurable:true,get(){return V158_BUILD;}});
+  Object.defineProperties(v158Test,{
+    cross:{configurable:true,get(){const g=game?.v158MentorCross;return g?{active:g.active,hp:g.hp,maxHp:g.maxHp,team:g.team,members:g.members.map(p=>({id:p.id,hp:p.hp,maxHp:p.maxHp,alive:p.alive}))}:null;}},
+    healCross:{configurable:true,value(targetId,amount=30,sourceId=targetId){const t=game?.players?.find(p=>p.id===targetId),s=game?.players?.find(p=>p.id===sourceId);return t&&s?heal(t,amount,s,'V158 테스트 회복',false):0;}},
+    hitCross:{configurable:true,value(targetId,sourceId,amount=30,opts={trueDamage:true}){const t=game?.players?.find(p=>p.id===targetId),s=game?.players?.find(p=>p.id===sourceId);return t&&s?damage(t,amount,s,'V158 테스트 공격',opts):0;}}
+  });
+  window.__GONG_V158_TEST__=v158Test;
+
+
+
+  /* =========================================================
+     V159 · 시태종수학학원 · 윤현멘티크로스 공격력 1.4배
+     ========================================================= */
+  const V159_BUILD='V159_SITAEJONG_VULNERABLE_CROSS_ATK14';
+  window.__GONG_V159_BUILD__=V159_BUILD;
+  const V159_ACADEMY_IDS=['yoon','jaewook'];
+  const V159_CROSS_ATTACK_MULT=1.4;
+
+  for(const id of V159_ACADEMY_IDS){
+    const def=DEFS[id];
+    if(def&&!String(def.skills||'').includes('시태종수학학원'))def.skills=`시태종수학학원 · ${def.skills||''}`;
+    if(def&&!String(def.role||'').includes('접촉 취약'))def.role=`접촉 취약·${def.role||''}`;
+    const info=SKILL_INFO[id];
+    if(info&&!String(info.summary||'').includes('접촉 취약'))info.summary=`접촉 취약·${info.summary||''}`;
+    if(info&&Array.isArray(info.skills)&&!info.skills.some(skill=>skill?.name==='시태종수학학원')){
+      info.skills.unshift({
+        kind:'패시브',
+        type:'passive',
+        name:'시태종수학학원',
+        desc:'윤현 또는 홍재욱에게 부딪힌 적을 짧은 시간 취약 상태로 만든다.',
+        points:[
+          '윤현 또는 홍재욱과 실제 충돌한 적에게 발동',
+          '취약 지속시간: 0.3초',
+          '취약 중 받는 모든 피해: 1.5배',
+          '이미 더 긴 취약 상태라면 남은 시간을 줄이지 않음'
+        ]
+      });
+    }
+  }
+
+  for(const id of V158_CROSS_IDS){
+    const def=DEFS[id];
+    if(def&&!String(def.role||'').includes('공격력 1.4배'))def.role=`멘티크로스 공격력 1.4배·${def.role||''}`;
+    const info=SKILL_INFO[id];
+    if(info&&!String(info.summary||'').includes('공격력 1.4배'))info.summary=`멘티크로스 공격력 1.4배·${info.summary||''}`;
+    const crossSkill=info?.skills?.find(skill=>skill?.name==='윤현멘티크로스');
+    if(crossSkill&&Array.isArray(crossSkill.points)&&!crossSkill.points.some(point=>String(point).includes('공격력 1.4배'))){
+      crossSkill.points.push('활성 중 세 명과 세 명이 소환한 소환물의 공격력: 1.4배');
+    }
+  }
+
+  function v159CrossAttackOwner(source){
+    if(!source)return null;
+    let current=source;
+    const seen=new Set();
+    for(let depth=0;depth<5&&current&&!seen.has(current);depth++){
+      seen.add(current);
+      if(V158_CROSS_IDS.includes(current.id))return current;
+      current=current.data?.v151Summoner||current.owner||current.data?.owner||null;
+    }
+    return null;
+  }
+  function v159CrossAttackActiveFor(source,target,opts={}){
+    const group=game?.v158MentorCross;
+    if(!group?.active||opts.selfDamage||!target?.alive)return false;
+    const owner=v159CrossAttackOwner(source);
+    return !!(owner&&group.members.includes(owner)&&isEnemy(owner,target));
+  }
+
+  const _v159Damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    if(amount>0&&v159CrossAttackActiveFor(source,target,opts)){
+      amount=Math.round(amount*V159_CROSS_ATTACK_MULT*10)/10;
+    }
+    return _v159Damage(target,amount,source,skill,opts);
+  };
+
+  function v159AcademyContact(owner,target){
+    if(!owner?.alive||owner.hidden||!target?.alive||target.hidden||!V159_ACADEMY_IDS.includes(owner.id)||!isEnemy(owner,target))return false;
+    owner.data=owner.data||{};
+    owner.data.v159AcademyContactCd=owner.data.v159AcademyContactCd||{};
+    const key=v151Uid(target);
+    const readyAt=owner.data.v159AcademyContactCd[key]||0;
+    if((game?.t||0)+1e-9<readyAt)return false;
+    owner.data.v159AcademyContactCd[key]=(game?.t||0)+.16;
+    v151ApplyVulnerable(target,.3,owner,'시태종수학학원 취약');
+    spawnAttackFx(target.x,target.y,'#8056c7','시태종수학학원',.55);
+    return true;
+  }
+
+  const _v159Collide=collide;
+  collide=function(a,b){
+    if(!a?.alive||!b?.alive||a.hidden||b.hidden)return _v159Collide(a,b);
+    const touching=dist(a,b)<a.r+b.r;
+    const passThrough=(a.id==='doyejin'&&(a.data?.passTimer||0)>0)||(b.id==='doyejin'&&(b.data?.passTimer||0)>0);
+    const result=_v159Collide(a,b);
+    if(touching&&!passThrough){
+      v159AcademyContact(a,b);
+      v159AcademyContact(b,a);
+    }
+    return result;
+  };
+
+  const _v159StatusText=statusText;
+  statusText=function(p){
+    const base=_v159StatusText(p);
+    const extras=[];
+    if(V159_ACADEMY_IDS.includes(p?.id))extras.push('📐 접촉 시 적 취약 0.3s');
+    if(v158CrossGroupFor(p))extras.push('⚔️ 공격력 ×1.4');
+    return extras.length?(base&&base!=='정상'?`${base} · ${extras.join(' · ')}`:extras.join(' · ')):base;
+  };
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V159_BUILD;
+    window.__GONG_V138_TEST__.damage=damage;
+    window.__GONG_V138_TEST__.collide=collide;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V159_BUILD;}});
+  const v159Test=Object.create(window.__GONG_V158_TEST__||null);
+  Object.defineProperty(v159Test,'build',{configurable:true,get(){return V159_BUILD;}});
+  Object.defineProperties(v159Test,{
+    academyCollision:{configurable:true,value(ownerId,targetId){const owner=game?.players?.find(p=>p.id===ownerId),target=game?.players?.find(p=>p.id===targetId);if(!owner||!target)return false;target.x=owner.x+owner.r+target.r-1;target.y=owner.y;collide(owner,target);return target.data?.v151VulnerableTimer||0;}},
+    vulnerable:{configurable:true,value(id){return game?.players?.find(p=>p.id===id)?.data?.v151VulnerableTimer||0;}},
+    crossAttack:{configurable:true,value(targetId,sourceId,amount=10,opts={}){const target=game?.players?.find(p=>p.id===targetId),source=game?.players?.find(p=>p.id===sourceId);return target&&source?damage(target,amount,source,'V159 테스트 공격',opts):0;}},
+    crossMultiplier:{configurable:true,value:V159_CROSS_ATTACK_MULT}
+  });
+  window.__GONG_V159_TEST__=v159Test;
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
 })();
