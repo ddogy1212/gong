@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V172_CHARACTER_IMAGE_FOLDER_CLEANUP -->
+<!-- BUILD: V173_TOURNAMENT_62_CHOIYUJIN_PHOTO -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1419,7 +1419,7 @@ html,body{
 .score .status:empty::after,.boss-ally-status:empty::after{content:'상태 계산 중';opacity:.55}
 
 /* ============================================================
-   V172 토너먼트 · 캐릭터 이미지 폴더 정리 · 확률 예측 · 명예의 전당
+   V173 토너먼트 · 62인 대진 · 최유진 사진 변경 · 확률 예측 · 명예의 전당
    ============================================================ */
 .mode-tournament-btn{background:linear-gradient(135deg,#fff5be,#ffd65a);border-color:#b98200;color:#3c2700}
 .mode-tournament-btn.active{background:linear-gradient(135deg,#17120a,#5d3d00);color:#fff;border-color:#ffc928;box-shadow:0 0 0 3px #ffe58b,0 8px 20px #8a5a0033}
@@ -1429,7 +1429,7 @@ html,body{
 .tournament-title-row strong{font-size:19px}.tournament-title-row small{display:block;color:#7a651c;font-weight:900;margin-top:3px}
 .tournament-step{border:2px solid #d8c06a;border-radius:14px;background:#fff;padding:11px;margin-top:9px}
 .tournament-step-title{font-size:12px;font-weight:1000;color:#5d4500;margin-bottom:8px}
-.tournament-choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tournament-choice-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .tournament-choice-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .tournament-choice-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 .t-choice{border:2px solid #d9d9dc;border-radius:11px;background:#fff;padding:9px 6px;font-weight:1000;cursor:pointer;min-height:42px}
@@ -1503,7 +1503,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V172_CHARACTER_IMAGE_FOLDER_CLEANUP -->
+<!-- BUILD: V173_TOURNAMENT_62_CHOIYUJIN_PHOTO -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -1593,7 +1593,7 @@ body.tournament-battle .speed-row{display:none!important}
       <div class="tournament-step">
         <div class="tournament-step-title">1. 참가 규모</div>
         <div class="tournament-choice-grid" id="tournamentSizeChoices">
-          <button class="t-choice" data-t-size="4">4인</button><button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button>
+          <button class="t-choice" data-t-size="4">4인</button><button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button><button class="t-choice" data-t-size="62">62인</button>
         </div>
       </div>
       <div class="tournament-step">
@@ -19833,10 +19833,10 @@ function frame(ts){
 
 
 /* ============================================================
-   V172 토너먼트 · 캐릭터 이미지 폴더 정리 · 확률 예측 · 명예의 전당
+   V173 토너먼트 · 62인 대진 · 최유진 사진 변경 · 확률 예측 · 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V172_CHARACTER_IMAGE_FOLDER_CLEANUP';
+  const BUILD='V173_TOURNAMENT_62_CHOIYUJIN_PHOTO';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -19853,11 +19853,11 @@ function frame(ts){
   const HALL_KEY='gonggame_tournament_hall_v1';
 
   function esc(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=172';}
+  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=173';}
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function pwr(id){const v=Number(POWER[id]);if(Number.isFinite(v))return v;const d=DEFS[id];return Math.min(1,Math.max(.05,((d?.hp||200)/350+(d?.speed||100)/900)/2));}
   function winChance(a,b){const diff=(pwr(a)-pwr(b))*4.2,raw=1/(1+Math.exp(-diff));return Math.round(Math.max(.1,Math.min(.9,raw))*20)*5;}
-  function labelRound(round,total){const remain=2**(total-round);if(remain===2)return '결승';if(remain===4)return '4강';return `${remain}강`;}
+  function labelRound(round,total){if(state?.size===62&&round===0)return '62강';const remain=2**(total-round);if(remain===2)return '결승';if(remain===4)return '4강';return `${remain}강`;}
   function matchLabel(m){return m?.special==='third'?'3·4위전':labelRound(m.round,state.totalRounds);}
   function isFinal(m){return !!m&&m.special!=='third'&&m.round===state.totalRounds-1;}
   function isSemi(m){return !!m&&m.special!=='third'&&m.round===state.totalRounds-2;}
@@ -19879,9 +19879,15 @@ function frame(ts){
     }
     return out;
   }
+  function matchWinnerDistribution(m,bestOf=1){
+    if(m?.a&&!m?.b)return {[m.a]:1};
+    if(!m?.a&&m?.b)return {[m.b]:1};
+    if(!m?.a&&!m?.b)return {};
+    return mergeWinnerDistributions({[m.a]:1},{[m.b]:1},bestOf);
+  }
   function championProbabilityRaw(){
     if(!state?.rounds?.[0])return {};
-    let nodes=state.rounds[0].map(m=>mergeWinnerDistributions({[m.a]:1},{[m.b]:1},1));
+    let nodes=state.rounds[0].map(m=>matchWinnerDistribution(m,1));
     for(let stage=1;stage<state.totalRounds;stage++){
       const next=[],bestOf=stage===state.totalRounds-1?state.finalBestOf:1;
       for(let i=0;i<nodes.length;i+=2)next.push(mergeWinnerDistributions(nodes[i],nodes[i+1],bestOf));
@@ -19972,22 +19978,60 @@ function frame(ts){
     const rest=shuffled(all.filter(id=>!setupSelected.has(id)));
     return [...setupSelected,...rest.slice(0,setupSize-setupSelected.size)];
   }
-  function seedOrder(ids){const sorted=[...ids].sort((a,b)=>pwr(b)-pwr(a)),pairs=[];while(sorted.length){const high=sorted.shift(),low=sorted.pop();pairs.push(Math.random()<.5?[high,low]:[low,high]);}return shuffled(pairs).flat();}
+  function seedOrder(ids){const sorted=[...ids].sort((a,b)=>pwr(b)-pwr(a)),pairs=[];while(sorted.length){const high=sorted.shift(),low=sorted.pop();if(low==null){pairs.push([high]);break;}pairs.push(Math.random()<.5?[high,low]:[low,high]);}return shuffled(pairs).flat();}
+  function firstRoundSlots(participants,bracketType,bracketSize){
+    if(participants.length===bracketSize)return bracketType==='seed'?seedOrder(participants):shuffled(participants);
+    const byeCount=bracketSize-participants.length;
+    let byeIds,duelIds;
+    if(bracketType==='seed'){
+      const sorted=[...participants].sort((a,b)=>pwr(b)-pwr(a));
+      byeIds=sorted.slice(0,byeCount);
+      duelIds=seedOrder(sorted.slice(byeCount));
+    }else{
+      const mixed=shuffled(participants);
+      byeIds=mixed.slice(0,byeCount);
+      duelIds=shuffled(mixed.slice(byeCount));
+    }
+    const slots=Array(bracketSize).fill(null),matchCount=bracketSize/2;
+    const byeMatches=Array.from({length:byeCount},(_,i)=>Math.floor(i*matchCount/byeCount));
+    const byeSet=new Set(byeMatches);
+    let byeIndex=0,duelIndex=0;
+    for(let matchIndex=0;matchIndex<matchCount;matchIndex++){
+      const slot=matchIndex*2;
+      if(byeSet.has(matchIndex)){
+        const id=byeIds[byeIndex++];
+        if(Math.random()<.5){slots[slot]=id;slots[slot+1]=null;}else{slots[slot]=null;slots[slot+1]=id;}
+      }else{
+        slots[slot]=duelIds[duelIndex++];
+        slots[slot+1]=duelIds[duelIndex++];
+      }
+    }
+    return slots;
+  }
   function makeState(participants,opts={}){
-    const size=participants.length,totalRounds=Math.log2(size),ordered=opts.bracketType==='seed'?seedOrder(participants):shuffled(participants);
+    const size=participants.length,bracketSize=2**Math.ceil(Math.log2(size)),totalRounds=Math.log2(bracketSize),slots=firstRoundSlots(participants,opts.bracketType||'random',bracketSize);
     const rounds=[];
-    for(let r=0,count=size/2;r<totalRounds;r++,count/=2){
+    for(let r=0,count=bracketSize/2;r<totalRounds;r++,count/=2){
       rounds.push(Array.from({length:count},(_,i)=>({key:`r${r}m${i}`,round:r,index:i,a:null,b:null,winner:null,games:[],series:{a:0,b:0},complete:false,decidedBy:null,special:null})));
     }
-    for(let i=0;i<rounds[0].length;i++){rounds[0][i].a=ordered[i*2];rounds[0][i].b=ordered[i*2+1];}
+    for(let i=0;i<rounds[0].length;i++){rounds[0][i].a=slots[i*2]||null;rounds[0][i].b=slots[i*2+1]||null;}
     const aggregate=Object.fromEntries(participants.map(id=>[id,{wins:0,kills:0,damage:0,healing:0,games:0,bestHp:0,fastest:null}]));
-    return {
-      build:BUILD,active:true,completed:false,size,participants:[...participants],bracketType:opts.bracketType||'random',
+    const result={
+      build:BUILD,active:true,completed:false,size,bracketSize,participants:[...participants],bracketType:opts.bracketType||'random',
       finalBestOf:Number(opts.finalBestOf)||1,watchMode:opts.watchMode||'manual',speed:Number(opts.speed)||2,
       predictionsEnabled:opts.predictionsEnabled!==false,rankPredictions:{first:null,second:null,third:null},predictionLocked:false,
-      predictionFirstEliminatedNotified:false,rounds,totalRounds,thirdPlaceMatch:{key:'third',round:totalRounds-1,index:0,a:null,b:null,winner:null,games:[],series:{a:0,b:0},complete:false,decidedBy:null,special:'third'},semifinalLosers:[],
+      predictionFirstEliminatedNotified:false,rounds,totalRounds,thirdPlaceMatch:{key:'third',round:totalRounds-1,index:0,a:null,b:null,winner:null,games:[],series:{a:0,b:0},complete:false,decidedBy:null,special:'third'},semifinalLosers:[],byeParticipants:[],
       completedGames:0,totalGames:size,aggregate,upsets:[],champion:null,runnerUp:null,thirdPlace:null,fourthPlace:null,mvp:null,awards:null,hallRecorded:false,testMode:false
     };
+    for(const m of rounds[0]){
+      if(!m.a&&!m.b)continue;
+      if(m.a&&m.b)continue;
+      const winner=m.a||m.b;
+      m.winner=winner;m.complete=true;m.decidedBy='bye';result.byeParticipants.push(winner);
+      const next=rounds[1][Math.floor(m.index/2)];
+      if(m.index%2===0)next.a=winner;else next.b=winner;
+    }
+    return result;
   }
   function finalMatch(){return state?.rounds?.[state.totalRounds-1]?.[0]||null;}
   function currentMatch(){
@@ -20016,9 +20060,10 @@ function frame(ts){
   el('tournamentCreate').addEventListener('click',createTournament);
 
   function fighterHTML(id,m){
-    if(!id)return `<div class="t-fighter"><div></div><div><strong>미정</strong><small>이전 경기 승자</small></div></div>`;
-    const d=DEFS[id],winner=m.winner===id,last=m.games.at(-1),chance=m.a&&m.b?(id===m.a?winChance(m.a,m.b):100-winChance(m.a,m.b)):50;
-    return `<div class="t-fighter ${winner?'winner':''}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><div><strong>${esc(d.name)}${rankMark(id)}</strong><small>예상 승률 ${chance}%${last&&m.complete?` · 피해 ${Math.round(last.players[id]?.damage||0)} · 회복 ${Math.round(last.players[id]?.healing||0)}`:''}</small></div><span class="t-fighter-result">${winner?'승리':''}</span></div>`;
+    if(!id){const bye=m?.round===0&&(m?.a||m?.b);return `<div class="t-fighter"><div></div><div><strong>${bye?'부전승':'미정'}</strong><small>${bye?'상대 없음 · 다음 라운드 자동 진출':'이전 경기 승자'}</small></div></div>`;}
+    const d=DEFS[id],winner=m.winner===id,last=m.games.at(-1),chance=m.a&&m.b?(id===m.a?winChance(m.a,m.b):100-winChance(m.a,m.b)):100;
+    const meta=m.decidedBy==='bye'?'1라운드 부전승':`예상 승률 ${chance}%${last&&m.complete?` · 피해 ${Math.round(last.players[id]?.damage||0)} · 회복 ${Math.round(last.players[id]?.healing||0)}`:''}`;
+    return `<div class="t-fighter ${winner?'winner':''}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><div><strong>${esc(d.name)}${rankMark(id)}</strong><small>${meta}</small></div><span class="t-fighter-result">${winner?(m.decidedBy==='bye'?'부전승':'승리'):''}</span></div>`;
   }
   function viewTabs(){
     const tabs=[];
@@ -20046,7 +20091,7 @@ function frame(ts){
     if(!state)return;
     renderChampionSummary();
     const done=state.completedGames;
-    el('tournamentHeadMeta').textContent=`${state.size}인 · ${state.bracketType==='seed'?'밸런스 시드':'완전 랜덤'} · 결승 ${state.finalBestOf===3?'3판 2선승':'단판'} · 3·4위전 포함`;
+    el('tournamentHeadMeta').textContent=`${state.size}인${state.size===62?' · 2명 부전승':''} · ${state.bracketType==='seed'?'밸런스 시드':'완전 랜덤'} · 결승 ${state.finalBestOf===3?'3판 2선승':'단판'} · 3·4위전 포함`;
     el('tournamentProgressFill').style.width=`${Math.min(100,done/state.totalGames*100)}%`;
     el('tournamentProgressText').textContent=`${done} / ${state.totalGames}경기 완료`;
     el('tournamentPredictionText').textContent=predictionSummary();
@@ -20055,7 +20100,7 @@ function frame(ts){
     el('tournamentRoundTabs').innerHTML=tabs.map(tab=>`<button class="t-round-tab ${tab.key===selectedView?'active':''}" data-t-view="${tab.key}">${tab.label}</button>`).join('');
     el('tournamentRoundTabs').querySelectorAll('[data-t-view]').forEach(button=>button.addEventListener('click',()=>{selectedView=button.dataset.tView;renderBracket();}));
     const current=currentMatch(),view=tabs.find(t=>t.key===selectedView)||tabs[0];
-    el('tournamentBracketList').innerHTML=view.matches.map(m=>`<article class="t-match ${m===current?'current':''} ${m.complete?'done':''} ${isFinal(m)?'final':''}"><div class="t-match-label">${matchLabel(m)} ${m.special==='third'?'':`제${m.index+1}경기`} ${isFinal(m)&&state.finalBestOf===3?`· 세트 ${m.series.a}:${m.series.b}`:''}</div>${fighterHTML(m.a,m)}${fighterHTML(m.b,m)}<div class="t-match-actions">${m===current?`<button class="primary" data-t-start-match="${m.key}">경기 시작</button>`:`<button class="secondary" disabled>${m.complete?(m.decidedBy==='decision'?'판정 완료':'경기 완료'):'대기 중'}</button>`}</div></article>`).join('');
+    el('tournamentBracketList').innerHTML=view.matches.map(m=>`<article class="t-match ${m===current?'current':''} ${m.complete?'done':''} ${isFinal(m)?'final':''}"><div class="t-match-label">${matchLabel(m)} ${m.special==='third'?'':`제${m.index+1}경기`} ${isFinal(m)&&state.finalBestOf===3?`· 세트 ${m.series.a}:${m.series.b}`:''}</div>${fighterHTML(m.a,m)}${fighterHTML(m.b,m)}<div class="t-match-actions">${m===current?`<button class="primary" data-t-start-match="${m.key}">경기 시작</button>`:`<button class="secondary" disabled>${m.complete?(m.decidedBy==='bye'?'부전승':m.decidedBy==='decision'?'판정 완료':'경기 완료'):'대기 중'}</button>`}</div></article>`).join('');
     el('tournamentBracketList').querySelectorAll('[data-t-start-match]').forEach(button=>button.addEventListener('click',()=>prepareMatch(currentMatch())));
     if(current){
       el('tournamentNextMatch').textContent=`${DEFS[current.a].name} VS ${DEFS[current.b].name}`;
@@ -20315,7 +20360,7 @@ function frame(ts){
   function showBracketOverlay(){
     if(!state)return;paused=true;const m=currentMatch();
     const rows=[...state.rounds.map((round,r)=>({label:labelRound(r,state.totalRounds),round})),{label:'3·4위전',round:[state.thirdPlaceMatch]}];
-    openModal('🏆 현재 대진표',`<div style="font-size:12px;font-weight:1000;margin-bottom:8px">${state.completedGames}/${state.totalGames}경기 완료 · 다음 ${m?`${esc(DEFS[m.a].name)} VS ${esc(DEFS[m.b].name)}`:'없음'}<br>${esc(predictionSummary())}</div>${rows.map(group=>`<div style="margin-top:9px"><b>${group.label}</b>${group.round.map(x=>`<div style="padding:6px 0;border-bottom:1px solid #ddd;font-size:11px;font-weight:900">${x.a?esc(DEFS[x.a].name):'?'} VS ${x.b?esc(DEFS[x.b].name):'?'} ${x.winner?`→ <span style="color:#9a6a00">${esc(DEFS[x.winner].name)} 승리</span>`:''}</div>`).join('')}</div>`).join('')}<button class="t-modal-skip" data-overlay-close>전투로 돌아가기</button>`);
+    openModal('🏆 현재 대진표',`<div style="font-size:12px;font-weight:1000;margin-bottom:8px">${state.completedGames}/${state.totalGames}경기 완료 · 다음 ${m?`${esc(DEFS[m.a].name)} VS ${esc(DEFS[m.b].name)}`:'없음'}<br>${esc(predictionSummary())}</div>${rows.map(group=>`<div style="margin-top:9px"><b>${group.label}</b>${group.round.map(x=>`<div style="padding:6px 0;border-bottom:1px solid #ddd;font-size:11px;font-weight:900">${x.a?esc(DEFS[x.a].name):(x.decidedBy==='bye'?'부전승':'?')} VS ${x.b?esc(DEFS[x.b].name):(x.decidedBy==='bye'?'부전승':'?')} ${x.winner?`→ <span style="color:#9a6a00">${esc(DEFS[x.winner].name)} 승리</span>`:''}</div>`).join('')}</div>`).join('')}<button class="t-modal-skip" data-overlay-close>전투로 돌아가기</button>`);
     tModal.dataset.kind='bracket';
     tModalBody.querySelector('[data-overlay-close]').addEventListener('click',()=>{tModal.dataset.kind='';closeModal();paused=false;});
   }
@@ -20337,8 +20382,8 @@ function frame(ts){
     const record={winner:winnerId,loser,duration:stats.duration||1,decision:false,players:{[m.a]:{damage:winnerId===m.a?(stats.winnerDamage??20):(stats.loserDamage??10),kills:winnerId===m.a?(stats.kills??1):0,healing:winnerId===m.a?(stats.healing??0):0,hp:winnerId===m.a?100:0,maxHp:200},[m.b]:{damage:winnerId===m.b?(stats.winnerDamage??20):(stats.loserDamage??10),kills:winnerId===m.b?(stats.kills??1):0,healing:winnerId===m.b?(stats.healing??0):0,hp:winnerId===m.b?100:0,maxHp:200}}};
     applyMatchRecord(m,record);renderBracket();return true;
   }
-  window.__GONG_V172_TEST__={
-    get build(){return BUILD;},get state(){return state;},openSetup,testCreate,testResolve,next:()=>currentMatch(),chance:winChance,championProbabilities,
+  window.__GONG_V173_TEST__={
+    get build(){return BUILD;},get state(){return state;},openSetup,testCreate,testResolve,next:()=>currentMatch(),chance:winChance,championProbabilities,byeInfo(){return state?{size:state.size,bracketSize:state.bracketSize,totalRounds:state.totalRounds,byes:[...(state.byeParticipants||[])],firstRound:state.rounds[0].map(m=>({a:m.a,b:m.b,winner:m.winner,complete:m.complete,decidedBy:m.decidedBy}))}:null;},
     setPrediction(first,second,third){if(!state)return null;state.rankPredictions={first,second,third};state.predictionLocked=true;renderBracket();return state.rankPredictions;},
     setSpeed(value){setTournamentSpeed(value,false);return {state:state?.speed,timeScale};},
     generate(size,bracketType='random'){const ids=orderedCharacterIds().slice(0,size);return makeState(ids,{bracketType,predictionsEnabled:false});},
@@ -20355,10 +20400,11 @@ function frame(ts){
     finishCurrent(mode='watch'){handleBattleEnd(mode);return {handled:!!game?._tournamentHandled,autoNext:!!resultAutoNextTimer,completedGames:state?.completedGames||0};},
     gameInfo(){return {exists:!!game,over:!!game?.over,key:game?._tournamentMatchKey||null,handled:!!game?._tournamentHandled,speed:timeScale};}
   };
-  window.__GONG_V171_TEST__=window.__GONG_V172_TEST__;
-  window.__GONG_V170_TEST__=window.__GONG_V172_TEST__;
-  window.__GONG_V169_TEST__=window.__GONG_V172_TEST__;
-  console.info('[V172] 캐릭터 이미지 characters 폴더 정리·토너먼트 로드 완료');
+  window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
+  console.info('[V173] 62인 토너먼트·최유진 사진 변경 로드 완료');
 })();
 
 
@@ -24894,7 +24940,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V172_CHARACTER_IMAGE_FOLDER_CLEANUP';
+  const V166_BUILD='V173_TOURNAMENT_62_CHOIYUJIN_PHOTO';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';

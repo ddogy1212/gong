@@ -1,0 +1,7 @@
+V173 UPDATE FROM V172
+
+1. index.html을 교체하세요.
+2. characters/choiyujin.png을 교체하세요.
+3. 나머지 characters 및 assets 파일은 V172 그대로 유지합니다.
+
+62인 토너먼트는 64칸 대진표를 사용하며 2명이 1라운드 부전승을 받습니다.
