@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V159_SITAEJONG_VULNERABLE_CROSS_ATK14 -->
+<!-- BUILD: V160_DISABLE_KOREAN_DECLINE_MINJAE_CONTACT_BALANCE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -21543,7 +21543,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     kimgyuwon:{summary:'주기 완전 무적 변신·충돌 파동·아군 소환형',hp:'200',speed:'180',skills:[
       {kind:'주기 변신 방어',type:'defense',name:'리락쿠마로 둔갑하기',desc:'3~6초 무작위 쿨타임마다 4초 동안 리락쿠마 사진으로 변신한다.',points:['변신 중 모든 피해 완전 무효','4초 후 원래 사진으로 복귀']},
       {kind:'충돌 누적 파동',type:'attack',name:'불안력발사',desc:'적과 4번 충돌할 때마다 제자리에서 넓은 파동을 3번 발사한다.',points:['1차 파동 피해 15','2차 파동 피해 5와 5초 취약','3차 파동 피해 20']},
-      {kind:'벽 충돌 아군 소환',type:'special',name:'효르몬발사',desc:'벽에 6번 부딪힐 때마다 HP 80·속도 520의 효르몬 공을 소환한다.',points:['김규원과 같은 팀','다른 공격의 대상이 되는 별도 개체','적과 충돌하면 폭발해 피해 25']}
+      {kind:'벽 충돌 아군 소환',type:'special',name:'효르몬발사',desc:'벽에 6번 부딪힐 때마다 HP 80·속도 260의 효르몬 공을 소환한다.',points:['김규원과 같은 팀','다른 공격의 대상이 되는 별도 개체','적과 충돌하면 폭발해 피해 25']}
     ]},
     yuhawon:{summary:'무작위 신남 축적·초고속 느낌표 연사·자해 공격 강화형',hp:'200',speed:'220',skills:[
       {kind:'무작위 주기 패시브',type:'passive',name:'신나하기',desc:'1~3초마다 느낌표 2~12개를 뽑아 현재 신남 정도로 저장한다.',points:['현재 느낌표 수를 공 위에 표시']},
@@ -22390,7 +22390,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       a.push(p.data.readCastTimer>0?`📖 독서 시전 ${p.data.readCastTimer.toFixed(1)}s`:`📖 독서 ${p.data.readWalls||0}/3 · ${remain(p.data.readWalls,3)}회 남음`);
       a.push(p.data.prettyTimer>0&&p.data.prettyTarget?.alive?`👀 ${p.data.prettyTarget.name} 추적 ${p.data.prettyTimer.toFixed(1)}s`:`👁 눈 ${Math.max(0,p.data.eyeCooldown||0).toFixed(1)}s`);
     }
-    if(p.data.v151Hormone)a.push(`🧬 효르몬 HP ${Math.ceil(p.hp)}/80 · 속도 520 · 벽 ${p.data.v152WallHits||0}`);
+    if(p.data.v151Hormone)a.push(`🧬 효르몬 HP ${Math.ceil(p.hp)}/80 · 속도 260 · 벽 ${p.data.v152WallHits||0}`);
     if(!a.length)return base;
     return (base&&base!=='정상'?base+' · ':'')+a.join(' · ');
   };
@@ -23121,6 +23121,339 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     crossMultiplier:{configurable:true,value:V159_CROSS_ATTACK_MULT}
   });
   window.__GONG_V159_TEST__=v159Test;
+
+
+
+  /* =========================================================
+     V160 · 신규 밸런스 및 무력화 상태
+     - 서민지 HP 300 / 잼얘컬렉터 말풍선 고속화
+     - 김예원 국어감퇴시키기
+     - 김민재 충돌 시 10% 선상고백
+     - 이지원 전화하기 5초 무력화
+     - 문지현 HP 240 / 효르몬 속도 260
+     - 윤송현 자기 수호천사 초당 5
+     ========================================================= */
+  const V160_BUILD='V160_DISABLE_KOREAN_DECLINE_MINJAE_CONTACT_BALANCE';
+  window.__GONG_V160_BUILD__=V160_BUILD;
+  const V160_MINJI_BUBBLE_SPEED=960;
+  const V160_HORMONE_SPEED=260;
+  const V160_POWERLESS_DURATION=5;
+
+  // ----- 정적 캐릭터·설명 수치 -----
+  DEFS.seominji.hp=300;
+  DEFS.jihyun.hp=240;
+  if(SKILL_INFO.seominji){
+    SKILL_INFO.seominji.hp='300';
+    const skill=SKILL_INFO.seominji.skills?.find(s=>s?.name==='잼얘컬렉터');
+    if(skill&&Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('속도 960'))){
+      skill.points.push('말풍선 속도: 960 · 기존보다 훨씬 빠르게 발사');
+    }
+  }
+  if(SKILL_INFO.jihyun)SKILL_INFO.jihyun.hp='240';
+
+  if(DEFS.yewon&&!String(DEFS.yewon.skills||'').includes('국어감퇴시키기')){
+    DEFS.yewon.skills=`국어감퇴시키기 · ${DEFS.yewon.skills||''}`;
+    DEFS.yewon.role=`충돌 누적 회복·${DEFS.yewon.role||''}`;
+  }
+  if(SKILL_INFO.yewon){
+    if(!String(SKILL_INFO.yewon.summary||'').includes('충돌 누적 회복'))SKILL_INFO.yewon.summary=`충돌 누적 회복·${SKILL_INFO.yewon.summary||''}`;
+    if(Array.isArray(SKILL_INFO.yewon.skills)&&!SKILL_INFO.yewon.skills.some(s=>s?.name==='국어감퇴시키기')){
+      SKILL_INFO.yewon.skills.unshift({
+        kind:'대상별 충돌 회복',type:'defense',name:'국어감퇴시키기',
+        desc:'같은 적이 김예원에게 3번 부딪힐 때마다 그 적이 경기 중 지금까지 받은 누적 피해의 60%만큼 김예원이 회복한다.',
+        points:['대상별 충돌 횟수를 따로 계산','3번째 충돌마다 발동 후 해당 대상 충돌 횟수 초기화','회복량: 대상의 누적 받은 피해 ×0.6','최대 HP를 넘겨 회복하지 않음']
+      });
+    }
+  }
+
+  if(SKILL_INFO.min){
+    const skill=SKILL_INFO.min.skills?.find(s=>s?.name==='선상고백');
+    if(skill&&Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('10%'))){
+      skill.points.push('추가 조건: 김민재와 적이 충돌할 때마다 10% 확률로 그 적에게 즉시 발동');
+    }
+  }
+
+  if(SKILL_INFO.jiwon){
+    const skill=SKILL_INFO.jiwon.skills?.find(s=>s?.name==='전화하기');
+    if(skill){
+      skill.desc='3~8초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 5초 동안 무력화된다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.';
+      if(Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('무력화'))){
+        skill.points.push('전화 피해를 실제로 받은 적: 5초 무력화');
+        skill.points.push('무력화 중 모든 패시브·스킬의 신규 발동 차단');
+        skill.points.push('공 위에 회색 X와 무력화 남은 시간 표시');
+      }
+    }
+  }
+
+  if(SKILL_INFO.kimgyuwon){
+    const skill=SKILL_INFO.kimgyuwon.skills?.find(s=>s?.name==='효르몬발사');
+    if(skill){
+      skill.desc='벽에 6번 부딪힐 때마다 HP 80·속도 260의 효르몬 공을 소환한다.';
+      if(Array.isArray(skill.points))skill.points=skill.points.map(p=>String(p).replace(/속도\s*520/g,'속도 260'));
+    }
+  }
+
+  if(SKILL_INFO.songhyeon){
+    const skill=SKILL_INFO.songhyeon.skills?.find(s=>s?.name==='수호천사');
+    if(skill){
+      skill.desc='아군 한 명을 선택해 5초 동안 매초 HP 15를 회복시킨다. 아군이 없어 자신을 선택했을 때는 매초 HP 5만 회복한다.';
+      skill.points=['다른 아군: 1초마다 HP 15, 총 5회 회복(총 75)','윤송현 자신: 1초마다 HP 5, 총 5회 회복(총 25)','5초 회복 후 재선택 대기시간 무작위 2~5초','가능하면 직전 대상과 다른 살아 있는 아군 선택','아군이 없다면 윤송현 자신에게 적용'];
+    }
+  }
+
+  // ----- 원래 ID를 안전하게 조회하는 무력화 도우미 -----
+  function v160RealId(p){return p?.data?.v160RealId||p?.id||'';}
+  function v160IsPowerless(p){return !!(p?.alive&&(p.data?.v160PowerlessTimer||0)>1e-9);}
+  function v160MaskId(p){
+    if(!p||p.data?.v160IdMasked)return null;
+    p.data=p.data||{};
+    const old=p.id;
+    p.data.v160RealId=old;
+    p.data.v160IdMasked=true;
+    p.id=`v160_powerless_${old}`;
+    return {p,old};
+  }
+  function v160RestoreId(mask){
+    if(!mask?.p)return;
+    mask.p.id=mask.old;
+    if(mask.p.data){delete mask.p.data.v160RealId;delete mask.p.data.v160IdMasked;}
+  }
+  function v160ApplyPowerless(target,source){
+    if(!target?.alive||target.hidden)return false;
+    target.data=target.data||{};
+    const was=v160IsPowerless(target);
+    target.data.v160PowerlessTimer=Math.max(target.data.v160PowerlessTimer||0,V160_POWERLESS_DURATION);
+    target.data.v160PowerlessSource=source||target.data.v160PowerlessSource||null;
+    spawnAttackFx(target.x,target.y,'#777d86','무력화',1.45);
+    floater(target.x,target.y-target.r-30,'✖ 무력화 5초','#666b73',17,1);
+    if(!was)log(`<b>${target.name}</b>: 전화하기에 맞아 5초 동안 모든 패시브·스킬이 무력화됨.`);
+    return true;
+  }
+
+  // ----- 윤송현: 자기 자신 수호천사만 회복량 5 -----
+  const _v160Heal=heal;
+  heal=function(target,amount,source,skill='회복',show=true){
+    if(skill==='수호천사'&&target===source&&v160RealId(source)==='songhyeon')amount=5;
+    return _v160Heal(target,amount,source,skill,show);
+  };
+
+  // ----- 효르몬 생성 속도 260 -----
+  const _v160CreateSummon=v151CreateSummon;
+  v151CreateSummon=function(owner,kind){
+    const summon=_v160CreateSummon(owner,kind);
+    if(kind==='hormone'&&summon){
+      summon.speed=V160_HORMONE_SPEED;
+      const m=Math.hypot(summon.vx,summon.vy)||1;
+      summon.vx=summon.vx/m*V160_HORMONE_SPEED;
+      summon.vy=summon.vy/m*V160_HORMONE_SPEED;
+    }
+    return summon;
+  };
+
+  // ----- 피해 처리: 무력화 중 방어/피격 패시브 차단 + 전화 적중 후 무력화 -----
+  const _v160Damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    const targetReal=v160RealId(target),sourceReal=v160RealId(source);
+    const masks=[];
+    if(v160IsPowerless(target)&&!target.data?.v160IdMasked){const m=v160MaskId(target);if(m)masks.push(m);}
+    if(v160IsPowerless(source)&&!source.data?.v160IdMasked){const m=v160MaskId(source);if(m)masks.push(m);}
+    let dealt=0;
+    try{dealt=_v160Damage(target,amount,source,skill,opts);}
+    finally{for(let i=masks.length-1;i>=0;i--)v160RestoreId(masks[i]);}
+    if(dealt>0&&sourceReal==='jiwon'&&String(skill).startsWith('전화하기')&&!opts.selfDamage){
+      v160ApplyPowerless(target,source);
+    }
+    return dealt;
+  };
+
+  // ----- 김예원 국어감퇴시키기 -----
+  function v160YewonContact(yewon,target){
+    if(v160RealId(yewon)!=='yewon'||v160IsPowerless(yewon)||!yewon?.alive||yewon.hidden||!target?.alive||target.hidden||!isEnemy(yewon,target))return false;
+    yewon.data=yewon.data||{};
+    yewon.data.v160KoreanHits=yewon.data.v160KoreanHits||{};
+    yewon.data.v160KoreanCd=yewon.data.v160KoreanCd||{};
+    const key=v151Uid(target),now=game?.t||0;
+    if((yewon.data.v160KoreanCd[key]||0)>now)return false;
+    yewon.data.v160KoreanCd[key]=now+.18;
+    const count=(yewon.data.v160KoreanHits[key]||0)+1;
+    yewon.data.v160KoreanHits[key]=count;
+    floater(yewon.x,yewon.y-yewon.r-20,`📚 국어감퇴 ${count}/3`,'#506d78',12,.5);
+    if(count<3)return true;
+    yewon.data.v160KoreanHits[key]=0;
+    const requested=Math.round(Math.max(0,target.damageTaken||0)*.6*10)/10;
+    const healed=heal(yewon,requested,yewon,'국어감퇴시키기',false);
+    spawnAttackFx(yewon.x,yewon.y,'#506d78','국어감퇴시키기',1.45);
+    floater(yewon.x,yewon.y-yewon.r-34,`📖 ${target.name} 누적 피해 60% · +${healed.toFixed(1)}`,'#506d78',15,.95);
+    log(`<b>김예원</b>: ${target.name}의 누적 받은 피해 ${(target.damageTaken||0).toFixed(1)} ×0.6으로 HP ${healed.toFixed(1)} 회복.`);
+    return true;
+  }
+
+  // ----- 김민재: 충돌마다 10% 선상고백 -----
+  function v160MinjaeContact(minjae,target){
+    if(v160RealId(minjae)!=='min'||v160IsPowerless(minjae)||!minjae?.alive||minjae.hidden||!target?.alive||target.hidden||!isEnemy(minjae,target)||target.isBoss||game.domain)return false;
+    minjae.data=minjae.data||{};
+    minjae.data.v160ConfessionContactCd=minjae.data.v160ConfessionContactCd||{};
+    const key=v151Uid(target),now=game?.t||0;
+    if((minjae.data.v160ConfessionContactCd[key]||0)>now)return false;
+    minjae.data.v160ConfessionContactCd[key]=now+.18;
+    if(Math.random()>=.10)return false;
+    const started=startConfessionDomain(minjae,target);
+    if(started){
+      spawnAttackFx(minjae.x,minjae.y,'#ff5f93','충돌 선상고백 10%',1.25);
+      log(`<b>김민재</b>: 충돌 10% 확률로 ${target.name}에게 선상고백 발동!`);
+    }
+    return started;
+  }
+
+  const _v160Collide=collide;
+  collide=function(a,b){
+    if(!a||!b)return _v160Collide(a,b);
+    const touching=!!(a.alive&&b.alive&&!a.hidden&&!b.hidden&&dist(a,b)<a.r+b.r);
+    const passThrough=(v160RealId(a)==='doyejin'&&(a.data?.passTimer||0)>0)||(v160RealId(b)==='doyejin'&&(b.data?.passTimer||0)>0);
+    const result=_v160Collide(a,b);
+    if(touching&&!passThrough){
+      v160YewonContact(a,b);v160YewonContact(b,a);
+      v160MinjaeContact(a,b);v160MinjaeContact(b,a);
+    }
+    return result;
+  };
+
+  // ----- 서민지 말풍선 속도 960: 생성 직후 벡터를 고속화 -----
+  const _v160OnWallHit=onWallHit;
+  onWallHit=function(p){
+    const before=game?.v151Shots?.length||0;
+    const result=_v160OnWallHit(p);
+    if(v160RealId(p)==='seominji'&&game?.v151Shots){
+      for(const shot of game.v151Shots.slice(before)){
+        if(shot.type!=='minjiBubble'||shot.owner!==p)continue;
+        shot.speed=V160_MINJI_BUBBLE_SPEED;
+        const m=Math.hypot(shot.vx,shot.vy)||1;
+        shot.vx=shot.vx/m*V160_MINJI_BUBBLE_SPEED;
+        shot.vy=shot.vy/m*V160_MINJI_BUBBLE_SPEED;
+        shot.life=Math.min(shot.life||2.4,2.4);
+      }
+    }
+    return result;
+  };
+
+  // ----- 무력화: 틱 동안 캐릭터 ID 기반 모든 신규 패시브·스킬 발동 차단 -----
+  const _v160Tick=tick;
+  tick=function(dt){
+    if(game&&!game.over){
+      for(const p of game.players||[]){
+        if((p.data?.v160PowerlessTimer||0)>0){
+          const before=p.data.v160PowerlessTimer;
+          p.data.v160PowerlessTimer=Math.max(0,before-dt);
+          if(before>0&&p.data.v160PowerlessTimer<=1e-9){
+            spawnAttackFx(p.x,p.y,'#9aa0a8','무력화 해제',.8);
+            floater(p.x,p.y-p.r-24,'○ 무력화 해제','#777d86',13,.65);
+          }
+        }
+      }
+    }
+    const masks=[];
+    for(const p of game?.players||[]){
+      const summoner=p.data?.v151Summoner;
+      if(v160IsPowerless(p)||v160IsPowerless(summoner)){
+        const m=v160MaskId(p);if(m)masks.push(m);
+      }
+    }
+    try{return _v160Tick(dt);}
+    finally{for(let i=masks.length-1;i>=0;i--)v160RestoreId(masks[i]);}
+  };
+
+  // ----- 전투 시작 수치 및 상태 초기화 -----
+  const _v160ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v160ResetBattle();
+    for(const p of game?.players||[]){
+      const id=v160RealId(p);
+      p.data=p.data||{};
+      p.data.v160PowerlessTimer=0;
+      p.data.v160PowerlessSource=null;
+      if(id==='seominji'){p.maxHp=300;p.hp=300;}
+      if(id==='jihyun'){p.maxHp=240;p.hp=240;}
+      if(id==='yewon'){p.data.v160KoreanHits={};p.data.v160KoreanCd={};}
+      if(id==='min')p.data.v160ConfessionContactCd={};
+      if(p.data.v151Hormone){
+        p.speed=V160_HORMONE_SPEED;
+        const m=Math.hypot(p.vx,p.vy)||1;p.vx=p.vx/m*V160_HORMONE_SPEED;p.vy=p.vy/m*V160_HORMONE_SPEED;
+      }
+    }
+    renderScores();renderBossAllies();updateUI();
+    return result;
+  };
+
+  // ----- 상태창 -----
+  const _v160StatusText=statusText;
+  statusText=function(p){
+    const base=_v160StatusText(p),extras=[];
+    const id=v160RealId(p);
+    if(id==='yewon'){
+      const counts=Object.values(p.data?.v160KoreanHits||{});
+      extras.push(`📚 국어감퇴 최대 ${counts.length?Math.max(...counts):0}/3`);
+    }
+    if(id==='min')extras.push('💘 충돌 선상고백 10%');
+    if(id==='seominji')extras.push(`💬 말풍선 속도 ${V160_MINJI_BUBBLE_SPEED}`);
+    if((p.data?.v160PowerlessTimer||0)>0)extras.push(`✖ 무력화 ${p.data.v160PowerlessTimer.toFixed(1)}s`);
+    return extras.length?(base&&base!=='정상'?`${base} · ${extras.join(' · ')}`:extras.join(' · ')):base;
+  };
+
+  // ----- 공 위 회색 X 및 글씨 -----
+  const _v160Draw=draw;
+  draw=function(){
+    const result=_v160Draw();
+    if(!game)return result;
+    for(const p of game.players||[]){
+      const timer=p.data?.v160PowerlessTimer||0;
+      if(!p.alive||p.hidden||timer<=0)continue;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.globalAlpha=.95;
+      ctx.strokeStyle='#666b73';ctx.lineWidth=7;ctx.lineCap='round';
+      const r=Math.max(13,p.r*.48);
+      ctx.beginPath();ctx.moveTo(-r,-r);ctx.lineTo(r,r);ctx.moveTo(r,-r);ctx.lineTo(-r,r);ctx.stroke();
+      ctx.fillStyle='#666b73';ctx.strokeStyle='#f3f4f6';ctx.lineWidth=5;
+      ctx.font='1000 14px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.strokeText(`무력화 ${timer.toFixed(1)}s`,0,-p.r-31);
+      ctx.fillText(`무력화 ${timer.toFixed(1)}s`,0,-p.r-31);
+      ctx.restore();
+    }
+    return result;
+  };
+
+  // 현재 열린 화면에도 수치를 즉시 반영
+  for(const p of game?.players||[]){
+    const id=v160RealId(p);
+    if(id==='seominji'){p.maxHp=300;p.hp=Math.min(p.hp,300);}
+    if(id==='jihyun'){p.maxHp=240;p.hp=Math.min(p.hp,240);}
+    if(p.data?.v151Hormone){p.speed=V160_HORMONE_SPEED;normalizeSpeed(p,V160_HORMONE_SPEED);}
+  }
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V160_BUILD;
+    window.__GONG_V138_TEST__.tick=tick;
+    window.__GONG_V138_TEST__.damage=damage;
+    window.__GONG_V138_TEST__.heal=heal;
+    window.__GONG_V138_TEST__.collide=collide;
+    window.__GONG_V138_TEST__.onWallHit=onWallHit;
+    window.__GONG_V138_TEST__.resetBattle=resetBattle;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V160_BUILD;}});
+  const v160Test=Object.create(window.__GONG_V159_TEST__||null);
+  Object.defineProperty(v160Test,'build',{configurable:true,get(){return V160_BUILD;}});
+  Object.defineProperties(v160Test,{
+    powerless:{configurable:true,value(id,seconds=5){const p=game?.players?.find(x=>v160RealId(x)===id);if(!p)return null;p.data.v160PowerlessTimer=seconds;return p.data.v160PowerlessTimer;}},
+    powerlessTimer:{configurable:true,value(id){return game?.players?.find(x=>v160RealId(x)===id)?.data?.v160PowerlessTimer||0;}},
+    realId:{configurable:true,value(id){const p=game?.players?.find(x=>v160RealId(x)===id);return p?v160RealId(p):null;}},
+    koreanHits:{configurable:true,value(){const p=game?.players?.find(x=>v160RealId(x)==='yewon');return p?.data?.v160KoreanHits||{};}},
+    minjaeContact:{configurable:true,value(targetId,roll=.05){const m=game?.players?.find(x=>v160RealId(x)==='min'),t=game?.players?.find(x=>v160RealId(x)===targetId);if(!m||!t)return false;const old=Math.random;Math.random=()=>roll;try{t.x=m.x+m.r+t.r-1;t.y=m.y;collide(m,t);return !!game.domain;}finally{Math.random=old;}}},
+    phone:{configurable:true,value(targetId,amount=28){const j=game?.players?.find(x=>v160RealId(x)==='jiwon'),t=game?.players?.find(x=>v160RealId(x)===targetId);return j&&t?damage(t,amount,j,'전화하기'):0;}},
+    bubbleSpeed:{configurable:true,value:V160_MINJI_BUBBLE_SPEED},
+    hormoneSpeed:{configurable:true,value:V160_HORMONE_SPEED}
+  });
+  window.__GONG_V160_TEST__=v160Test;
+
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
 })();
