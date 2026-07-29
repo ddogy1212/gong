@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V156_MINJI_CURRENT_HP_PLUS5_MENTOR_YOON_ACTIVE_CAP3 -->
+<!-- BUILD: V157_CHOIJUJIN_HP200 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -21498,7 +21498,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     yoonseoyoung:{id:'yoonseoyoung',name:'윤서영',generation:20,color:'#785d93',hp:200,speed:250,img:IMAGES.yoonseoyoung,role:'충돌 회복·취약 부여·피격 가시·누적 성장 시전형',skills:'잘뽑은반장 · 독설하기 · 호통치기 · 슬라임만지기'},
     kimgyuwon:{id:'kimgyuwon',name:'김규원',generation:21,color:'#b1834f',hp:200,speed:180,img:IMAGES.kimgyuwon,role:'주기 완전 무적 변신·충돌 파동·아군 소환형',skills:'리락쿠마로 둔갑하기 · 불안력발사 · 효르몬발사'},
     yuhawon:{id:'yuhawon',name:'유하원',generation:21,color:'#d67b52',hp:200,speed:220,img:IMAGES.yuhawon,role:'무작위 신남 축적·초고속 느낌표 연사·자해 공격 강화형',skills:'신나하기 · 신남 표출하기 · 베트남홍고추'},
-    choiyujin:{id:'choiyujin',name:'최유진',generation:21,color:'#5d748f',hp:280,speed:200,img:IMAGES.choiyujin,role:'윤현 소환·확률 무효·독서 회복·추적 하트형',skills:'운명론적멘토멘티 · 퀸의마인드 · 독서하기 · 예쁜언니따라가기'}
+    choiyujin:{id:'choiyujin',name:'최유진',generation:21,color:'#5d748f',hp:200,speed:200,img:IMAGES.choiyujin,role:'윤현 소환·확률 무효·독서 회복·추적 하트형',skills:'운명론적멘토멘티 · 퀸의마인드 · 독서하기 · 예쁜언니따라가기'}
   });
 
   Object.assign(SKILL_INFO,{
@@ -21550,7 +21550,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       {kind:'벽 충돌 연사',type:'attack',name:'신남 표출하기',desc:'벽에 3번 부딪힐 때마다 현재 신남 정도만큼 느낌표를 가장 가까운 적 방향으로 초고속 연사한다.',points:['느낌표 1개당 피해 7','적중 시 20% 확률로 4초 취약']},
       {kind:'벽 충돌 자해 강화',type:'special',name:'베트남홍고추',desc:'벽에 4번 부딪힐 때마다 HP 5를 잃고 6초 동안 공격력이 1.5배가 된다.',points:['강화 지속시간은 다시 먹으면 갱신','자해 피해는 취약 배율을 받지 않음']}
     ]},
-    choiyujin:{summary:'윤현 소환·확률 무효·독서 회복·추적 하트형',hp:'280',speed:'200',skills:[
+    choiyujin:{summary:'윤현 소환·확률 무효·독서 회복·추적 하트형',hp:'200',speed:'200',skills:[
       {kind:'피격 소환 패시브',type:'special',name:'운명론적멘토멘티',desc:'실제 공격을 3번 받을 때마다 HP 10인 윤현 2페이즈를 아군으로 소환한다.',points:['전장에 기존 윤현이 있어도 발동','동시에 존재하는 소환 윤현은 최대 3명','소환 윤현이 죽으면 이후 다시 보충 소환 가능','소환 윤현은 속도 240·2페이즈 능력 적용']},
       {kind:'확률 방어',type:'defense',name:'퀸의마인드',desc:'적의 공격을 받을 때 30% 확률로 완전히 무효화한다.',points:['자해에는 적용되지 않음']},
       {kind:'벽 충돌 시전',type:'defense',name:'독서하기',desc:'벽에 3번 부딪힐 때마다 2초 시전 후 HP 10을 회복하고 모든 적에게 5초 취약을 부여한다.',points:['시전 중 제자리 고정','피격되어도 취소되지 않음']},
@@ -22298,8 +22298,8 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
      ========================================================= */
   const V152_BUILD='V152_NEW_CHARACTER_STATUS_VISUAL_FIXES';
   window.__GONG_V152_BUILD__=V152_BUILD;
-  DEFS.choiyujin.hp=280;
-  if(SKILL_INFO.choiyujin)SKILL_INFO.choiyujin.hp='280';
+  DEFS.choiyujin.hp=200;
+  if(SKILL_INFO.choiyujin)SKILL_INFO.choiyujin.hp='200';
 
   /* 쇼다운에서도 소환 개체는 소환자와 같은 팀으로 판정한다. */
   const _v152IsEnemy=isEnemy;
@@ -22329,7 +22329,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     game.v152Fx=[];
     for(const p of game.players){
       if(p.id==='ochaeun')p.data.emergencyDamageMeter=p.data.emergencyDamageMeter||0;
-      if(p.id==='choiyujin'){p.maxHp=280;p.hp=Math.min(280,Math.max(p.hp,280));}
+      if(p.id==='choiyujin'){p.maxHp=200;p.hp=Math.min(200,Math.max(p.hp,200));}
     }
     renderScores();renderBossAllies();updateUI();
     return result;
@@ -22749,6 +22749,26 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     status(id){const p=this.player(id);return p?statusText(p):null;},
     finite(){return window.__GONG_V151_TEST__.finite();}
   };
+
+
+  /* =========================================================
+     V157 · 최유진 최대 HP 200
+     ========================================================= */
+  const V157_BUILD='V157_CHOIJUJIN_HP200';
+  window.__GONG_V157_BUILD__=V157_BUILD;
+  DEFS.choiyujin.hp=200;
+  if(SKILL_INFO.choiyujin)SKILL_INFO.choiyujin.hp='200';
+  for(const p of game?.players||[]){
+    if(p.id==='choiyujin'){
+      p.maxHp=200;
+      p.hp=Math.min(p.hp,200);
+    }
+  }
+  if(window.__GONG_V138_TEST__)window.__GONG_V138_TEST__.build=V157_BUILD;
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V157_BUILD;}});
+  const v157Test=Object.create(window.__GONG_V156_TEST__||null);
+  Object.defineProperty(v157Test,'build',{configurable:true,get(){return V157_BUILD;}});
+  window.__GONG_V157_TEST__=v157Test;
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
 })();
