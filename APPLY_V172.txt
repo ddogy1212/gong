@@ -1,0 +1,25 @@
+V172 CLEAN FOLDER UPDATE
+
+GitHub 루트를 깔끔하게 만들려면 기존 파일 중 아래 항목을 삭제한 뒤 이 ZIP의 내용을 업로드하세요.
+
+1. 기존 루트 캐릭터 이미지:
+- yunsonghyeon.jpg
+- igahyeon.jpg
+- kimgaeun.png
+- ochaeun.png
+- seominji.png
+- doyejin.png
+- kimsihu.png
+- kimeunwoo.png
+- yoonseoyoung.png
+- kimgyuwon.png
+- kimgyuwon_rilakkuma.png
+- gyuwon_hyoreumon.png
+- yuhawon.png
+- choiyujin.png
+
+2. 기존 assets 폴더 안의 캐릭터 이미지 파일들
+- assets 폴더를 통째로 삭제한 뒤 ZIP의 새 assets 폴더를 올리는 방식이 가장 간단합니다.
+- 새 assets 폴더에는 광고 이미지 3개만 들어 있습니다.
+
+3. ZIP의 index.html, characters/, assets/를 저장소 루트에 업로드하세요.

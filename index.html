@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V170_TOURNAMENT_AUTO_NEXT_HALL_OF_FAME -->
+<!-- BUILD: V172_CHARACTER_IMAGE_FOLDER_CLEANUP -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1419,7 +1419,7 @@ html,body{
 .score .status:empty::after,.boss-ally-status:empty::after{content:'상태 계산 중';opacity:.55}
 
 /* ============================================================
-   V170 토너먼트 · 확률 예측 · 자동 다음 경기 · 명예의 전당
+   V172 토너먼트 · 캐릭터 이미지 폴더 정리 · 확률 예측 · 명예의 전당
    ============================================================ */
 .mode-tournament-btn{background:linear-gradient(135deg,#fff5be,#ffd65a);border-color:#b98200;color:#3c2700}
 .mode-tournament-btn.active{background:linear-gradient(135deg,#17120a,#5d3d00);color:#fff;border-color:#ffc928;box-shadow:0 0 0 3px #ffe58b,0 8px 20px #8a5a0033}
@@ -1503,7 +1503,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V170_TOURNAMENT_AUTO_NEXT_HALL_OF_FAME -->
+<!-- BUILD: V172_CHARACTER_IMAGE_FOLDER_CLEANUP -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -1839,70 +1839,70 @@ body.tournament-battle .speed-row{display:none!important}
 <script>
 (() => {
 const IMAGES={
-  moon:'assets/d757c4fa56b4faf9.jpg',
-  woo:'assets/9d170189675cee9d.jpg',
-  yoo:'assets/543cc4e381d2d814.jpg',
-  na:'assets/683443c1336354b5.jpg',
-  kim:'assets/4791262fa896cdd6.jpg',
-  ira:'assets/2fd18b6e9e7a72b8.jpg',
-  dong:'assets/e8c2ebe2ded449e7.jpg',
-  yesung:'assets/3b7dcd276439ac2f.jpg',
-  seo:'assets/dfc68fd4d5578a18.jpg',
-  min:'assets/0bad0f26c7f2e1c6.jpg',
-  geun:'assets/9166805738cdaab2.jpg',
-  jiwon:'assets/1c59a06da05d21b7.jpg',
-  doyun:'assets/c26c35eabc3fb7e4.jpg',
-  sungmin:'assets/2c54d775f86d2a11.jpg',
-  mingyu:'assets/394826d0ff64dc80.png',
-  junghoon:'assets/8a5bcdbed2456935.jpg',
-  jaewook:'assets/dc3fb1ecf1837164.png',
-  yoon1:'assets/49cf75961a774454.png',
-  yoon2:'assets/cb7a7b7c2c7d18b5.jpg',
-  gyumin:'assets/7097f363862f7c5d.jpg',
-  hyeon:'assets/ccba2b05c7cbafe3.jpg',
-  jiyeon:'assets/665ad2dfa6c14a85.jpg',
-  yoona:'assets/f8eac126b2eca3d4.jpg',
-  chaewon:'assets/9f74af87d7e1a028.png'
+  moon:'characters/moon.jpg',
+  woo:'characters/woo.jpg',
+  yoo:'characters/yoo.jpg',
+  na:'characters/na.jpg',
+  kim:'characters/kim.jpg',
+  ira:'characters/ira.jpg',
+  dong:'characters/dong.jpg',
+  yesung:'characters/yesung.jpg',
+  seo:'characters/seo.jpg',
+  min:'characters/min.jpg',
+  geun:'characters/geun.jpg',
+  jiwon:'characters/jiwon.jpg',
+  doyun:'characters/doyun.jpg',
+  sungmin:'characters/sungmin.jpg',
+  mingyu:'characters/mingyu.png',
+  junghoon:'characters/junghoon.jpg',
+  jaewook:'characters/jaewook.png',
+  yoon1:'characters/yoon_phase1.png',
+  yoon2:'characters/yoon_phase2.jpg',
+  gyumin:'characters/gyumin.jpg',
+  hyeon:'characters/hyeon.jpg',
+  jiyeon:'characters/jiyeon.jpg',
+  yoona:'characters/yoona.jpg',
+  chaewon:'characters/chaewon.png'
 ,
-  juyeong:'assets/3358ba2b64b80dca.jpg'
+  juyeong:'characters/juyeong.jpg'
 ,
-  yoomin:'assets/4af28fab3b7111c2.jpg',
-  gow:'assets/09d7731b15ef8bc5.jpg',
-  james:'assets/6ef42e7512ae8fd9.jpg',
-  yoogeon:'assets/72419ddc97660793.jpg',
-  naeonseong:'assets/37bab87a13828bd7.jpg',
-  nayoon:'assets/a809901772fb8355.png',
-  jihyun:'assets/dcada10f115a087d.png',
-  rua:'assets/e14a3c00cd19ae1a.png'
+  yoomin:'characters/yoomin.jpg',
+  gow:'characters/gow.jpg',
+  james:'characters/james.jpg',
+  yoogeon:'characters/yoogeon.jpg',
+  naeonseong:'characters/naeonseong.jpg',
+  nayoon:'characters/nayoon.png',
+  jihyun:'characters/jihyun.png',
+  rua:'characters/rua.png'
 ,
-  subin:'assets/bbe021914ce95321.png',
-  yewon:'assets/c62e40a4310d2be1.png',
-  chaeun:'assets/9a91853ca4cb68d7.png',
-  dawon:'assets/81cab0a3e66dd32b.png',
-  taeyeon:'assets/81ea55450389f3ad.png',
-  gangeun:'assets/728c26c0b561a591.png'
+  subin:'characters/subin.png',
+  yewon:'characters/yewon.png',
+  chaeun:'characters/chaeun.png',
+  dawon:'characters/dawon.png',
+  taeyeon:'characters/taeyeon.png',
+  gangeun:'characters/gangeun.png'
 ,
-  yeeun:'assets/cb140b4b5137fa20.png',
-  eunchae:'assets/9fcd141fbf996540.png',
-  hyeeum:'assets/065d3f8bebb30a08.png',
-  yangchaewon:'assets/0f8da530e9f1460d.png',
-  ansua:'assets/f551dab0748d316c.jpg',
-  haewon:'assets/0dfb7228c77a0cd5.jpg',
-  jongyeop:'assets/cef3a5e99c6c4624.jpg',
-  shion:'assets/f35cc0cb3f1fb031.jpg',
-  nakyung:'assets/e12507cef64d8afe.jpg',
-  nahyun:'assets/c5850eb6b47c5b33.jpg',
-  jungsua:'assets/071681b119940503.jpg',
-  jungdayeon:'assets/bb0f6eb1d331406e.jpg',
-  seoyoung:'assets/4b6b36b425e070f4.jpg',
-  jungyoona:'assets/a08dce590030e23c.png',
-  limseoyoon:'assets/420b8dd0b6d71b7c.png',
-  hyobin:'assets/dc7a27c308e3c7b7.png',
-  yoonho:'assets/7a956e1f07331447.png',
-  sia:'assets/4ed9f96b4cd9bd43.png',
-  woojiyeon:'assets/deb57cd15bca169a.png',
-  youngsik:'assets/8353d39b9ebce728.png',
-  songhyeon:'yunsonghyeon.jpg',
+  yeeun:'characters/yeeun.png',
+  eunchae:'characters/eunchae.png',
+  hyeeum:'characters/hyeeum.png',
+  yangchaewon:'characters/yangchaewon.png',
+  ansua:'characters/ansua.jpg',
+  haewon:'characters/haewon.jpg',
+  jongyeop:'characters/jongyeop.jpg',
+  shion:'characters/shion.jpg',
+  nakyung:'characters/nakyung.jpg',
+  nahyun:'characters/nahyun.jpg',
+  jungsua:'characters/jungsua.jpg',
+  jungdayeon:'characters/jungdayeon.jpg',
+  seoyoung:'characters/seoyoung.jpg',
+  jungyoona:'characters/jungyoona.png',
+  limseoyoon:'characters/limseoyoon.png',
+  hyobin:'characters/hyobin.png',
+  yoonho:'characters/yoonho.png',
+  sia:'characters/sia.png',
+  woojiyeon:'characters/woojiyeon.png',
+  youngsik:'characters/youngsik.png',
+  songhyeon:'characters/songhyeon.jpg',
 };
 
 const DEFS={
@@ -19833,10 +19833,10 @@ function frame(ts){
 
 
 /* ============================================================
-   V170 토너먼트 · 확률 예측 · 자동 다음 경기 · 명예의 전당
+   V172 토너먼트 · 캐릭터 이미지 폴더 정리 · 확률 예측 · 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V170_TOURNAMENT_AUTO_NEXT_HALL_OF_FAME';
+  const BUILD='V172_CHARACTER_IMAGE_FOLDER_CLEANUP';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -19853,6 +19853,7 @@ function frame(ts){
   const HALL_KEY='gonggame_tournament_hall_v1';
 
   function esc(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=172';}
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function pwr(id){const v=Number(POWER[id]);if(Number.isFinite(v))return v;const d=DEFS[id];return Math.min(1,Math.max(.05,((d?.hp||200)/350+(d?.speed||100)/900)/2));}
   function winChance(a,b){const diff=(pwr(a)-pwr(b))*4.2,raw=1/(1+Math.exp(-diff));return Math.round(Math.max(.1,Math.min(.9,raw))*20)*5;}
@@ -19915,7 +19916,7 @@ function frame(ts){
   }
   function hallHTML(){
     const hall=loadHall(),top=hallTop5();
-    return `<div class="t-hall-head"><div><strong>🏛 토너먼트 명예의 전당 TOP 5</strong><small>이 기기의 브라우저에 저장됨</small></div><small>완료 ${hall.totalTournaments}회</small></div>${top.length?`<div class="t-hall-list">${top.map(([id,row],index)=>{const d=DEFS[id];return `<div class="t-hall-row" style="--c:${d.color}"><span class="t-hall-rank">${index+1}</span><img src="${d.img}" style="object-position:${crop(id)}"><span><span class="t-hall-name">${esc(d.name)}</span><span class="t-hall-meta">최근 우승 ${row.lastWin?new Date(row.lastWin).toLocaleDateString('ko-KR'):'-'}</span></span><span class="t-hall-wins">${Number(row.wins)||0}회</span></div>`;}).join('')}</div>`:'<div class="t-hall-empty">아직 우승 기록이 없어.<br>첫 토너먼트 우승자가 여기에 등록돼!</div>'}`;
+    return `<div class="t-hall-head"><div><strong>🏛 토너먼트 명예의 전당 TOP 5</strong><small>이 기기의 브라우저에 저장됨</small></div><small>완료 ${hall.totalTournaments}회</small></div>${top.length?`<div class="t-hall-list">${top.map(([id,row],index)=>{const d=DEFS[id];return `<div class="t-hall-row" style="--c:${d.color}"><span class="t-hall-rank">${index+1}</span><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-hall-name">${esc(d.name)}</span><span class="t-hall-meta">최근 우승 ${row.lastWin?new Date(row.lastWin).toLocaleDateString('ko-KR'):'-'}</span></span><span class="t-hall-wins">${Number(row.wins)||0}회</span></div>`;}).join('')}</div>`:'<div class="t-hall-empty">아직 우승 기록이 없어.<br>첫 토너먼트 우승자가 여기에 등록돼!</div>'}`;
   }
   function renderHall(){const box=el('tournamentHallOfFame');if(box)box.innerHTML=hallHTML();}
   function recordChampion(id){
@@ -19929,7 +19930,7 @@ function frame(ts){
 
   function renderPicker(){
     const ids=orderedCharacterIds();
-    tPicker.innerHTML=ids.map(id=>{const d=DEFS[id],selected=setupSelected.has(id);return `<button type="button" class="t-picker-card ${selected?'selected':''}" data-t-char="${id}" style="--c:${d.color}"><img src="${d.img}" style="object-position:${crop(id)}"><span style="min-width:0"><span class="t-picker-name">${esc(d.name)}</span><span class="t-picker-meta">HP ${d.hp}</span></span></button>`;}).join('');
+    tPicker.innerHTML=ids.map(id=>{const d=DEFS[id],selected=setupSelected.has(id);return `<button type="button" class="t-picker-card ${selected?'selected':''}" data-t-char="${id}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span style="min-width:0"><span class="t-picker-name">${esc(d.name)}</span><span class="t-picker-meta">HP ${d.hp}</span></span></button>`;}).join('');
     tPicker.querySelectorAll('[data-t-char]').forEach(card=>card.addEventListener('click',()=>{
       const id=card.dataset.tChar;
       if(setupSelect==='random'){setupSelect='fixed';setActiveChoice(el('tournamentSelectChoices'),'data-t-select','fixed');}
@@ -20017,7 +20018,7 @@ function frame(ts){
   function fighterHTML(id,m){
     if(!id)return `<div class="t-fighter"><div></div><div><strong>미정</strong><small>이전 경기 승자</small></div></div>`;
     const d=DEFS[id],winner=m.winner===id,last=m.games.at(-1),chance=m.a&&m.b?(id===m.a?winChance(m.a,m.b):100-winChance(m.a,m.b)):50;
-    return `<div class="t-fighter ${winner?'winner':''}" style="--c:${d.color}"><img src="${d.img}" style="object-position:${crop(id)}"><div><strong>${esc(d.name)}${rankMark(id)}</strong><small>예상 승률 ${chance}%${last&&m.complete?` · 피해 ${Math.round(last.players[id]?.damage||0)} · 회복 ${Math.round(last.players[id]?.healing||0)}`:''}</small></div><span class="t-fighter-result">${winner?'승리':''}</span></div>`;
+    return `<div class="t-fighter ${winner?'winner':''}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><div><strong>${esc(d.name)}${rankMark(id)}</strong><small>예상 승률 ${chance}%${last&&m.complete?` · 피해 ${Math.round(last.players[id]?.damage||0)} · 회복 ${Math.round(last.players[id]?.healing||0)}`:''}</small></div><span class="t-fighter-result">${winner?'승리':''}</span></div>`;
   }
   function viewTabs(){
     const tabs=[];
@@ -20039,7 +20040,7 @@ function frame(ts){
     if(!state?.completed){box.innerHTML='';return;}
     const c=state.champion,d=DEFS[c],agg=state.aggregate[c],aw=state.awards||awardData(),pred=state.rankPredictions;
     const firstCorrect=pred.first===c;
-    box.innerHTML=`<div class="t-champion-summary" style="--c:${d.color}"><img src="${d.img}" style="object-position:${crop(c)}"><h2>🏆 ${esc(d.name)} 우승</h2><div style="font-size:11px;font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:5px;font-weight:1000;color:${firstCorrect?'#16733b':'#765f18'}">${pred.first?(firstCorrect?'🔮 1위 예측 적중!':`1위 예측: ${esc(DEFS[pred.first].name)} · 실패`):'순위 예측 없음'}</div><div class="t-awards"><div class="t-award"><b>⭐ MVP</b><span>${aw.mvp?esc(DEFS[aw.mvp[0]].name):'없음'}</span></div><div class="t-award"><b>💥 최대 피해</b><span>${esc(DEFS[aw.mostDamage[0]].name)} · ${Math.round(aw.mostDamage[1].damage)}</span></div><div class="t-award"><b>☠ 최다 킬</b><span>${esc(DEFS[aw.mostKills[0]].name)} · ${aw.mostKills[1].kills}킬</span></div><div class="t-award"><b>💚 최대 회복</b><span>${esc(DEFS[aw.mostHealing[0]].name)} · ${Math.round(aw.mostHealing[1].healing)}</span></div><div class="t-award"><b>⚡ 최고의 이변</b><span>${aw.upset?`${esc(DEFS[aw.upset.winner].name)} · 승률 ${aw.upset.chance}%`:'없음'}</span></div></div></div>`;
+    box.innerHTML=`<div class="t-champion-summary" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(c)}"><h2>🏆 ${esc(d.name)} 우승</h2><div style="font-size:11px;font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:5px;font-weight:1000;color:${firstCorrect?'#16733b':'#765f18'}">${pred.first?(firstCorrect?'🔮 1위 예측 적중!':`1위 예측: ${esc(DEFS[pred.first].name)} · 실패`):'순위 예측 없음'}</div><div class="t-awards"><div class="t-award"><b>⭐ MVP</b><span>${aw.mvp?esc(DEFS[aw.mvp[0]].name):'없음'}</span></div><div class="t-award"><b>💥 최대 피해</b><span>${esc(DEFS[aw.mostDamage[0]].name)} · ${Math.round(aw.mostDamage[1].damage)}</span></div><div class="t-award"><b>☠ 최다 킬</b><span>${esc(DEFS[aw.mostKills[0]].name)} · ${aw.mostKills[1].kills}킬</span></div><div class="t-award"><b>💚 최대 회복</b><span>${esc(DEFS[aw.mostHealing[0]].name)} · ${Math.round(aw.mostHealing[1].healing)}</span></div><div class="t-award"><b>⚡ 최고의 이변</b><span>${aw.upset?`${esc(DEFS[aw.upset.winner].name)} · 승률 ${aw.upset.chance}%`:'없음'}</span></div></div></div>`;
   }
   function renderBracket(){
     if(!state)return;
@@ -20081,7 +20082,7 @@ function frame(ts){
     let activeSlot='first';
     const labels={first:'1위',second:'2위',third:'3위'};
     function render(){
-      openModal('🔮 최종 순위 1·2·3위 예측',`<div style="font-size:12px;font-weight:1000;margin-bottom:9px">경기마다 고르지 않고 토너먼트 시작 전에 최종 1위·2위·3위를 한 번만 예측해.${locked?' 이미 경기가 시작되어 확인만 할 수 있어.':''}</div><div class="t-rank-picks">${['first','second','third'].map(slot=>`<button type="button" class="t-rank-slot ${!locked&&activeSlot===slot?'active':''}" data-rank-slot="${slot}" ${locked?'disabled':''}><b>${labels[slot]}</b><small>${picks[slot]?esc(DEFS[picks[slot]].name):'캐릭터 선택'}</small></button>`).join('')}</div><div class="tournament-picker" style="max-height:49vh">${state.participants.map(id=>{const d=DEFS[id],picked=Object.values(picks).includes(id);return `<button class="t-picker-card ${picked?'selected':''}" data-rank-char="${id}" style="--c:${d.color}" ${locked?'disabled':''}><img src="${d.img}" style="object-position:${crop(id)}"><span><span class="t-picker-name">${esc(d.name)}${rankMark(id)}</span><span class="t-picker-meta">우승 확률 ${titleChances[id]??0}%</span></span></button>`;}).join('')}</div>${locked?'<button class="t-modal-skip" data-rank-close>확인</button>':`<button class="t-rank-confirm" data-rank-confirm ${picks.first&&picks.second&&picks.third?'':'disabled'}>1·2·3위 예측 확정</button><button class="t-modal-skip" data-rank-skip>예측하지 않기</button>`}`);
+      openModal('🔮 최종 순위 1·2·3위 예측',`<div style="font-size:12px;font-weight:1000;margin-bottom:9px">경기마다 고르지 않고 토너먼트 시작 전에 최종 1위·2위·3위를 한 번만 예측해.${locked?' 이미 경기가 시작되어 확인만 할 수 있어.':''}</div><div class="t-rank-picks">${['first','second','third'].map(slot=>`<button type="button" class="t-rank-slot ${!locked&&activeSlot===slot?'active':''}" data-rank-slot="${slot}" ${locked?'disabled':''}><b>${labels[slot]}</b><small>${picks[slot]?esc(DEFS[picks[slot]].name):'캐릭터 선택'}</small></button>`).join('')}</div><div class="tournament-picker" style="max-height:49vh">${state.participants.map(id=>{const d=DEFS[id],picked=Object.values(picks).includes(id);return `<button class="t-picker-card ${picked?'selected':''}" data-rank-char="${id}" style="--c:${d.color}" ${locked?'disabled':''}><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-picker-name">${esc(d.name)}${rankMark(id)}</span><span class="t-picker-meta">우승 확률 ${titleChances[id]??0}%</span></span></button>`;}).join('')}</div>${locked?'<button class="t-modal-skip" data-rank-close>확인</button>':`<button class="t-rank-confirm" data-rank-confirm ${picks.first&&picks.second&&picks.third?'':'disabled'}>1·2·3위 예측 확정</button><button class="t-modal-skip" data-rank-skip>예측하지 않기</button>`}`);
       if(locked){tModalBody.querySelector('[data-rank-close]').addEventListener('click',closeModal);return;}
       tModalBody.querySelectorAll('[data-rank-slot]').forEach(button=>button.addEventListener('click',()=>{activeSlot=button.dataset.rankSlot;render();}));
       tModalBody.querySelectorAll('[data-rank-char]').forEach(button=>button.addEventListener('click',()=>{
@@ -20118,7 +20119,7 @@ function frame(ts){
     cinematicTimer=setTimeout(finishCinematic,duration);
   }
   cinematicSkip.addEventListener('click',finishCinematic);
-  function fighterCine(id,side,chance){const d=DEFS[id];return `<div class="t-cine-fighter ${side}" style="--c:${d.color}"><img src="${d.img}" style="object-position:${crop(id)}"><strong>${esc(d.name)}</strong><small>예상 승률 ${chance}%</small></div>`;}
+  function fighterCine(id,side,chance){const d=DEFS[id];return `<div class="t-cine-fighter ${side}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><strong>${esc(d.name)}</strong><small>예상 승률 ${chance}%</small></div>`;}
   function showMatchIntro(m,done){
     const ca=winChance(m.a,m.b),final=isFinal(m),third=m.special==='third';
     const kicker=final?'CHAMPIONSHIP FINAL':third?'BRONZE MATCH':'SEMIFINAL';
@@ -20127,7 +20128,7 @@ function frame(ts){
   }
   function showPredictionEliminated(id,m,done){
     const d=DEFS[id];
-    showCinematic(`<div class="t-cinematic-kicker">PREDICTION ELIMINATED</div><div class="t-award-icon">💔</div><div class="t-cinematic-title">우승 예측 실패</div><div class="t-cine-fighter" style="--c:${d.color};margin-top:18px"><img src="${d.img}" style="object-position:${crop(id)}"><strong>${esc(d.name)}</strong><small>${matchLabel(m)}에서 탈락</small></div>`,{duration:2100,variant:'t-prediction-fail',particles:false,done});
+    showCinematic(`<div class="t-cinematic-kicker">PREDICTION ELIMINATED</div><div class="t-award-icon">💔</div><div class="t-cinematic-title">우승 예측 실패</div><div class="t-cine-fighter" style="--c:${d.color};margin-top:18px"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><strong>${esc(d.name)}</strong><small>${matchLabel(m)}에서 탈락</small></div>`,{duration:2100,variant:'t-prediction-fail',particles:false,done});
   }
   function prepareMatch(m){
     if(!m||m.complete)return;
@@ -20261,7 +20262,7 @@ function frame(ts){
       setTimeout(()=>prepareMatch(currentMatch()),25);return;
     }
     const w=DEFS[record.winner],nextLabel=seriesContinues?'다음 세트':'다음 경기';
-    openModal(seriesContinues?'🏆 결승 세트 종료':`${matchLabel(m)} 경기 종료`,`<div class="t-result-hero" style="--c:${w.color}"><img src="${w.img}" style="object-position:${crop(record.winner)}"><h3>${esc(w.name)} 승리</h3><div style="font-weight:1000">${record.decision?'판정승':'상대 탈락'} · ${record.duration.toFixed(1)}초${seriesContinues?` · 세트 ${m.series.a}:${m.series.b}`:''}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.damage||0)}</b><span>승자 피해량</span></div><div class="t-result-stat"><b>${record.players[record.winner]?.kills||0}</b><span>승자 킬</span></div><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.healing||0)}</b><span>승자 회복</span></div><div class="t-result-stat"><b>${Math.ceil(record.players[record.winner]?.hp||0)}</b><span>남은 HP</span></div></div><div class="t-auto-next" data-auto-next data-label="${nextLabel}"></div><div class="t-result-buttons"><button class="gold" data-result-bracket>대진표 보기</button><button class="primary" data-result-next>${nextLabel}</button></div>`,false);
+    openModal(seriesContinues?'🏆 결승 세트 종료':`${matchLabel(m)} 경기 종료`,`<div class="t-result-hero" style="--c:${w.color}"><img src="${photoSrc(w)}" alt="${esc(w.name)}" loading="eager" decoding="async" style="object-position:${crop(record.winner)}"><h3>${esc(w.name)} 승리</h3><div style="font-weight:1000">${record.decision?'판정승':'상대 탈락'} · ${record.duration.toFixed(1)}초${seriesContinues?` · 세트 ${m.series.a}:${m.series.b}`:''}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.damage||0)}</b><span>승자 피해량</span></div><div class="t-result-stat"><b>${record.players[record.winner]?.kills||0}</b><span>승자 킬</span></div><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.healing||0)}</b><span>승자 회복</span></div><div class="t-result-stat"><b>${Math.ceil(record.players[record.winner]?.hp||0)}</b><span>남은 HP</span></div></div><div class="t-auto-next" data-auto-next data-label="${nextLabel}"></div><div class="t-result-buttons"><button class="gold" data-result-bracket>대진표 보기</button><button class="primary" data-result-next>${nextLabel}</button></div>`,false);
     tModal.dataset.kind='result';
     tModalBody.querySelector('[data-result-bracket]').addEventListener('click',()=>{clearResultAutoNext();closeModal();setScreens('tournament');const next=currentMatch();selectedView=next?.special==='third'?'third':isFinal(next)?'final':`r${next?.round||0}`;renderBracket();});
     tModalBody.querySelector('[data-result-next]').addEventListener('click',()=>{clearResultAutoNext();closeModal();prepareMatch(currentMatch());});
@@ -20286,7 +20287,7 @@ function frame(ts){
     function next(){
       if(index>=slides.length){done?.();return;}
       const slide=slides[index++],d=slide.id?DEFS[slide.id]:null;
-      const person=d?`<div class="t-cine-fighter" style="--c:${d.color};margin-top:12px"><img src="${d.img}" style="object-position:${crop(slide.id)}"><strong>${esc(d.name)}</strong></div>`:'';
+      const person=d?`<div class="t-cine-fighter" style="--c:${d.color};margin-top:12px"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(slide.id)}"><strong>${esc(d.name)}</strong></div>`:'';
       showCinematic(`<div class="t-cinematic-kicker">AWARD ${index} / ${slides.length}</div><div class="t-award-icon">${slide.icon}</div><div class="t-award-name">${slide.title}</div>${person}<div class="t-award-value">${esc(slide.value)}</div>`,{duration:1750,done:next});
     }
     next();
@@ -20295,12 +20296,12 @@ function frame(ts){
     const c=state.champion,d=DEFS[c],predicted=state.rankPredictions.first===c;
     const kicker=predicted?'PREDICTION PERFECT · CHAMPION':'TOURNAMENT CHAMPION';
     const sub=predicted?'내가 1위로 예측한 캐릭터가 진짜 우승했다!':'공게임 토너먼트 최종 우승';
-    showCinematic(`<div class="t-cinematic-kicker">${kicker}</div><div class="t-award-icon">🏆</div><div class="t-cinematic-title">${esc(d.name)} 우승</div><div class="t-cine-fighter" style="--c:${d.color};margin-top:14px"><img src="${d.img}" style="object-position:${crop(c)}"><strong>${esc(d.name)}</strong><small>${sub}</small></div>`,{duration:2700,variant:predicted?'t-prediction-success':'',done:()=>showAwardsSequence(showFinalResult)});
+    showCinematic(`<div class="t-cinematic-kicker">${kicker}</div><div class="t-award-icon">🏆</div><div class="t-cinematic-title">${esc(d.name)} 우승</div><div class="t-cine-fighter" style="--c:${d.color};margin-top:14px"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(c)}"><strong>${esc(d.name)}</strong><small>${sub}</small></div>`,{duration:2700,variant:predicted?'t-prediction-success':'',done:()=>showAwardsSequence(showFinalResult)});
   }
   function exactPredictionCount(){const r=state.rankPredictions;return Number(r.first===state.champion)+Number(r.second===state.runnerUp)+Number(r.third===state.thirdPlace);}
   function showFinalResult(){
     const c=state.champion,d=DEFS[c],agg=state.aggregate[c],r=state.rankPredictions,correct=exactPredictionCount();
-    openModal('🏆 토너먼트 종료',`<div class="t-result-hero" style="--c:${d.color}"><img src="${d.img}" style="object-position:${crop(c)}"><h3>${esc(d.name)} 최종 우승!</h3><div style="font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:7px;font-weight:1000;color:${r.first===c?'#18753c':'#755f18'}">${r.first?(r.first===c?'🔮 1위 예측 적중!':`1위 예측 ${esc(DEFS[r.first].name)} · 실패`):'순위 예측 없음'}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${esc(DEFS[state.runnerUp].name)}</b><span>2위</span></div><div class="t-result-stat"><b>${esc(DEFS[state.thirdPlace].name)}</b><span>3위</span></div><div class="t-result-stat"><b>${correct}/3</b><span>순위 정확히 적중</span></div><div class="t-result-stat"><b>${esc(DEFS[state.mvp].name)}</b><span>MVP</span></div></div>${r.first?`<div style="margin-top:10px;border:2px solid #d8c36d;border-radius:12px;padding:9px;font-size:11px;font-weight:1000">내 예측: 1위 ${esc(DEFS[r.first].name)} · 2위 ${esc(DEFS[r.second].name)} · 3위 ${esc(DEFS[r.third].name)}<br>실제 결과: 1위 ${esc(DEFS[state.champion].name)} · 2위 ${esc(DEFS[state.runnerUp].name)} · 3위 ${esc(DEFS[state.thirdPlace].name)}</div>`:''}<div class="t-result-buttons"><button class="gold" data-final-bracket>전체 결과</button><button class="gold" data-final-hall>명예의 전당</button><button class="primary" data-final-new>새 토너먼트</button></div>`,false);
+    openModal('🏆 토너먼트 종료',`<div class="t-result-hero" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(c)}"><h3>${esc(d.name)} 최종 우승!</h3><div style="font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:7px;font-weight:1000;color:${r.first===c?'#18753c':'#755f18'}">${r.first?(r.first===c?'🔮 1위 예측 적중!':`1위 예측 ${esc(DEFS[r.first].name)} · 실패`):'순위 예측 없음'}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${esc(DEFS[state.runnerUp].name)}</b><span>2위</span></div><div class="t-result-stat"><b>${esc(DEFS[state.thirdPlace].name)}</b><span>3위</span></div><div class="t-result-stat"><b>${correct}/3</b><span>순위 정확히 적중</span></div><div class="t-result-stat"><b>${esc(DEFS[state.mvp].name)}</b><span>MVP</span></div></div>${r.first?`<div style="margin-top:10px;border:2px solid #d8c36d;border-radius:12px;padding:9px;font-size:11px;font-weight:1000">내 예측: 1위 ${esc(DEFS[r.first].name)} · 2위 ${esc(DEFS[r.second].name)} · 3위 ${esc(DEFS[r.third].name)}<br>실제 결과: 1위 ${esc(DEFS[state.champion].name)} · 2위 ${esc(DEFS[state.runnerUp].name)} · 3위 ${esc(DEFS[state.thirdPlace].name)}</div>`:''}<div class="t-result-buttons"><button class="gold" data-final-bracket>전체 결과</button><button class="gold" data-final-hall>명예의 전당</button><button class="primary" data-final-new>새 토너먼트</button></div>`,false);
     tModalBody.querySelector('[data-final-bracket]').addEventListener('click',()=>{closeModal();setScreens('tournament');renderBracket();});
     tModalBody.querySelector('[data-final-hall]').addEventListener('click',openHall);
     tModalBody.querySelector('[data-final-new]').addEventListener('click',()=>{closeModal();state=null;setScreens('setup');openSetup();});
@@ -20336,7 +20337,7 @@ function frame(ts){
     const record={winner:winnerId,loser,duration:stats.duration||1,decision:false,players:{[m.a]:{damage:winnerId===m.a?(stats.winnerDamage??20):(stats.loserDamage??10),kills:winnerId===m.a?(stats.kills??1):0,healing:winnerId===m.a?(stats.healing??0):0,hp:winnerId===m.a?100:0,maxHp:200},[m.b]:{damage:winnerId===m.b?(stats.winnerDamage??20):(stats.loserDamage??10),kills:winnerId===m.b?(stats.kills??1):0,healing:winnerId===m.b?(stats.healing??0):0,hp:winnerId===m.b?100:0,maxHp:200}}};
     applyMatchRecord(m,record);renderBracket();return true;
   }
-  window.__GONG_V170_TEST__={
+  window.__GONG_V172_TEST__={
     get build(){return BUILD;},get state(){return state;},openSetup,testCreate,testResolve,next:()=>currentMatch(),chance:winChance,championProbabilities,
     setPrediction(first,second,third){if(!state)return null;state.rankPredictions={first,second,third};state.predictionLocked=true;renderBracket();return state.rankPredictions;},
     setSpeed(value){setTournamentSpeed(value,false);return {state:state?.speed,timeScale};},
@@ -20354,8 +20355,10 @@ function frame(ts){
     finishCurrent(mode='watch'){handleBattleEnd(mode);return {handled:!!game?._tournamentHandled,autoNext:!!resultAutoNextTimer,completedGames:state?.completedGames||0};},
     gameInfo(){return {exists:!!game,over:!!game?.over,key:game?._tournamentMatchKey||null,handled:!!game?._tournamentHandled,speed:timeScale};}
   };
-  window.__GONG_V169_TEST__=window.__GONG_V170_TEST__;
-  console.info('[V170] 토너먼트 확률 예측·자동 다음 경기·명예의 전당 로드 완료');
+  window.__GONG_V171_TEST__=window.__GONG_V172_TEST__;
+  window.__GONG_V170_TEST__=window.__GONG_V172_TEST__;
+  window.__GONG_V169_TEST__=window.__GONG_V172_TEST__;
+  console.info('[V172] 캐릭터 이미지 characters 폴더 정리·토너먼트 로드 완료');
 })();
 
 
@@ -20556,9 +20559,9 @@ $('contactForm').addEventListener('submit',event=>{
    V138.4 박선하 긍정마인드 피해 40% 조정
    V138 전체 안정화 및 V138.1 김유건·정윤아 수정 기반
    ========================================================= */
-IMAGES.sunha="assets/38c29b4536305ddf.jpg";
-IMAGES.hyukju="assets/4bf27685060d6116.jpg";
-IMAGES.yugun="assets/c7a9449d4d40fd5a.jpg";
+IMAGES.sunha="characters/sunha.jpg";
+IMAGES.hyukju="characters/hyukju.jpg";
+IMAGES.yugun="characters/yugun.jpg";
 
 DEFS.sunha={id:'sunha',name:'박선하',generation:21,color:'#e46b9b',hp:180,speed:220,img:IMAGES.sunha,role:'전 피해 60% 감소·벽 회복 시전·충돌 감속·독립 이동 공유 HP 분열형',skills:'긍정마인드 · 나쁜멘토 · 치어리딩 · 잠옷심자 · 박선하받더나'};
 DEFS.hyukju={id:'hyukju',name:'고혁주',generation:21,color:'#364152',hp:195,speed:210,img:IMAGES.hyukju,role:'확률 반격 실드·초강력 충돌 넉백·벽 저주형',skills:'욕쟁이 · 드라이브 · 死了'};
@@ -22186,7 +22189,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const V147_BUILD='V147_IGAHYEON_POETRY_GUARDIAN15';
   window.__GONG_V147_BUILD__=V147_BUILD;
 
-  IMAGES.gahyeon='igahyeon.jpg';
+  IMAGES.gahyeon='characters/gahyeon.jpg';
   DEFS.gahyeon={
     id:'gahyeon',name:'이가현',generation:21,color:'#6673a8',hp:250,speed:150,img:IMAGES.gahyeon,
     role:'글자 공격 무효·벽 시전 시집 설치·회전 문자 포탑형',
@@ -22466,18 +22469,18 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const V151_BUILD='V151_MASS_CHARACTER_10_SIA240';
   window.__GONG_V151_BUILD__=V151_BUILD;
 
-  IMAGES.kimgaeun='kimgaeun.png';
-  IMAGES.ochaeun='ochaeun.png';
-  IMAGES.seominji='seominji.png';
-  IMAGES.doyejin='doyejin.png';
-  IMAGES.kimsihu='kimsihu.png';
-  IMAGES.kimeunwoo='kimeunwoo.png';
-  IMAGES.yoonseoyoung='yoonseoyoung.png';
-  IMAGES.kimgyuwon='kimgyuwon.png';
-  IMAGES.kimgyuwonRilakkuma='kimgyuwon_rilakkuma.png';
-  IMAGES.gyuwonHyoreumon='gyuwon_hyoreumon.png';
-  IMAGES.yuhawon='yuhawon.png';
-  IMAGES.choiyujin='choiyujin.png';
+  IMAGES.kimgaeun='characters/kimgaeun.png';
+  IMAGES.ochaeun='characters/ochaeun.png';
+  IMAGES.seominji='characters/seominji.png';
+  IMAGES.doyejin='characters/doyejin.png';
+  IMAGES.kimsihu='characters/kimsihu.png';
+  IMAGES.kimeunwoo='characters/kimeunwoo.png';
+  IMAGES.yoonseoyoung='characters/yoonseoyoung.png';
+  IMAGES.kimgyuwon='characters/kimgyuwon.png';
+  IMAGES.kimgyuwonRilakkuma='characters/kimgyuwon_rilakkuma.png';
+  IMAGES.gyuwonHyoreumon='characters/gyuwon_hyoreumon.png';
+  IMAGES.yuhawon='characters/yuhawon.png';
+  IMAGES.choiyujin='characters/choiyujin.png';
 
   DEFS.sia.hp=240;
   if(SKILL_INFO.sia){
@@ -24891,7 +24894,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V170_TOURNAMENT_AUTO_NEXT_HALL_OF_FAME';
+  const V166_BUILD='V172_CHARACTER_IMAGE_FOLDER_CLEANUP';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
