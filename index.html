@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V173_TOURNAMENT_62_CHOIYUJIN_PHOTO -->
+<!-- BUILD: V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1419,7 +1419,7 @@ html,body{
 .score .status:empty::after,.boss-ally-status:empty::after{content:'상태 계산 중';opacity:.55}
 
 /* ============================================================
-   V173 토너먼트 · 62인 대진 · 최유진 사진 변경 · 확률 예측 · 명예의 전당
+   V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 .mode-tournament-btn{background:linear-gradient(135deg,#fff5be,#ffd65a);border-color:#b98200;color:#3c2700}
 .mode-tournament-btn.active{background:linear-gradient(135deg,#17120a,#5d3d00);color:#fff;border-color:#ffc928;box-shadow:0 0 0 3px #ffe58b,0 8px 20px #8a5a0033}
@@ -1498,12 +1498,22 @@ body.tournament-battle .speed-row{display:none!important}
 
 @media(max-width:620px){.tournament-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tournament-choice-grid.three{grid-template-columns:1fr}.tournament-select-row{grid-template-columns:1fr}.tournament-picker{grid-template-columns:repeat(2,minmax(0,1fr));max-height:55vh}.tournament-bracket-list{grid-template-columns:1fr}.tournament-title-row{display:block}.t-result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.t-predict-card img{width:62px;height:62px}.t-predict-vs{grid-template-columns:1fr 35px 1fr}}
 
+
+/* V174 규모별 명예의 전당 · 신규 캐릭터 전투 시각화 */
+.t-hall-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:8px 0 10px}
+.t-hall-tab{border:2px solid #d8c36d;border-radius:999px;background:#fff;padding:7px 4px;font-size:10px;font-weight:1000;cursor:pointer}
+.t-hall-tab.active{background:#17120a;color:#fff;border-color:#17120a;box-shadow:0 2px 0 #d6a900}
+.t-hall-legacy{margin-top:10px;border:2px solid #c9c3aa;border-radius:12px;background:#f8f7f0;padding:8px}
+.t-hall-legacy summary{cursor:pointer;font-size:11px;font-weight:1000;color:#5c5745}
+.t-hall-legacy .t-hall-list,.t-hall-legacy .t-hall-empty{margin-top:8px}
+@media(max-width:520px){.t-hall-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
 </style>
 <!-- V110_SQUISHY_AD_SOURCE_FIXED -->
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V173_TOURNAMENT_62_CHOIYUJIN_PHOTO -->
+<!-- BUILD: V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -1593,7 +1603,7 @@ body.tournament-battle .speed-row{display:none!important}
       <div class="tournament-step">
         <div class="tournament-step-title">1. 참가 규모</div>
         <div class="tournament-choice-grid" id="tournamentSizeChoices">
-          <button class="t-choice" data-t-size="4">4인</button><button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button><button class="t-choice" data-t-size="62">62인</button>
+          <button class="t-choice" data-t-size="4">4인</button><button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button><button class="t-choice" data-t-size="64">64인</button>
         </div>
       </div>
       <div class="tournament-step">
@@ -19833,11 +19843,11 @@ function frame(ts){
 
 
 /* ============================================================
-   V173 토너먼트 · 62인 대진 · 최유진 사진 변경 · 확률 예측 · 명예의 전당
+   V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V173_TOURNAMENT_62_CHOIYUJIN_PHOTO';
-  const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
+  const BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+  const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
   const tModal=el('tournamentModal'),tModalTitle=el('tournamentModalTitle'),tModalBody=el('tournamentModalBody');
@@ -19850,14 +19860,17 @@ function frame(ts){
   let setupSize=8,setupSelect='direct',setupSelected=new Set();
   let state=null,selectedView='r0',pendingLaunch=null,fastToken=0,cinematicTimer=null,cinematicDone=null;
   let resultAutoNextTimer=null,resultAutoNextInterval=null;
-  const HALL_KEY='gonggame_tournament_hall_v1';
+  const HALL_KEY='tournamentHallOfFameBySize';
+  const LEGACY_HALL_KEY='gonggame_tournament_hall_v1';
+  const HALL_SIZES=[4,8,16,32,64];
+  let hallViewSize=8;
 
-  function esc(value){return String(value??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=173';}
+  function esc(value){return String(value??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
+  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=174';}
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function pwr(id){const v=Number(POWER[id]);if(Number.isFinite(v))return v;const d=DEFS[id];return Math.min(1,Math.max(.05,((d?.hp||200)/350+(d?.speed||100)/900)/2));}
   function winChance(a,b){const diff=(pwr(a)-pwr(b))*4.2,raw=1/(1+Math.exp(-diff));return Math.round(Math.max(.1,Math.min(.9,raw))*20)*5;}
-  function labelRound(round,total){if(state?.size===62&&round===0)return '62강';const remain=2**(total-round);if(remain===2)return '결승';if(remain===4)return '4강';return `${remain}강`;}
+  function labelRound(round,total){const remain=2**(total-round);if(remain===2)return '결승';if(remain===4)return '4강';return `${remain}강`;}
   function matchLabel(m){return m?.special==='third'?'3·4위전':labelRound(m.round,state.totalRounds);}
   function isFinal(m){return !!m&&m.special!=='third'&&m.round===state.totalRounds-1;}
   function isSemi(m){return !!m&&m.special!=='third'&&m.round===state.totalRounds-2;}
@@ -19908,31 +19921,48 @@ function frame(ts){
     return Object.fromEntries(rows.map(row=>[row.id,row.shown]));
   }
 
+  function loadLegacyHall(){
+    try{
+      const parsed=JSON.parse(localStorage.getItem(LEGACY_HALL_KEY)||'{}');
+      const champions=parsed&&typeof parsed.champions==='object'&&parsed.champions?parsed.champions:{};
+      return {totalTournaments:Number(parsed.totalTournaments)||0,champions};
+    }catch(_){return {totalTournaments:0,champions:{}};}
+  }
+  function emptySizeHall(){return {totalTournaments:0,champions:{}};}
   function loadHall(){
     try{
       const parsed=JSON.parse(localStorage.getItem(HALL_KEY)||'{}');
-      const champions=parsed&&typeof parsed.champions==='object'&&parsed.champions?parsed.champions:{};
-      return {version:1,totalTournaments:Number(parsed.totalTournaments)||0,champions};
-    }catch(_){return {version:1,totalTournaments:0,champions:{}};}
+      const sizes={};
+      for(const size of HALL_SIZES){
+        const raw=parsed?.sizes?.[size]||parsed?.sizes?.[String(size)]||{};
+        sizes[size]={totalTournaments:Number(raw.totalTournaments)||0,champions:raw&&typeof raw.champions==='object'&&raw.champions?raw.champions:{}};
+      }
+      return {version:2,sizes};
+    }catch(_){return {version:2,sizes:Object.fromEntries(HALL_SIZES.map(size=>[size,emptySizeHall()]))};}
   }
   function saveHall(data){try{localStorage.setItem(HALL_KEY,JSON.stringify(data));return true;}catch(_){return false;}}
-  function hallTop5(){
-    const hall=loadHall();
-    return Object.entries(hall.champions).filter(([id,row])=>DEFS[id]&&Number(row?.wins)>0).sort((a,b)=>(Number(b[1].wins)||0)-(Number(a[1].wins)||0)||(Number(b[1].lastWin)||0)-(Number(a[1].lastWin)||0)||DEFS[a[0]].name.localeCompare(DEFS[b[0]].name,'ko')).slice(0,5);
+  function top5FromChampions(champions){
+    return Object.entries(champions||{}).filter(([id,row])=>DEFS[id]&&Number(row?.wins)>0)
+      .sort((a,b)=>(Number(b[1].wins)||0)-(Number(a[1].wins)||0)||(Number(b[1].lastWin)||0)-(Number(a[1].lastWin)||0)||DEFS[a[0]].name.localeCompare(DEFS[b[0]].name,'ko')).slice(0,5);
+  }
+  function hallTop5(size=hallViewSize){const hall=loadHall();return top5FromChampions(hall.sizes[size]?.champions||{});}
+  function hallRows(top,emptyText){
+    return top.length?`<div class="t-hall-list">${top.map(([id,row],index)=>{const d=DEFS[id];return `<div class="t-hall-row" style="--c:${d.color}"><span class="t-hall-rank">${index+1}</span><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-hall-name">${esc(d.name)}</span><span class="t-hall-meta">최근 우승 ${row.lastWin?new Date(row.lastWin).toLocaleDateString('ko-KR'):'-'}</span></span><span class="t-hall-wins">${Number(row.wins)||0}회</span></div>`;}).join('')}</div>`:`<div class="t-hall-empty">${emptyText}</div>`;
   }
   function hallHTML(){
-    const hall=loadHall(),top=hallTop5();
-    return `<div class="t-hall-head"><div><strong>🏛 토너먼트 명예의 전당 TOP 5</strong><small>이 기기의 브라우저에 저장됨</small></div><small>완료 ${hall.totalTournaments}회</small></div>${top.length?`<div class="t-hall-list">${top.map(([id,row],index)=>{const d=DEFS[id];return `<div class="t-hall-row" style="--c:${d.color}"><span class="t-hall-rank">${index+1}</span><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-hall-name">${esc(d.name)}</span><span class="t-hall-meta">최근 우승 ${row.lastWin?new Date(row.lastWin).toLocaleDateString('ko-KR'):'-'}</span></span><span class="t-hall-wins">${Number(row.wins)||0}회</span></div>`;}).join('')}</div>`:'<div class="t-hall-empty">아직 우승 기록이 없어.<br>첫 토너먼트 우승자가 여기에 등록돼!</div>'}`;
+    const hall=loadHall(),sizeHall=hall.sizes[hallViewSize]||emptySizeHall(),top=hallTop5(hallViewSize),legacy=loadLegacyHall(),legacyTop=top5FromChampions(legacy.champions);
+    return `<div class="t-hall-head"><div><strong>🏛 규모별 명예의 전당 TOP 5</strong><small>V174부터 규모별로 따로 누적</small></div><small>${hallViewSize}인 완료 ${sizeHall.totalTournaments}회</small></div><div class="t-hall-tabs">${HALL_SIZES.map(size=>`<button type="button" class="t-hall-tab ${size===hallViewSize?'active':''}" data-hall-size="${size}">${size}인</button>`).join('')}</div>${hallRows(top,`${hallViewSize}인 토너먼트 우승 기록이 아직 없어.<br>첫 우승자가 여기에 등록돼!`)}<details class="t-hall-legacy"><summary>이전 통합 기록 · 완료 ${legacy.totalTournaments}회</summary>${hallRows(legacyTop,'이전 통합 우승 기록이 없어.')}</details>`;
   }
-  function renderHall(){const box=el('tournamentHallOfFame');if(box)box.innerHTML=hallHTML();}
+  function bindHallTabs(root){root?.querySelectorAll('[data-hall-size]').forEach(button=>button.addEventListener('click',()=>{hallViewSize=Number(button.dataset.hallSize)||8;if(root.id==='tournamentHallOfFame')renderHall();else{root.innerHTML=hallHTML()+='<button class="t-modal-skip" data-hall-close>확인</button>';bindHallTabs(root);root.querySelector('[data-hall-close]')?.addEventListener('click',closeModal);}}));}
+  function renderHall(){const box=el('tournamentHallOfFame');if(box){box.innerHTML=hallHTML();bindHallTabs(box);}}
   function recordChampion(id){
     if(!id||!DEFS[id]||state?.hallRecorded)return false;
-    const hall=loadHall(),row=hall.champions[id]||{wins:0,lastWin:0};
-    row.wins=(Number(row.wins)||0)+1;row.lastWin=Date.now();hall.champions[id]=row;hall.totalTournaments=(Number(hall.totalTournaments)||0)+1;
+    const size=HALL_SIZES.includes(Number(state?.size))?Number(state.size):8,hall=loadHall(),bucket=hall.sizes[size]||emptySizeHall(),row=bucket.champions[id]||{wins:0,lastWin:0};
+    row.wins=(Number(row.wins)||0)+1;row.lastWin=Date.now();bucket.champions[id]=row;bucket.totalTournaments=(Number(bucket.totalTournaments)||0)+1;hall.sizes[size]=bucket;hallViewSize=size;
     if(state)state.hallRecorded=true;
     const ok=saveHall(hall);renderHall();return ok;
   }
-  function openHall(){openModal('🏛 토너먼트 명예의 전당',`${hallHTML()}<button class="t-modal-skip" data-hall-close>확인</button>`);tModalBody.querySelector('[data-hall-close]').addEventListener('click',closeModal);}
+  function openHall(){openModal('🏛 규모별 토너먼트 명예의 전당',`${hallHTML()}<button class="t-modal-skip" data-hall-close>확인</button>`);bindHallTabs(tModalBody);tModalBody.querySelector('[data-hall-close]').addEventListener('click',closeModal);}
 
   function renderPicker(){
     const ids=orderedCharacterIds();
@@ -20091,7 +20121,7 @@ function frame(ts){
     if(!state)return;
     renderChampionSummary();
     const done=state.completedGames;
-    el('tournamentHeadMeta').textContent=`${state.size}인${state.size===62?' · 2명 부전승':''} · ${state.bracketType==='seed'?'밸런스 시드':'완전 랜덤'} · 결승 ${state.finalBestOf===3?'3판 2선승':'단판'} · 3·4위전 포함`;
+    el('tournamentHeadMeta').textContent=`${state.size}인 · ${state.bracketType==='seed'?'밸런스 시드':'완전 랜덤'} · 결승 ${state.finalBestOf===3?'3판 2선승':'단판'} · 3·4위전 포함`;
     el('tournamentProgressFill').style.width=`${Math.min(100,done/state.totalGames*100)}%`;
     el('tournamentProgressText').textContent=`${done} / ${state.totalGames}경기 완료`;
     el('tournamentPredictionText').textContent=predictionSummary();
@@ -20372,7 +20402,7 @@ function frame(ts){
   el('restart').addEventListener('click',()=>{if(state?.active&&game?._tournamentMatchKey)setTimeout(()=>{game._tournamentMatchKey=currentMatch()?.key||game._tournamentMatchKey;game._tournamentHandled=false;setTournamentSpeed(state.speed,false);},0);});
 
   function testCreate(size=4,opts={}){
-    const ids=orderedCharacterIds().slice(0,size);
+    const ids=Array.isArray(opts.ids)?opts.ids.filter(id=>DEFS[id]).slice(0,size):orderedCharacterIds().slice(0,size);
     state=makeState(ids,{bracketType:opts.bracketType||'random',finalBestOf:opts.finalBestOf||1,watchMode:opts.watchMode||'results',speed:opts.speed||4,predictionsEnabled:opts.predictionsEnabled??false});
     state.testMode=true;selectedView='r0';setScreens('tournament');renderBracket();return state;
   }
@@ -20393,18 +20423,19 @@ function frame(ts){
     startYoonTest(){currentConfig={mode:'showdown',participants:['yoonseoyoung','kim'],teams:{yoonseoyoung:'yoonseoyoung',kim:'kim'},zoneNames:{}};paused=true;resetBattle();return this.yoonShout;},
     yoonWall(times=1){const player=game?.players?.find(p=>p.id==='yoonseoyoung'&&p.alive);if(!player)return null;for(let i=0;i<times;i++)onWallHit(player);return this.yoonShout;},
     get yoonShout(){const player=game?.players?.find(p=>p.id==='yoonseoyoung');return player?{walls:player.data.v169ShoutWalls||0,damageMeter:player.data.damageMeter||0,shots:game.v151Shots?.filter(shot=>shot.type==='yoonseoSpike').length||0}:null;},
-    hall(){return {data:loadHall(),top:hallTop5().map(([id,row])=>({id,wins:Number(row.wins)||0,lastWin:Number(row.lastWin)||0}))};},
+    hall(size=hallViewSize){hallViewSize=HALL_SIZES.includes(Number(size))?Number(size):hallViewSize;return {data:loadHall(),legacy:loadLegacyHall(),size:hallViewSize,top:hallTop5(hallViewSize).map(([id,row])=>({id,wins:Number(row.wins)||0,lastWin:Number(row.lastWin)||0}))};},
     clearHall(){localStorage.removeItem(HALL_KEY);renderHall();return this.hall();},
-    addHallWin(id){const was=state?.hallRecorded;if(state)state.hallRecorded=false;const ok=recordChampion(id);if(state)state.hallRecorded=was;return {ok,...this.hall()};},
+    addHallWin(id,size=8){const previous=state,was=state?.hallRecorded;if(!state)state={size:Number(size)||8,hallRecorded:false};else{state.size=Number(size)||state.size;state.hallRecorded=false;}const ok=recordChampion(id);if(previous){state.hallRecorded=was;}else state=null;return {ok,...this.hall(size)};},
     get autoNextActive(){return !!resultAutoNextTimer;},
     finishCurrent(mode='watch'){handleBattleEnd(mode);return {handled:!!game?._tournamentHandled,autoNext:!!resultAutoNextTimer,completedGames:state?.completedGames||0};},
     gameInfo(){return {exists:!!game,over:!!game?.over,key:game?._tournamentMatchKey||null,handled:!!game?._tournamentHandled,speed:timeScale};}
   };
+  window.__GONG_V174_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
-  console.info('[V173] 62인 토너먼트·최유진 사진 변경 로드 완료');
+  console.info('[V174] 신규 캐릭터 3명·한교동·64인 토너먼트·규모별 명예의 전당 로드 완료');
 })();
 
 
@@ -24940,8 +24971,8 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V173_TOURNAMENT_62_CHOIYUJIN_PHOTO';
-  const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
+  const V166_BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+  const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
   let v166LastResult=null;
@@ -25190,6 +25221,274 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   });
   window.__GONG_V167_TEST__=v167Test;
 })();
+
+
+/* =========================================================
+   V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
+   ========================================================= */
+const V174_BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+window.__GONG_V174_BUILD__=V174_BUILD;
+
+Object.assign(IMAGES,{
+  park_hanul:'characters/park_hanul.png',
+  shin_jimin:'characters/shin_jimin.png',
+  jo_sohyun:'characters/jo_sohyun.png',
+  hangyodon:'characters/hangyodon.png'
+});
+Object.assign(DEFS,{
+  shin_jimin:{id:'shin_jimin',name:'신지민',generation:20,color:'#d34a57',hp:200,speed:200,img:IMAGES.shin_jimin,role:'정병 지속 피해·안경 강화·회전 원반형',skills:'연애정병 · 뿔테안경 · 극우'},
+  park_hanul:{id:'park_hanul',name:'박한울',generation:21,color:'#d74831',hp:210,speed:210,img:IMAGES.park_hanul,role:'부채꼴 탄막·문자 연사·확률 누적 강화형',skills:'마라탕발사 · 중국어로 욕하기 · 정병폭발'},
+  jo_sohyun:{id:'jo_sohyun',name:'조소현',generation:21,color:'#54a9a1',hp:180,speed:220,img:IMAGES.jo_sohyun,role:'한교동 소환·확률 완전 회복·누적 소환 강화·검도형',skills:'한교동과함께 · 꿀잠자기 · 드럼치기 · 검도'}
+});
+Object.assign(SKILL_INFO,{
+  shin_jimin:{summary:'정병 지속 피해·안경 강화·회전 원반형',hp:'200',speed:'200 · 안경 보유 시 600',skills:[
+    {kind:'패시브',type:'passive',name:'연애정병',desc:'직접 충돌한 적에게 10초 동안 1초마다 0.5 피해를 준다. 재충돌하면 중첩 대신 지속시간이 갱신된다.',points:['총 10회 피해','신지민 사망 후에도 남은 지속 피해 유지','피해·킬은 신지민에게 귀속','팀전 아군 제외']},
+    {kind:'강화 스킬',type:'defense',name:'뿔테안경',desc:'벽 3회마다 안경 1개를 장착한다. 안경이 하나라도 있으면 속도 3배, 모든 공격 피해 2.5배가 된다.',points:['스택 무제한','실제 피해 1회마다 1개 소모','피해가 0이면 소모되지 않음','공 위에 안경과 스택 수 표시']},
+    {kind:'공격 스킬',type:'attack',name:'극우',desc:'2초마다 빨간 원반 2개가 2초 동안 서로 반대편에서 빠르게 회전한다.',points:['원반당 15 피해','강한 넉백','적중 1초 뒤 4초 동안 속도 80% 감소','원반 하나당 같은 활성화에서 같은 적 1회 타격']}
+  ]},
+  park_hanul:{summary:'부채꼴 탄막·문자 연사·확률 누적 강화형',hp:'210',speed:'210',skills:[
+    {kind:'공격 스킬',type:'attack',name:'마라탕발사',desc:'벽 3회마다 가장 가까운 적 방향으로 마라탕 20개를 부채꼴로 분사한다.',points:['개당 4 피해','적 또는 벽 충돌 시 제거','팀전 아군 제외']},
+    {kind:'공격 스킬',type:'attack',name:'중국어로 욕하기',desc:'적 직접 충돌 3회마다 1초 뒤 두 문장 중 하나를 50% 확률로 골라 한 글자씩 발사한다.',points:['傻逼 또는 操你祖宗十八代','글자당 8 피해','짧은 간격 순차 발사','과도한 유도 없음']},
+    {kind:'확률 스킬',type:'passive',name:'정병폭발',desc:'벽 10회마다 40%는 실패 연출 후 즉시 탈락하고, 60%는 모든 공격 피해가 영구적으로 2배가 된다.',points:['실패는 공격자 킬로 처리하지 않음','실패 시 보랏빛 균열·회전·소멸 연출','성공할 때마다 현재 배율에 다시 ×2 누적']}
+  ]},
+  jo_sohyun:{summary:'한교동 소환·확률 완전 회복·누적 소환 강화·검도형',hp:'180',speed:'220',skills:[
+    {kind:'패시브',type:'passive',name:'한교동과함께',desc:'전투 시작 시 작은 한교동이 함께 움직이며 적 충돌 시 피해와 감속을 준다.',points:['한교동 속도 300','일반 공 반지름의 2/3','별도 HP 없음','충돌 10 피해 + 5초 50% 감속','조소현 사망 시 즉시 제거','피해·킬은 조소현에게 귀속']},
+    {kind:'회복 스킬',type:'defense',name:'꿀잠자기',desc:'벽 3회마다 60% 확률로 3초 무적과 완전 회복, 실패하면 현재 HP가 절반이 된다.',points:['성공·실패 모두 벽 진행도 초기화','실패 최소 HP 1','성공 회복량은 통계에 반영']},
+    {kind:'강화 스킬',type:'passive',name:'드럼치기',desc:'적 직접 충돌 3회마다 1초 시전 후 한교동 속도 ×1.5, 피해 ×2를 영구 누적한다.',points:['피격으로 취소되지 않음','횟수 제한 없음','초고속 이동 세분화 적용']},
+    {kind:'공격·회복 스킬',type:'attack',name:'검도',desc:'직접 충돌한 적에게 15 피해와 강한 넉백을 주고 자신의 HP를 10 회복한다.',points:['붙어 있는 동안 반복 발동 방지','피해와 실제 회복량 모두 통계 반영','팀전 아군 제외']}
+  ]}
+});
+
+function v174Finite(value,fallback=0,limit=1e9){value=Number(value);if(!Number.isFinite(value))return fallback;return Math.max(-limit,Math.min(limit,value));}
+function v174Uid(p){return p?.data?.v174Uid||(p?.id||'unknown');}
+function v174Ready(owner,target,key,cooldown=.45){
+  if(!owner||!target)return false;
+  const holder=owner.data||owner,map=holder[key]||(holder[key]={}),id=v174Uid(target),now=Number(game?.t)||0;
+  if((map[id]||0)>now)return false;map[id]=now+cooldown;return true;
+}
+function v174Nearest(owner){const list=game?.players?.filter(q=>q.alive&&!q.hidden&&isEnemy(owner,q))||[];return list.length?list.reduce((a,b)=>dist(owner,a)<=dist(owner,b)?a:b):null;}
+function v174Knock(target,from,power=900){
+  if(!target?.alive)return;let dx=target.x-from.x,dy=target.y-from.y,len=Math.hypot(dx,dy);
+  if(len<.001){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);len=1;}
+  target.knockbackRestore=normalSpeed(target);target.knockbackTimer=Math.max(target.knockbackTimer||0,.7);target.vx=dx/len*power;target.vy=dy/len*power;
+}
+function v174SpawnMara(owner){
+  const target=v174Nearest(owner);if(!target)return 0;const base=Math.atan2(target.y-owner.y,target.x-owner.x),count=20;
+  for(let i=0;i<count;i++){const spread=(i-(count-1)/2)/(count-1)*1.18+rand(-.025,.025),a=base+spread,speed=rand(500,590);game.v174Shots.push({type:'mara',owner,x:owner.x+Math.cos(a)*(owner.r+7),y:owner.y+Math.sin(a)*(owner.r+7),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:7,life:2.3,delay:0,damage:4,char:'🍲'});}
+  spawnSkillBanner('🍲 마라탕발사 · 20개 분사','#d74831');spawnAttackFx(owner.x,owner.y,owner.color,'마라탕발사',1.25);return count;
+}
+function v174FireInsult(owner,forcedPhrase=null){
+  const target=v174Nearest(owner);if(!target)return null;const phrase=forcedPhrase|| (Math.random()<.5?'傻逼':'操你祖宗十八代'),a=Math.atan2(target.y-owner.y,target.x-owner.x);
+  [...phrase].forEach((char,i)=>{const speed=680;game.v174Shots.push({type:'insult',owner,x:owner.x+Math.cos(a)*(owner.r+8),y:owner.y+Math.sin(a)*(owner.r+8),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:10,life:2.4,delay:i*.11,damage:8,char});});
+  spawnSkillBanner(`🀄 중국어로 욕하기 · ${phrase}`,'#b91c1c');floater(owner.x,owner.y-owner.r-22,phrase,'#b91c1c',20,1.1);return phrase;
+}
+function v174EliminateParkFailure(p){
+  if(!p?.alive)return false;
+  p.data.v174FailureFx=1;game.v174FailureBursts.push({x:p.x,y:p.y,r:p.r+4,life:1.45,max:1.45,color:'#7c3aed'});
+  for(let i=0;i<16;i++){const a=i/16*Math.PI*2;game.particles.push({x:p.x,y:p.y,vx:Math.cos(a)*rand(80,260),vy:Math.sin(a)*rand(80,260),life:rand(.45,1.05),color:i%2?'#7c3aed':'#111'});}
+  spawnSkillBanner('🌀 정병폭발 실패 · 즉시 탈락','#6d28d9');spawnAttackFx(p.x,p.y,'#7c3aed','정병폭발 실패',2.2);floater(p.x,p.y-p.r-24,'정병폭발 실패 · 즉시 탈락','#6d28d9',21,1.4);
+  p.hp=0;recordElimination(p);p.alive=false;p.hidden=true;p.vx=0;p.vy=0;p.frozen=0;p.strongSlow=0;p.weakSlow=0;
+  log('<b>박한울</b>: 정병폭발 실패. 보랏빛 균열이 퍼지고 공이 회전하며 사라져 즉시 탈락.');
+  game.pendingEndCheck=true;if(!game.deferEndCheck){game.pendingEndCheck=false;checkEnd();}updateUI();return true;
+}
+function v174TriggerExplosion(p,forcedSuccess=null){
+  if(!p?.alive)return null;const success=forcedSuccess===null?Math.random()<.60:!!forcedSuccess;
+  if(!success){v174EliminateParkFailure(p);return {success:false,mult:p.data.v174ExplosionMult||1};}
+  p.data.v174ExplosionMult=v174Finite((p.data.v174ExplosionMult||1)*2,1,1048576);p.data.v174ExplosionSuccesses=(p.data.v174ExplosionSuccesses||0)+1;
+  spawnSkillBanner(`💥 정병폭발 성공 · 공격 ×${p.data.v174ExplosionMult}`,'#d74831');spawnAttackFx(p.x,p.y,'#d74831','정병폭발 성공',1.8);floater(p.x,p.y-p.r-24,`공격 ×${p.data.v174ExplosionMult}`,'#d74831',20,1.2);return {success:true,mult:p.data.v174ExplosionMult};
+}
+function v174ApplyLoveDot(owner,target){
+  if(!owner?.alive||!target?.alive||!isEnemy(owner,target))return false;
+  const prev=target.data.v174LoveDot;
+  // 겹쳐 있는 동안 접촉 판정이 반복되어도 1초 피해 주기가 계속 흐르도록 한다.
+  // 지속시간은 10초로 갱신하되, 이미 진행 중인 다음 틱 카운트다운은 보존한다.
+  const nextTick=prev?Math.max(.001,Math.min(1,v174Finite(prev.tick,1,1))):1;
+  target.data.v174LoveDot={owner,remaining:10,tick:nextTick,ticks:0};floater(target.x,target.y-target.r-18,'💔 정병 10초','#d34a57',13,.65);return true;
+}
+function v174SpawnDiscs(owner){
+  const activation=`${v174Uid(owner)}_${game.t.toFixed(3)}_${Math.random()}`;
+  for(let i=0;i<2;i++)game.v174Discs.push({owner,activation,index:i,age:0,life:2,angle:i*Math.PI,hit:new Set(),x:owner.x,y:owner.y,r:11});
+  spawnAttackFx(owner.x,owner.y,'#e11d48','극우 원반',1.25);return 2;
+}
+const v174HangImage=new Image();v174HangImage.src=IMAGES.hangyodon;
+function v174CreateSummon(owner){
+  const a=rand(0,Math.PI*2),r=Math.max(10,owner.r*2/3),speed=300;
+  return {id:`hangyodon_${v174Uid(owner)}`,name:'한교동',owner,team:owner.team,color:'#65c7c3',x:clamp(owner.x+Math.cos(a)*(owner.r+r+8),r,W-r),y:clamp(owner.y+Math.sin(a)*(owner.r+r+8),r,H-r),r,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,imageObj:v174HangImage,contactCd:{}};
+}
+function v174JoSummon(owner){return game?.v174Summons?.find(s=>s.owner===owner)||null;}
+function v174TriggerSleep(p,forcedSuccess=null){
+  if(!p?.alive)return null;const success=forcedSuccess===null?Math.random()<.60:!!forcedSuccess;
+  if(success){p.data.v174Invuln=3;const recovered=heal(p,p.maxHp-p.hp,p,'꿀잠자기',true);spawnSkillBanner('😴 꿀잠 성공 · 3초 무적·완전 회복','#54a9a1');spawnAttackFx(p.x,p.y,'#54a9a1','꿀잠자기 성공',1.7);return {success:true,recovered};}
+  const before=p.hp;p.hp=Math.max(1,Math.round(p.hp*.5*10)/10);const lost=Math.max(0,before-p.hp);p.damageTaken=Math.round((p.damageTaken+lost)*10)/10;spawnSkillBanner('😵 꿀잠 실패 · 현재 HP 절반','#64748b');spawnAttackFx(p.x,p.y,'#64748b','꿀잠자기 실패',1.4);floater(p.x,p.y-p.r-20,`HP -${lost.toFixed(1)}`,'#64748b',17,.9);updateUI();return {success:false,lost};
+}
+function v174CompleteDrum(p){
+  p.data.v174DrumCount=(p.data.v174DrumCount||0)+1;p.data.v174HangSpeed=v174Finite((p.data.v174HangSpeed||300)*1.5,300,50000);p.data.v174HangDamage=v174Finite((p.data.v174HangDamage||10)*2,10,10485760);
+  spawnSkillBanner(`🥁 드럼치기 ${p.data.v174DrumCount}회 · 한교동 강화`,'#54a9a1');spawnAttackFx(p.x,p.y,'#54a9a1','드럼치기',1.6);floater(p.x,p.y-p.r-24,`한교동 속도 ${Math.round(p.data.v174HangSpeed)} · 피해 ${Math.round(p.data.v174HangDamage)}`,'#278d86',15,1.05);
+}
+function v174PlayerContact(actor,target){
+  if(!actor?.alive||!target?.alive||!isEnemy(actor,target)||!v174Ready(actor,target,'v174ContactCd',.46))return;
+  if(actor.id==='shin_jimin')v174ApplyLoveDot(actor,target);
+  if(actor.id==='park_hanul'){
+    actor.data.v174InsultHits=(actor.data.v174InsultHits||0)+1;
+    if(actor.data.v174InsultHits>=3){actor.data.v174InsultHits=0;actor.data.v174InsultPending.push(1);floater(actor.x,actor.y-actor.r-17,'🀄 1초 뒤 욕설 발사','#b91c1c',13,.7);}
+  }
+  if(actor.id==='jo_sohyun'){
+    actor.data.v174DrumHits=(actor.data.v174DrumHits||0)+1;
+    if(actor.data.v174DrumHits>=3){actor.data.v174DrumHits=0;actor.data.v174DrumPending=(actor.data.v174DrumPending||0)+1;if(actor.data.v174DrumCast<=0)actor.data.v174DrumCast=1;floater(actor.x,actor.y-actor.r-17,'🥁 드럼 시전 1초','#278d86',13,.7);}
+    const dealt=damage(target,15,actor,'검도',{contact:true});if(dealt>0)heal(actor,10,actor,'검도',true);v174Knock(target,actor,980);
+  }
+}
+
+const _v174NormalSpeed=normalSpeed;
+normalSpeed=function(p){let value=_v174NormalSpeed(p);if(p?.id==='shin_jimin'&&(p.data?.v174Glasses||0)>0)value*=3;return v174Finite(value,p?.speed||100,50000);};
+const _v174EffectiveScale=effectiveScale;
+effectiveScale=function(p){let value=_v174EffectiveScale(p);if((p?.data?.v174ExtremeSlowTimer||0)>0)value*=.2;if((p?.data?.v174HangSlowTimer||0)>0)value*=.5;return v174Finite(value,1,10);};
+
+const _v174Damage=damage;
+damage=function(target,amount,source,skill='공격',opts={}){
+  if(target?.id==='jo_sohyun'&&(target.data?.v174Invuln||0)>0&&!opts.trueDamage){floater(target.x,target.y-target.r-14,'😴 꿀잠 무적','#54a9a1',13,.45);return 0;}
+  let scaled=v174Finite(amount,0,1e9);
+  if(source?.id==='shin_jimin'&&(source.data?.v174Glasses||0)>0&&!opts.v174NoAttackBuff)scaled*=2.5;
+  if(source?.id==='park_hanul'&&!opts.v174NoAttackBuff)scaled*=v174Finite(source.data?.v174ExplosionMult||1,1,1048576);
+  const dealt=_v174Damage(target,v174Finite(scaled,0,1e9),source,skill,opts);
+  if(dealt>0&&target?.id==='shin_jimin'&&(target.data?.v174Glasses||0)>0){target.data.v174Glasses=Math.max(0,target.data.v174Glasses-1);normalizeSpeed(target,normalSpeed(target));floater(target.x,target.y-target.r-24,`👓 안경 -1 · ${target.data.v174Glasses}개`,'#111',13,.7);}
+  if(target?.id==='jo_sohyun'&&!target.alive&&game?.v174Summons)game.v174Summons=game.v174Summons.filter(s=>s.owner!==target);
+  return dealt;
+};
+
+const _v174OnWallHit=onWallHit;
+onWallHit=function(p){
+  const result=_v174OnWallHit(p);if(!p?.alive)return result;
+  if(p.id==='shin_jimin'){
+    p.data.v174GlassesWalls=(p.data.v174GlassesWalls||0)+1;
+    if(p.data.v174GlassesWalls>=3){p.data.v174GlassesWalls=0;p.data.v174Glasses=(p.data.v174Glasses||0)+1;normalizeSpeed(p,normalSpeed(p));spawnAttackFx(p.x,p.y,'#111','뿔테안경 장착',1.3);floater(p.x,p.y-p.r-23,`👓 뿔테안경 ×${p.data.v174Glasses}`,'#111',16,.9);}
+  }
+  if(p.id==='park_hanul'){
+    p.data.v174MaraWalls=(p.data.v174MaraWalls||0)+1;p.data.v174ExplosionWalls=(p.data.v174ExplosionWalls||0)+1;
+    if(p.data.v174MaraWalls>=3){p.data.v174MaraWalls=0;v174SpawnMara(p);}
+    if(p.data.v174ExplosionWalls>=10){p.data.v174ExplosionWalls=0;v174TriggerExplosion(p,null);}
+  }
+  if(p.id==='jo_sohyun'){
+    p.data.v174SleepWalls=(p.data.v174SleepWalls||0)+1;
+    if(p.data.v174SleepWalls>=3){p.data.v174SleepWalls=0;v174TriggerSleep(p,null);}
+  }
+  return result;
+};
+
+const _v174Collide=collide;
+collide=function(a,b){
+  const valid=!!(a?.alive&&b?.alive&&!a.hidden&&!b.hidden);
+  const result=_v174Collide(a,b);
+  // 기존 충돌 반동 계산 뒤 신규 접촉 스킬을 처리해 검도의 강한 밀치기가 덮어써지지 않게 한다.
+  if(valid&&a?.alive&&b?.alive&&!a.hidden&&!b.hidden){v174PlayerContact(a,b);v174PlayerContact(b,a);}
+  return result;
+};
+
+function v174UpdateTimers(dt){
+  for(const p of game.players){
+    if(!p.data)continue;
+    p.data.v174Invuln=Math.max(0,(p.data.v174Invuln||0)-dt);p.data.v174ExtremeSlowTimer=Math.max(0,(p.data.v174ExtremeSlowTimer||0)-dt);p.data.v174HangSlowTimer=Math.max(0,(p.data.v174HangSlowTimer||0)-dt);
+    const queue=p.data.v174ExtremeSlowQueue||[];for(let i=queue.length-1;i>=0;i--){queue[i]-=dt;if(queue[i]<=0){p.data.v174ExtremeSlowTimer=Math.max(p.data.v174ExtremeSlowTimer,4);queue.splice(i,1);floater(p.x,p.y-p.r-18,'🔻 4초 80% 감속','#e11d48',13,.65);}}
+    if(p.id==='park_hanul'&&p.alive){for(let i=p.data.v174InsultPending.length-1;i>=0;i--){p.data.v174InsultPending[i]-=dt;if(p.data.v174InsultPending[i]<=0){p.data.v174InsultPending.splice(i,1);v174FireInsult(p);}}}
+    if(p.id==='jo_sohyun'&&p.alive&&p.data.v174DrumCast>0){p.data.v174DrumCast=Math.max(0,p.data.v174DrumCast-dt);if(p.data.v174DrumCast===0&&p.data.v174DrumPending>0){p.data.v174DrumPending--;v174CompleteDrum(p);if(p.data.v174DrumPending>0)p.data.v174DrumCast=1;}}
+    const dot=p.data.v174LoveDot;if(dot&&p.alive){dot.remaining-=dt;dot.tick-=dt;while(dot.tick<=0&&dot.remaining>=-.001&&p.alive){dot.tick+=1;dot.ticks++;damage(p,.5,dot.owner,'연애정병',{allowDeadSource:true});if(dot.ticks>=10)break;}if(dot.remaining<=0||dot.ticks>=10)delete p.data.v174LoveDot;}
+  }
+}
+function v174UpdateShots(dt){
+  for(const s of game.v174Shots){
+    s.life-=dt;if(s.delay>0){s.delay-=dt;continue;}
+    const distance=Math.hypot(s.vx,s.vy)*dt,steps=Math.max(1,Math.min(24,Math.ceil(distance/6))),step=dt/steps;
+    for(let k=0;k<steps&&s.life>0;k++){
+      s.x+=s.vx*step;s.y+=s.vy*step;
+      if(s.x<s.r||s.x>W-s.r||s.y<s.r||s.y>H-s.r){s.life=0;break;}
+      for(const q of game.players){if(!q.alive||q.hidden||!isEnemy(s.owner,q))continue;if(Math.hypot(q.x-s.x,q.y-s.y)<q.r+s.r){damage(q,s.damage,s.owner,s.type==='mara'?'마라탕발사':`중국어로 욕하기 · ${s.char}`,s.type==='insult'?{language:true}:{});s.life=0;break;}}
+    }
+  }
+  game.v174Shots=game.v174Shots.filter(s=>s.life>0);
+}
+function v174UpdateDiscs(dt){
+  for(const d of game.v174Discs){d.age+=dt;d.life-=dt;if(!d.owner?.alive){d.life=0;continue;}d.angle+=dt*8.5;const rr=d.owner.r+28;d.x=d.owner.x+Math.cos(d.angle)*rr;d.y=d.owner.y+Math.sin(d.angle)*rr;for(const q of game.players){if(!q.alive||q.hidden||!isEnemy(d.owner,q)||d.hit.has(v174Uid(q)))continue;if(Math.hypot(q.x-d.x,q.y-d.y)<q.r+d.r){d.hit.add(v174Uid(q));damage(q,15,d.owner,'극우 · 빨간 원반');v174Knock(q,d.owner,1050);(q.data.v174ExtremeSlowQueue||(q.data.v174ExtremeSlowQueue=[])).push(1);}}}
+  game.v174Discs=game.v174Discs.filter(d=>d.life>0);
+}
+function v174SummonContact(s,q,force=false){
+  if(!s?.owner?.alive||!q?.alive||q.hidden||!isEnemy(s.owner,q))return 0;
+  if(!force&&Math.hypot(q.x-s.x,q.y-s.y)>=s.r+q.r)return 0;
+  if(!v174Ready(s,q,'contactCd',.5))return 0;
+  const dealt=damage(q,v174Finite(s.owner.data.v174HangDamage||10,10,10485760),s.owner,'한교동과함께');
+  if(dealt>0){q.data.v174HangSlowTimer=Math.max(q.data.v174HangSlowTimer||0,5);v174Knock(q,s,520);}
+  return dealt;
+}
+function v174UpdateSummons(dt){
+  game.v174Summons=game.v174Summons.filter(s=>s.owner?.alive&&!s.owner.hidden);
+  for(const s of game.v174Summons){
+    const speed=v174Finite(s.owner.data.v174HangSpeed||300,300,50000),mag=Math.hypot(s.vx,s.vy)||1;s.vx=s.vx/mag*speed;s.vy=s.vy/mag*speed;
+    const distance=speed*dt,steps=Math.max(1,Math.min(120,Math.ceil(distance/Math.max(4,s.r*.6)))),step=dt/steps;
+    for(let k=0;k<steps;k++){
+      s.x+=s.vx*step;s.y+=s.vy*step;
+      if(s.x<s.r){s.x=s.r;s.vx=Math.abs(s.vx);}if(s.x>W-s.r){s.x=W-s.r;s.vx=-Math.abs(s.vx);}if(s.y<s.r){s.y=s.r;s.vy=Math.abs(s.vy);}if(s.y>H-s.r){s.y=H-s.r;s.vy=-Math.abs(s.vy);}
+      for(const q of game.players){if(v174SummonContact(s,q)){s.vx=-s.vx;s.vy=-s.vy;}}
+    }
+  }
+}
+function v174UpdateFailureFx(dt){for(const f of game.v174FailureBursts)f.life-=dt;game.v174FailureBursts=game.v174FailureBursts.filter(f=>f.life>0);}
+
+const _v174Tick=tick;
+tick=function(dt){
+  if(game&&!game.over){v174UpdateTimers(dt);v174UpdateShots(dt);v174UpdateDiscs(dt);v174UpdateSummons(dt);v174UpdateFailureFx(dt);for(const p of game.players){if(p.id==='shin_jimin'&&p.alive){p.cool.v174Disc=Math.max(0,(p.cool.v174Disc||0)-dt);if(p.cool.v174Disc<=0){p.cool.v174Disc=2;v174SpawnDiscs(p);}}}}
+  return _v174Tick(dt);
+};
+
+function v174DrawCircleImage(entity,label=''){
+  ctx.save();ctx.translate(entity.x,entity.y);ctx.shadowColor='#0006';ctx.shadowBlur=7;ctx.beginPath();ctx.arc(0,0,entity.r,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.save();ctx.beginPath();ctx.arc(0,0,entity.r-2,0,Math.PI*2);ctx.clip();const im=entity.imageObj;if(im?.complete&&im.naturalWidth)ctx.drawImage(im,-entity.r,-entity.r,entity.r*2,entity.r*2);else{ctx.fillStyle='#65c7c3';ctx.fillRect(-entity.r,-entity.r,entity.r*2,entity.r*2);}ctx.restore();ctx.shadowBlur=0;ctx.lineWidth=3;ctx.strokeStyle=entity.color||'#65c7c3';ctx.beginPath();ctx.arc(0,0,entity.r-1,0,Math.PI*2);ctx.stroke();if(label){ctx.fillStyle='#176e69';ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.font='1000 10px Arial';ctx.textAlign='center';ctx.strokeText(label,0,-entity.r-8);ctx.fillText(label,0,-entity.r-8);}ctx.restore();
+}
+function v174DrawExtras(){
+  if(!game)return;
+  for(const s of game.v174Summons)v174DrawCircleImage(s,'한교동');
+  for(const d of game.v174Discs){ctx.save();ctx.translate(d.x,d.y);ctx.rotate(d.angle*2);ctx.shadowColor='#ff244f';ctx.shadowBlur=16;ctx.fillStyle='#e11d48';ctx.beginPath();ctx.ellipse(0,0,15,6,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#7f1d1d';ctx.lineWidth=2;ctx.stroke();ctx.restore();}
+  for(const s of game.v174Shots){if(s.delay>0)continue;ctx.save();ctx.translate(s.x,s.y);ctx.rotate(Math.atan2(s.vy,s.vx));ctx.textAlign='center';ctx.textBaseline='middle';ctx.shadowColor=s.type==='mara'?'#ef6c32':'#b91c1c';ctx.shadowBlur=9;ctx.font=s.type==='mara'?'17px Arial':'1000 18px "Noto Sans CJK SC",Arial';ctx.fillStyle='#b91c1c';if(s.type==='mara')ctx.fillText('🍲',0,0);else ctx.fillText(s.char,0,0);ctx.restore();}
+  for(const f of game.v174FailureBursts){const q=f.life/f.max;ctx.save();ctx.globalAlpha=q;ctx.translate(f.x,f.y);ctx.rotate((1-q)*7);ctx.strokeStyle=f.color;ctx.shadowColor=f.color;ctx.shadowBlur=26;for(let i=0;i<4;i++){ctx.lineWidth=7-i;ctx.beginPath();ctx.arc(0,0,f.r+(1-q)*90+i*12,i*.6,Math.PI*1.2+i*.6);ctx.stroke();}ctx.restore();}
+  for(const p of game.players){if(!p.alive||p.hidden)continue;if(p.id==='shin_jimin'&&(p.data.v174Glasses||0)>0){ctx.save();ctx.translate(p.x,p.y);ctx.strokeStyle='#111';ctx.lineWidth=Math.max(2,p.r*.1);ctx.fillStyle='rgba(255,255,255,.12)';const ey=-p.r*.08,ew=p.r*.72,eh=p.r*.48;ctx.beginPath();ctx.roundRect(-p.r*.78,ey-eh/2,ew,eh,5);ctx.roundRect(p.r*.06,ey-eh/2,ew,eh,5);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-p.r*.06,ey);ctx.lineTo(p.r*.06,ey);ctx.stroke();ctx.fillStyle='#111';ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.font='1000 12px Arial';ctx.textAlign='center';ctx.strokeText(`×${p.data.v174Glasses}`,0,-p.r-17);ctx.fillText(`×${p.data.v174Glasses}`,0,-p.r-17);ctx.restore();}if(p.id==='jo_sohyun'&&(p.data.v174Invuln||0)>0){ctx.save();ctx.strokeStyle='#77e4d8';ctx.lineWidth=6;ctx.shadowColor='#77e4d8';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(p.x,p.y,p.r+13,0,Math.PI*2);ctx.stroke();ctx.font='18px Arial';ctx.textAlign='center';ctx.fillText('💤',p.x,p.y-p.r-20);ctx.restore();}}
+}
+const _v174Draw=draw;
+draw=function(){const result=_v174Draw();v174DrawExtras();return result;};
+
+const _v174StatusText=statusText;
+statusText=function(p){const base=_v174StatusText(p),a=[];if(p?.id==='shin_jimin'){a.push(`👓 뿔테안경 ×${p.data.v174Glasses||0} · 벽 ${p.data.v174GlassesWalls||0}/3`);a.push(`🔴 극우 ${Math.max(0,p.cool.v174Disc||0).toFixed(1)}s`);}if(p?.id==='park_hanul'){a.push(`🍲 마라탕 벽 ${p.data.v174MaraWalls||0}/3`);a.push(`🀄 충돌 ${p.data.v174InsultHits||0}/3${p.data.v174InsultPending?.length?` · 예약 ${p.data.v174InsultPending.length}`:''}`);a.push(`💥 정병폭발 벽 ${p.data.v174ExplosionWalls||0}/10 · 강화 ×${p.data.v174ExplosionMult||1}`);}if(p?.id==='jo_sohyun'){const s=v174JoSummon(p);a.push(`😴 꿀잠 벽 ${p.data.v174SleepWalls||0}/3${p.data.v174Invuln>0?` · 무적 ${p.data.v174Invuln.toFixed(1)}s`:''}`);a.push(`🥁 충돌 ${p.data.v174DrumHits||0}/3 · 강화 ${p.data.v174DrumCount||0}회${p.data.v174DrumCast>0?` · 시전 ${p.data.v174DrumCast.toFixed(1)}s`:''}`);a.push(`🐟 한교동 속도 ${Math.round(p.data.v174HangSpeed||300)} · 피해 ${Math.round(p.data.v174HangDamage||10)}${s?' · 활동 중':' · 없음'}`);}return a.length?((base&&base!=='정상'?base+' · ':'')+a.join(' · ')):base;};
+
+const _v174ResetBattle=resetBattle;
+resetBattle=function(){
+  const result=_v174ResetBattle();game.v174Shots=[];game.v174Discs=[];game.v174Summons=[];game.v174FailureBursts=[];
+  for(const p of game.players){p.data.v174Uid=`${p.id}_${Math.random().toString(36).slice(2)}`;p.data.v174ContactCd={};p.data.v174ExtremeSlowQueue=[];p.data.v174ExtremeSlowTimer=0;p.data.v174HangSlowTimer=0;
+    if(p.id==='shin_jimin'){Object.assign(p.data,{v174Glasses:0,v174GlassesWalls:0});p.cool.v174Disc=2;}
+    if(p.id==='park_hanul'){Object.assign(p.data,{v174MaraWalls:0,v174ExplosionWalls:0,v174ExplosionMult:1,v174ExplosionSuccesses:0,v174InsultHits:0,v174InsultPending:[]});}
+    if(p.id==='jo_sohyun'){Object.assign(p.data,{v174SleepWalls:0,v174Invuln:0,v174DrumHits:0,v174DrumPending:0,v174DrumCast:0,v174DrumCount:0,v174HangSpeed:300,v174HangDamage:10});game.v174Summons.push(v174CreateSummon(p));}
+  }
+  renderScores();renderBossAllies();updateUI();return result;
+};
+
+syncCharacterAssignments();
+const v174TeamSelect=$('teamCount');if(v174TeamSelect){const needed=orderedCharacterIds().length;while(v174TeamSelect.options.length<needed){const i=v174TeamSelect.options.length+1,o=document.createElement('option');o.value=String(i);o.textContent=i+'팀';v174TeamSelect.appendChild(o);}const note=v174TeamSelect.parentElement?.querySelector('span');if(note)note.textContent=`현재 ${needed}명 기준 최대 ${needed}팀`;}
+renderSetup();
+
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=V174_BUILD;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.damage=damage;window.__GONG_V138_TEST__.collide=collide;window.__GONG_V138_TEST__.resetBattle=resetBattle;window.__GONG_V138_TEST__.onWallHit=onWallHit;}
+const v174Test=Object.create(window.__GONG_V151_TEST__||null);
+Object.defineProperties(v174Test,{
+  build:{configurable:true,get(){return V174_BUILD;}},
+  roster:{configurable:true,get(){return {normal:orderedCharacterIds().length,boss:[...BOSS_IDS].filter(id=>DEFS[id]).length,total:Object.keys(DEFS).length};}},
+  arrays:{configurable:true,value(){return {shots:game?.v174Shots?.length||0,discs:game?.v174Discs?.length||0,summons:game?.v174Summons?.length||0,failures:game?.v174FailureBursts?.length||0};}},
+  summon:{configurable:true,value(){const s=game?.v174Summons?.[0];return s?{owner:s.owner.id,x:s.x,y:s.y,r:s.r,speed:s.owner.data.v174HangSpeed,damage:s.owner.data.v174HangDamage}:null;}},
+  forceExplosion:{configurable:true,value(success){const p=game?.players?.find(q=>q.id==='park_hanul');return v174TriggerExplosion(p,!!success);}},
+  forceSleep:{configurable:true,value(success){const p=game?.players?.find(q=>q.id==='jo_sohyun');return v174TriggerSleep(p,!!success);}},
+  forceInsult:{configurable:true,value(phrase='傻逼'){const p=game?.players?.find(q=>q.id==='park_hanul');return v174FireInsult(p,phrase);}},
+  forceDiscs:{configurable:true,value(){const p=game?.players?.find(q=>q.id==='shin_jimin');return p?v174SpawnDiscs(p):0;}},
+  forceContact:{configurable:true,value(actorId,targetId){const a=game?.players?.find(q=>q.id===actorId),b=game?.players?.find(q=>q.id===targetId);if(!a||!b)return false;const map=a.data.v174ContactCd||(a.data.v174ContactCd={});delete map[v174Uid(b)];v174PlayerContact(a,b);return true;}},
+  forceSummonContact:{configurable:true,value(targetId){const s=game?.v174Summons?.[0],q=game?.players?.find(p=>p.id===targetId);if(!s||!q)return null;delete (s.contactCd||(s.contactCd={}))[v174Uid(q)];const before=q.hp,dealt=v174SummonContact(s,q,true);return {before,after:q.hp,dealt,slow:q.data.v174HangSlowTimer||0};}},
+  forceDrum:{configurable:true,value(){const p=game?.players?.find(q=>q.id==='jo_sohyun');if(!p)return null;v174CompleteDrum(p);return {count:p.data.v174DrumCount,speed:p.data.v174HangSpeed,damage:p.data.v174HangDamage};}},
+  playerFull:{configurable:true,value(id){const p=game?.players?.find(q=>q.id===id);return p?{id:p.id,hp:p.hp,maxHp:p.maxHp,alive:p.alive,speed:normalSpeed(p),damage:p.damageDealt,kills:p.kills,healing:p.healingDone,data:JSON.parse(JSON.stringify(p.data,(k,v)=>typeof v==='object'&&v&&('imageObj'in v||'owner'in v)?undefined:v))}:null;}},
+  finiteV174:{configurable:true,value(){if(!game)return false;const nums=[];for(const p of game.players)nums.push(p.hp,p.maxHp,p.x,p.y,p.vx,p.vy,p.damageDealt,p.healingDone);for(const s of game.v174Summons||[])nums.push(s.x,s.y,s.vx,s.vy,s.owner.data.v174HangSpeed,s.owner.data.v174HangDamage);for(const s of game.v174Shots||[])nums.push(s.x,s.y,s.vx,s.vy,s.life,s.delay);return nums.every(Number.isFinite);}}
+});
+window.__GONG_V174_TEST__=v174Test;
+console.info('[V174] 신규 3명·한교동 전투 패치 로드 완료');
 
 
 })();
