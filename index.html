@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V166_TEAM_AUTO_ASSIGN_SHOWDOWN_CLEAN -->
+<!-- BUILD: V167_TEAM_NUMBER_INPUT_FIX -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -24207,7 +24207,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V166_TEAM_AUTO_ASSIGN_SHOWDOWN_CLEAN';
+  const V166_BUILD='V167_TEAM_NUMBER_INPUT_FIX';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
@@ -24307,7 +24307,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     inputs.appendChild(countField);
     const memberField=document.createElement('label');
     memberField.className='team-auto-field';
-    memberField.innerHTML='<span>한 팀당 팀원 수</span><input id="teamMemberCount" type="number" inputmode="numeric" min="1" value="3" aria-label="한 팀당 팀원 수">';
+    memberField.innerHTML='<span>한 팀당 팀원 수</span><input id="teamMemberCount" type="number" inputmode="numeric" min="1" value="3" autocomplete="off" aria-label="한 팀당 팀원 수">';
     inputs.appendChild(memberField);
     card.appendChild(inputs);
     const modeLabel=document.createElement('div');
@@ -24333,7 +24333,13 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       });
     });
     run.addEventListener('click',()=>v166AutoAssignTeams());
-    $('teamMemberCount').addEventListener('input',v166UpdateTeamAutoLimit);
+    const memberInput=$('teamMemberCount');
+    memberInput.addEventListener('input',v166UpdateTeamAutoLimit);
+    memberInput.addEventListener('focus',()=>{
+      // 모바일 숫자 입력에서 기존 기본값 뒤에 새 숫자가 붙지 않도록 전체 선택한다.
+      setTimeout(()=>{try{memberInput.select();}catch(_){ }},0);
+    });
+    memberInput.addEventListener('blur',v166UpdateTeamAutoLimit);
     teamCount.addEventListener('change',v166UpdateTeamAutoLimit);
     v166UpdateTeamAutoLimit();
   }
@@ -24345,7 +24351,18 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const teamN=Math.max(2,Number(teamCount.value)||2);
     const max=Math.max(1,Math.floor(orderedCharacterIds().length/teamN));
     input.max=String(max);
-    let value=Math.floor(Number(input.value)||1);
+    const raw=String(input.value??'').trim();
+    // 입력 중에는 빈칸을 그대로 허용한다. 이전에는 빈칸을 즉시 1로 되돌려
+    // 2를 입력하면 12가 되는 모바일 문제가 있었다.
+    if(raw===''){
+      if(summary&&!v166LastResult)summary.textContent=`최대 ${max}명/팀 · 팀원 수를 입력해.`;
+      return;
+    }
+    let value=Math.floor(Number(raw));
+    if(!Number.isFinite(value)){
+      if(summary&&!v166LastResult)summary.textContent='팀원 수는 숫자로 입력해.';
+      return;
+    }
     value=Math.max(1,Math.min(max,value));
     input.value=String(value);
     if(summary&&!v166LastResult)summary.textContent=`최대 ${max}명/팀 · 현재 조건은 총 ${teamN*value}명`;
@@ -24362,7 +24379,18 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   function v166AutoAssignTeams(forcedMode=v166AutoMode,forcedTeamN=null,forcedSize=null){
     if(mode!=='team'){v166SetSummary('팀전 모드를 먼저 선택해 줘.','error');return null;}
     const teamN=Math.max(2,Math.floor((forcedTeamN??Number(teamCount.value))||2));
-    const size=Math.max(1,Math.floor((forcedSize??Number($('teamMemberCount')?.value))||1));
+    const sizeRaw=forcedSize??String($('teamMemberCount')?.value??'').trim();
+    if(sizeRaw===''||!Number.isFinite(Number(sizeRaw))){
+      v166SetSummary('한 팀당 팀원 수를 입력해 줘.','error');
+      $('teamMemberCount')?.focus();
+      return null;
+    }
+    const size=Math.floor(Number(sizeRaw));
+    if(size<1){
+      v166SetSummary('한 팀당 팀원 수는 1명 이상이어야 해.','error');
+      $('teamMemberCount')?.focus();
+      return null;
+    }
     const all=orderedCharacterIds();
     const total=teamN*size;
     if(teamN!==Number(teamCount.value))teamCount.value=String(teamN);
@@ -24412,6 +24440,22 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     teamPowers:{configurable:true,value(){return v166LastResult?.power||null;}}
   });
   window.__GONG_V166_TEST__=v166Test;
+  const v167Test=Object.create(v166Test);
+  Object.defineProperties(v167Test,{
+    build:{configurable:true,get(){return V166_BUILD;}},
+    teamInput:{configurable:true,get(){
+      const input=$('teamMemberCount');
+      return {value:input?.value??null,min:input?.min??null,max:input?.max??null,focused:document.activeElement===input};
+    }},
+    clearTeamMemberCount:{configurable:true,value(){
+      const input=$('teamMemberCount');
+      if(!input)return null;
+      input.value='';
+      input.dispatchEvent(new Event('input',{bubbles:true}));
+      return input.value;
+    }}
+  });
+  window.__GONG_V167_TEST__=v167Test;
 })();
 
 })();
