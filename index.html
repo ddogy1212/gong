@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V162_SUMMON_CREDIT_SPIKE4_HORMONE_CONTACT_DROPOUT_GUARDIAN_PRIORITY_DEFENSE -->
+<!-- BUILD: V163_MINJI_DROPOUT_REMOVED -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -23468,15 +23468,14 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
 
   /* =========================================================
-     V162 · 소환 통계 귀속 · 가시 4개 · 효르몬 접촉 폭발 · 신규 밸런스
+     V163 · 서민지 학탈의 왕 삭제 · V162 밸런스 유지
      ========================================================= */
-  const V162_BUILD='V162_SUMMON_CREDIT_SPIKE4_HORMONE_CONTACT_DROPOUT_GUARDIAN_PRIORITY_DEFENSE';
-  window.__GONG_V162_BUILD__=V162_BUILD;
+  const V163_BUILD='V163_MINJI_DROPOUT_REMOVED';
+  window.__GONG_V163_BUILD__=V163_BUILD;
   const V162_POWERLESS_DURATION=2;
   const V162_PHONE_MIN=5;
   const V162_PHONE_MAX=6;
   const V162_HYOBIN_SNEEZE_MULT=2;
-  const V162_DROPOUT_RETURN=4;
 
   // ----- 정적 수치·설명 -----
   DEFS.ochaeun.hp=250;
@@ -23526,20 +23525,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       }
     }
   }
-  if(DEFS.seominji&&!String(DEFS.seominji.skills||'').includes('학탈의 왕')){
-    DEFS.seominji.skills=`학탈의 왕 · ${DEFS.seominji.skills||''}`;
-    DEFS.seominji.role=`동반 이탈·${DEFS.seominji.role||''}`;
-  }
-  if(SKILL_INFO.seominji){
-    if(!String(SKILL_INFO.seominji.summary||'').includes('동반 이탈'))SKILL_INFO.seominji.summary=`동반 이탈·${SKILL_INFO.seominji.summary||''}`;
-    if(Array.isArray(SKILL_INFO.seominji.skills)&&!SKILL_INFO.seominji.skills.some(s=>s?.name==='학탈의 왕')){
-      SKILL_INFO.seominji.skills.unshift({
-        kind:'주기 충돌 특수기',type:'special',name:'학탈의 왕',
-        desc:'2~4초마다 “학탈할사람?”을 외치며 함께 학탈할 상대를 찾는다. 이 상태에서 적과 부딪히면 서로 5 피해를 받고 4초 동안 함께 전장에서 사라졌다가 복귀한다.',
-        points:['첫 탐색까지 2~4초','탐색 중 공 위에 “학탈할사람?” 표시','적과 충돌 시 서로 5 피해','두 캐릭터가 모두 생존하면 4초간 함께 전장 이탈','4초 뒤 각자의 이탈 전 위치로 복귀']
-      });
-    }
-  }
   if(SKILL_INFO.choiyujin){
     const skill=SKILL_INFO.choiyujin.skills?.find(s=>s?.name==='운명론적멘토멘티');
     if(skill&&Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('피해량과 킬'))){
@@ -23576,96 +23561,13 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     return result;
   };
 
-  // ----- 서민지 학탈의 왕 -----
-  function v162InitMinji(p){
-    if(!p?.data)return;
-    p.data.v162DropoutSearch=false;
-    p.data.v162DropoutAskTimer=rand(2,4);
-    p.data.v162DropoutRepeatTimer=0;
-    p.data.v162DropoutGrace=0;
-  }
-  function v162StartDropoutSearch(p){
-    if(!p?.alive||p.hidden||v160IsPowerless(p))return false;
-    p.data.v162DropoutSearch=true;
-    p.data.v162DropoutRepeatTimer=rand(2,4);
-    spawnAttackFx(p.x,p.y,'#496b54','학탈의 왕',1.15);
-    floater(p.x,p.y-p.r-28,'🏫 학탈할사람?','#496b54',17,1.05);
-    return true;
-  }
-  function v162TemporaryAbsenceActive(){
-    return !!game?.v162DropoutAbsences?.some(a=>a.active);
-  }
-  function v162ReturnDropoutPair(state){
-    if(!state?.active)return;
-    state.active=false;
-    if(state.entries?.length===2){
-      const a=state.entries[0],b=state.entries[1];
-      const dx=b.x-a.x,dy=b.y-a.y,m=Math.hypot(dx,dy)||1,ux=dx/m,uy=dy/m;
-      a.x-=ux*24;a.y-=uy*24;b.x+=ux*24;b.y+=uy*24;
-    }
-    for(const entry of state.entries){
-      const p=entry.player;
-      if(!p?.alive)continue;
-      p.hidden=false;
-      p.x=clamp(entry.x,p.r,W-p.r);
-      p.y=clamp(entry.y,p.r,H-p.r);
-      p.frozen=0;
-      p.data.v162DropoutGrace=.45;
-      normalizeSpeed(p,normalSpeed(p));
-      spawnAttackFx(p.x,p.y,'#5f7f68','학탈 복귀',1.2);
-      floater(p.x,p.y-p.r-20,'🏫 4초 학탈 복귀','#496b54',14,.8);
-    }
-    const minji=state.minji;
-    if(minji?.alive){
-      minji.data.v162DropoutSearch=false;
-      minji.data.v162DropoutAskTimer=rand(2,4);
-    }
-    if(!game.over)checkEnd();
-  }
-  function v162TriggerDropout(minji,target){
-    if(!minji?.alive||!target?.alive||minji.hidden||target.hidden||!isEnemy(minji,target)||!minji.data?.v162DropoutSearch)return false;
-    if((minji.data.v162DropoutGrace||0)>0||(target.data?.v162DropoutGrace||0)>0)return false;
-    minji.data.v162DropoutSearch=false;
-    const beforeDefer=game.deferEndCheck;
-    game.deferEndCheck=true;
-    const minjiPos={x:minji.x,y:minji.y},targetPos={x:target.x,y:target.y};
-    try{
-      damage(target,5,minji,'학탈의 왕',{contact:true});
-      if(minji.alive)damage(minji,5,target,'학탈의 왕',{contact:true});
-    }finally{game.deferEndCheck=beforeDefer;}
-    if(minji.alive&&target.alive){
-      minji.hidden=true;target.hidden=true;
-      minji.vx=minji.vy=target.vx=target.vy=0;
-      const state={active:true,timer:V162_DROPOUT_RETURN,minji,entries:[{player:minji,...minjiPos},{player:target,...targetPos}]};
-      game.v162DropoutAbsences=game.v162DropoutAbsences||[];
-      game.v162DropoutAbsences.push(state);
-      spawnAttackFx((minjiPos.x+targetPos.x)/2,(minjiPos.y+targetPos.y)/2,'#496b54','함께 학탈',1.6);
-      log(`<b>서민지</b>와 <b>${target.name}</b>이(가) 서로 5 피해를 받고 4초 동안 함께 학탈!`);
-      updateUI();
-      return true;
-    }
-    if(!beforeDefer&&!game.over)checkEnd();
-    return false;
-  }
-
-  // 임시 이탈 중에는 승패를 확정하지 않는다.
-  const _v162CheckEnd=checkEnd;
-  checkEnd=function(){
-    if(v162TemporaryAbsenceActive()){game.pendingEndCheck=true;return;}
-    return _v162CheckEnd();
-  };
-
-  // ----- 효르몬: 적과 실제 접촉했을 때만 폭발 + 학탈 충돌 -----
+  // ----- 효르몬: 적과 실제 접촉했을 때만 폭발 -----
   const _v162Collide=collide;
   collide=function(a,b){
     if(!a?.alive||!b?.alive||a.hidden||b.hidden)return _v162Collide(a,b);
     const touching=dist(a,b)<a.r+b.r;
     const hormoneEnemy=(a.data?.v151Hormone&&isEnemy(a,b))||(b.data?.v151Hormone&&isEnemy(b,a));
     if(hormoneEnemy&&!touching)return;
-    if(touching){
-      if(a.id==='seominji'&&a.data?.v162DropoutSearch&&isEnemy(a,b)&&v162TriggerDropout(a,b))return;
-      if(b.id==='seominji'&&b.data?.v162DropoutSearch&&isEnemy(b,a)&&v162TriggerDropout(b,a))return;
-    }
     return _v162Collide(a,b);
   };
 
@@ -23717,30 +23619,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
   const _v162Tick=tick;
   tick=function(dt){
-    if(game&&!game.over){
-      for(const p of game.players||[]){
-        if(p.data?.v162DropoutGrace>0)p.data.v162DropoutGrace=Math.max(0,p.data.v162DropoutGrace-dt);
-      }
-      const minji=game.players?.find(p=>p.id==='seominji');
-      if(minji?.alive&&!minji.hidden){
-        if(!minji.data.v162DropoutSearch){
-          minji.data.v162DropoutAskTimer=Math.max(0,(minji.data.v162DropoutAskTimer||0)-dt);
-          if(minji.data.v162DropoutAskTimer<=0)v162StartDropoutSearch(minji);
-        }else if(!v160IsPowerless(minji)){
-          minji.data.v162DropoutRepeatTimer=Math.max(0,(minji.data.v162DropoutRepeatTimer||0)-dt);
-          if(minji.data.v162DropoutRepeatTimer<=0){
-            minji.data.v162DropoutRepeatTimer=rand(2,4);
-            floater(minji.x,minji.y-minji.r-28,'🏫 학탈할사람?','#496b54',16,.85);
-          }
-        }
-      }
-      for(const state of game.v162DropoutAbsences||[]){
-        if(!state.active)continue;
-        state.timer=Math.max(0,state.timer-dt);
-        if(state.timer<=0)v162ReturnDropoutPair(state);
-      }
-      if(game.v162DropoutAbsences)game.v162DropoutAbsences=game.v162DropoutAbsences.filter(a=>a.active);
-    }
     const result=_v162Tick(dt);
     if(game&&!game.over)v162FixYesungStuck(dt);
     return result;
@@ -23750,7 +23628,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const _v162ResetBattle=resetBattle;
   resetBattle=function(){
     const result=_v162ResetBattle();
-    game.v162DropoutAbsences=[];
     for(const p of game.players||[]){
       p.data=p.data||{};
       if(p.id==='ochaeun'){p.maxHp=250;p.hp=250;}
@@ -23758,7 +23635,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       if(p.id==='yugun'){p.maxHp=228;p.hp=228;}
       if(p.id==='jongyeop'){p.maxHp=240;p.hp=240;}
       if(p.id==='jiwon'&&p.cool)p.cool.phone=rand(V162_PHONE_MIN,V162_PHONE_MAX);
-      if(p.id==='seominji')v162InitMinji(p);
       if(p.id==='yesung')p.data.v162StillTimer=0;
     }
     renderScores();renderBossAllies();updateUI();
@@ -23769,10 +23645,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const _v162StatusText=statusText;
   statusText=function(p){
     const base=_v162StatusText(p),extras=[];
-    if(p.id==='seominji'){
-      if(p.data?.v162DropoutSearch)extras.push('🏫 학탈할사람? · 충돌 대기');
-      else extras.push(`🏫 학탈 탐색 ${(p.data?.v162DropoutAskTimer||0).toFixed(1)}s`);
-    }
     if(p.id==='yoonseoyoung')extras.push('📣 호통 가시 4개');
     if(p.data?.v151Hormone)extras.push('💥 적 실제 충돌 시에만 폭발');
     if(p.id==='jiwon')extras.push('☎ 전화 5~6s · 무력화 2s');
@@ -23782,24 +23654,6 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     return extras.length?(base&&base!=='정상'?`${base} · ${extras.join(' · ')}`:extras.join(' · ')):base;
   };
 
-  const _v162Draw=draw;
-  draw=function(){
-    const result=_v162Draw();
-    const minji=game?.players?.find(p=>p.id==='seominji');
-    if(minji?.alive&&!minji.hidden&&minji.data?.v162DropoutSearch){
-      ctx.save();
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.font='1000 16px Arial';ctx.lineWidth=5;
-      ctx.strokeStyle='#f5f5f0';ctx.fillStyle='#496b54';
-      const text='🏫 학탈할사람?';
-      ctx.strokeText(text,minji.x,minji.y-minji.r-35);
-      ctx.fillText(text,minji.x,minji.y-minji.r-35);
-      ctx.strokeStyle='#5f7f68';ctx.lineWidth=3;ctx.globalAlpha=.55+.18*Math.sin((game.t||0)*7);
-      ctx.beginPath();ctx.arc(minji.x,minji.y,minji.r+12,0,Math.PI*2);ctx.stroke();
-      ctx.restore();
-    }
-    return result;
-  };
 
   // 열린 전투에도 즉시 수치 반영
   for(const p of game?.players||[]){
@@ -23810,25 +23664,24 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   }
 
   if(window.__GONG_V138_TEST__){
-    window.__GONG_V138_TEST__.build=V162_BUILD;
+    window.__GONG_V138_TEST__.build=V163_BUILD;
     window.__GONG_V138_TEST__.damage=damage;
     window.__GONG_V138_TEST__.collide=collide;
     window.__GONG_V138_TEST__.tick=tick;
     window.__GONG_V138_TEST__.checkEnd=checkEnd;
     window.__GONG_V138_TEST__.resetBattle=resetBattle;
   }
-  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V162_BUILD;}});
-  const v162Test=Object.create(window.__GONG_V161_TEST__||null);
-  Object.defineProperty(v162Test,'build',{configurable:true,get(){return V162_BUILD;}});
-  Object.defineProperties(v162Test,{
-    dropoutSearch:{configurable:true,value(){const p=game?.players?.find(q=>q.id==='seominji');if(!p)return false;p.data.v162DropoutAskTimer=0;v162StartDropoutSearch(p);return p.data.v162DropoutSearch;}},
-    dropoutCollision:{configurable:true,value(targetId){const m=game?.players?.find(q=>q.id==='seominji'),t=game?.players?.find(q=>q.id===targetId);if(!m||!t)return false;m.data.v162DropoutSearch=true;t.x=m.x+m.r+t.r-1;t.y=m.y;collide(m,t);return {minjiHidden:m.hidden,targetHidden:t.hidden,absences:(game.v162DropoutAbsences||[]).length};}},
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V163_BUILD;}});
+  const v163Test=Object.create(window.__GONG_V161_TEST__||null);
+  Object.defineProperty(v163Test,'build',{configurable:true,get(){return V163_BUILD;}});
+  Object.defineProperties(v163Test,{
     hormoneFarCollide:{configurable:true,value(hormoneId,targetId){const h=game?.players?.find(q=>q.id===hormoneId),t=game?.players?.find(q=>q.id===targetId);if(!h||!t)return null;h.x=80;h.y=80;t.x=W-80;t.y=H-80;collide(h,t);return h.alive;}},
     hormoneTouch:{configurable:true,value(hormoneId,targetId){const h=game?.players?.find(q=>q.id===hormoneId),t=game?.players?.find(q=>q.id===targetId);if(!h||!t)return null;h.data.v152SpawnGrace=0;h.x=t.x-t.r-h.r+1;h.y=t.y;const hp=t.hp;collide(h,t);return {hormoneAlive:h.alive,damage:hp-t.hp};}},
     powerlessDuration:{configurable:true,value:V162_POWERLESS_DURATION},
     phoneRange:{configurable:true,value:[V162_PHONE_MIN,V162_PHONE_MAX]}
   });
-  window.__GONG_V162_TEST__=v162Test;
+  window.__GONG_V162_TEST__=v163Test;
+  window.__GONG_V163_TEST__=v163Test;
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
 })();
