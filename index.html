@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V160_DISABLE_KOREAN_DECLINE_MINJAE_CONTACT_BALANCE -->
+<!-- BUILD: V161_MINJI220_JIWON_DISABLE3_PHONE4TO5_SIHU170 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -2101,8 +2101,8 @@ const SKILL_INFO={
         '방어막은 남아 있는 개수만큼 계속 누적',
         '전원 무적 시간에는 자해 피해가 들어가지 않으며 방어막도 획득하지 않음'
       ]},
-      {kind:'공격 스킬',type:'attack',name:'전화하기',desc:'3~8초 사이 무작위 시간마다 전화 공격을 건다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.',points:[
-        '발동 주기: 3~8초 사이 무작위',
+      {kind:'공격 스킬',type:'attack',name:'전화하기',desc:'4~5초 사이 무작위 시간마다 전화 공격을 건다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.',points:[
+        '발동 주기: 4~5초 사이 무작위',
         '일반 전화: 살아 있는 적 중 무작위 1명에게 기본 28 피해',
         '크리티컬 확률: 약 8%',
         '크리티컬 전화는 공격력 감소를 무시하고 적 전원에게 35 피해',
@@ -3753,7 +3753,7 @@ function resetBattle(){
     if(p.id==='seo'){p.cool={towel:rand(2,6)};p.data={attackMult:1,study:false,progress:0,duration:4,studyGap:.35,quietTimer:0,quietStage:0,contactCd:{}}}
     if(p.id==='min'){p.cool={talk:0,regen:7};p.data={contactCd:{},trackTarget:null,trackTime:0,trackFire:0,confessionStage:0,pendingConfessions:0}}
     if(p.id==='geun'){p.cool={glass:3};p.data={attackMult:1,hitCount:0,rageTimer:0,rageContactCd:{},rageTrail:0,tantrumUsed:false}}
-    if(p.id==='jiwon'){p.cool={paranoia:12,phone:rand(3,8),inferiority:0};p.data={shields:0,inferiorityCount:0}}
+    if(p.id==='jiwon'){p.cool={paranoia:12,phone:rand(4,5),inferiority:0};p.data={shields:0,inferiorityCount:0}}
     if(p.id==='doyun'){p.cool={mine:9,fit:13};p.data={loveShields:0,loveCd:{},fitTimer:0,fitProgress:0,fitHitCd:{},fitTrail:0,fitHitCount:0}}
     if(p.id==='sungmin'){p.cool={math:rand(4/3,10/3),chair:0};p.data={chairCount:0}}
   if(p.id==='junghoon'){p.cool={};p.data={hitCount:0,npcTimer:0,smellDelay:0,smellActive:false,smellTick:0,smellRadius:120,smellTargets:{}}}
@@ -9078,7 +9078,7 @@ function triggerParanoia(jiwon){
 }
 
 function callRandomEnemy(jiwon){
-  jiwon.cool.phone=rand(3,8);
+  jiwon.cool.phone=rand(4,5);
 
   const targets=enemies(jiwon);
   if(!targets.length)return;
@@ -23125,31 +23125,32 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
 
   /* =========================================================
-     V160 · 신규 밸런스 및 무력화 상태
-     - 서민지 HP 300 / 잼얘컬렉터 말풍선 고속화
-     - 김예원 국어감퇴시키기
-     - 김민재 충돌 시 10% 선상고백
-     - 이지원 전화하기 5초 무력화
-     - 문지현 HP 240 / 효르몬 속도 260
-     - 윤송현 자기 수호천사 초당 5
+     V161 · 추가 밸런스 조정
+     - 서민지 HP 220
+     - 이지원 전화하기 무력화 3초 · 쿨타임 4~5초
+     - 김시후 HP 170
+     - V160의 나머지 변경사항 유지
      ========================================================= */
-  const V160_BUILD='V160_DISABLE_KOREAN_DECLINE_MINJAE_CONTACT_BALANCE';
+  const V160_BUILD='V161_MINJI220_JIWON_DISABLE3_PHONE4TO5_SIHU170';
   window.__GONG_V160_BUILD__=V160_BUILD;
+  window.__GONG_V161_BUILD__=V160_BUILD;
   const V160_MINJI_BUBBLE_SPEED=960;
   const V160_HORMONE_SPEED=260;
-  const V160_POWERLESS_DURATION=5;
+  const V160_POWERLESS_DURATION=3;
 
   // ----- 정적 캐릭터·설명 수치 -----
-  DEFS.seominji.hp=300;
+  DEFS.seominji.hp=220;
   DEFS.jihyun.hp=240;
+  DEFS.kimsihu.hp=170;
   if(SKILL_INFO.seominji){
-    SKILL_INFO.seominji.hp='300';
+    SKILL_INFO.seominji.hp='220';
     const skill=SKILL_INFO.seominji.skills?.find(s=>s?.name==='잼얘컬렉터');
     if(skill&&Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('속도 960'))){
       skill.points.push('말풍선 속도: 960 · 기존보다 훨씬 빠르게 발사');
     }
   }
   if(SKILL_INFO.jihyun)SKILL_INFO.jihyun.hp='240';
+  if(SKILL_INFO.kimsihu)SKILL_INFO.kimsihu.hp='170';
 
   if(DEFS.yewon&&!String(DEFS.yewon.skills||'').includes('국어감퇴시키기')){
     DEFS.yewon.skills=`국어감퇴시키기 · ${DEFS.yewon.skills||''}`;
@@ -23176,11 +23177,12 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   if(SKILL_INFO.jiwon){
     const skill=SKILL_INFO.jiwon.skills?.find(s=>s?.name==='전화하기');
     if(skill){
-      skill.desc='3~8초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 5초 동안 무력화된다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.';
-      if(Array.isArray(skill.points)&&!skill.points.some(p=>String(p).includes('무력화'))){
-        skill.points.push('전화 피해를 실제로 받은 적: 5초 무력화');
-        skill.points.push('무력화 중 모든 패시브·스킬의 신규 발동 차단');
-        skill.points.push('공 위에 회색 X와 무력화 남은 시간 표시');
+      skill.desc='4~5초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 3초 동안 무력화된다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.';
+      if(Array.isArray(skill.points)){
+        skill.points=skill.points.map(p=>String(p).replace(/발동 주기:\s*3~8초 사이 무작위/g,'발동 주기: 4~5초 사이 무작위').replace(/전화 피해를 실제로 받은 적:\s*5초 무력화/g,'전화 피해를 실제로 받은 적: 3초 무력화'));
+        if(!skill.points.some(p=>String(p).includes('3초 무력화')))skill.points.push('전화 피해를 실제로 받은 적: 3초 무력화');
+        if(!skill.points.some(p=>String(p).includes('모든 패시브·스킬')))skill.points.push('무력화 중 모든 패시브·스킬의 신규 발동 차단');
+        if(!skill.points.some(p=>String(p).includes('회색 X')))skill.points.push('공 위에 회색 X와 무력화 남은 시간 표시');
       }
     }
   }
@@ -23225,8 +23227,8 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     target.data.v160PowerlessTimer=Math.max(target.data.v160PowerlessTimer||0,V160_POWERLESS_DURATION);
     target.data.v160PowerlessSource=source||target.data.v160PowerlessSource||null;
     spawnAttackFx(target.x,target.y,'#777d86','무력화',1.45);
-    floater(target.x,target.y-target.r-30,'✖ 무력화 5초','#666b73',17,1);
-    if(!was)log(`<b>${target.name}</b>: 전화하기에 맞아 5초 동안 모든 패시브·스킬이 무력화됨.`);
+    floater(target.x,target.y-target.r-30,'✖ 무력화 3초','#666b73',17,1);
+    if(!was)log(`<b>${target.name}</b>: 전화하기에 맞아 3초 동안 모든 패시브·스킬이 무력화됨.`);
     return true;
   }
 
@@ -23371,8 +23373,9 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       p.data=p.data||{};
       p.data.v160PowerlessTimer=0;
       p.data.v160PowerlessSource=null;
-      if(id==='seominji'){p.maxHp=300;p.hp=300;}
+      if(id==='seominji'){p.maxHp=220;p.hp=220;}
       if(id==='jihyun'){p.maxHp=240;p.hp=240;}
+      if(id==='kimsihu'){p.maxHp=170;p.hp=170;}
       if(id==='yewon'){p.data.v160KoreanHits={};p.data.v160KoreanCd={};}
       if(id==='min')p.data.v160ConfessionContactCd={};
       if(p.data.v151Hormone){
@@ -23425,8 +23428,9 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   // 현재 열린 화면에도 수치를 즉시 반영
   for(const p of game?.players||[]){
     const id=v160RealId(p);
-    if(id==='seominji'){p.maxHp=300;p.hp=Math.min(p.hp,300);}
+    if(id==='seominji'){p.maxHp=220;p.hp=Math.min(p.hp,220);}
     if(id==='jihyun'){p.maxHp=240;p.hp=Math.min(p.hp,240);}
+    if(id==='kimsihu'){p.maxHp=170;p.hp=Math.min(p.hp,170);}
     if(p.data?.v151Hormone){p.speed=V160_HORMONE_SPEED;normalizeSpeed(p,V160_HORMONE_SPEED);}
   }
 
@@ -23443,7 +23447,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   const v160Test=Object.create(window.__GONG_V159_TEST__||null);
   Object.defineProperty(v160Test,'build',{configurable:true,get(){return V160_BUILD;}});
   Object.defineProperties(v160Test,{
-    powerless:{configurable:true,value(id,seconds=5){const p=game?.players?.find(x=>v160RealId(x)===id);if(!p)return null;p.data.v160PowerlessTimer=seconds;return p.data.v160PowerlessTimer;}},
+    powerless:{configurable:true,value(id,seconds=3){const p=game?.players?.find(x=>v160RealId(x)===id);if(!p)return null;p.data.v160PowerlessTimer=seconds;return p.data.v160PowerlessTimer;}},
     powerlessTimer:{configurable:true,value(id){return game?.players?.find(x=>v160RealId(x)===id)?.data?.v160PowerlessTimer||0;}},
     realId:{configurable:true,value(id){const p=game?.players?.find(x=>v160RealId(x)===id);return p?v160RealId(p):null;}},
     koreanHits:{configurable:true,value(){const p=game?.players?.find(x=>v160RealId(x)==='yewon');return p?.data?.v160KoreanHits||{};}},
@@ -23453,6 +23457,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     hormoneSpeed:{configurable:true,value:V160_HORMONE_SPEED}
   });
   window.__GONG_V160_TEST__=v160Test;
+  window.__GONG_V161_TEST__=v160Test;
 
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
