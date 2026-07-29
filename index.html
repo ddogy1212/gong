@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE -->
+<!-- BUILD: V175_HP_BALANCE_JO_CONTACT_FIX -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1513,7 +1513,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE -->
+<!-- BUILD: V175_HP_BALANCE_JO_CONTACT_FIX -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -19846,7 +19846,7 @@ function frame(ts){
    V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+  const BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -20431,11 +20431,12 @@ function frame(ts){
     gameInfo(){return {exists:!!game,over:!!game?.over,key:game?._tournamentMatchKey||null,handled:!!game?._tournamentHandled,speed:timeScale};}
   };
   window.__GONG_V174_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V175_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
-  console.info('[V174] 신규 캐릭터 3명·한교동·64인 토너먼트·규모별 명예의 전당 로드 완료');
+  console.info('[V175] 64인 토너먼트·규모별 명예의 전당 및 신규 캐릭터 로드 완료');
 })();
 
 
@@ -24971,7 +24972,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+  const V166_BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
@@ -25226,8 +25227,9 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 /* =========================================================
    V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
    ========================================================= */
-const V174_BUILD='V174_NEW_CHARACTERS_TOURNAMENT_64_HALL_BY_SIZE';
+const V174_BUILD='V175_HP_BALANCE_JO_CONTACT_FIX';
 window.__GONG_V174_BUILD__=V174_BUILD;
+window.__GONG_V175_BUILD__=V174_BUILD;
 
 Object.assign(IMAGES,{
   park_hanul:'characters/park_hanul.png',
@@ -25236,17 +25238,17 @@ Object.assign(IMAGES,{
   hangyodon:'characters/hangyodon.png'
 });
 Object.assign(DEFS,{
-  shin_jimin:{id:'shin_jimin',name:'신지민',generation:20,color:'#d34a57',hp:200,speed:200,img:IMAGES.shin_jimin,role:'정병 지속 피해·안경 강화·회전 원반형',skills:'연애정병 · 뿔테안경 · 극우'},
-  park_hanul:{id:'park_hanul',name:'박한울',generation:21,color:'#d74831',hp:210,speed:210,img:IMAGES.park_hanul,role:'부채꼴 탄막·문자 연사·확률 누적 강화형',skills:'마라탕발사 · 중국어로 욕하기 · 정병폭발'},
+  shin_jimin:{id:'shin_jimin',name:'신지민',generation:20,color:'#d34a57',hp:290,speed:200,img:IMAGES.shin_jimin,role:'정병 지속 피해·안경 강화·회전 원반형',skills:'연애정병 · 뿔테안경 · 극우'},
+  park_hanul:{id:'park_hanul',name:'박한울',generation:21,color:'#d74831',hp:170,speed:210,img:IMAGES.park_hanul,role:'부채꼴 탄막·문자 연사·확률 누적 강화형',skills:'마라탕발사 · 중국어로 욕하기 · 정병폭발'},
   jo_sohyun:{id:'jo_sohyun',name:'조소현',generation:21,color:'#54a9a1',hp:180,speed:220,img:IMAGES.jo_sohyun,role:'한교동 소환·확률 완전 회복·누적 소환 강화·검도형',skills:'한교동과함께 · 꿀잠자기 · 드럼치기 · 검도'}
 });
 Object.assign(SKILL_INFO,{
-  shin_jimin:{summary:'정병 지속 피해·안경 강화·회전 원반형',hp:'200',speed:'200 · 안경 보유 시 600',skills:[
+  shin_jimin:{summary:'정병 지속 피해·안경 강화·회전 원반형',hp:'290',speed:'200 · 안경 보유 시 600',skills:[
     {kind:'패시브',type:'passive',name:'연애정병',desc:'직접 충돌한 적에게 10초 동안 1초마다 0.5 피해를 준다. 재충돌하면 중첩 대신 지속시간이 갱신된다.',points:['총 10회 피해','신지민 사망 후에도 남은 지속 피해 유지','피해·킬은 신지민에게 귀속','팀전 아군 제외']},
     {kind:'강화 스킬',type:'defense',name:'뿔테안경',desc:'벽 3회마다 안경 1개를 장착한다. 안경이 하나라도 있으면 속도 3배, 모든 공격 피해 2.5배가 된다.',points:['스택 무제한','실제 피해 1회마다 1개 소모','피해가 0이면 소모되지 않음','공 위에 안경과 스택 수 표시']},
     {kind:'공격 스킬',type:'attack',name:'극우',desc:'2초마다 빨간 원반 2개가 2초 동안 서로 반대편에서 빠르게 회전한다.',points:['원반당 15 피해','강한 넉백','적중 1초 뒤 4초 동안 속도 80% 감소','원반 하나당 같은 활성화에서 같은 적 1회 타격']}
   ]},
-  park_hanul:{summary:'부채꼴 탄막·문자 연사·확률 누적 강화형',hp:'210',speed:'210',skills:[
+  park_hanul:{summary:'부채꼴 탄막·문자 연사·확률 누적 강화형',hp:'170',speed:'210',skills:[
     {kind:'공격 스킬',type:'attack',name:'마라탕발사',desc:'벽 3회마다 가장 가까운 적 방향으로 마라탕 20개를 부채꼴로 분사한다.',points:['개당 4 피해','적 또는 벽 충돌 시 제거','팀전 아군 제외']},
     {kind:'공격 스킬',type:'attack',name:'중국어로 욕하기',desc:'적 직접 충돌 3회마다 1초 뒤 두 문장 중 하나를 50% 확률로 골라 한 글자씩 발사한다.',points:['傻逼 또는 操你祖宗十八代','글자당 8 피해','짧은 간격 순차 발사','과도한 유도 없음']},
     {kind:'확률 스킬',type:'passive',name:'정병폭발',desc:'벽 10회마다 40%는 실패 연출 후 즉시 탈락하고, 60%는 모든 공격 피해가 영구적으로 2배가 된다.',points:['실패는 공격자 킬로 처리하지 않음','실패 시 보랏빛 균열·회전·소멸 연출','성공할 때마다 현재 배율에 다시 ×2 누적']}
@@ -25378,9 +25380,18 @@ onWallHit=function(p){
 const _v174Collide=collide;
 collide=function(a,b){
   const valid=!!(a?.alive&&b?.alive&&!a.hidden&&!b.hidden);
+  const dx=valid?b.x-a.x:0,dy=valid?b.y-a.y:0,distance=valid?Math.hypot(dx,dy):Infinity;
+  const collisionBlocked=valid&&(
+    (a.id==='duo'&&a.data?.taeyeonHp<=0)||(b.id==='duo'&&b.data?.taeyeonHp<=0)||
+    (game?.hyeonTear&&(a===game.hyeonTear.owner||b===game.hyeonTear.owner))||
+    (game?.dunk&&(a===game.dunk.dunker||b===game.dunk.dunker))
+  );
+  // 실제로 두 공의 원이 겹친 순간에만 신규 접촉 스킬을 처리한다.
+  // V174에서는 단순히 둘 다 생존했는지만 확인해, 멀리 떨어진 상대에게도 검도 15 피해가 반복되는 문제가 있었다.
+  const wasTouching=valid&&!collisionBlocked&&distance>0&&distance<a.r+b.r;
   const result=_v174Collide(a,b);
-  // 기존 충돌 반동 계산 뒤 신규 접촉 스킬을 처리해 검도의 강한 밀치기가 덮어써지지 않게 한다.
-  if(valid&&a?.alive&&b?.alive&&!a.hidden&&!b.hidden){v174PlayerContact(a,b);v174PlayerContact(b,a);}
+  // 기존 충돌 반동 계산 뒤 처리해 검도의 강한 밀치기가 덮어써지지 않게 한다.
+  if(wasTouching&&a?.alive&&b?.alive&&!a.hidden&&!b.hidden){v174PlayerContact(a,b);v174PlayerContact(b,a);}
   return result;
 };
 
@@ -25488,7 +25499,8 @@ Object.defineProperties(v174Test,{
   finiteV174:{configurable:true,value(){if(!game)return false;const nums=[];for(const p of game.players)nums.push(p.hp,p.maxHp,p.x,p.y,p.vx,p.vy,p.damageDealt,p.healingDone);for(const s of game.v174Summons||[])nums.push(s.x,s.y,s.vx,s.vy,s.owner.data.v174HangSpeed,s.owner.data.v174HangDamage);for(const s of game.v174Shots||[])nums.push(s.x,s.y,s.vx,s.vy,s.life,s.delay);return nums.every(Number.isFinite);}}
 });
 window.__GONG_V174_TEST__=v174Test;
-console.info('[V174] 신규 3명·한교동 전투 패치 로드 완료');
+window.__GONG_V175_TEST__=v174Test;
+console.info('[V175] 신지민·박한울 HP 조정 및 조소현 검도 비접촉 피해 수정 완료');
 
 
 })();
