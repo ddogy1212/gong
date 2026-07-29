@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V163_MINJI_DROPOUT_REMOVED -->
+<!-- BUILD: V164_MENTEE_CROSS_HP1500_SHARED_COLLISIONS -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -22778,12 +22778,12 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
 
   /* =========================================================
-     V158 · 윤현멘티크로스 · 최유진·김예원·임서윤 동일 팀 공유 HP 1200
+     V158 · 윤현멘티크로스 · 최유진·김예원·임서윤 동일 팀 공유 HP 1500
      ========================================================= */
   const V158_BUILD='V158_YOON_MENTEE_CROSS_SHARED_HP1200';
   window.__GONG_V158_BUILD__=V158_BUILD;
   const V158_CROSS_IDS=['choiyujin','yewon','limseoyoon'];
-  const V158_CROSS_MAX_HP=1200;
+  const V158_CROSS_MAX_HP=1500;
 
   for(const id of V158_CROSS_IDS){
     const def=DEFS[id];
@@ -22792,7 +22792,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const info=SKILL_INFO[id];
     if(info){
       if(!String(info.summary||'').includes('3인 공유 체력'))info.summary=`3인 공유 체력·${info.summary||''}`;
-      info.hp=id==='limseoyoon'?'210 / 크로스 1200':'200 / 크로스 1200';
+      info.hp=id==='limseoyoon'?'210 / 크로스 1500':'200 / 크로스 1500';
     }
     if(info&&Array.isArray(info.skills)&&!info.skills.some(skill=>skill?.name==='윤현멘티크로스')){
       info.skills.unshift({
@@ -22802,7 +22802,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
         desc:'최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 세 명이 하나의 체력을 공유한다.',
         points:[
           '세 명이 모두 같은 팀일 때만 전투 시작과 동시에 활성화',
-          '공유 최대 체력과 시작 체력: 1200',
+          '공유 최대 체력과 시작 체력: 1500',
           '세 명 중 누구든 받은 실제 피해가 공유 체력에서 차감',
           '세 명 중 누구든 받은 회복이 공유 체력에 반영',
           '공유 체력이 0이 되면 세 명이 동시에 탈락'
@@ -23684,6 +23684,173 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   window.__GONG_V163_TEST__=v163Test;
 
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
+
+  /* =========================================================
+     V164 · 윤현멘티크로스 HP 1500 · 벽/적 충돌 횟수 공유
+     ========================================================= */
+  const V164_BUILD='V164_MENTEE_CROSS_HP1500_SHARED_COLLISIONS';
+  const V164_CROSS_MAX_HP=1500;
+  window.__GONG_V164_BUILD__=V164_BUILD;
+
+  // 카드 설명을 최신 크로스 규칙으로 통일한다.
+  for(const id of V158_CROSS_IDS){
+    const info=SKILL_INFO[id];
+    if(info)info.hp=id==='limseoyoon'?'210 / 크로스 1500':'200 / 크로스 1500';
+    const skill=info?.skills?.find(s=>s?.name==='윤현멘티크로스');
+    if(skill){
+      skill.desc='최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 체력 1500과 벽·적 충돌 횟수를 공유하고 공격력이 1.4배가 된다.';
+      skill.points=[
+        '세 명이 모두 같은 팀일 때만 전투 시작과 동시에 활성화',
+        '공유 최대 체력과 시작 체력: 1500',
+        '세 명 중 누구든 받은 실제 피해와 회복이 공유 체력에 반영',
+        '한 명이 벽에 부딪히면 세 명 모두 벽 충돌 1회로 처리',
+        '한 명이 적과 부딪히면 세 명 모두 적 충돌 횟수를 공유',
+        '충돌 횟수 기반 스킬은 각 스킬의 고유 발동 기준을 유지',
+        '세 명과 이들이 만든 소환물의 공격력 1.4배',
+        '공유 체력이 0이 되면 세 명이 동시에 탈락'
+      ];
+    }
+  }
+
+  function v164CrossGroupFor(player){
+    const group=game?.v158MentorCross;
+    if(!group?.active||!player)return null;
+    return group.members?.includes(player)?group:null;
+  }
+  function v164InitCrossCounters(group,reset=false){
+    if(!group?.active)return group;
+    group.maxHp=V164_CROSS_MAX_HP;
+    if(reset||!Number.isFinite(group.hp))group.hp=V164_CROSS_MAX_HP;
+    else group.hp=clamp(group.hp,0,V164_CROSS_MAX_HP);
+    if(reset||!Number.isFinite(group.v164SharedWallHits))group.v164SharedWallHits=0;
+    if(reset||!Number.isFinite(group.v164SharedEnemyHits))group.v164SharedEnemyHits=0;
+    if(reset||!group.v164EnemyByTarget)group.v164EnemyByTarget={};
+    if(reset||!group.v164EnemyContactCd)group.v164EnemyContactCd={};
+    group.v164SharingWall=false;
+    v158SyncCross(group,group.hp);
+    v164SyncCrossCounters(group);
+    return group;
+  }
+  function v164SyncCrossCounters(group){
+    if(!group?.active)return;
+    const byTarget={...(group.v164EnemyByTarget||{})};
+    for(const member of group.members||[]){
+      member.data=member.data||{};
+      member.data.v164CrossWallHits=group.v164SharedWallHits||0;
+      member.data.v164CrossEnemyHits=group.v164SharedEnemyHits||0;
+      member.data.v164CrossEnemyByTarget={...byTarget};
+      // 김예원의 기존 국어감퇴 UI와 로직도 같은 대상별 공유 횟수를 바라본다.
+      if(member.id==='yewon'||member.data?.v160KoreanHits){
+        member.data.v160KoreanHits={...byTarget};
+      }
+    }
+  }
+
+  // 한 명의 벽 충돌을 세 명 모두의 벽 충돌 이벤트로 전달한다.
+  const _v164OnWallHit=onWallHit;
+  onWallHit=function(p){
+    const group=v164CrossGroupFor(p);
+    if(!group||group.v164SharingWall)return _v164OnWallHit(p);
+    // 기존 코너 중복 방지 게이트를 존중한다.
+    if((p.data?.v138WallGate||0)>0)return _v164OnWallHit(p);
+    v164InitCrossCounters(group,false);
+    group.v164SharedWallHits=(group.v164SharedWallHits||0)+1;
+    group.v164SharingWall=true;
+    let result;
+    try{
+      for(const member of group.members){
+        if(!member?.alive||member.hidden)continue;
+        if(member===p){
+          result=_v164OnWallHit(member);
+        }else{
+          member.data=member.data||{};
+          const savedGate=member.data.v138WallGate||0;
+          member.data.v138WallGate=0;
+          _v164OnWallHit(member);
+          member.data.v138WallGate=savedGate;
+        }
+      }
+    }finally{
+      group.v164SharingWall=false;
+      v164SyncCrossCounters(group);
+    }
+    return result;
+  };
+
+  // 기존 김예원 충돌 패시브를 크로스 전체의 공유 충돌로 확장한다.
+  const _v164YewonContact=v160YewonContact;
+  v160YewonContact=function(actor,target){
+    const group=v164CrossGroupFor(actor);
+    if(!group)return _v164YewonContact(actor,target);
+    const yewon=group.members.find(p=>p.id==='yewon');
+    if(!actor?.alive||actor.hidden||!target?.alive||target.hidden||!isEnemy(actor,target))return false;
+    if(v160IsPowerless(actor)||!yewon?.alive||yewon.hidden||v160IsPowerless(yewon))return false;
+    v164InitCrossCounters(group,false);
+    const targetKey=v151Uid(target),pairKey=`${v151Uid(actor)}>${targetKey}`,now=game?.t||0;
+    if((group.v164EnemyContactCd[pairKey]||0)>now)return false;
+    group.v164EnemyContactCd[pairKey]=now+.18;
+    group.v164SharedEnemyHits=(group.v164SharedEnemyHits||0)+1;
+    const count=(group.v164EnemyByTarget[targetKey]||0)+1;
+    group.v164EnemyByTarget[targetKey]=count;
+    v164SyncCrossCounters(group);
+    floater(actor.x,actor.y-actor.r-20,`🔗 공유 적 충돌 ${group.v164SharedEnemyHits}`,'#7657c7',12,.5);
+    floater(yewon.x,yewon.y-yewon.r-34,`📚 국어감퇴 ${count}/3`,'#506d78',12,.5);
+    if(count<3)return true;
+    group.v164EnemyByTarget[targetKey]=0;
+    v164SyncCrossCounters(group);
+    const requested=Math.round(Math.max(0,target.damageTaken||0)*.6*10)/10;
+    const healed=heal(yewon,requested,yewon,'국어감퇴시키기 · 크로스 공유 충돌',false);
+    spawnAttackFx(yewon.x,yewon.y,'#7657c7','크로스 국어감퇴',1.45);
+    floater(yewon.x,yewon.y-yewon.r-48,`📖 ${target.name} 누적 피해 60% · +${healed.toFixed(1)}`,'#506d78',15,.95);
+    log(`<b>윤현멘티크로스</b>: 세 명의 ${target.name} 충돌을 공유해 김예원 국어감퇴시키기 발동 · HP ${healed.toFixed(1)} 회복.`);
+    return true;
+  };
+
+  // 전투 시작 시 공유 체력과 두 충돌 카운터를 초기화한다.
+  const _v164ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v164ResetBattle();
+    const group=game?.v158MentorCross;
+    if(group?.active){
+      group.maxHp=V164_CROSS_MAX_HP;
+      group.hp=V164_CROSS_MAX_HP;
+      v164InitCrossCounters(group,true);
+    }
+    renderScores();renderBossAllies();updateUI();
+    return result;
+  };
+
+  const _v164StatusText=statusText;
+  statusText=function(p){
+    const base=_v164StatusText(p),group=v164CrossGroupFor(p);
+    if(!group)return base;
+    const extra=`🔗 크로스 HP ${Math.ceil(group.hp)}/${group.maxHp} · 공유 벽 ${group.v164SharedWallHits||0} · 공유 적 충돌 ${group.v164SharedEnemyHits||0}`;
+    return base&&base!=='정상'?`${base} · ${extra}`:extra;
+  };
+
+  // 이미 열린 동일 팀 전투가 있다면 즉시 1500 규칙으로 올린다.
+  if(game?.v158MentorCross?.active){
+    game.v158MentorCross.maxHp=V164_CROSS_MAX_HP;
+    game.v158MentorCross.hp=V164_CROSS_MAX_HP;
+    v164InitCrossCounters(game.v158MentorCross,true);
+  }
+
+  if(window.__GONG_V138_TEST__){
+    window.__GONG_V138_TEST__.build=V164_BUILD;
+    window.__GONG_V138_TEST__.onWallHit=onWallHit;
+    window.__GONG_V138_TEST__.collide=collide;
+    window.__GONG_V138_TEST__.resetBattle=resetBattle;
+  }
+  if(window.__GONG_V147_TEST__)Object.defineProperty(window.__GONG_V147_TEST__,'build',{configurable:true,get(){return V164_BUILD;}});
+  const v164Test=Object.create(window.__GONG_V163_TEST__||null);
+  Object.defineProperty(v164Test,'build',{configurable:true,get(){return V164_BUILD;}});
+  Object.defineProperties(v164Test,{
+    cross:{configurable:true,get(){const g=game?.v158MentorCross;return g?{active:g.active,hp:g.hp,maxHp:g.maxHp,wallHits:g.v164SharedWallHits||0,enemyHits:g.v164SharedEnemyHits||0,enemyByTarget:{...(g.v164EnemyByTarget||{})},members:g.members.map(p=>({id:p.id,hp:p.hp,maxHp:p.maxHp,wallHits:p.data?.v164CrossWallHits||0,enemyHits:p.data?.v164CrossEnemyHits||0}))}:null;}},
+    wallShared:{configurable:true,value(id,times=1){const p=game?.players?.find(q=>q.id===id&&q.alive);if(!p)return null;for(let i=0;i<times;i++){p.data.v138WallGate=0;onWallHit(p);}return this.cross;}},
+    contactShared:{configurable:true,value(memberId,targetId,times=1){const a=game?.players?.find(q=>q.id===memberId&&q.alive),b=game?.players?.find(q=>q.id===targetId&&q.alive);if(!a||!b)return null;for(let i=0;i<times;i++){b.x=a.x+a.r+b.r-1;b.y=a.y;collide(a,b);if(game)game.t+=.2;}return this.cross;}}
+  });
+  window.__GONG_V164_TEST__=v164Test;
+
 })();
 
 })();
