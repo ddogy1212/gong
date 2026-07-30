@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V178_TEAM_NAMES_RED_BLUE -->
+<!-- BUILD: V179_TEAM_NAME_RESPONSIVE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1509,7 +1509,7 @@ body.tournament-battle .speed-row{display:none!important}
 @media(max-width:520px){.t-hall-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
-/* V177 16강 팀전 토너먼트 */
+/* V177 16강 팀전 토너먼트 · V179 긴 팀 이름 반응형 보정 */
 .t-team-tournament-choice{background:linear-gradient(145deg,#eef7ff,#dbeafe);border-color:#79a9dc;color:#123a63}
 .t-team-tournament-choice.active{background:linear-gradient(145deg,#10243c,#174d7c);color:#fff;border-color:#4ab4ff;box-shadow:0 3px 0 #1583c7}
 .t-team-tournament-choice small{display:block;font-size:9px;margin-top:2px;opacity:.78}
@@ -1520,20 +1520,35 @@ body.tournament-battle .speed-row{display:none!important}
 .t-team-size-choice{border-color:#b9d3e9;background:#fff}
 .t-team-size-choice.active{background:#123a63;color:#fff;border-color:#123a63;box-shadow:0 3px 0 #4aa7e0}
 .t-team-mode-note{margin-top:7px;border-radius:9px;background:#fff;color:#36566f;padding:7px 8px;font-size:9px;font-weight:900;line-height:1.45}
-.t-team-avatars{width:68px;display:flex;align-items:center;padding-left:2px}
-.t-team-avatars img{width:34px!important;height:34px!important;margin-left:-12px;background:#fff;box-shadow:0 0 0 2px #fff}
+.t-team-avatars{display:flex;align-items:center;padding-left:2px;min-width:0;flex:none}
+.t-team-avatars.team-size-2{width:48px}
+.t-team-avatars.team-size-3{width:66px}
+.t-team-avatars.team-size-4{width:84px}
+.t-team-avatars img{width:30px!important;height:30px!important;margin-left:-12px;background:#fff;box-shadow:0 0 0 2px #fff}
 .t-team-avatars img:first-child{margin-left:0}
-.t-fighter.team{grid-template-columns:70px 1fr auto}
-.t-team-members{display:block!important;color:#36566f!important;white-space:normal;line-height:1.25;margin-bottom:2px}
-.t-team-card-members{display:block;font-size:8px;color:#35607d;font-weight:900;white-space:normal;line-height:1.3;margin-top:2px}
+.t-fighter.team{grid-template-columns:auto minmax(0,1fr) auto}
+.t-fighter.team>div:nth-child(2){min-width:0}
+.t-fighter.team strong{display:block;font-size:11px;line-height:1.22;white-space:normal;word-break:keep-all;overflow-wrap:anywhere}
+.t-team-name-part{display:inline-block;white-space:nowrap}
+.t-team-members{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden;color:#36566f!important;white-space:normal;line-height:1.25;margin-bottom:2px}
+.t-team-card-members{display:-webkit-box;font-size:8px;color:#35607d;font-weight:900;white-space:normal;line-height:1.3;margin-top:2px;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.t-picker-name.team{display:block;white-space:normal;line-height:1.2;overflow-wrap:anywhere;word-break:keep-all}
+.t-cine-fighter strong.team{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;word-break:keep-all;line-height:1.16;font-size:clamp(16px,4vw,30px)}
+.tournament-next-match,.t-battle-matchup,.t-result-hero h3,.t-champion-summary h2,.t-cinematic-title{overflow-wrap:anywhere;word-break:keep-all;line-height:1.18}
 .t-hall-team-avatars{display:flex;align-items:center;min-width:72px}
 .t-hall-team-avatars img{width:31px;height:31px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-10px;box-shadow:0 0 0 1px #aaa}
 .t-hall-team-avatars img:first-child{margin-left:0}
 .t-hall-format-label{grid-column:1/-1;font-size:9px;font-weight:1000;color:#76611f;padding:2px 3px 0}
 @media(max-width:620px){
   .t-team-mode-head{display:block}.t-team-mode-head span{display:block;margin-top:3px}
-  .t-team-avatars{width:61px}.t-team-avatars img{width:31px!important;height:31px!important}
-  .t-fighter.team{grid-template-columns:63px 1fr auto}
+  .t-team-avatars.team-size-2{width:44px}
+  .t-team-avatars.team-size-3{width:60px}
+  .t-team-avatars.team-size-4{width:76px}
+  .t-team-avatars img{width:28px!important;height:28px!important;margin-left:-12px}
+  .t-fighter.team{grid-template-columns:auto minmax(0,1fr) auto;gap:6px}
+  .t-fighter.team strong{font-size:10.5px}
+  .t-fighter.team .t-fighter-result{font-size:9px}
+  .tournament-next-match,.t-battle-matchup{font-size:15px}
 }
 
 </style>
@@ -1541,7 +1556,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V178_TEAM_NAMES_RED_BLUE -->
+<!-- BUILD: V179_TEAM_NAME_RESPONSIVE -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -19884,7 +19899,7 @@ function frame(ts){
    V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V178_TEAM_NAMES_RED_BLUE';
+  const BUILD='V179_TEAM_NAME_RESPONSIVE';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -19909,7 +19924,7 @@ function frame(ts){
   let hallViewSize=8;
 
   function esc(value){return String(value??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
-  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=178';}
+  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=179';}
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function characterPwr(id){const v=Number(POWER[id]);if(Number.isFinite(v))return v;const d=BASE_DEFS[id];return Math.min(1,Math.max(.05,((d?.hp||200)/350+(d?.speed||100)/900)/2));}
   function pwr(id){const d=tournamentEntries[id];if(d?.members?.length)return d.power||d.members.reduce((s,m)=>s+characterPwr(m),0)/d.members.length;return characterPwr(id);}
@@ -19925,10 +19940,15 @@ function frame(ts){
 
   function entrantMembers(id){return tournamentEntries[id]?.members||[];}
   function entrantMemberNames(id){const members=entrantMembers(id);return members.length?members.map(member=>BASE_DEFS[member]?.name||member).join(' · '):'';}
+  function entrantDisplayNameHTML(id){
+    const members=entrantMembers(id);
+    if(!members.length)return esc(TDEFS[id]?.name||id);
+    return members.map((member,index)=>{const name=esc(BASE_DEFS[member]?.name||member),tail=index===members.length-1?'팀':'&amp;';return `<span class="t-team-name-part">${name}${tail}</span>${index<members.length-1?'<wbr>':''}`;}).join('');
+  }
   function entrantAvatarHTML(id){
     const d=TDEFS[id],members=entrantMembers(id);
     if(!members.length)return `<img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}">`;
-    return `<div class="t-team-avatars" aria-label="${esc(d.name)} 구성원">${members.map(member=>{const md=BASE_DEFS[member];return `<img src="${photoSrc(md)}" alt="${esc(md.name)}" loading="eager" decoding="async" style="object-position:${crop(member)};border-color:${md.color}">`;}).join('')}</div>`;
+    return `<div class="t-team-avatars team-size-${members.length}" aria-label="${esc(d.name)} 구성원">${members.map(member=>{const md=BASE_DEFS[member];return `<img src="${photoSrc(md)}" alt="${esc(md.name)}" loading="eager" decoding="async" style="object-position:${crop(member)};border-color:${md.color}">`;}).join('')}</div>`;
   }
   function selectedTargetCount(){return setupKind==='team'?TEAM_COUNT*setupTeamSize:setupSize;}
   function updateSetupKindUI(){
@@ -20206,7 +20226,7 @@ function frame(ts){
     const d=TDEFS[id],winner=m.winner===id,last=m.games.at(-1),chance=m.a&&m.b?(id===m.a?winChance(m.a,m.b):100-winChance(m.a,m.b)):100,team=entrantMembers(id).length>0;
     const stats=last&&m.complete?` · 피해 ${Math.round(last.players[id]?.damage||0)} · 회복 ${Math.round(last.players[id]?.healing||0)}`:'';
     const meta=m.decidedBy==='bye'?'1라운드 부전승':`예상 승률 ${chance}%${stats}`;
-    return `<div class="t-fighter ${team?'team':''} ${winner?'winner':''}" style="--c:${d.color}">${entrantAvatarHTML(id)}<div><strong>${esc(d.name)}${rankMark(id)}</strong>${team?`<small class="t-team-members">${esc(entrantMemberNames(id))}</small>`:''}<small>${meta}</small></div><span class="t-fighter-result">${winner?(m.decidedBy==='bye'?'부전승':'승리'):''}</span></div>`;
+    return `<div class="t-fighter ${team?'team':''} ${winner?'winner':''}" style="--c:${d.color}" title="${esc(d.name)}">${entrantAvatarHTML(id)}<div><strong>${team?entrantDisplayNameHTML(id):esc(d.name)}${rankMark(id)}</strong>${team?`<small class="t-team-members">${entrantMembers(id).length}인 팀</small>`:''}<small>${meta}</small></div><span class="t-fighter-result">${winner?(m.decidedBy==='bye'?'부전승':'승리'):''}</span></div>`;
   }
   function viewTabs(){
     const tabs=[];
@@ -20228,7 +20248,7 @@ function frame(ts){
     if(!state?.completed){box.innerHTML='';return;}
     const c=state.champion,d=TDEFS[c],agg=state.aggregate[c],aw=state.awards||awardData(),pred=state.rankPredictions;
     const firstCorrect=pred.first===c;
-    box.innerHTML=`<div class="t-champion-summary" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(c)}"><h2>🏆 ${esc(d.name)} 우승</h2>${state.format==='team'?`<div style="font-size:10px;font-weight:1000;color:#36566f;margin-bottom:4px">${esc(entrantMemberNames(c))}</div>`:''}<div style="font-size:11px;font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:5px;font-weight:1000;color:${firstCorrect?'#16733b':'#765f18'}">${pred.first?(firstCorrect?'🔮 1위 예측 적중!':`1위 예측: ${esc(TDEFS[pred.first].name)} · 실패`):'순위 예측 없음'}</div><div class="t-awards"><div class="t-award"><b>⭐ MVP</b><span>${aw.mvp?esc(TDEFS[aw.mvp[0]].name):'없음'}</span></div><div class="t-award"><b>💥 최대 피해</b><span>${esc(TDEFS[aw.mostDamage[0]].name)} · ${Math.round(aw.mostDamage[1].damage)}</span></div><div class="t-award"><b>☠ 최다 킬</b><span>${esc(TDEFS[aw.mostKills[0]].name)} · ${aw.mostKills[1].kills}킬</span></div><div class="t-award"><b>💚 최대 회복</b><span>${esc(TDEFS[aw.mostHealing[0]].name)} · ${Math.round(aw.mostHealing[1].healing)}</span></div><div class="t-award"><b>⚡ 최고의 이변</b><span>${aw.upset?`${esc(TDEFS[aw.upset.winner].name)} · 승률 ${aw.upset.chance}%`:'없음'}</span></div></div></div>`;
+    box.innerHTML=`<div class="t-champion-summary" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(c)}"><h2>🏆 ${state.format==='team'?entrantDisplayNameHTML(c):esc(d.name)} 우승</h2>${state.format==='team'?`<div style="font-size:10px;font-weight:1000;color:#36566f;margin-bottom:4px">${esc(entrantMemberNames(c))}</div>`:''}<div style="font-size:11px;font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:5px;font-weight:1000;color:${firstCorrect?'#16733b':'#765f18'}">${pred.first?(firstCorrect?'🔮 1위 예측 적중!':`1위 예측: ${esc(TDEFS[pred.first].name)} · 실패`):'순위 예측 없음'}</div><div class="t-awards"><div class="t-award"><b>⭐ MVP</b><span>${aw.mvp?esc(TDEFS[aw.mvp[0]].name):'없음'}</span></div><div class="t-award"><b>💥 최대 피해</b><span>${esc(TDEFS[aw.mostDamage[0]].name)} · ${Math.round(aw.mostDamage[1].damage)}</span></div><div class="t-award"><b>☠ 최다 킬</b><span>${esc(TDEFS[aw.mostKills[0]].name)} · ${aw.mostKills[1].kills}킬</span></div><div class="t-award"><b>💚 최대 회복</b><span>${esc(TDEFS[aw.mostHealing[0]].name)} · ${Math.round(aw.mostHealing[1].healing)}</span></div><div class="t-award"><b>⚡ 최고의 이변</b><span>${aw.upset?`${esc(TDEFS[aw.upset.winner].name)} · 승률 ${aw.upset.chance}%`:'없음'}</span></div></div></div>`;
   }
   function renderBracket(){
     if(!state)return;
@@ -20271,7 +20291,7 @@ function frame(ts){
     let activeSlot='first';
     const labels={first:'1위',second:'2위',third:'3위'};
     function render(){
-      openModal('🔮 최종 순위 1·2·3위 예측',`<div style="font-size:12px;font-weight:1000;margin-bottom:9px">경기마다 고르지 않고 토너먼트 시작 전에 최종 1위·2위·3위를 한 번만 예측해.${locked?' 이미 경기가 시작되어 확인만 할 수 있어.':''}</div><div class="t-rank-picks">${['first','second','third'].map(slot=>`<button type="button" class="t-rank-slot ${!locked&&activeSlot===slot?'active':''}" data-rank-slot="${slot}" ${locked?'disabled':''}><b>${labels[slot]}</b><small>${picks[slot]?esc(TDEFS[picks[slot]].name):'캐릭터 선택'}</small></button>`).join('')}</div><div class="tournament-picker" style="max-height:49vh">${state.participants.map(id=>{const d=TDEFS[id],picked=Object.values(picks).includes(id);return `<button class="t-picker-card ${picked?'selected':''}" data-rank-char="${id}" style="--c:${d.color}" ${locked?'disabled':''}><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-picker-name">${esc(d.name)}${rankMark(id)}</span>${d.members?`<span class="t-team-card-members">${esc(d.memberNames)}</span>`:''}<span class="t-picker-meta">우승 확률 ${titleChances[id]??0}%</span></span></button>`;}).join('')}</div>${locked?'<button class="t-modal-skip" data-rank-close>확인</button>':`<button class="t-rank-confirm" data-rank-confirm ${picks.first&&picks.second&&picks.third?'':'disabled'}>1·2·3위 예측 확정</button><button class="t-modal-skip" data-rank-skip>예측하지 않기</button>`}`);
+      openModal('🔮 최종 순위 1·2·3위 예측',`<div style="font-size:12px;font-weight:1000;margin-bottom:9px">경기마다 고르지 않고 토너먼트 시작 전에 최종 1위·2위·3위를 한 번만 예측해.${locked?' 이미 경기가 시작되어 확인만 할 수 있어.':''}</div><div class="t-rank-picks">${['first','second','third'].map(slot=>`<button type="button" class="t-rank-slot ${!locked&&activeSlot===slot?'active':''}" data-rank-slot="${slot}" ${locked?'disabled':''}><b>${labels[slot]}</b><small>${picks[slot]?esc(TDEFS[picks[slot]].name):'캐릭터 선택'}</small></button>`).join('')}</div><div class="tournament-picker" style="max-height:49vh">${state.participants.map(id=>{const d=TDEFS[id],picked=Object.values(picks).includes(id);return `<button class="t-picker-card ${picked?'selected':''}" data-rank-char="${id}" style="--c:${d.color}" ${locked?'disabled':''}><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span><span class="t-picker-name ${d.members?'team':''}">${d.members?entrantDisplayNameHTML(id):esc(d.name)}${rankMark(id)}</span>${d.members?`<span class="t-team-card-members">${esc(d.memberNames)}</span>`:''}<span class="t-picker-meta">우승 확률 ${titleChances[id]??0}%</span></span></button>`;}).join('')}</div>${locked?'<button class="t-modal-skip" data-rank-close>확인</button>':`<button class="t-rank-confirm" data-rank-confirm ${picks.first&&picks.second&&picks.third?'':'disabled'}>1·2·3위 예측 확정</button><button class="t-modal-skip" data-rank-skip>예측하지 않기</button>`}`);
       if(locked){tModalBody.querySelector('[data-rank-close]').addEventListener('click',closeModal);return;}
       tModalBody.querySelectorAll('[data-rank-slot]').forEach(button=>button.addEventListener('click',()=>{activeSlot=button.dataset.rankSlot;render();}));
       tModalBody.querySelectorAll('[data-rank-char]').forEach(button=>button.addEventListener('click',()=>{
@@ -20308,7 +20328,7 @@ function frame(ts){
     cinematicTimer=setTimeout(finishCinematic,duration);
   }
   cinematicSkip.addEventListener('click',finishCinematic);
-  function fighterCine(id,side,chance){const d=TDEFS[id],members=entrantMemberNames(id);return `<div class="t-cine-fighter ${side}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(entrantMembers(id)[0]||id)}"><strong>${esc(d.name)}</strong>${members?`<small>${esc(members)}</small>`:''}<small>예상 승률 ${chance}%</small></div>`;}
+  function fighterCine(id,side,chance){const d=TDEFS[id],members=entrantMemberNames(id),team=entrantMembers(id).length>0;return `<div class="t-cine-fighter ${side}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(entrantMembers(id)[0]||id)}"><strong class="${team?'team':''}">${team?entrantDisplayNameHTML(id):esc(d.name)}</strong>${members?`<small>${entrantMembers(id).length}인 팀</small>`:''}<small>예상 승률 ${chance}%</small></div>`;}
   function showMatchIntro(m,done){
     const ca=winChance(m.a,m.b),final=isFinal(m),third=m.special==='third';
     const kicker=final?'CHAMPIONSHIP FINAL':third?'BRONZE MATCH':'SEMIFINAL';
@@ -20460,7 +20480,7 @@ function frame(ts){
       setTimeout(()=>prepareMatch(currentMatch()),25);return;
     }
     const w=TDEFS[record.winner],nextLabel=seriesContinues?'다음 세트':'다음 경기';
-    openModal(seriesContinues?'🏆 결승 세트 종료':`${matchLabel(m)} 경기 종료`,`<div class="t-result-hero" style="--c:${w.color}"><img src="${photoSrc(w)}" alt="${esc(w.name)}" loading="eager" decoding="async" style="object-position:${crop(record.winner)}"><h3>${esc(w.name)} 승리</h3><div style="font-weight:1000">${record.decision?'판정승':'상대 탈락'} · ${record.duration.toFixed(1)}초${seriesContinues?` · 세트 ${m.series.a}:${m.series.b}`:''}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.damage||0)}</b><span>승자 피해량</span></div><div class="t-result-stat"><b>${record.players[record.winner]?.kills||0}</b><span>승자 킬</span></div><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.healing||0)}</b><span>승자 회복</span></div><div class="t-result-stat"><b>${Math.ceil(record.players[record.winner]?.hp||0)}</b><span>남은 HP</span></div></div><div class="t-auto-next" data-auto-next data-label="${nextLabel}"></div><div class="t-result-buttons"><button class="gold" data-result-bracket>대진표 보기</button><button class="primary" data-result-next>${nextLabel}</button></div>`,false);
+    openModal(seriesContinues?'🏆 결승 세트 종료':`${matchLabel(m)} 경기 종료`,`<div class="t-result-hero" style="--c:${w.color}"><img src="${photoSrc(w)}" alt="${esc(w.name)}" loading="eager" decoding="async" style="object-position:${crop(record.winner)}"><h3>${state.format==='team'?entrantDisplayNameHTML(record.winner):esc(w.name)} 승리</h3><div style="font-weight:1000">${record.decision?'판정승':'상대 탈락'} · ${record.duration.toFixed(1)}초${seriesContinues?` · 세트 ${m.series.a}:${m.series.b}`:''}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.damage||0)}</b><span>승자 피해량</span></div><div class="t-result-stat"><b>${record.players[record.winner]?.kills||0}</b><span>승자 킬</span></div><div class="t-result-stat"><b>${Math.round(record.players[record.winner]?.healing||0)}</b><span>승자 회복</span></div><div class="t-result-stat"><b>${Math.ceil(record.players[record.winner]?.hp||0)}</b><span>남은 HP</span></div></div><div class="t-auto-next" data-auto-next data-label="${nextLabel}"></div><div class="t-result-buttons"><button class="gold" data-result-bracket>대진표 보기</button><button class="primary" data-result-next>${nextLabel}</button></div>`,false);
     tModal.dataset.kind='result';
     tModalBody.querySelector('[data-result-bracket]').addEventListener('click',()=>{clearResultAutoNext();closeModal();setScreens('tournament');const next=currentMatch();selectedView=next?.special==='third'?'third':isFinal(next)?'final':`r${next?.round||0}`;renderBracket();});
     tModalBody.querySelector('[data-result-next]').addEventListener('click',()=>{clearResultAutoNext();closeModal();prepareMatch(currentMatch());});
@@ -20564,11 +20584,12 @@ function frame(ts){
   window.__GONG_V176_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V177_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V178_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V179_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
-  console.info('[V178] 팀 이름 조합 표시·전투팀 빨강/파랑 구분 완료');
+  console.info('[V179] 3·4인 팀 이름 반응형 줄바꿈·아바타 폭 조정 완료');
 })();
 
 
@@ -25104,7 +25125,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V178_TEAM_NAMES_RED_BLUE';
+  const V166_BUILD='V179_TEAM_NAME_RESPONSIVE';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
@@ -25359,7 +25380,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 /* =========================================================
    V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
    ========================================================= */
-const V174_BUILD='V178_TEAM_NAMES_RED_BLUE';
+const V174_BUILD='V179_TEAM_NAME_RESPONSIVE';
 window.__GONG_V174_BUILD__=V174_BUILD;
 window.__GONG_V175_BUILD__=V174_BUILD;
 
@@ -25635,7 +25656,8 @@ window.__GONG_V175_TEST__=v174Test;
 window.__GONG_V176_TEST__=v174Test;
 window.__GONG_V177_TEST__=v174Test;
 window.__GONG_V178_TEST__=v174Test;
-console.info('[V178] V177 팀전 토너먼트 유지·팀 이름/색상 개선 완료');
+window.__GONG_V179_TEST__=v174Test;
+console.info('[V179] V178 팀전 기능 유지·긴 팀 이름 UI 보정 완료');
 
 
 })();
