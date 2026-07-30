@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V177_TEAM_TOURNAMENT_16 -->
+<!-- BUILD: V178_TEAM_NAMES_RED_BLUE -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
@@ -1541,7 +1541,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V177_TEAM_TOURNAMENT_16 -->
+<!-- BUILD: V178_TEAM_NAMES_RED_BLUE -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -4591,8 +4591,9 @@ if(p.id==='gyumin'){p.cool={lips:2.2};p.data={collisionCount:0,contactCd:{},cast
 }
 
 function teamColor(team){
+  if(currentConfig?.teamColors?.[team])return currentConfig.teamColors[team];
   if(currentConfig.mode==='showdown')return DEFS[team]?.color||'#111';
-  const idx=Number(team.slice(1))-1;return TEAM_COLORS[idx]||'#111'
+  const idx=Number(String(team).slice(1))-1;return TEAM_COLORS[idx]||'#111'
 }
 function teamName(team){
   if(currentConfig?.mode==='boss'){
@@ -19883,7 +19884,7 @@ function frame(ts){
    V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V177_TEAM_TOURNAMENT_16';
+  const BUILD='V178_TEAM_NAMES_RED_BLUE';
   const POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
@@ -19908,7 +19909,7 @@ function frame(ts){
   let hallViewSize=8;
 
   function esc(value){return String(value??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));}
-  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=177';}
+  function photoSrc(def){const src=String(def?.img||'');if(!src)return '';return src+(src.includes('?')?'&':'?')+'v=178';}
   function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function characterPwr(id){const v=Number(POWER[id]);if(Number.isFinite(v))return v;const d=BASE_DEFS[id];return Math.min(1,Math.max(.05,((d?.hp||200)/350+(d?.speed||100)/900)/2));}
   function pwr(id){const d=tournamentEntries[id];if(d?.members?.length)return d.power||d.members.reduce((s,m)=>s+characterPwr(m),0)/d.members.length;return characterPwr(id);}
@@ -20109,7 +20110,7 @@ function frame(ts){
     }
     const teams={},entries={},teamIds=[];
     groups.forEach((members,index)=>{
-      const id=`tt${teamSize}_${index+1}`,captain=BASE_DEFS[members[0]],name=`${index+1}팀`,power=members.reduce((sum,member)=>sum+characterPwr(member),0)/members.length;
+      const memberNames=members.map(member=>BASE_DEFS[member]?.name||member),id=`tt${teamSize}_${index+1}`,captain=BASE_DEFS[members[0]],name=`${memberNames.join('&')}팀`,power=members.reduce((sum,member)=>sum+characterPwr(member),0)/members.length;
       teams[id]={id,name,members:[...members]};teamIds.push(id);
       entries[id]={id,name,generation:99,color:captain?.color||'#174d7c',hp:members.reduce((s,m)=>s+(BASE_DEFS[m]?.hp||0),0),speed:Math.round(members.reduce((s,m)=>s+(BASE_DEFS[m]?.speed||0),0)/members.length),img:captain?.img||'',members:[...members],memberNames:members.map(member=>BASE_DEFS[member].name).join(' · '),power,role:`${teamSize}인 팀`,skills:'팀전 토너먼트'};
     });
@@ -20327,9 +20328,9 @@ function frame(ts){
   function launchMatch(m,watch){
     closeModal();
     if(state.format==='team'){
-      const aMembers=state.teams[m.a].members,bMembers=state.teams[m.b].members,participants=[...aMembers,...bMembers],teams={},zoneNames={[m.a]:TDEFS[m.a].name,[m.b]:TDEFS[m.b].name};
+      const aMembers=state.teams[m.a].members,bMembers=state.teams[m.b].members,participants=[...aMembers,...bMembers],teams={},zoneNames={[m.a]:TDEFS[m.a].name,[m.b]:TDEFS[m.b].name},teamColors={[m.a]:'#e53935',[m.b]:'#1e5eff'};
       aMembers.forEach(id=>teams[id]=m.a);bMembers.forEach(id=>teams[id]=m.b);
-      currentConfig={mode:'team',participants,teams,zoneNames};
+      currentConfig={mode:'team',participants,teams,zoneNames,teamColors};
     }else currentConfig={mode:'showdown',participants:[m.a,m.b],teams:{[m.a]:m.a,[m.b]:m.b},zoneNames:{}};
     paused=false;last=0;setTournamentSpeed(state.speed,false);setScreens('battle');resize();resetBattle();
     game._tournamentMatchKey=m.key;game._tournamentHandled=false;game._tournamentWatch=watch;game._tournamentFastMode=null;game._tournamentFormat=state.format;
@@ -20540,7 +20541,7 @@ function frame(ts){
     applyMatchRecord(m,record);renderBracket();return true;
   }
   window.__GONG_V173_TEST__={
-    get build(){return BUILD;},get state(){return state;},openSetup,testCreate,testCreateTeam,testResolve,next:()=>currentMatch(),chance:winChance,championProbabilities,character(id){const d=BASE_DEFS[id];return d?{id:d.id,name:d.name,hp:d.hp,speed:d.speed,img:d.img}:null;},teamBattleInfo(){return {mode:currentConfig?.mode||null,participants:[...(currentConfig?.participants||[])],teams:{...(currentConfig?.teams||{})},players:game?.players?.map(p=>({id:p.id,team:p.team,hp:p.hp,maxHp:p.maxHp,alive:p.alive}))||[],key:game?._tournamentMatchKey||null,format:game?._tournamentFormat||null};},byeInfo(){return state?{size:state.size,bracketSize:state.bracketSize,totalRounds:state.totalRounds,byes:[...(state.byeParticipants||[])],firstRound:state.rounds[0].map(m=>({a:m.a,b:m.b,winner:m.winner,complete:m.complete,decidedBy:m.decidedBy}))}:null;},
+    get build(){return BUILD;},get state(){return state;},openSetup,testCreate,testCreateTeam,testResolve,next:()=>currentMatch(),chance:winChance,championProbabilities,character(id){const d=BASE_DEFS[id];return d?{id:d.id,name:d.name,hp:d.hp,speed:d.speed,img:d.img}:null;},teamBattleInfo(){return {mode:currentConfig?.mode||null,participants:[...(currentConfig?.participants||[])],teams:{...(currentConfig?.teams||{})},zoneNames:{...(currentConfig?.zoneNames||{})},teamColors:{...(currentConfig?.teamColors||{})},players:game?.players?.map(p=>({id:p.id,team:p.team,teamName:teamName(p.team),teamColor:teamColor(p.team),hp:p.hp,maxHp:p.maxHp,alive:p.alive}))||[],key:game?._tournamentMatchKey||null,format:game?._tournamentFormat||null};},byeInfo(){return state?{size:state.size,bracketSize:state.bracketSize,totalRounds:state.totalRounds,byes:[...(state.byeParticipants||[])],firstRound:state.rounds[0].map(m=>({a:m.a,b:m.b,winner:m.winner,complete:m.complete,decidedBy:m.decidedBy}))}:null;},
     setPrediction(first,second,third){if(!state)return null;state.rankPredictions={first,second,third};state.predictionLocked=true;renderBracket();return state.rankPredictions;},
     setSpeed(value){setTournamentSpeed(value,false);return {state:state?.speed,timeScale};},
     generate(size,bracketType='random'){const ids=orderedCharacterIds().slice(0,size);return makeState(ids,{bracketType,predictionsEnabled:false});},
@@ -20562,11 +20563,12 @@ function frame(ts){
   window.__GONG_V175_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V176_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V177_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
+  window.__GONG_V178_TOURNAMENT_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V172_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V171_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V170_TEST__=window.__GONG_V173_TEST__;
   window.__GONG_V169_TEST__=window.__GONG_V173_TEST__;
-  console.info('[V177] 16강 2·3·4인 팀전 토너먼트 로드 완료');
+  console.info('[V178] 팀 이름 조합 표시·전투팀 빨강/파랑 구분 완료');
 })();
 
 
@@ -25102,7 +25104,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V177_TEAM_TOURNAMENT_16';
+  const V166_BUILD='V178_TEAM_NAMES_RED_BLUE';
   const V166_TEAM_POWER={"shion":0.970149,"choiyujin":0.932836,"kim":0.91791,"gow":0.91791,"duo":0.820896,"yoonseoyoung":0.80597,"seo":0.791045,"jiyeon":0.791045,"jiwon":0.768657,"limseoyoon":0.768657,"kimsihu":0.768657,"yewon":0.753731,"subin":0.746269,"yoomin":0.701493,"mingyu":0.679104,"ansua":0.671642,"yoon":0.634328,"ira":0.61194,"jihyun":0.604478,"jungsua":0.589552,"doyejin":0.58209,"yoonho":0.58209,"songhyeon":0.574627,"sungmin":0.567164,"nahyun":0.559701,"geun":0.559701,"yoona":0.559701,"kimeunwoo":0.559701,"yeeun":0.544776,"jaewook":0.537313,"jungyoona":0.529851,"gahyeon":0.5,"na":0.492537,"rua":0.492537,"yoo":0.470149,"woo":0.470149,"dawon":0.455224,"nayoon":0.447761,"dong":0.447761,"moon":0.440299,"chaewon":0.432836,"seominji":0.425373,"chaeun":0.41791,"nakyung":0.410448,"hyukju":0.395522,"junghoon":0.395522,"hyeon":0.38806,"hyeeum":0.365672,"kimgaeun":0.343284,"yuhawon":0.343284,"kimgyuwon":0.343284,"gyumin":0.328358,"yesung":0.313433,"sunha":0.30597,"doyun":0.30597,"min":0.30597,"sia":0.298507,"woojiyeon":0.298507,"jongyeop":0.283582,"jungdayeon":0.276119,"haewon":0.261194,"ochaeun":0.253731,"yangchaewon":0.208955,"eunchae":0.201493,"hyobin":0.149254,"juyeong":0.11194,"yugun":0.11194,"seoyoung":0.104478,"shin_jimin":0.66,"park_hanul":0.63,"jo_sohyun":0.69};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
@@ -25357,7 +25359,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 /* =========================================================
    V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
    ========================================================= */
-const V174_BUILD='V177_TEAM_TOURNAMENT_16';
+const V174_BUILD='V178_TEAM_NAMES_RED_BLUE';
 window.__GONG_V174_BUILD__=V174_BUILD;
 window.__GONG_V175_BUILD__=V174_BUILD;
 
@@ -25632,7 +25634,8 @@ window.__GONG_V174_TEST__=v174Test;
 window.__GONG_V175_TEST__=v174Test;
 window.__GONG_V176_TEST__=v174Test;
 window.__GONG_V177_TEST__=v174Test;
-console.info('[V177] V176 수정 유지 및 16강 팀전 토너먼트 추가 완료');
+window.__GONG_V178_TEST__=v174Test;
+console.info('[V178] V177 팀전 토너먼트 유지·팀 이름/색상 개선 완료');
 
 
 })();
