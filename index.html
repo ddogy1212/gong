@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V193_TARGETED_TOP10_20_BALANCE -->
+<!-- BUILD: V194_ALL_CHARACTER_VISUALS_FIXES -->
 <meta charset="utf-8">
-<meta name="gong-mobile-single-file" content="V193; embedded-thumbnails=88">
+<meta name="gong-mobile-single-file" content="V194; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="google-site-verification" content="fM5rPEFd4qRMA1i-zJpOro0SVZkjJecXQJQkrB383RU">
 <meta name="description" content="수원외고와 수외 학생 캐릭터들이 고유 스킬로 대결하는 공게임입니다. 쇼다운, 팀전, 보스전, 자동 전투를 즐길 수 있으며 공게임 릴스를 통해 업데이트 소식도 확인할 수 있습니다.">
@@ -1571,7 +1571,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V193_TARGETED_TOP10_20_BALANCE -->
+<!-- BUILD: V194_ALL_CHARACTER_VISUALS_FIXES -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -3807,7 +3807,19 @@ function renderSetup(){
 }
 
 function moveCard(id,zone){
+  const source=document.querySelector(`.char-card[data-char="${id}"]`);
+  const anchor=source?.nextElementSibling?.dataset?.char||source?.previousElementSibling?.dataset?.char||null;
+  const anchorEl=anchor?document.querySelector(`.char-card[data-char="${anchor}"]`):null;
+  const anchorTop=anchorEl?.getBoundingClientRect().top;
+  const scrollBefore=window.scrollY;
   assignments[id]=zone;renderSetup();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    if(anchor&&Number.isFinite(anchorTop)){
+      const next=document.querySelector(`.char-card[data-char="${anchor}"]`);
+      if(next){const delta=next.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>.5)window.scrollBy(0,delta);return;}
+    }
+    if(Math.abs(window.scrollY-scrollBefore)>.5)window.scrollTo(0,scrollBefore);
+  }));
 }
 
 function bindDnD(){
@@ -5420,7 +5432,7 @@ function updateUI(){
             ?'#f59e0b'
             :'#ef4444';
 
-      card.querySelector('.boss-ally-hp-text').textContent=`${Math.ceil(Math.max(0,p.hp))} / ${p.maxHp}`;
+      card.querySelector('.boss-ally-hp-text').textContent=`${Math.round(Math.max(0,p.hp))} / ${Math.round(p.maxHp)}`;
       card.querySelector('.boss-ally-status').textContent=statusText(p);
     }
   }else{
@@ -5438,7 +5450,7 @@ function updateUI(){
     }else{
       fill.style.width=`${Math.max(0,p.hp)/p.maxHp*100}%`;
       fill.style.background=p.alive?'#22d347':'#555';
-      txt.textContent=`${Math.ceil(Math.max(0,p.hp))} / ${p.maxHp}`;
+      txt.textContent=`${Math.round(Math.max(0,p.hp))} / ${Math.round(p.maxHp)}`;
     }
     el.querySelector('.status').textContent=statusText(p);el.style.opacity=p.alive?'1':'.52'
   });
@@ -19982,9 +19994,9 @@ function frame(ts){
    V174 신규 캐릭터 · 64인 토너먼트 · 규모별 명예의 전당
    ============================================================ */
 (function(){
-  const BUILD='V193_TARGETED_TOP10_20_BALANCE';
-  const POWER={"yesung":0.3375,"gow":0.6125,"kimgaeun":0.602778,"kim":0.709722,"gyumin":0.325,"geun":0.473611,"nahyun":0.423611,"dong":0.6,"min":0.518056,"kimseonghun":0.659722,"kimeunwoo":0.555556,"jongyeop":0.523611,"na":0.518056,"doyejin":0.25,"juyeong":0.502778,"moon":0.548611,"jihyun":0.395833,"parkgarim":0.598611,"sia":0.502778,"seominji":0.488889,"seo":0.465278,"chaeun":0.288889,"mingyu":0.545833,"woo":0.255556,"shin_jimin":0.708333,"ansua":0.354167,"yangchaewon":0.351389,"oseoyoon":0.420833,"junghoon":0.391667,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.620833,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.426389,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.738889,"leeeunchae":0.390278,"jiwon":0.313889,"chaewon":0.440278,"hyeon":0.370833,"dawon":0.7625,"yoona":0.616667,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.576389,"jaewook":0.627778,"hyukju":0.630556,"nayoon":0.391667,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.547222,"yewon":0.618056,"yugun":0.533333,"nahyeongju":0.666667,"seoyoung":0.233333,"sunha":0.509722,"park_hanul":0.395833,"hyeeum":0.623611,"hyobin":0.443056,"haewon":0.398611,"woojiyeon":0.359722,"yuhawon":0.609722,"gahyeon":0.434722,"leegeonwoo":0.654167,"leesangeun":0.407639,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.345833,"eunchae":0.425,"jo_sohyun":0.456944,"yeeun":0.340278,"choiyujin":0.697222};
-  const MODE_POWER={"1v1":{"yesung":0.25,"gow":0.75,"kimgaeun":0.611111,"kim":0.722222,"gyumin":0.25,"geun":0.444444,"nahyun":0.444444,"dong":0.666667,"min":0.555556,"kimseonghun":0.638889,"kimeunwoo":0.638889,"jongyeop":0.527778,"na":0.472222,"doyejin":0.166667,"juyeong":0.444444,"moon":0.611111,"jihyun":0.333333,"parkgarim":0.611111,"sia":0.527778,"seominji":0.472222,"seo":0.444444,"chaeun":0.222222,"mingyu":0.666667,"woo":0.138889,"shin_jimin":0.666667,"ansua":0.333333,"yangchaewon":0.305556,"oseoyoon":0.416667,"junghoon":0.333333,"ochaeun":0.555556,"yoo":0.569444,"yoonseoyoung":0.666667,"songhyeon":0.333333,"jiyeon":0.777778,"yoon":0.555556,"nakyung":0.305556,"doyun":0.444444,"ira":0.305556,"sungmin":0.194444,"yoomin":0.805556,"yoonho":0.805556,"leeeunchae":0.444444,"jiwon":0.222222,"chaewon":0.444444,"hyeon":0.333333,"dawon":0.833333,"yoona":0.666667,"jungdayeon":0.5,"rua":0.694444,"jungsua":0.666667,"jungyoona":0.361111,"subin":0.638889,"jaewook":0.611111,"hyukju":0.722222,"nayoon":0.333333,"duo":0.805556,"kimgyuwon":0.555556,"kimsihu":0.555556,"yewon":0.722222,"yugun":0.583333,"nahyeongju":0.75,"seoyoung":0.166667,"sunha":0.555556,"park_hanul":0.333333,"hyeeum":0.694444,"hyobin":0.388889,"haewon":0.361111,"woojiyeon":0.305556,"yuhawon":0.722222,"gahyeon":0.472222,"leegeonwoo":0.75,"leesangeun":0.430556,"shion":0.638889,"uiyong":0.138889,"limseoyoon":0.25,"eunchae":0.416667,"jo_sohyun":0.444444,"yeeun":0.277778,"choiyujin":0.722222},"2v2":{"yesung":0.444444,"gow":0.555556,"kimgaeun":0.666667,"kim":0.666667,"gyumin":0.305556,"geun":0.527778,"nahyun":0.388889,"dong":0.555556,"min":0.555556,"kimseonghun":0.722222,"kimeunwoo":0.555556,"jongyeop":0.527778,"na":0.694444,"doyejin":0.25,"juyeong":0.555556,"moon":0.444444,"jihyun":0.555556,"parkgarim":0.666667,"sia":0.388889,"seominji":0.472222,"seo":0.527778,"chaeun":0.333333,"mingyu":0.416667,"woo":0.388889,"shin_jimin":0.861111,"ansua":0.361111,"yangchaewon":0.388889,"oseoyoon":0.305556,"junghoon":0.583333,"ochaeun":0.527778,"yoo":0.722222,"yoonseoyoung":0.583333,"songhyeon":0.527778,"jiyeon":0.666667,"yoon":0.611111,"nakyung":0.472222,"doyun":0.277778,"ira":0.555556,"sungmin":0.305556,"yoomin":0.722222,"yoonho":0.833333,"leeeunchae":0.25,"jiwon":0.277778,"chaewon":0.333333,"hyeon":0.361111,"dawon":0.666667,"yoona":0.666667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.638889,"jungyoona":0.416667,"subin":0.472222,"jaewook":0.611111,"hyukju":0.666667,"nayoon":0.388889,"duo":0.583333,"kimgyuwon":0.611111,"kimsihu":0.583333,"yewon":0.555556,"yugun":0.472222,"nahyeongju":0.555556,"seoyoung":0.222222,"sunha":0.305556,"park_hanul":0.5,"hyeeum":0.583333,"hyobin":0.555556,"haewon":0.333333,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.388889,"leegeonwoo":0.583333,"leesangeun":0.388889,"shion":0.611111,"uiyong":0.25,"limseoyoon":0.361111,"eunchae":0.361111,"jo_sohyun":0.361111,"yeeun":0.361111,"choiyujin":0.611111},"3v3":{"yesung":0.472222,"gow":0.444444,"kimgaeun":0.583333,"kim":0.722222,"gyumin":0.472222,"geun":0.527778,"nahyun":0.5,"dong":0.5,"min":0.388889,"kimseonghun":0.611111,"kimeunwoo":0.444444,"jongyeop":0.472222,"na":0.5,"doyejin":0.333333,"juyeong":0.638889,"moon":0.583333,"jihyun":0.361111,"parkgarim":0.583333,"sia":0.472222,"seominji":0.583333,"seo":0.444444,"chaeun":0.444444,"mingyu":0.361111,"woo":0.444444,"shin_jimin":0.722222,"ansua":0.333333,"yangchaewon":0.416667,"oseoyoon":0.444444,"junghoon":0.472222,"ochaeun":0.527778,"yoo":0.555556,"yoonseoyoung":0.555556,"songhyeon":0.472222,"jiyeon":0.777778,"yoon":0.722222,"nakyung":0.444444,"doyun":0.416667,"ira":0.666667,"sungmin":0.388889,"yoomin":0.638889,"yoonho":0.527778,"leeeunchae":0.305556,"jiwon":0.472222,"chaewon":0.555556,"hyeon":0.472222,"dawon":0.722222,"yoona":0.416667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.666667,"jungyoona":0.166667,"subin":0.472222,"jaewook":0.555556,"hyukju":0.388889,"nayoon":0.5,"duo":0.555556,"kimgyuwon":0.666667,"kimsihu":0.611111,"yewon":0.416667,"yugun":0.444444,"nahyeongju":0.583333,"seoyoung":0.305556,"sunha":0.5,"park_hanul":0.472222,"hyeeum":0.583333,"hyobin":0.416667,"haewon":0.444444,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.444444,"leegeonwoo":0.583333,"leesangeun":0.333333,"shion":0.611111,"uiyong":0.166667,"limseoyoon":0.555556,"eunchae":0.444444,"jo_sohyun":0.444444,"yeeun":0.444444,"choiyujin":0.666667},"4v4":{"yesung":0.416667,"gow":0.333333,"kimgaeun":0.527778,"kim":0.694444,"gyumin":0.472222,"geun":0.472222,"nahyun":0.305556,"dong":0.5,"min":0.472222,"kimseonghun":0.722222,"kimeunwoo":0.361111,"jongyeop":0.555556,"na":0.527778,"doyejin":0.472222,"juyeong":0.527778,"moon":0.388889,"jihyun":0.5,"parkgarim":0.5,"sia":0.555556,"seominji":0.472222,"seo":0.5,"chaeun":0.333333,"mingyu":0.416667,"woo":0.361111,"shin_jimin":0.694444,"ansua":0.444444,"yangchaewon":0.416667,"oseoyoon":0.527778,"junghoon":0.333333,"ochaeun":0.527778,"yoo":0.583333,"yoonseoyoung":0.555556,"songhyeon":0.583333,"jiyeon":0.666667,"yoon":0.555556,"nakyung":0.527778,"doyun":0.277778,"ira":0.5,"sungmin":0.361111,"yoomin":0.638889,"yoonho":0.611111,"leeeunchae":0.416667,"jiwon":0.527778,"chaewon":0.416667,"hyeon":0.416667,"dawon":0.638889,"yoona":0.583333,"jungdayeon":0.472222,"rua":0.694444,"jungsua":0.416667,"jungyoona":0.444444,"subin":0.555556,"jaewook":0.777778,"hyukju":0.5,"nayoon":0.5,"duo":0.666667,"kimgyuwon":0.666667,"kimsihu":0.416667,"yewon":0.5,"yugun":0.5,"nahyeongju":0.555556,"seoyoung":0.416667,"sunha":0.555556,"park_hanul":0.444444,"hyeeum":0.444444,"hyobin":0.555556,"haewon":0.555556,"woojiyeon":0.388889,"yuhawon":0.472222,"gahyeon":0.333333,"leegeonwoo":0.444444,"leesangeun":0.416667,"shion":0.472222,"uiyong":0.333333,"limseoyoon":0.472222,"eunchae":0.5,"jo_sohyun":0.611111,"yeeun":0.444444,"choiyujin":0.722222}};
+  const BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
+  const POWER={"yesung":0.333333,"gow":0.6125,"kimgaeun":0.602778,"kim":0.718056,"gyumin":0.325,"geun":0.473611,"nahyun":0.438889,"dong":0.6,"min":0.518056,"kimseonghun":0.655556,"kimeunwoo":0.551389,"jongyeop":0.523611,"na":0.526389,"doyejin":0.254167,"juyeong":0.502778,"moon":0.552778,"jihyun":0.4,"parkgarim":0.590278,"sia":0.502778,"seominji":0.493056,"seo":0.469444,"chaeun":0.288889,"mingyu":0.554167,"woo":0.251389,"shin_jimin":0.7125,"ansua":0.354167,"yangchaewon":0.347222,"oseoyoon":0.425,"junghoon":0.395833,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.616667,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.438889,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.734722,"leeeunchae":0.386111,"jiwon":0.309722,"chaewon":0.431944,"hyeon":0.3625,"dawon":0.751389,"yoona":0.608333,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.568056,"jaewook":0.631944,"hyukju":0.630556,"nayoon":0.3875,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.543056,"yewon":0.613889,"yugun":0.5375,"nahyeongju":0.6625,"seoyoung":0.2375,"sunha":0.509722,"park_hanul":0.388889,"hyeeum":0.627083,"hyobin":0.443056,"haewon":0.394444,"woojiyeon":0.363889,"yuhawon":0.618056,"gahyeon":0.434722,"leegeonwoo":0.630556,"leesangeun":0.438889,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.35,"eunchae":0.420833,"jo_sohyun":0.452778,"yeeun":0.340278,"choiyujin":0.697222};
+  const MODE_POWER={"1v1":{"yesung":0.25,"gow":0.75,"kimgaeun":0.611111,"kim":0.722222,"gyumin":0.25,"geun":0.444444,"nahyun":0.472222,"dong":0.666667,"min":0.555556,"kimseonghun":0.638889,"kimeunwoo":0.638889,"jongyeop":0.527778,"na":0.472222,"doyejin":0.166667,"juyeong":0.444444,"moon":0.611111,"jihyun":0.333333,"parkgarim":0.611111,"sia":0.527778,"seominji":0.472222,"seo":0.444444,"chaeun":0.222222,"mingyu":0.666667,"woo":0.138889,"shin_jimin":0.666667,"ansua":0.333333,"yangchaewon":0.305556,"oseoyoon":0.416667,"junghoon":0.333333,"ochaeun":0.555556,"yoo":0.569444,"yoonseoyoung":0.666667,"songhyeon":0.333333,"jiyeon":0.777778,"yoon":0.555556,"nakyung":0.305556,"doyun":0.444444,"ira":0.305556,"sungmin":0.194444,"yoomin":0.805556,"yoonho":0.805556,"leeeunchae":0.444444,"jiwon":0.222222,"chaewon":0.444444,"hyeon":0.333333,"dawon":0.805556,"yoona":0.666667,"jungdayeon":0.5,"rua":0.694444,"jungsua":0.666667,"jungyoona":0.361111,"subin":0.638889,"jaewook":0.611111,"hyukju":0.722222,"nayoon":0.333333,"duo":0.805556,"kimgyuwon":0.555556,"kimsihu":0.555556,"yewon":0.722222,"yugun":0.583333,"nahyeongju":0.75,"seoyoung":0.166667,"sunha":0.555556,"park_hanul":0.305556,"hyeeum":0.708333,"hyobin":0.388889,"haewon":0.361111,"woojiyeon":0.305556,"yuhawon":0.722222,"gahyeon":0.472222,"leegeonwoo":0.722222,"leesangeun":0.472222,"shion":0.638889,"uiyong":0.138889,"limseoyoon":0.25,"eunchae":0.416667,"jo_sohyun":0.444444,"yeeun":0.277778,"choiyujin":0.722222},"2v2":{"yesung":0.444444,"gow":0.555556,"kimgaeun":0.638889,"kim":0.722222,"gyumin":0.305556,"geun":0.527778,"nahyun":0.388889,"dong":0.527778,"min":0.555556,"kimseonghun":0.722222,"kimeunwoo":0.555556,"jongyeop":0.527778,"na":0.722222,"doyejin":0.277778,"juyeong":0.555556,"moon":0.444444,"jihyun":0.555556,"parkgarim":0.666667,"sia":0.388889,"seominji":0.472222,"seo":0.555556,"chaeun":0.333333,"mingyu":0.444444,"woo":0.388889,"shin_jimin":0.861111,"ansua":0.361111,"yangchaewon":0.388889,"oseoyoon":0.305556,"junghoon":0.583333,"ochaeun":0.527778,"yoo":0.722222,"yoonseoyoung":0.583333,"songhyeon":0.527778,"jiyeon":0.666667,"yoon":0.611111,"nakyung":0.472222,"doyun":0.277778,"ira":0.583333,"sungmin":0.305556,"yoomin":0.722222,"yoonho":0.833333,"leeeunchae":0.25,"jiwon":0.277778,"chaewon":0.333333,"hyeon":0.305556,"dawon":0.666667,"yoona":0.638889,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.638889,"jungyoona":0.416667,"subin":0.444444,"jaewook":0.611111,"hyukju":0.666667,"nayoon":0.416667,"duo":0.583333,"kimgyuwon":0.611111,"kimsihu":0.555556,"yewon":0.555556,"yugun":0.472222,"nahyeongju":0.555556,"seoyoung":0.222222,"sunha":0.305556,"park_hanul":0.5,"hyeeum":0.583333,"hyobin":0.555556,"haewon":0.333333,"woojiyeon":0.472222,"yuhawon":0.472222,"gahyeon":0.388889,"leegeonwoo":0.5,"leesangeun":0.416667,"shion":0.611111,"uiyong":0.25,"limseoyoon":0.361111,"eunchae":0.361111,"jo_sohyun":0.361111,"yeeun":0.361111,"choiyujin":0.611111},"3v3":{"yesung":0.472222,"gow":0.444444,"kimgaeun":0.583333,"kim":0.722222,"gyumin":0.472222,"geun":0.5,"nahyun":0.5,"dong":0.527778,"min":0.388889,"kimseonghun":0.583333,"kimeunwoo":0.444444,"jongyeop":0.472222,"na":0.5,"doyejin":0.333333,"juyeong":0.638889,"moon":0.583333,"jihyun":0.361111,"parkgarim":0.583333,"sia":0.472222,"seominji":0.583333,"seo":0.444444,"chaeun":0.444444,"mingyu":0.388889,"woo":0.416667,"shin_jimin":0.722222,"ansua":0.333333,"yangchaewon":0.388889,"oseoyoon":0.444444,"junghoon":0.472222,"ochaeun":0.527778,"yoo":0.555556,"yoonseoyoung":0.527778,"songhyeon":0.5,"jiyeon":0.777778,"yoon":0.722222,"nakyung":0.444444,"doyun":0.416667,"ira":0.694444,"sungmin":0.388889,"yoomin":0.638889,"yoonho":0.527778,"leeeunchae":0.305556,"jiwon":0.472222,"chaewon":0.5,"hyeon":0.472222,"dawon":0.75,"yoona":0.416667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.666667,"jungyoona":0.166667,"subin":0.444444,"jaewook":0.583333,"hyukju":0.388889,"nayoon":0.472222,"duo":0.555556,"kimgyuwon":0.666667,"kimsihu":0.611111,"yewon":0.416667,"yugun":0.444444,"nahyeongju":0.583333,"seoyoung":0.333333,"sunha":0.5,"park_hanul":0.527778,"hyeeum":0.555556,"hyobin":0.416667,"haewon":0.444444,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.444444,"leegeonwoo":0.555556,"leesangeun":0.361111,"shion":0.611111,"uiyong":0.166667,"limseoyoon":0.583333,"eunchae":0.444444,"jo_sohyun":0.444444,"yeeun":0.444444,"choiyujin":0.666667},"4v4":{"yesung":0.388889,"gow":0.333333,"kimgaeun":0.555556,"kim":0.694444,"gyumin":0.472222,"geun":0.5,"nahyun":0.305556,"dong":0.5,"min":0.472222,"kimseonghun":0.722222,"kimeunwoo":0.333333,"jongyeop":0.555556,"na":0.555556,"doyejin":0.472222,"juyeong":0.527778,"moon":0.416667,"jihyun":0.527778,"parkgarim":0.444444,"sia":0.555556,"seominji":0.5,"seo":0.5,"chaeun":0.333333,"mingyu":0.416667,"woo":0.361111,"shin_jimin":0.722222,"ansua":0.444444,"yangchaewon":0.416667,"oseoyoon":0.555556,"junghoon":0.361111,"ochaeun":0.527778,"yoo":0.583333,"yoonseoyoung":0.555556,"songhyeon":0.555556,"jiyeon":0.666667,"yoon":0.555556,"nakyung":0.527778,"doyun":0.277778,"ira":0.527778,"sungmin":0.361111,"yoomin":0.638889,"yoonho":0.583333,"leeeunchae":0.388889,"jiwon":0.5,"chaewon":0.416667,"hyeon":0.416667,"dawon":0.638889,"yoona":0.555556,"jungdayeon":0.472222,"rua":0.694444,"jungsua":0.416667,"jungyoona":0.444444,"subin":0.555556,"jaewook":0.777778,"hyukju":0.5,"nayoon":0.472222,"duo":0.666667,"kimgyuwon":0.666667,"kimsihu":0.416667,"yewon":0.472222,"yugun":0.527778,"nahyeongju":0.527778,"seoyoung":0.416667,"sunha":0.555556,"park_hanul":0.444444,"hyeeum":0.444444,"hyobin":0.555556,"haewon":0.527778,"woojiyeon":0.388889,"yuhawon":0.527778,"gahyeon":0.333333,"leegeonwoo":0.5,"leesangeun":0.416667,"shion":0.472222,"uiyong":0.333333,"limseoyoon":0.472222,"eunchae":0.472222,"jo_sohyun":0.583333,"yeeun":0.444444,"choiyujin":0.722222}};
   const el=id=>document.getElementById(id);
   const tBtn=el('tournamentModeBtn'),tOptions=el('tournamentOptions'),tPicker=el('tournamentPicker'),tScreen=el('tournamentScreen');
   const tModal=el('tournamentModal'),tModalTitle=el('tournamentModalTitle'),tModalBody=el('tournamentModalBody');
@@ -25212,8 +25224,8 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
    V166 · 개인전 빠른 바 정리 · 팀전 랜덤/밸런스 자동 편성
    ============================================================ */
 (function(){
-  const V166_BUILD='V193_TARGETED_TOP10_20_BALANCE';
-  const V166_TEAM_POWER={"yesung":0.3375,"gow":0.6125,"kimgaeun":0.602778,"kim":0.709722,"gyumin":0.325,"geun":0.473611,"nahyun":0.423611,"dong":0.6,"min":0.518056,"kimseonghun":0.659722,"kimeunwoo":0.555556,"jongyeop":0.523611,"na":0.518056,"doyejin":0.25,"juyeong":0.502778,"moon":0.548611,"jihyun":0.395833,"parkgarim":0.598611,"sia":0.502778,"seominji":0.488889,"seo":0.465278,"chaeun":0.288889,"mingyu":0.545833,"woo":0.255556,"shin_jimin":0.708333,"ansua":0.354167,"yangchaewon":0.351389,"oseoyoon":0.420833,"junghoon":0.391667,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.620833,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.426389,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.738889,"leeeunchae":0.390278,"jiwon":0.313889,"chaewon":0.440278,"hyeon":0.370833,"dawon":0.7625,"yoona":0.616667,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.576389,"jaewook":0.627778,"hyukju":0.630556,"nayoon":0.391667,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.547222,"yewon":0.618056,"yugun":0.533333,"nahyeongju":0.666667,"seoyoung":0.233333,"sunha":0.509722,"park_hanul":0.395833,"hyeeum":0.623611,"hyobin":0.443056,"haewon":0.398611,"woojiyeon":0.359722,"yuhawon":0.609722,"gahyeon":0.434722,"leegeonwoo":0.654167,"leesangeun":0.407639,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.345833,"eunchae":0.425,"jo_sohyun":0.456944,"yeeun":0.340278,"choiyujin":0.697222};
+  const V166_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
+  const V166_TEAM_POWER={"yesung":0.333333,"gow":0.6125,"kimgaeun":0.602778,"kim":0.718056,"gyumin":0.325,"geun":0.473611,"nahyun":0.438889,"dong":0.6,"min":0.518056,"kimseonghun":0.655556,"kimeunwoo":0.551389,"jongyeop":0.523611,"na":0.526389,"doyejin":0.254167,"juyeong":0.502778,"moon":0.552778,"jihyun":0.4,"parkgarim":0.590278,"sia":0.502778,"seominji":0.493056,"seo":0.469444,"chaeun":0.288889,"mingyu":0.554167,"woo":0.251389,"shin_jimin":0.7125,"ansua":0.354167,"yangchaewon":0.347222,"oseoyoon":0.425,"junghoon":0.395833,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.616667,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.438889,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.734722,"leeeunchae":0.386111,"jiwon":0.309722,"chaewon":0.431944,"hyeon":0.3625,"dawon":0.751389,"yoona":0.608333,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.568056,"jaewook":0.631944,"hyukju":0.630556,"nayoon":0.3875,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.543056,"yewon":0.613889,"yugun":0.5375,"nahyeongju":0.6625,"seoyoung":0.2375,"sunha":0.509722,"park_hanul":0.388889,"hyeeum":0.627083,"hyobin":0.443056,"haewon":0.394444,"woojiyeon":0.363889,"yuhawon":0.618056,"gahyeon":0.434722,"leegeonwoo":0.630556,"leesangeun":0.438889,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.35,"eunchae":0.420833,"jo_sohyun":0.452778,"yeeun":0.340278,"choiyujin":0.697222};
   const V166_CROSS_TRIO=['choiyujin','yewon','limseoyoon'];
   let v166AutoMode='balance';
   let v166LastResult=null;
@@ -25467,7 +25479,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 /* =========================================================
    V174 · 신지민 · 박한울 · 조소현/한교동 · 64인 토너먼트
    ========================================================= */
-const V174_BUILD='V193_TARGETED_TOP10_20_BALANCE';
+const V174_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
 window.__GONG_V174_BUILD__=V174_BUILD;
 window.__GONG_V175_BUILD__=V174_BUILD;
 
@@ -25738,7 +25750,9 @@ Object.defineProperties(v174Test,{
   playerFull:{configurable:true,value(id){const p=game?.players?.find(q=>q.id===id);return p?{id:p.id,hp:p.hp,maxHp:p.maxHp,alive:p.alive,speed:normalSpeed(p),damage:p.damageDealt,kills:p.kills,healing:p.healingDone,data:JSON.parse(JSON.stringify(p.data,(k,v)=>typeof v==='object'&&v&&('imageObj'in v||'owner'in v)?undefined:v))}:null;}},
   finiteV174:{configurable:true,value(){if(!game)return false;const nums=[];for(const p of game.players)nums.push(p.hp,p.maxHp,p.x,p.y,p.vx,p.vy,p.damageDealt,p.healingDone);for(const s of game.v174Summons||[])nums.push(s.x,s.y,s.vx,s.vy,s.owner.data.v174HangSpeed,s.owner.data.v174HangDamage);for(const s of game.v174Shots||[])nums.push(s.x,s.y,s.vx,s.vy,s.life,s.delay);return nums.every(Number.isFinite);}}
 });
-window.__GONG_V181_BALANCE__=Object.freeze({build:'V193_TARGETED_TOP10_20_BALANCE',weights:{"1v1":0.55,"2v2":0.15,"3v3":0.15,"4v4":0.15},overall:Object.freeze({"yesung":0.3375,"gow":0.6125,"kimgaeun":0.602778,"kim":0.709722,"gyumin":0.325,"geun":0.473611,"nahyun":0.423611,"dong":0.6,"min":0.518056,"kimseonghun":0.659722,"kimeunwoo":0.555556,"jongyeop":0.523611,"na":0.518056,"doyejin":0.25,"juyeong":0.502778,"moon":0.548611,"jihyun":0.395833,"parkgarim":0.598611,"sia":0.502778,"seominji":0.488889,"seo":0.465278,"chaeun":0.288889,"mingyu":0.545833,"woo":0.255556,"shin_jimin":0.708333,"ansua":0.354167,"yangchaewon":0.351389,"oseoyoon":0.420833,"junghoon":0.391667,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.620833,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.426389,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.738889,"leeeunchae":0.390278,"jiwon":0.313889,"chaewon":0.440278,"hyeon":0.370833,"dawon":0.7625,"yoona":0.616667,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.576389,"jaewook":0.627778,"hyukju":0.630556,"nayoon":0.391667,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.547222,"yewon":0.618056,"yugun":0.533333,"nahyeongju":0.666667,"seoyoung":0.233333,"sunha":0.509722,"park_hanul":0.395833,"hyeeum":0.623611,"hyobin":0.443056,"haewon":0.398611,"woojiyeon":0.359722,"yuhawon":0.609722,"gahyeon":0.434722,"leegeonwoo":0.654167,"leesangeun":0.407639,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.345833,"eunchae":0.425,"jo_sohyun":0.456944,"yeeun":0.340278,"choiyujin":0.697222}),modes:Object.freeze({"1v1":{"yesung":0.25,"gow":0.75,"kimgaeun":0.611111,"kim":0.722222,"gyumin":0.25,"geun":0.444444,"nahyun":0.444444,"dong":0.666667,"min":0.555556,"kimseonghun":0.638889,"kimeunwoo":0.638889,"jongyeop":0.527778,"na":0.472222,"doyejin":0.166667,"juyeong":0.444444,"moon":0.611111,"jihyun":0.333333,"parkgarim":0.611111,"sia":0.527778,"seominji":0.472222,"seo":0.444444,"chaeun":0.222222,"mingyu":0.666667,"woo":0.138889,"shin_jimin":0.666667,"ansua":0.333333,"yangchaewon":0.305556,"oseoyoon":0.416667,"junghoon":0.333333,"ochaeun":0.555556,"yoo":0.569444,"yoonseoyoung":0.666667,"songhyeon":0.333333,"jiyeon":0.777778,"yoon":0.555556,"nakyung":0.305556,"doyun":0.444444,"ira":0.305556,"sungmin":0.194444,"yoomin":0.805556,"yoonho":0.805556,"leeeunchae":0.444444,"jiwon":0.222222,"chaewon":0.444444,"hyeon":0.333333,"dawon":0.833333,"yoona":0.666667,"jungdayeon":0.5,"rua":0.694444,"jungsua":0.666667,"jungyoona":0.361111,"subin":0.638889,"jaewook":0.611111,"hyukju":0.722222,"nayoon":0.333333,"duo":0.805556,"kimgyuwon":0.555556,"kimsihu":0.555556,"yewon":0.722222,"yugun":0.583333,"nahyeongju":0.75,"seoyoung":0.166667,"sunha":0.555556,"park_hanul":0.333333,"hyeeum":0.694444,"hyobin":0.388889,"haewon":0.361111,"woojiyeon":0.305556,"yuhawon":0.722222,"gahyeon":0.472222,"leegeonwoo":0.75,"leesangeun":0.430556,"shion":0.638889,"uiyong":0.138889,"limseoyoon":0.25,"eunchae":0.416667,"jo_sohyun":0.444444,"yeeun":0.277778,"choiyujin":0.722222},"2v2":{"yesung":0.444444,"gow":0.555556,"kimgaeun":0.666667,"kim":0.666667,"gyumin":0.305556,"geun":0.527778,"nahyun":0.388889,"dong":0.555556,"min":0.555556,"kimseonghun":0.722222,"kimeunwoo":0.555556,"jongyeop":0.527778,"na":0.694444,"doyejin":0.25,"juyeong":0.555556,"moon":0.444444,"jihyun":0.555556,"parkgarim":0.666667,"sia":0.388889,"seominji":0.472222,"seo":0.527778,"chaeun":0.333333,"mingyu":0.416667,"woo":0.388889,"shin_jimin":0.861111,"ansua":0.361111,"yangchaewon":0.388889,"oseoyoon":0.305556,"junghoon":0.583333,"ochaeun":0.527778,"yoo":0.722222,"yoonseoyoung":0.583333,"songhyeon":0.527778,"jiyeon":0.666667,"yoon":0.611111,"nakyung":0.472222,"doyun":0.277778,"ira":0.555556,"sungmin":0.305556,"yoomin":0.722222,"yoonho":0.833333,"leeeunchae":0.25,"jiwon":0.277778,"chaewon":0.333333,"hyeon":0.361111,"dawon":0.666667,"yoona":0.666667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.638889,"jungyoona":0.416667,"subin":0.472222,"jaewook":0.611111,"hyukju":0.666667,"nayoon":0.388889,"duo":0.583333,"kimgyuwon":0.611111,"kimsihu":0.583333,"yewon":0.555556,"yugun":0.472222,"nahyeongju":0.555556,"seoyoung":0.222222,"sunha":0.305556,"park_hanul":0.5,"hyeeum":0.583333,"hyobin":0.555556,"haewon":0.333333,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.388889,"leegeonwoo":0.583333,"leesangeun":0.388889,"shion":0.611111,"uiyong":0.25,"limseoyoon":0.361111,"eunchae":0.361111,"jo_sohyun":0.361111,"yeeun":0.361111,"choiyujin":0.611111},"3v3":{"yesung":0.472222,"gow":0.444444,"kimgaeun":0.583333,"kim":0.722222,"gyumin":0.472222,"geun":0.527778,"nahyun":0.5,"dong":0.5,"min":0.388889,"kimseonghun":0.611111,"kimeunwoo":0.444444,"jongyeop":0.472222,"na":0.5,"doyejin":0.333333,"juyeong":0.638889,"moon":0.583333,"jihyun":0.361111,"parkgarim":0.583333,"sia":0.472222,"seominji":0.583333,"seo":0.444444,"chaeun":0.444444,"mingyu":0.361111,"woo":0.444444,"shin_jimin":0.722222,"ansua":0.333333,"yangchaewon":0.416667,"oseoyoon":0.444444,"junghoon":0.472222,"ochaeun":0.527778,"yoo":0.555556,"yoonseoyoung":0.555556,"songhyeon":0.472222,"jiyeon":0.777778,"yoon":0.722222,"nakyung":0.444444,"doyun":0.416667,"ira":0.666667,"sungmin":0.388889,"yoomin":0.638889,"yoonho":0.527778,"leeeunchae":0.305556,"jiwon":0.472222,"chaewon":0.555556,"hyeon":0.472222,"dawon":0.722222,"yoona":0.416667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.666667,"jungyoona":0.166667,"subin":0.472222,"jaewook":0.555556,"hyukju":0.388889,"nayoon":0.5,"duo":0.555556,"kimgyuwon":0.666667,"kimsihu":0.611111,"yewon":0.416667,"yugun":0.444444,"nahyeongju":0.583333,"seoyoung":0.305556,"sunha":0.5,"park_hanul":0.472222,"hyeeum":0.583333,"hyobin":0.416667,"haewon":0.444444,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.444444,"leegeonwoo":0.583333,"leesangeun":0.333333,"shion":0.611111,"uiyong":0.166667,"limseoyoon":0.555556,"eunchae":0.444444,"jo_sohyun":0.444444,"yeeun":0.444444,"choiyujin":0.666667},"4v4":{"yesung":0.416667,"gow":0.333333,"kimgaeun":0.527778,"kim":0.694444,"gyumin":0.472222,"geun":0.472222,"nahyun":0.305556,"dong":0.5,"min":0.472222,"kimseonghun":0.722222,"kimeunwoo":0.361111,"jongyeop":0.555556,"na":0.527778,"doyejin":0.472222,"juyeong":0.527778,"moon":0.388889,"jihyun":0.5,"parkgarim":0.5,"sia":0.555556,"seominji":0.472222,"seo":0.5,"chaeun":0.333333,"mingyu":0.416667,"woo":0.361111,"shin_jimin":0.694444,"ansua":0.444444,"yangchaewon":0.416667,"oseoyoon":0.527778,"junghoon":0.333333,"ochaeun":0.527778,"yoo":0.583333,"yoonseoyoung":0.555556,"songhyeon":0.583333,"jiyeon":0.666667,"yoon":0.555556,"nakyung":0.527778,"doyun":0.277778,"ira":0.5,"sungmin":0.361111,"yoomin":0.638889,"yoonho":0.611111,"leeeunchae":0.416667,"jiwon":0.527778,"chaewon":0.416667,"hyeon":0.416667,"dawon":0.638889,"yoona":0.583333,"jungdayeon":0.472222,"rua":0.694444,"jungsua":0.416667,"jungyoona":0.444444,"subin":0.555556,"jaewook":0.777778,"hyukju":0.5,"nayoon":0.5,"duo":0.666667,"kimgyuwon":0.666667,"kimsihu":0.416667,"yewon":0.5,"yugun":0.5,"nahyeongju":0.555556,"seoyoung":0.416667,"sunha":0.555556,"park_hanul":0.444444,"hyeeum":0.444444,"hyobin":0.555556,"haewon":0.555556,"woojiyeon":0.388889,"yuhawon":0.472222,"gahyeon":0.333333,"leegeonwoo":0.444444,"leesangeun":0.416667,"shion":0.472222,"uiyong":0.333333,"limseoyoon":0.472222,"eunchae":0.5,"jo_sohyun":0.611111,"yeeun":0.444444,"choiyujin":0.722222}})});
+window.__GONG_V181_BALANCE__=Object.freeze({build:'V194_ALL_CHARACTER_VISUALS_FIXES',weights:{"1v1":0.55,"2v2":0.15,"3v3":0.15,"4v4":0.15},overall:Object.freeze({"yesung":0.333333,"gow":0.6125,"kimgaeun":0.602778,"kim":0.718056,"gyumin":0.325,"geun":0.473611,"nahyun":0.438889,"dong":0.6,"min":0.518056,"kimseonghun":0.655556,"kimeunwoo":0.551389,"jongyeop":0.523611,"na":0.526389,"doyejin":0.254167,"juyeong":0.502778,"moon":0.552778,"jihyun":0.4,"parkgarim":0.590278,"sia":0.502778,"seominji":0.493056,"seo":0.469444,"chaeun":0.288889,"mingyu":0.554167,"woo":0.251389,"shin_jimin":0.7125,"ansua":0.354167,"yangchaewon":0.347222,"oseoyoon":0.425,"junghoon":0.395833,"ochaeun":0.543056,"yoo":0.592361,"yoonseoyoung":0.616667,"songhyeon":0.420833,"jiyeon":0.744444,"yoon":0.588889,"nakyung":0.384722,"doyun":0.390278,"ira":0.438889,"sungmin":0.265278,"yoomin":0.743056,"yoonho":0.734722,"leeeunchae":0.386111,"jiwon":0.309722,"chaewon":0.431944,"hyeon":0.3625,"dawon":0.751389,"yoona":0.608333,"jungdayeon":0.529167,"rua":0.669444,"jungsua":0.625,"jungyoona":0.352778,"subin":0.568056,"jaewook":0.631944,"hyukju":0.630556,"nayoon":0.3875,"duo":0.713889,"kimgyuwon":0.597222,"kimsihu":0.543056,"yewon":0.613889,"yugun":0.5375,"nahyeongju":0.6625,"seoyoung":0.2375,"sunha":0.509722,"park_hanul":0.388889,"hyeeum":0.627083,"hyobin":0.443056,"haewon":0.394444,"woojiyeon":0.363889,"yuhawon":0.618056,"gahyeon":0.434722,"leegeonwoo":0.630556,"leesangeun":0.438889,"shion":0.605556,"uiyong":0.188889,"limseoyoon":0.35,"eunchae":0.420833,"jo_sohyun":0.452778,"yeeun":0.340278,"choiyujin":0.697222}),modes:Object.freeze({"1v1":{"yesung":0.25,"gow":0.75,"kimgaeun":0.611111,"kim":0.722222,"gyumin":0.25,"geun":0.444444,"nahyun":0.472222,"dong":0.666667,"min":0.555556,"kimseonghun":0.638889,"kimeunwoo":0.638889,"jongyeop":0.527778,"na":0.472222,"doyejin":0.166667,"juyeong":0.444444,"moon":0.611111,"jihyun":0.333333,"parkgarim":0.611111,"sia":0.527778,"seominji":0.472222,"seo":0.444444,"chaeun":0.222222,"mingyu":0.666667,"woo":0.138889,"shin_jimin":0.666667,"ansua":0.333333,"yangchaewon":0.305556,"oseoyoon":0.416667,"junghoon":0.333333,"ochaeun":0.555556,"yoo":0.569444,"yoonseoyoung":0.666667,"songhyeon":0.333333,"jiyeon":0.777778,"yoon":0.555556,"nakyung":0.305556,"doyun":0.444444,"ira":0.305556,"sungmin":0.194444,"yoomin":0.805556,"yoonho":0.805556,"leeeunchae":0.444444,"jiwon":0.222222,"chaewon":0.444444,"hyeon":0.333333,"dawon":0.805556,"yoona":0.666667,"jungdayeon":0.5,"rua":0.694444,"jungsua":0.666667,"jungyoona":0.361111,"subin":0.638889,"jaewook":0.611111,"hyukju":0.722222,"nayoon":0.333333,"duo":0.805556,"kimgyuwon":0.555556,"kimsihu":0.555556,"yewon":0.722222,"yugun":0.583333,"nahyeongju":0.75,"seoyoung":0.166667,"sunha":0.555556,"park_hanul":0.305556,"hyeeum":0.708333,"hyobin":0.388889,"haewon":0.361111,"woojiyeon":0.305556,"yuhawon":0.722222,"gahyeon":0.472222,"leegeonwoo":0.722222,"leesangeun":0.472222,"shion":0.638889,"uiyong":0.138889,"limseoyoon":0.25,"eunchae":0.416667,"jo_sohyun":0.444444,"yeeun":0.277778,"choiyujin":0.722222},"2v2":{"yesung":0.444444,"gow":0.555556,"kimgaeun":0.638889,"kim":0.722222,"gyumin":0.305556,"geun":0.527778,"nahyun":0.388889,"dong":0.527778,"min":0.555556,"kimseonghun":0.722222,"kimeunwoo":0.555556,"jongyeop":0.527778,"na":0.722222,"doyejin":0.277778,"juyeong":0.555556,"moon":0.444444,"jihyun":0.555556,"parkgarim":0.666667,"sia":0.388889,"seominji":0.472222,"seo":0.555556,"chaeun":0.333333,"mingyu":0.444444,"woo":0.388889,"shin_jimin":0.861111,"ansua":0.361111,"yangchaewon":0.388889,"oseoyoon":0.305556,"junghoon":0.583333,"ochaeun":0.527778,"yoo":0.722222,"yoonseoyoung":0.583333,"songhyeon":0.527778,"jiyeon":0.666667,"yoon":0.611111,"nakyung":0.472222,"doyun":0.277778,"ira":0.583333,"sungmin":0.305556,"yoomin":0.722222,"yoonho":0.833333,"leeeunchae":0.25,"jiwon":0.277778,"chaewon":0.333333,"hyeon":0.305556,"dawon":0.666667,"yoona":0.638889,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.638889,"jungyoona":0.416667,"subin":0.444444,"jaewook":0.611111,"hyukju":0.666667,"nayoon":0.416667,"duo":0.583333,"kimgyuwon":0.611111,"kimsihu":0.555556,"yewon":0.555556,"yugun":0.472222,"nahyeongju":0.555556,"seoyoung":0.222222,"sunha":0.305556,"park_hanul":0.5,"hyeeum":0.583333,"hyobin":0.555556,"haewon":0.333333,"woojiyeon":0.472222,"yuhawon":0.472222,"gahyeon":0.388889,"leegeonwoo":0.5,"leesangeun":0.416667,"shion":0.611111,"uiyong":0.25,"limseoyoon":0.361111,"eunchae":0.361111,"jo_sohyun":0.361111,"yeeun":0.361111,"choiyujin":0.611111},"3v3":{"yesung":0.472222,"gow":0.444444,"kimgaeun":0.583333,"kim":0.722222,"gyumin":0.472222,"geun":0.5,"nahyun":0.5,"dong":0.527778,"min":0.388889,"kimseonghun":0.583333,"kimeunwoo":0.444444,"jongyeop":0.472222,"na":0.5,"doyejin":0.333333,"juyeong":0.638889,"moon":0.583333,"jihyun":0.361111,"parkgarim":0.583333,"sia":0.472222,"seominji":0.583333,"seo":0.444444,"chaeun":0.444444,"mingyu":0.388889,"woo":0.416667,"shin_jimin":0.722222,"ansua":0.333333,"yangchaewon":0.388889,"oseoyoon":0.444444,"junghoon":0.472222,"ochaeun":0.527778,"yoo":0.555556,"yoonseoyoung":0.527778,"songhyeon":0.5,"jiyeon":0.777778,"yoon":0.722222,"nakyung":0.444444,"doyun":0.416667,"ira":0.694444,"sungmin":0.388889,"yoomin":0.638889,"yoonho":0.527778,"leeeunchae":0.305556,"jiwon":0.472222,"chaewon":0.5,"hyeon":0.472222,"dawon":0.75,"yoona":0.416667,"jungdayeon":0.611111,"rua":0.611111,"jungsua":0.666667,"jungyoona":0.166667,"subin":0.444444,"jaewook":0.583333,"hyukju":0.388889,"nayoon":0.472222,"duo":0.555556,"kimgyuwon":0.666667,"kimsihu":0.611111,"yewon":0.416667,"yugun":0.444444,"nahyeongju":0.583333,"seoyoung":0.333333,"sunha":0.5,"park_hanul":0.527778,"hyeeum":0.555556,"hyobin":0.416667,"haewon":0.444444,"woojiyeon":0.444444,"yuhawon":0.472222,"gahyeon":0.444444,"leegeonwoo":0.555556,"leesangeun":0.361111,"shion":0.611111,"uiyong":0.166667,"limseoyoon":0.583333,"eunchae":0.444444,"jo_sohyun":0.444444,"yeeun":0.444444,"choiyujin":0.666667},"4v4":{"yesung":0.388889,"gow":0.333333,"kimgaeun":0.555556,"kim":0.694444,"gyumin":0.472222,"geun":0.5,"nahyun":0.305556,"dong":0.5,"min":0.472222,"kimseonghun":0.722222,"kimeunwoo":0.333333,"jongyeop":0.555556,"na":0.555556,"doyejin":0.472222,"juyeong":0.527778,"moon":0.416667,"jihyun":0.527778,"parkgarim":0.444444,"sia":0.555556,"seominji":0.5,"seo":0.5,"chaeun":0.333333,"mingyu":0.416667,"woo":0.361111,"shin_jimin":0.722222,"ansua":0.444444,"yangchaewon":0.416667,"oseoyoon":0.555556,"junghoon":0.361111,"ochaeun":0.527778,"yoo":0.583333,"yoonseoyoung":0.555556,"songhyeon":0.555556,"jiyeon":0.666667,"yoon":0.555556,"nakyung":0.527778,"doyun":0.277778,"ira":0.527778,"sungmin":0.361111,"yoomin":0.638889,"yoonho":0.583333,"leeeunchae":0.388889,"jiwon":0.5,"chaewon":0.416667,"hyeon":0.416667,"dawon":0.638889,"yoona":0.555556,"jungdayeon":0.472222,"rua":0.694444,"jungsua":0.416667,"jungyoona":0.444444,"subin":0.555556,"jaewook":0.777778,"hyukju":0.5,"nayoon":0.472222,"duo":0.666667,"kimgyuwon":0.666667,"kimsihu":0.416667,"yewon":0.472222,"yugun":0.527778,"nahyeongju":0.527778,"seoyoung":0.416667,"sunha":0.555556,"park_hanul":0.444444,"hyeeum":0.444444,"hyobin":0.555556,"haewon":0.527778,"woojiyeon":0.388889,"yuhawon":0.527778,"gahyeon":0.333333,"leegeonwoo":0.5,"leesangeun":0.416667,"shion":0.472222,"uiyong":0.333333,"limseoyoon":0.472222,"eunchae":0.472222,"jo_sohyun":0.583333,"yeeun":0.444444,"choiyujin":0.722222}})});
+window.__GONG_V194_BALANCE__=window.__GONG_V181_BALANCE__;
+window.__GONG_V193_BALANCE__=window.__GONG_V181_BALANCE__;
 window.__GONG_V193_BALANCE__=window.__GONG_V181_BALANCE__;
 window.__GONG_V192_BALANCE__=window.__GONG_V181_BALANCE__;
 
@@ -25746,7 +25760,7 @@ window.__GONG_V192_BALANCE__=window.__GONG_V181_BALANCE__;
 /* =========================================================
    V185 · 이의용 · 오서윤 · 양말이 · 쵸텐 · 미쿠
    ========================================================= */
-const V185_BUILD='V193_TARGETED_TOP10_20_BALANCE';
+const V185_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
 window.__GONG_V185_BUILD__=V185_BUILD;
 window.__GONG_V186_BUILD__=V185_BUILD;
 window.__GONG_V187_BUILD__=V185_BUILD;
@@ -26445,7 +26459,7 @@ resetBattle=function(){
 /* =========================================================
    V190 · 미쿠를 오서윤의 완전한 2페이즈로 통합
    ========================================================= */
-const V190_BUILD='V193_TARGETED_TOP10_20_BALANCE';
+const V190_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
 window.__GONG_V190_BUILD__=V190_BUILD;
 
 DEFS.oseoyoon.role='투사체 피격 소환·일본어 탄막·쵸텐·미쿠 2페이즈형';
@@ -26715,7 +26729,7 @@ console.info('[V190] 미쿠를 오서윤의 일반 캐릭터형 2페이즈로 �
 /* =========================================================
    V192 · 신규 캐릭터 시각화·밸런스·김유건 강화·전력 재측정
    ========================================================= */
-const V191_BUILD='V193_TARGETED_TOP10_20_BALANCE';
+const V191_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
 window.__GONG_V192_BUILD__=V191_BUILD;
 window.__GONG_V191_BUILD__=V191_BUILD;
 
@@ -26731,7 +26745,7 @@ Object.assign(IMAGES,{
 });
 
 Object.assign(DEFS,{
-  leesangeun:{id:'leesangeun',name:'이상은',generation:21,color:'#626d7b',hp:180,speed:280,img:IMAGES.leesangeun,role:'전장 벼락·충돌 스택·벽 가속형',skills:'벼락치기 · 대들기 · 자유로운학습실사용'},
+  leesangeun:{id:'leesangeun',name:'이상은',generation:21,color:'#626d7b',hp:250,speed:280,img:IMAGES.leesangeun,role:'전장 벼락·충돌 스택·벽 가속형',skills:'벼락치기 · 대들기 · 자유로운학습실사용'},
   kimseonghun:{id:'kimseonghun',name:'김성훈',generation:20,color:'#26394f',hp:210,speed:190,img:IMAGES.kimseonghun,role:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',skills:'윤현과룸메가되며나는통학으로돌릴거야 · 중국어5등급유경험자 · 드투 · 외모정병 · 거울독차지'},
   parkgarim:{id:'parkgarim',name:'박가림',generation:20,color:'#a14a70',hp:220,speed:220,img:IMAGES.parkgarim,role:'방송부·레이디버그 변신·닉 2페이즈·지속 하트형',skills:'방송부 · 변신 레이디버그! · 닉 소환하기 · 귀여워하기'},
   leeeunchae:{id:'leeeunchae',name:'이은채',generation:20,color:'#344d73',hp:200,speed:240,img:IMAGES.leeeunchae,role:'벽 공격 성장·확률 다리걸기·피격 확정 강화형',skills:'은채는 참지 않아 · 다리걸기 · 시비걸기'},
@@ -26740,7 +26754,7 @@ Object.assign(DEFS,{
 });
 
 Object.assign(SKILL_INFO,{
-  leesangeun:{summary:'전장 벼락·충돌 스택·벽 가속형',hp:'180',speed:'280',skills:[
+  leesangeun:{summary:'전장 벼락·충돌 스택·벽 가속형',hp:'250',speed:'280',skills:[
     {kind:'주기 광역 공격',type:'attack',name:'벼락치기',desc:'3~6초마다 모든 적의 현재 위치에 벼락을 떨어뜨린다.',points:['기본 피해 15','자신과 같은 팀은 공격하지 않음','각 적에게 쌓인 벼락 스택에 따라 피해 배수 증가']},
     {kind:'충돌 스택',type:'special',name:'대들기',desc:'벼락치기가 발동하기 전까지 충돌한 적에게 벼락 스택을 쌓는다.',points:['같은 적과 부딪힐 때마다 스택 +1','벼락 피해: 15 × 최대(1, 해당 적의 스택)','벼락치기 발동 후 모든 스택 초기화']},
     {kind:'벽 충돌 성장',type:'special',name:'자유로운학습실사용',desc:'벽에 튕길 때마다 이동속도가 1.2배씩 누적된다.',points:['벽 충돌마다 현재 속도 ×1.2','벽 충돌마다 15% 확률로 벼락치기 즉시 발동']}
@@ -26770,7 +26784,7 @@ Object.assign(SKILL_INFO,{
   ]},
   leegeonwoo:{summary:'짭근수 연계·먹뱉 회복·빅맥 끌기·황금사과·스피드런형',hp:'200',speed:'220',skills:[
     {kind:'패시브',type:'passive',name:'짭근수',desc:'필드에 김근수가 함께 있으면 두 캐릭터가 강화된다.',points:['김근수와 이건우 모두 최대·현재 HP +40','두 캐릭터 공격력 ×1.1']},
-    {kind:'충돌 제압',type:'attack',name:'빅맥먹뱉하기',desc:'충돌한 적을 1초간 삼킨 뒤 최근 피해량을 이용해 회복하고 뱉어낸다.',points:['대상의 최근 3초 피해량의 3분의 1만큼 이건우 회복','먹뱉 대상은 실제 회복량의 2배만큼 피해','뱉을 때 강한 넉백','스피드런 중에는 발동하지 않음']},
+    {kind:'충돌 제압',type:'attack',name:'빅맥먹뱉하기',desc:'충돌한 적을 1초간 삼킨 뒤 최근 피해량을 이용해 회복하고 뱉어낸다.',points:['대상의 최근 2초 피해량의 3분의 1만큼 이건우 회복','먹뱉 대상은 실제 회복량의 2배만큼 피해','뱉을 때 강한 넉백','스피드런 중에는 발동하지 않음']},
     {kind:'벽 충돌 투사체',type:'attack',name:'빅맥투척',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적에게 빅맥을 던진다.',points:['적중 피해 5','적중 대상은 먹뱉당할 때까지 이건우 방향으로 끌림']},
     {kind:'벽 충돌 시전',type:'defense',name:'마법이부여된황금사과섭취',desc:'벽에 6번 부딪힐 때마다 2초 동안 멈춰 황금사과를 먹는다.',points:['섭취 완료 시 HP 25 회복','완료 후 3초 무적']},
     {kind:'주기 가속',type:'attack',name:'마인크래프트스피드런',desc:'3~6초 재사용 대기시간 후 4초 동안 이동속도가 4배가 된다.',points:['가속 중 충돌 시 먹뱉 대신 피해 30','적을 멀리 날려보냄']}
@@ -26839,8 +26853,9 @@ function v191StartSwallow(owner,target){
 }
 function v191FinishSwallow(sw){
   const {owner,target}=sw;if(!target)return;if(!owner?.alive){target.hidden=false;target.data.v191SwallowedBy=null;return;}
-  const recent=(target.recentDamage||[]).filter(e=>e.t>=(game.t-3)).reduce((s,e)=>s+(Number(e.amount)||0),0),requestedHeal=recent/3,recovered=heal(owner,requestedHeal,owner,'빅맥먹뱉하기',true);
-  target.hidden=false;target.data.v191SwallowedBy=null;owner.data.v191SwallowTarget=null;if(target.alive){damage(target,recovered*2,owner,'빅맥먹뱉하기',{allowHidden:true});let dx=target.x-owner.x,dy=target.y-owner.y,dm=Math.hypot(dx,dy);if(dm<.001){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);dm=1;}const sep=owner.r+target.r+12;target.x=clamp(owner.x+dx/dm*sep,target.r,W-target.r);target.y=clamp(owner.y+dy/dm*sep,target.r,H-target.r);const map=owner.data.v191GeonwooContactCd||(owner.data.v191GeonwooContactCd={});map[v191Uid(target)]=(Number(game?.t)||0)+1.1;v174Knock(target,owner,900);}spawnAttackFx(target.x,target.y,'#7b3e22',`먹뱉 ${Math.round(recovered*2)}`,1.25);
+  const uid=v191Uid(target),cutoffs=owner.data.v194SwallowCutoffs||(owner.data.v194SwallowCutoffs={}),cutoff=Math.max(game.t-2,Number(cutoffs[uid])||-Infinity);
+  const recent=(target.recentDamage||[]).filter(e=>e.t>=cutoff).reduce((s,e)=>s+(Number(e.amount)||0),0),requestedHeal=recent/3,recovered=heal(owner,requestedHeal,owner,'빅맥먹뱉하기',true);
+  target.hidden=false;target.data.v191SwallowedBy=null;owner.data.v191SwallowTarget=null;if(target.alive){damage(target,recovered*2,owner,'빅맥먹뱉하기',{allowHidden:true});cutoffs[uid]=game.t+1e-6;let dx=target.x-owner.x,dy=target.y-owner.y,dm=Math.hypot(dx,dy);if(dm<.001){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);dm=1;}const sep=owner.r+target.r+12;target.x=clamp(owner.x+dx/dm*sep,target.r,W-target.r);target.y=clamp(owner.y+dy/dm*sep,target.r,H-target.r);const map=owner.data.v191GeonwooContactCd||(owner.data.v191GeonwooContactCd={});map[v191Uid(target)]=(Number(game?.t)||0)+1.1;v174Knock(target,owner,900);}spawnAttackFx(target.x,target.y,'#7b3e22',`먹뱉 ${Math.round(recovered*2)}`,1.25);
 }
 function v191ReflectDebuffs(p,source){
   const d={frozen:p.frozen||0,strong:p.strongSlow||0,weak:p.weakSlow||0,vuln:p.data?.v151VulnerableTimer||0};
@@ -26968,7 +26983,7 @@ resetBattle=function(){const result=_v191ResetBattle();game.v191Shots=[];game.v1
     if(p.id==='parkgarim'){p.name='박가림';p.img=IMAGES.parkgarim;p.imageObj=v185Image(IMAGES.parkgarim);p.color='#a14a70';p.maxHp=220;p.hp=220;p.speed=220;Object.assign(p.data,{v191LadybugHits:0,v191LadybugTimer:0,v191LadybugStored:0,v191HeartWalls:0,v191GarimContactCd:{},v191NickUsed:false,v191NickPhase:false});}
     if(p.id==='leeeunchae')Object.assign(p.data,{v191EunchaeWalls:0,v191AttackMult:1,v191TripHits:0,v191TripForced:false,v191TripContactCd:{}});
     if(p.id==='nahyeongju')Object.assign(p.data,{v191IgnoreWalls:0,v191StarWalls:0,v191IgnoreShields:0});
-    if(p.id==='leegeonwoo')Object.assign(p.data,{v191BigMacWalls:0,v191AppleWalls:0,v191AppleCast:0,v191AppleInvuln:0,v191SpeedrunCd:rand(3,6),v191SpeedrunTimer:0,v191GeonwooContactCd:{},v191SwallowTarget:null});
+    if(p.id==='leegeonwoo')Object.assign(p.data,{v191BigMacWalls:0,v191AppleWalls:0,v191AppleCast:0,v191AppleInvuln:0,v191SpeedrunCd:rand(3,6),v191SpeedrunTimer:0,v191GeonwooContactCd:{},v191SwallowTarget:null,v194SwallowCutoffs:{}});
   }
   const geun=game.players.find(p=>p.id==='geun'),fake=game.players.find(p=>p.id==='leegeonwoo');if(geun&&fake){for(const p of [geun,fake]){p.maxHp+=40;p.hp+=40;p.data.v191GeunPairHp=true;}}
   const sh=game.players.find(p=>p.id==='kimseonghun');if(sh)v191ApplySeonghunRelation(sh);
@@ -27065,6 +27080,120 @@ statusText=function(p){
 
 window.__GONG_V192_TEST__=window.__GONG_V191_TEST__;
 console.info('[V193] 신규 캐릭터 시각화·요청 밸런스·김유건 강화 적용');
+
+
+
+/* =========================================================
+   V194 · 전체 캐릭터 공격/상태 시각화 · 선택창 고정 · 수치 수정
+   ========================================================= */
+const V194_BUILD='V194_ALL_CHARACTER_VISUALS_FIXES';
+window.__GONG_V194_BUILD__=V194_BUILD;
+
+function v194RootActor(source){
+  if(!source)return null;
+  const candidates=[source.data?.v185SeoProxyOwner,source.rootOwner,source.owner,source];
+  return candidates.find(x=>x&&game?.players?.includes(x))||null;
+}
+function v194ActionName(skill){
+  const s=String(skill||'공격').replace(/\s+/g,' ').trim();
+  return s.length>24?s.slice(0,23)+'…':s;
+}
+function v194RegisterAction(source,skill,value,kind='attack'){
+  const p=v194RootActor(source);if(!p?.data||!p.alive)return;
+  p.data.v194Action={name:v194ActionName(skill),value:Math.max(0,Number(value)||0),kind,timer:1.35,max:1.35};
+}
+function v194AttackMultiplier(p){
+  const d=p?.data||{};
+  const values=[d.attackMult,d.damageMult,d.v191AttackMult,d.v185ReboundMult,d.v174ExplosionMult,d.slimeAttackMult,d.v192AttackMult,d.v151AttackMult];
+  return Math.max(1,...values.map(Number).filter(Number.isFinite));
+}
+function v194CompactState(p){
+  let raw='';try{raw=String(statusText(p)||'')}catch(_){return ''}
+  if(!raw||raw==='정상'||raw.startsWith('탈락'))return '';
+  const parts=raw.split(' · ').map(x=>x.trim()).filter(Boolean).filter(x=>!/^\d+킬$/.test(x));
+  const text=parts.slice(0,2).join(' · ');
+  return text.length>44?text.slice(0,43)+'…':text;
+}
+function v194DrawText(text,x,y,color,size=11){
+  ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`1000 ${size}px Arial`;ctx.lineWidth=4;ctx.strokeStyle='rgba(255,255,255,.96)';ctx.fillStyle=color;ctx.strokeText(text,x,y);ctx.fillText(text,x,y);ctx.restore();
+}
+function v194DrawUniversalState(p,showPersistent){
+  const d=p.data||(p.data={}),action=d.v194Action,now=Number(game?.t)||0;
+  if((d.v194HitTimer||0)>0){
+    const q=Math.max(0,Math.min(1,d.v194HitTimer/.36));ctx.save();ctx.globalAlpha=.25+.45*q;ctx.strokeStyle='#ef3340';ctx.lineWidth=3+3*q;ctx.beginPath();ctx.arc(p.x,p.y,p.r+7+(1-q)*8,0,Math.PI*2);ctx.stroke();ctx.restore();
+  }
+  if(p.frozen>0||p.strongSlow>0||p.weakSlow>0||(p.data?.v151VulnerableTimer||0)>0){
+    const color=p.frozen>0?'#36aeea':(p.data?.v151VulnerableTimer||0)>0?'#df3d73':'#777';
+    ctx.save();ctx.strokeStyle=color;ctx.lineWidth=3;ctx.setLineDash([4,4]);ctx.lineDashOffset=-now*12;ctx.beginPath();ctx.arc(p.x,p.y,p.r+9,0,Math.PI*2);ctx.stroke();ctx.restore();
+  }
+  if(action?.timer>0){
+    const q=Math.max(0,Math.min(1,action.timer/action.max)),color=action.kind==='heal'?'#18a766':(p.color||'#333');
+    ctx.save();ctx.globalAlpha=.2+.55*q;ctx.strokeStyle=color;ctx.lineWidth=3+3*q;ctx.beginPath();ctx.arc(p.x,p.y,p.r+12+(1-q)*14,0,Math.PI*2);ctx.stroke();ctx.restore();
+    const suffix=action.value>0?` ${action.kind==='heal'?'+':'-'}${Math.round(action.value*10)/10}`:'';
+    const icon=action.kind==='heal'?'✚':action.kind==='special'?'✦':'⚔';
+    v194DrawText(`${icon} ${action.name}${suffix}`,p.x,p.y-p.r-38,color,12);
+  }
+  if(showPersistent){
+    const state=v194CompactState(p),mult=v194AttackMultiplier(p);
+    const bits=[];if(state)bits.push(state);if(mult>1.01)bits.push(`⚔×${mult.toFixed(2)}`);
+    if(bits.length)v194DrawText(bits.join(' · '),p.x,p.y+p.r+29,p.color||'#333',10);
+  }
+}
+
+const _v194SpawnAttackFx=spawnAttackFx;
+spawnAttackFx=function(x,y,color,label,scale){
+  const result=_v194SpawnAttackFx(x,y,color,label,scale);
+  if(game?.players&&label){
+    let nearest=null,best=96;
+    for(const p of game.players){if(!p.alive||p.hidden)continue;const d=Math.hypot((p.x||0)-x,(p.y||0)-y);if(d<best){best=d;nearest=p;}}
+    if(nearest)v194RegisterAction(nearest,label,0,/회복|섭취|성공|부활/.test(String(label))?'heal':'special');
+  }
+  return result;
+};
+
+const _v194Damage=damage;
+damage=function(target,amount,source,skill='공격',opts={}){
+  const dealt=_v194Damage(target,amount,source,skill,opts);
+  if(dealt>0){v194RegisterAction(source,skill,dealt,'attack');if(target?.data)target.data.v194HitTimer=.36;}
+  return dealt;
+};
+const _v194Heal=heal;
+heal=function(target,amount,source,skill='회복',show=true){
+  const recovered=_v194Heal(target,amount,source,skill,show);
+  if(recovered>0)v194RegisterAction(source||target,skill,recovered,'heal');
+  return recovered;
+};
+const _v194Tick=tick;
+tick=function(dt){
+  if(game?.players)for(const p of game.players){
+    if(p.data?.v194Action)p.data.v194Action.timer=Math.max(0,p.data.v194Action.timer-dt);
+    if(p.data)p.data.v194HitTimer=Math.max(0,(p.data.v194HitTimer||0)-dt);
+  }
+  return _v194Tick(dt);
+};
+const _v194Draw=draw;
+draw=function(){
+  const result=_v194Draw();
+  if(game?.players){const alive=game.players.filter(p=>p.alive&&!p.hidden),showPersistent=alive.length<=18;for(const p of alive)v194DrawUniversalState(p,showPersistent);}
+  return result;
+};
+const _v194ResetBattle=resetBattle;
+resetBattle=function(){
+  const result=_v194ResetBattle();
+  for(const p of game.players){p.data.v194Action=null;p.data.v194HitTimer=0;if(p.id==='leegeonwoo')p.data.v194SwallowCutoffs={};}
+  return result;
+};
+
+if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.damage=damage;window.__GONG_V134_DEBUG__.tick=tick;window.__GONG_V134_DEBUG__.resetBattle=resetBattle;}
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=V194_BUILD;window.__GONG_V138_TEST__.damage=damage;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.resetBattle=resetBattle;}
+Object.defineProperties(v191Test,{
+  build:{configurable:true,get(){return V194_BUILD;}},
+  universalVisual:{configurable:true,value(id){const p=game?.players?.find(q=>q.id===id);return p?{action:p.data.v194Action,hit:p.data.v194HitTimer,state:v194CompactState(p),mult:v194AttackMultiplier(p)}:null;}},
+  hpDisplay:{configurable:true,value(id){return document.querySelector(`#score-${id} .hp-text`)?.textContent||null;}}
+});
+window.__GONG_V194_TEST__=v191Test;
+window.__GONG_V194_BALANCE__=window.__GONG_V181_BALANCE__;
+console.info('[V194] 전체 캐릭터 공격·상태 시각화 및 요청 수정 완료');
 
 window.__GONG_V174_TEST__=v174Test;
 window.__GONG_V175_TEST__=v174Test;
