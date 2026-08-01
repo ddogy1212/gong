@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V208_FOUNDATION_BOSSRUSH_MOBILE_BUNDLE -->
+<!-- BUILD: V209_CLEAN_SETUP_SCROLL_TOOLS -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1676,14 +1676,11 @@ body.tournament-battle .speed-row{display:none!important}
 </style>
 
 <style id="v208CoreStyle">
-.mode-bossrush-btn{border-color:#ef4444!important;background:linear-gradient(180deg,#fff1f2,#fecdd3)!important;color:#7f1d1d!important}
-.mode-bossrush-btn.active{background:linear-gradient(180deg,#7f1d1d,#450a0a)!important;color:#fff!important;box-shadow:0 0 0 3px rgba(239,68,68,.22)}
-.v208-bossrush-info{margin-top:10px;padding:12px 14px;border:2px solid #ef4444;border-radius:16px;background:#fff1f2;color:#7f1d1d;display:flex;gap:8px;align-items:flex-start;line-height:1.45}.v208-bossrush-info strong{white-space:nowrap}.v208-bossrush-info.hidden{display:none!important}
 .v208-roster-tools{display:grid;grid-template-columns:minmax(180px,1.7fr) repeat(2,minmax(110px,.8fr));gap:9px;margin:10px 0 12px;padding:11px;border:1px solid #d8dee8;border-radius:16px;background:#f7f9fc}.v208-roster-tools label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:900;color:#333}.v208-roster-tools input[type=search],.v208-roster-tools select{width:100%;min-width:0;border:1px solid #c7cfdb;border-radius:10px;background:#fff;padding:9px 10px;font-size:14px}.v208-roster-tools .v208-check{flex-direction:row;align-items:center;align-self:end;min-height:39px}.v208-tool-buttons{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px}.v208-tool-buttons button,.v208-preset button{border:1px solid #b9c2cf;border-radius:10px;background:#fff;padding:8px 10px;font-weight:900;cursor:pointer}.v208-preset{grid-column:1/-1;display:grid!important;grid-template-columns:auto minmax(130px,1fr) auto auto;align-items:center;gap:7px!important}.v208-filter-count{grid-column:1/-1;font-size:11px;font-weight:900;color:#667085}.char-card.v208-filtered{display:none!important}.v208-fav-btn{flex:0 0 auto;border:0;background:transparent;font-size:20px;line-height:1;padding:4px;cursor:pointer;filter:grayscale(1);opacity:.48}.v208-fav-btn.active{filter:none;opacity:1}.char-card.v208-longpress{outline:3px solid #7c3aed;transform:scale(.99)}
 .v208-system-panel{margin-top:12px}.v208-system-grid{display:grid;grid-template-columns:minmax(140px,1fr) minmax(190px,1.4fr) minmax(220px,2fr);gap:12px;align-items:end}.v208-system-grid label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:900}.v208-system-grid select{border:1px solid #c8ced8;border-radius:10px;padding:9px;background:#fff}.v208-system-grid .v208-check{flex-direction:row;align-items:center;min-height:40px}.v208-system-status{display:flex;flex-direction:column;gap:3px;padding:9px 11px;border-radius:12px;background:#f1f5f9;font-size:11px}.v208-system-status b{font-size:12px}
-.v208-battle-tools{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin:9px 0;padding:8px;border-radius:12px;background:#f5f7fb;border:1px solid #d9dfe9}.v208-battle-tools span{font-size:11px;font-weight:1000;color:#344054}.v208-battle-tools button{border:1px solid #aeb8c7;border-radius:9px;background:#fff;padding:7px 9px;font-weight:900;cursor:pointer}.v208-bossrush-hud{margin:8px 0;padding:10px 12px;border-radius:14px;background:linear-gradient(90deg,#450a0a,#7f1d1d);color:#fff;font-weight:1000;text-align:center}.v208-bossrush-hud.hidden{display:none!important}.v208-rush-transition{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(0,0,0,.68);color:#fff;text-align:center;font-weight:1000;font-size:clamp(22px,5vw,42px);pointer-events:none}.v208-rush-transition small{display:block;margin-top:8px;font-size:.45em;color:#fecaca}
+.v208-battle-tools{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin:9px 0;padding:8px;border-radius:12px;background:#f5f7fb;border:1px solid #d9dfe9}.v208-battle-tools span{font-size:11px;font-weight:1000;color:#344054}.v208-battle-tools button{border:1px solid #aeb8c7;border-radius:9px;background:#fff;padding:7px 9px;font-weight:900;cursor:pointer}
 body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motion *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}body.v208-reduce-motion .v203-lightning-flash{display:none!important}
-@media(max-width:700px){.v208-roster-tools{grid-template-columns:1fr 1fr}.v208-search{grid-column:1/-1}.v208-preset{grid-template-columns:1fr 1fr!important}.v208-preset span{grid-column:1/-1}.v208-preset select{grid-column:1/-1}.v208-system-grid{grid-template-columns:1fr}.v208-bossrush-info{flex-direction:column}.v208-battle-tools{position:sticky;bottom:0;z-index:20}}
+@media(max-width:700px){.v208-roster-tools{grid-template-columns:1fr 1fr}.v208-search{grid-column:1/-1}.v208-preset{grid-template-columns:1fr 1fr!important}.v208-preset span{grid-column:1/-1}.v208-preset select{grid-column:1/-1}.v208-system-grid{grid-template-columns:1fr}}
 @media(max-width:430px){.v208-roster-tools{padding:9px;gap:7px}.v208-tool-buttons button{flex:1 1 calc(50% - 7px)}.v208-preset button{padding:8px 6px}.v208-battle-tools button{flex:1 1 42%}.v208-battle-tools span{width:100%;text-align:center}}
 </style>
 </head>
@@ -1722,7 +1719,7 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
 
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V208_FOUNDATION_BOSSRUSH_MOBILE_BUNDLE -->
+<!-- BUILD: V209_CLEAN_SETUP_SCROLL_TOOLS -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -1768,12 +1765,7 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
       <button class="mode-btn active" data-mode="showdown">⚔️ 개인전<small>모두 적으로 전투</small></button>
       <button class="mode-btn" data-mode="team">🤝 팀전<small>팀 수 직접 설정</small></button>
       <button class="mode-btn" data-mode="boss">👑 보스전<small>보스와 전투</small></button>
-      <button id="bossRushModeBtn" class="mode-hub-btn mode-bossrush-btn" type="button">🔥 보스러시<small>4명의 보스를 연속 격파</small></button>
       <button id="tournamentModeBtn" class="mode-hub-btn mode-tournament-btn" type="button">🏆 토너먼트<small>개인·팀 대진표 · 예측 · 우승</small></button>
-    </div>
-    <div id="v208BossRushInfo" class="v208-bossrush-info hidden">
-      <strong>🔥 보스러시</strong>
-      <span>제임스 → 유건우 → 김영식 → JULIA 순서로 연속 전투합니다. 생존자는 다음 라운드에 최대 HP의 25%를 회복하며, 탈락자는 돌아오지 않습니다.</span>
     </div>
     <div id="teamOptions" class="team-options hidden">
       <label for="teamCount">팀 개수</label>
@@ -1869,32 +1861,13 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
     <div class="pool" data-zone="pool" style="--zone:#111">
       <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">캐릭터 선택</span></div>
       <div id="quickTargetBar" class="quick-target-bar" aria-label="캐릭터 빠른 배정 대상"></div>
-      <div id="v208RosterTools" class="v208-roster-tools">
-        <label class="v208-search"><span>캐릭터 검색</span><input id="v208CharacterSearch" type="search" placeholder="이름·역할·스킬 검색"></label>
-        <label><span>기수</span><select id="v208GenerationFilter"><option value="all">전체</option><option value="20">20기</option><option value="21">21기</option><option value="unknown">기수 미분류</option></select></label>
-        <label><span>유형</span><select id="v208RoleFilter"><option value="all">전체</option><option value="attack">공격형</option><option value="defense">방어형</option><option value="heal">회복·지원형</option><option value="summon">소환형</option><option value="growth">성장형</option></select></label>
-        <label class="v208-check"><input id="v208FavoritesOnly" type="checkbox"> 즐겨찾기만</label>
-        <div class="v208-tool-buttons">
-          <button id="v208RecentOnly" type="button">최근 사용</button>
-          <button id="v208RandomEight" type="button">🎲 랜덤 8명</button>
-          <button id="v208LoadLast" type="button">↩ 지난 편성</button>
-          <button id="v208SavePreset" type="button">💾 편성 저장</button>
-        </div>
-        <label class="v208-preset"><span>저장 편성</span><select id="v208PresetSelect"><option value="">선택</option></select><button id="v208LoadPreset" type="button">불러오기</button><button id="v208DeletePreset" type="button">삭제</button></label>
-        <div id="v208FilterCount" class="v208-filter-count">전체 캐릭터</div>
+      <div id="v208RosterTools" class="v208-roster-tools v209-search-only">
+        <label class="v208-search"><span>캐릭터 이름 검색</span><input id="v208CharacterSearch" type="search" placeholder="캐릭터 이름 검색" autocomplete="off"></label>
       </div>
       <div id="poolCards" class="pool-cards"></div>
     </div>
   </div>
 
-  <div class="panel v208-system-panel">
-    <div class="panel-title">3. 게임 시스템</div>
-    <div class="v208-system-grid">
-      <label><span>이펙트 품질</span><select id="v208QualitySelect"><option value="auto">자동</option><option value="low">낮음</option><option value="medium">보통</option><option value="high">높음</option></select></label>
-      <label class="v208-check"><input id="v208ReduceMotion" type="checkbox"> 화면 번쩍임·흔들림 줄이기</label>
-      <div class="v208-system-status"><b id="v208PerformanceStatus">자동 최적화 준비</b><span id="v208BalanceStatus">승률 데이터 확인 중</span></div>
-    </div>
-  </div>
   <button id="start" class="start-btn">배정한 캐릭터로 전투 시작 🔥</button>
   <div class="help">개인전은 2명 이상 · 팀전은 생성한 모든 팀에 최소 1명씩 필요</div>
 </section>
@@ -1987,12 +1960,6 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
     </div>
   </div>
 
-  <div id="v208BattleTools" class="v208-battle-tools">
-    <span id="v208BattleCode">경기 코드 준비 중</span>
-    <button id="v208ReplayBattle" type="button">↻ 같은 경기 재실행</button>
-    <button id="v208CopyBug" type="button">🐞 오류 기록 복사</button>
-  </div>
-  <div id="v208BossRushHud" class="v208-bossrush-hud hidden"></div>
   <div class="controls">
     <button id="restart" class="ctrl dark">다시 경기</button>
     <button id="pause" class="ctrl light">일시정지</button>
@@ -2043,6 +2010,13 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
   </div>
 </div>
 
+
+
+<div id="v208BattleTools" class="v208-battle-tools hidden" aria-label="경기 재현 도구">
+  <span id="v208BattleCode">경기 코드 준비 중</span>
+  <button id="v208ReplayBattle" type="button">↻ 같은 경기 재실행</button>
+  <button id="v208CopyBug" type="button">🐞 오류 기록 복사</button>
+</div>
 
 <section class="promo-banner" aria-label="굿즈 광고">
   <div class="promo-banner-label">광고</div>
@@ -28756,7 +28730,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 /* V208 bundled core systems */
 (()=>{
   'use strict';
-  const BUILD='V208_FOUNDATION_BOSSRUSH_MOBILE_BUNDLE';
+  const BUILD='V209_CLEAN_SETUP_SCROLL_TOOLS';
   const $v=id=>document.getElementById(id);
   const clone=value=>{try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value))}};
   const v208MemoryStore=new Map();
@@ -28812,13 +28786,13 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   async function copyText(text){
     try{await navigator.clipboard.writeText(text);return true}catch(_){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(__){}ta.remove();return ok}
   }
-  $v('v208ReplayBattle')?.addEventListener('click',()=>{if(window.__GONG_V208_BOSS_RUSH__?.active){alert('보스러시 진행 중에는 현재 라운드 재실행을 사용할 수 없어.');return}replayPacket()});
+  $v('v208ReplayBattle')?.addEventListener('click',()=>replayPacket());
   $v('v208CopyBug')?.addEventListener('click',async()=>{const packet=battlePacket(),ok=await copyText(JSON.stringify(packet,null,2));const btn=$v('v208CopyBug');if(btn){const old=btn.textContent;btn.textContent=ok?'복사 완료 ✓':'복사 실패';setTimeout(()=>btn.textContent=old,1300)}});
   GongGameModules.registerSystem('seed-replay',{activateSeed,replayPacket,battlePacket});
 
   /* ---------- 3. large-battle performance system ---------- */
   const PERF_KEY='gonggame_v208_performance_settings';
-  const perf=Object.assign({selected:'auto',effective:'medium',reduceMotion:false,avgFrame:16.7,lastDraw:0,collisions:0,buckets:0},safeStore.get(PERF_KEY,{}));
+  const perf={selected:'auto',effective:'medium',reduceMotion:false,avgFrame:16.7,lastDraw:0,collisions:0,buckets:0};
   function savePerf(){safeStore.set(PERF_KEY,{selected:perf.selected,reduceMotion:perf.reduceMotion})}
   function qualityForCount(count){if(perf.selected!=='auto')return perf.selected;if(count>=55)return 'low';if(count>=24)return perf.avgFrame>24?'low':'medium';return perf.avgFrame>25?'low':perf.avgFrame>19?'medium':'high'}
   function syncQuality(){
@@ -28874,69 +28848,52 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function updateBalanceStatus(){const el=$v('v208BalanceStatus');if(el)el.textContent=`승률 V197 + 실전 자동 보정 ${balance.matches}경기 · 재검증 대상 ${stale.size}명`}
   updateBalanceStatus();GongGameModules.registerSystem('balance-cache',balanceApi);
 
-  /* ---------- 5. search, filters, favorites, recent, and saved lineups ---------- */
-  const FAV_KEY='gonggame_v208_favorites',RECENT_KEY='gonggame_v208_recent',PRESET_KEY='gonggame_v208_presets',LAST_LINEUP_KEY='gonggame_v208_last_lineup';
-  const favorites=new Set(safeStore.get(FAV_KEY,[])),recent=safeStore.get(RECENT_KEY,[]);let recentOnly=false;
-  function roleCategory(d){const text=`${d.role||''} ${d.skills||''}`;return {attack:/공격|폭딜|피해|투사체|돌진|폭격|반사/.test(text),defense:/방어|무효|회피|생존|보호막/.test(text),heal:/회복|지원|아군/.test(text),summon:/소환|더미|하마|까치|반준서/.test(text),growth:/성장|누적|각성|영구/.test(text)}}
-  function ensureCardTools(){for(const card of document.querySelectorAll('.char-card')){const id=card.dataset.char;if(!id||card.querySelector('.v208-fav-btn'))continue;const btn=document.createElement('button');btn.type='button';btn.className='v208-fav-btn'+(favorites.has(id)?' active':'');btn.dataset.favId=id;btn.title='즐겨찾기';btn.textContent='★';card.insertBefore(btn,card.querySelector('.card-skill-info'))}}
-  function applyRosterFilters(){
-    const q=($v('v208CharacterSearch')?.value||'').trim().toLowerCase(),gen=$v('v208GenerationFilter')?.value||'all',role=$v('v208RoleFilter')?.value||'all',favOnly=!!$v('v208FavoritesOnly')?.checked;let shown=0,total=0;
-    for(const card of poolCards.querySelectorAll(':scope > .char-card')){total++;const id=card.dataset.char,d=DEFS[id]||{},hay=`${d.name||''} ${d.role||''} ${d.skills||''}`.toLowerCase(),cats=roleCategory(d);const okQ=!q||hay.includes(q),okGen=gen==='all'||(gen==='unknown'?!d.generation:String(d.generation)===gen),okRole=role==='all'||!!cats[role],okFav=!favOnly||favorites.has(id),okRecent=!recentOnly||recent.includes(id),ok=okQ&&okGen&&okRole&&okFav&&okRecent;card.classList.toggle('v208-filtered',!ok);if(ok)shown++}
-    const count=$v('v208FilterCount');if(count)count.textContent=`${shown}명 표시 · 전체 ${total}명${recentOnly?' · 최근 사용 필터':''}`;
+  /* ---------- 5. character name search only ---------- */
+  function applyNameSearch(){
+    const q=($v('v208CharacterSearch')?.value||'').trim().toLowerCase();
+    for(const card of poolCards.querySelectorAll(':scope > .char-card')){
+      const id=card.dataset.char;
+      const name=String(DEFS[id]?.name||'').toLowerCase();
+      card.classList.toggle('v208-filtered',!!q&&!name.includes(q));
+    }
   }
-  function refreshPresetSelect(){const select=$v('v208PresetSelect'),presets=safeStore.get(PRESET_KEY,{});if(!select)return;const value=select.value;select.innerHTML='<option value="">선택</option>'+Object.keys(presets).map(name=>`<option value="${name.replace(/"/g,'&quot;')}">${name}</option>`).join('');if(presets[value])select.value=value}
-  const oldRenderSetup=renderSetup;renderSetup=function(){const r=oldRenderSetup();ensureCardTools();applyRosterFilters();refreshPresetSelect();return r};
-  const oldMoveCard=moveCard;moveCard=function(id,zone){const r=oldMoveCard(id,zone);if(zone!=='pool'){const i=recent.indexOf(id);if(i>=0)recent.splice(i,1);recent.unshift(id);recent.splice(20);safeStore.set(RECENT_KEY,recent)}ensureCardTools();applyRosterFilters();return r};
-  document.addEventListener('click',event=>{const btn=event.target.closest('.v208-fav-btn');if(!btn)return;event.preventDefault();event.stopPropagation();const id=btn.dataset.favId;if(favorites.has(id))favorites.delete(id);else favorites.add(id);safeStore.set(FAV_KEY,[...favorites]);document.querySelectorAll(`.v208-fav-btn[data-fav-id="${CSS.escape(id)}"]`).forEach(x=>x.classList.toggle('active',favorites.has(id)));applyRosterFilters()},true);
-  ['v208CharacterSearch','v208GenerationFilter','v208RoleFilter','v208FavoritesOnly'].forEach(id=>$v(id)?.addEventListener(id==='v208CharacterSearch'?'input':'change',()=>{recentOnly=false;$v('v208RecentOnly')?.classList.remove('active');applyRosterFilters()}));
-  $v('v208RecentOnly')?.addEventListener('click',event=>{recentOnly=!recentOnly;event.currentTarget.classList.toggle('active',recentOnly);applyRosterFilters()});
-  $v('v208RandomEight')?.addEventListener('click',()=>{const visible=[...poolCards.querySelectorAll(':scope > .char-card:not(.v208-filtered)')].map(c=>c.dataset.char);for(let i=visible.length-1;i>0;i--){const j=Math.floor(nativeRandom()*(i+1));[visible[i],visible[j]]=[visible[j],visible[i]]}const pick=visible.slice(0,8);if(mode==='team'){const zones=zoneList();pick.forEach((id,i)=>assignments[id]=zones[i%zones.length].id)}else{const zone=mode==='bossrush'?'heroes':(activeZone||zoneList()[0]?.id);pick.forEach(id=>assignments[id]=zone)}renderSetup()});
-  function currentLineup(){return {mode,teamCount:Number(teamCount?.value)||2,assignments:Object.fromEntries(Object.entries(assignments).filter(([,z])=>z!=='pool')),savedAt:Date.now()}}
-  $v('v208SavePreset')?.addEventListener('click',()=>{const name=(prompt('저장할 편성 이름을 적어줘')||'').trim();if(!name)return;const presets=safeStore.get(PRESET_KEY,{});presets[name]=currentLineup();safeStore.set(PRESET_KEY,presets);refreshPresetSelect();$v('v208PresetSelect').value=name});
-  function restoreLineup(row){if(!row)return false;const targetMode=row.mode==='bossrush'?'bossrush':row.mode;if(targetMode==='bossrush')$v('bossRushModeBtn')?.click();else document.querySelector(`.mode-btn[data-mode="${CSS.escape(targetMode)}"]`)?.click();if(targetMode==='team'&&row.teamCount)teamCount.value=row.teamCount;Object.keys(assignments).forEach(id=>assignments[id]='pool');for(const [id,z] of Object.entries(row.assignments||{}))if(DEFS[id])assignments[id]=z;renderSetup();return true}
-  $v('v208LoadPreset')?.addEventListener('click',()=>{const name=$v('v208PresetSelect')?.value,presets=safeStore.get(PRESET_KEY,{});if(name)restoreLineup(presets[name])});
-  $v('v208DeletePreset')?.addEventListener('click',()=>{const name=$v('v208PresetSelect')?.value;if(!name)return;const presets=safeStore.get(PRESET_KEY,{});delete presets[name];safeStore.set(PRESET_KEY,presets);refreshPresetSelect()});
-  $v('v208LoadLast')?.addEventListener('click',()=>{const row=safeStore.get(LAST_LINEUP_KEY,null);if(!row)alert('저장된 지난 편성이 없어.');else restoreLineup(row)});
-  let longPressTimer=null,longPressCard=null,longPressTriggered=false;document.addEventListener('pointerdown',event=>{const card=event.target.closest('.char-card');if(!card||event.target.closest('button'))return;longPressTriggered=false;longPressCard=card;longPressTimer=setTimeout(()=>{longPressTriggered=true;card.classList.add('v208-longpress');openSkillModal(card.dataset.char);setTimeout(()=>card.classList.remove('v208-longpress'),400)},560)},true);['pointerup','pointercancel','pointermove'].forEach(type=>document.addEventListener(type,event=>{if(type==='pointermove'&&longPressCard&&Math.hypot(event.movementX||0,event.movementY||0)<8)return;clearTimeout(longPressTimer);longPressTimer=null;longPressCard=null},true));document.addEventListener('click',event=>{if(longPressTriggered&&event.target.closest('.char-card')){event.preventDefault();event.stopImmediatePropagation();longPressTriggered=false}},true);
-  ensureCardTools();applyRosterFilters();refreshPresetSelect();GongGameModules.registerSystem('roster-tools',{favorites,recent,applyRosterFilters});
+  const v209RenderSetup=renderSetup;
+  renderSetup=function(){const result=v209RenderSetup();applyNameSearch();return result};
+  const v209MoveCard=moveCard;
+  moveCard=function(id,zone){const result=v209MoveCard(id,zone);applyNameSearch();return result};
+  $v('v208CharacterSearch')?.addEventListener('input',applyNameSearch);
+  applyNameSearch();
+  GongGameModules.registerSystem('name-search',{apply:applyNameSearch});
 
-  /* ---------- 6. Boss Rush ---------- */
-  const RUSH_BOSSES=['james','yoogeon','youngsik','julia'];let bossRushSetup=false;
-  const rush={active:false,transitioning:false,index:0,queue:[...RUSH_BOSSES],heroIds:[],carried:{},history:[],overlay:null};window.__GONG_V208_BOSS_RUSH__=rush;
-  const oldZoneList=zoneList;zoneList=function(){if(mode==='bossrush')return [{id:'heroes',name:'보스러시 도전자',color:'#b11f38'}];return oldZoneList()};
-  function setRushSetup(enabled){bossRushSetup=enabled;$v('bossRushModeBtn')?.classList.toggle('active',enabled);$v('v208BossRushInfo')?.classList.toggle('hidden',!enabled);if(enabled){mode='bossrush';activeZone='heroes';Object.keys(assignments).forEach(id=>assignments[id]='pool');document.querySelectorAll('.mode-btn,.mode-hub-btn').forEach(b=>{if(b.id!=='bossRushModeBtn')b.classList.remove('active')});teamOptions.classList.add('hidden');bossSelectWrap.classList.remove('show');document.body.classList.add('boss-setup');renderSetup()} }
-  $v('bossRushModeBtn')?.addEventListener('click',()=>{try{window.__GONG_V200_TEST__?.stop?.()}catch(_){}setRushSetup(true)});
-  document.querySelectorAll('.mode-btn,#autoBattleStart,#randomModeStart,#tournamentModeBtn').forEach(btn=>btn.addEventListener('click',()=>{if(btn.id!=='bossRushModeBtn'){bossRushSetup=false;$v('bossRushModeBtn')?.classList.remove('active');$v('v208BossRushInfo')?.classList.add('hidden')}},true));
-  function rushHud(){const el=$v('v208BossRushHud');if(!el)return;if(!rush.active){el.classList.add('hidden');return}const bossId=rush.queue[rush.index],name=DEFS[bossId]?.name||bossId;el.classList.remove('hidden');el.textContent=`🔥 보스러시 ${rush.index+1}/${rush.queue.length} · ${name} · 생존 도전자 ${rush.heroIds.length}명`}
-  function rushTransition(title,sub){const wrap=document.querySelector('.arena-wrap');rush.overlay?.remove();const el=document.createElement('div');el.className='v208-rush-transition';el.innerHTML=`<div>${title}<small>${sub||''}</small></div>`;wrap.appendChild(el);rush.overlay=el}
-  async function launchRushRound(index,carry={}){rush.index=index;const bossId=rush.queue[index],heroes=[...rush.heroIds];selectedBoss=bossId;currentConfig={mode:'boss',bossRush:true,bossRushRound:index+1,participants:[...heroes,bossId],teams:Object.fromEntries([...heroes.map(id=>[id,'heroes']),[bossId,'boss']]),zoneNames:{heroes:'보스러시 도전자',boss:`보스 ${DEFS[bossId].name}`}};nextBattleSeed=nextNativeSeed();paused=false;last=0;showBattleScreen();await v182PreloadImages([DEFS[bossId]?.img,...heroes.map(id=>DEFS[id]?.img)],4500);resetBattle();for(const p of game.players){if(carry[p.id]!=null&&!p.isBoss){p.hp=Math.min(p.maxHp,Math.max(1,carry[p.id]));}}rush.transitioning=false;rush.overlay?.remove();rush.overlay=null;rushHud();updateUI()}
-  $v('start')?.addEventListener('click',event=>{if(mode!=='bossrush')return;event.preventDefault();event.stopImmediatePropagation();const heroes=orderedCharacterIds().filter(id=>assignments[id]==='heroes');if(!heroes.length){alert('보스러시 도전자를 최소 1명 넣어줘!');return}safeStore.set(LAST_LINEUP_KEY,currentLineup());Object.assign(rush,{active:true,transitioning:false,index:0,heroIds:heroes,carried:{},history:[]});launchRushRound(0,{})},true);
-  const oldOpenResultModal=openResultModal;openResultModal=function(){if(rush.active)return;return oldOpenResultModal()};
-  function handleRushEnd(){if(!rush.active||rush.transitioning||!game?.over)return;const boss=game.players.find(p=>p.isBoss&&!p.isBossSummon),survivors=game.players.filter(p=>p.alive&&!p.hidden&&!p.isBoss&&!p.isBossSummon&&!p.data?.v207Banjunseo);rush.history.push({boss:boss?.id||rush.queue[rush.index],won:!boss?.alive,survivors:survivors.map(p=>p.id),time:game.t});if(!boss?.alive&&survivors.length){if(rush.index<rush.queue.length-1){rush.transitioning=true;const carry=Object.fromEntries(survivors.map(p=>[p.id,Math.min(p.maxHp,p.hp+p.maxHp*.25)]));rush.heroIds=survivors.map(p=>p.id);rushTransition(`ROUND ${rush.index+1} CLEAR`,`생존자 ${survivors.length}명 · 최대 HP 25% 회복`);setTimeout(()=>launchRushRound(rush.index+1,carry),1200)}else{game.resultTitle='🏆 보스러시 완주!';rush.active=false;rushHud();updateUI();setTimeout(()=>oldOpenResultModal(),0)}}else{game.resultTitle=`👑 보스러시 실패 · ${DEFS[boss?.id]?.name||'보스'}`;rush.active=false;rushHud();updateUI();setTimeout(()=>oldOpenResultModal(),0)}}
-  const oldCheckEnd=checkEnd;checkEnd=function(){const before=!!game?.over,result=oldCheckEnd();if(!before&&game?.over){recordCurrentBattleOdds();lastBattlePacket=battlePacket();safeStore.set('gonggame_v208_last_battle',lastBattlePacket);safeStore.set(LAST_LINEUP_KEY,currentLineup());handleRushEnd()}return result};
-  $v('back')?.addEventListener('click',()=>{rush.active=false;rush.transitioning=false;rush.overlay?.remove();rush.overlay=null;rushHud();if(mode==='bossrush')document.body.classList.add('boss-setup')},true);
-  GongGameModules.registerMode('bossrush',{queue:RUSH_BOSSES,launch:launchRushRound,state:rush});
+  /* Boss Rush removed in V209. Preserve ordinary battle-result learning and bug packets. */
+  window.__GONG_V208_BOSS_RUSH__=null;
+  const v209CheckEnd=checkEnd;
+  checkEnd=function(){
+    const before=!!game?.over;
+    const result=v209CheckEnd();
+    if(!before&&game?.over){
+      recordCurrentBattleOdds();
+      lastBattlePacket=battlePacket();
+      safeStore.set('gonggame_v208_last_battle',lastBattlePacket);
+    }
+    return result;
+  };
 
   /* Keep latest build and expose diagnostics. */
   window.__GONG_V208_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  window.__GONG_V208_CHANGES__=Object.freeze({seedReplay:true,bugPacket:true,moduleRegistry:true,spatialHashCollisions:true,adaptiveQuality:true,incrementalOdds:true,searchFiltersFavorites:true,savedLineups:true,bossRush:true,mobileSingleFileImages:true});
+  window.__GONG_V208_CHANGES__=Object.freeze({seedReplay:true,bugPacket:true,moduleRegistry:true,spatialHashCollisions:true,adaptiveQuality:true,incrementalOdds:true,nameSearchOnly:true,bossRush:false,mobileSingleFileImages:true});
   window.__GONG_V208_TEST__={
     build:BUILD,
     seed(){return {code:seedState.code,seed:seedState.seed,config:clone(seedState.config)}},
     performance(){return {quality:perf.effective,avgFrame:perf.avgFrame,collisions:perf.collisions,buckets:perf.buckets}},
     balance(){return {matches:balance.matches,stale:[...stale],pairs:Object.keys(balance.pairs).length}},
-    roster(){return {favorites:[...favorites],recent:[...recent],shown:poolCards.querySelectorAll(':scope > .char-card:not(.v208-filtered)').length}},
-    bossRush(){return {active:rush.active,index:rush.index,heroes:[...rush.heroIds],history:clone(rush.history)}},
-    setRushSetup(){setRushSetup(true);return {active:$v('bossRushModeBtn')?.classList.contains('active')||false,info:!$v('v208BossRushInfo')?.classList.contains('hidden'),zones:zoneList().map(z=>z.id)}},
-    async startRush(ids=['moon','yoon','yuinsung']){Object.assign(rush,{active:true,transitioning:false,index:0,heroIds:ids.filter(id=>DEFS[id]),history:[]});await launchRushRound(0,{});return this.bossRush()},
-    forceRushClear(){const boss=game?.players?.find(p=>p.isBoss&&!p.isBossSummon);if(!boss)return null;boss.hp=0;boss.alive=false;checkEnd();return this.bossRush()},
-    forceRushFail(){for(const p of game?.players||[]){if(!p.isBoss&&!p.isBossSummon){p.hp=0;p.alive=false}}checkEnd();return this.bossRush()},
+    roster(){return {query:$v('v208CharacterSearch')?.value||'',shown:poolCards.querySelectorAll(':scope > .char-card:not(.v208-filtered)').length}},
     startBattle(ids=['moon','yuinsung'],seed=123456789){currentConfig={mode:'showdown',participants:ids.filter(id=>DEFS[id]),teams:Object.fromEntries(ids.filter(id=>DEFS[id]).map(id=>[id,id])),zoneNames:{}};nextBattleSeed=seed>>>0;paused=true;last=0;showBattleScreen();resetBattle();return this.snapshot()},
     snapshot(){return {code:seedState.code,seed:seedState.seed,config:clone(currentConfig),players:(game?.players||[]).filter(p=>!p.data?.v207Banjunseo).map(p=>({id:p.id,x:+p.x.toFixed(4),y:+p.y.toFixed(4),vx:+p.vx.toFixed(4),vy:+p.vy.toFixed(4),hp:p.hp}))}},
     replay(){const packet={seed:seedState.seed,config:clone(seedState.config)};replayPacket(packet);paused=true;return this.snapshot()},
-    verify(){return {build:window.__GONG_LATEST_BUILD__,yuinsungEmbedded:String(DEFS.yuinsung?.img||'').startsWith('data:image/'),banjunseoEmbedded:String(IMAGES.banjunseo||'').startsWith('data:image/'),juliaEmbedded:String(IMAGES.julia||'').startsWith('data:image/'),kooshEmbedded:String(IMAGES.v203Koosh||'').startsWith('data:image/'),bossRushButton:!!$v('bossRushModeBtn'),rosterTools:!!$v('v208RosterTools'),quality:perf.effective,modules:[...GongGameModules.systems.keys()],moduleCounts:{characters:GongGameModules.characters.size,bosses:GongGameModules.bosses.size,modes:GongGameModules.modes.size,systems:GongGameModules.systems.size}}}
+    verify(){return {build:window.__GONG_LATEST_BUILD__,yuinsungEmbedded:String(DEFS.yuinsung?.img||'').startsWith('data:image/'),banjunseoEmbedded:String(IMAGES.banjunseo||'').startsWith('data:image/'),juliaEmbedded:String(IMAGES.julia||'').startsWith('data:image/'),kooshEmbedded:String(IMAGES.v203Koosh||'').startsWith('data:image/'),bossRushButton:!!$v('bossRushModeBtn'),nameSearch:!!$v('v208CharacterSearch'),gameSystemPanel:!!document.querySelector('.v208-system-panel'),toolsBeforeAd:$v('v208BattleTools')?.nextElementSibling?.classList.contains('promo-banner')||false,quality:perf.effective,modules:[...GongGameModules.systems.keys()],moduleCounts:{characters:GongGameModules.characters.size,bosses:GongGameModules.bosses.size,modes:GongGameModules.modes.size,systems:GongGameModules.systems.size}}}
   };
-  renderSetup();syncQuality();updateBattleCode();console.info('[V208] 재현 가능한 시드 · 모듈 레지스트리 · 대규모 최적화 · 실전 승률 보정 · 검색/즐겨찾기 · 보스러시 · 모바일 단일 HTML 이미지 포함');
+  renderSetup();syncQuality();updateBattleCode();console.info('[V209] 게임 시스템 UI 제거 · 이름 검색만 유지 · 보스러시 제거 · 경기 도구 광고 위 일반 배치');
 })();
 
 })();
@@ -29125,9 +29082,45 @@ html.v206-card-moving *{scroll-behavior:auto!important}
 
 
 <script id="v208BuildMarker">
-window.__GONG_V208_BUILD__='V208_FOUNDATION_BOSSRUSH_MOBILE_BUNDLE';
-window.__GONG_LATEST_BUILD__='V208_FOUNDATION_BOSSRUSH_MOBILE_BUNDLE';
+window.__GONG_V208_BUILD__='V209_CLEAN_SETUP_SCROLL_TOOLS';
+window.__GONG_LATEST_BUILD__='V209_CLEAN_SETUP_SCROLL_TOOLS';
 console.info('[V208] 최신 빌드 활성화');
+</script>
+
+<style id="v209CleanSetupStyle">
+.v209-search-only{display:block!important;padding:10px!important;margin:10px 0 12px!important}
+.v209-search-only .v208-search{display:flex!important;width:100%!important}
+.v209-search-only input[type=search]{font-size:16px!important;min-height:46px!important}
+#v208BattleTools{position:static!important;inset:auto!important;z-index:auto!important;margin:18px 13px 10px!important}
+#v208BattleTools.hidden{display:none!important}
+@media(max-width:700px){#v208BattleTools{position:static!important;bottom:auto!important;z-index:auto!important}}
+</style>
+<script id="v209BuildMarker">
+(()=>{
+  const BUILD='V209_CLEAN_SETUP_SCROLL_TOOLS';
+  window.__GONG_V209_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  const tools=document.getElementById('v208BattleTools');
+  const battleScreen=document.getElementById('battle');
+  const sync=()=>tools?.classList.toggle('hidden',!battleScreen||battleScreen.classList.contains('hidden'));
+  if(battleScreen)new MutationObserver(sync).observe(battleScreen,{attributes:true,attributeFilter:['class']});
+  sync();
+  window.__GONG_V209_TEST__={
+    verify(){
+      const search=document.getElementById('v208RosterTools');
+      const ad=document.querySelector('.promo-banner');
+      return {
+        build:window.__GONG_LATEST_BUILD__,
+        gameSystemRemoved:!document.querySelector('.v208-system-panel'),
+        nameSearchOnly:!!search&&search.querySelectorAll('input,select,button').length===1&&!!document.getElementById('v208CharacterSearch'),
+        bossRushRemoved:!document.getElementById('bossRushModeBtn')&&!document.getElementById('v208BossRushInfo')&&!document.getElementById('v208BossRushHud'),
+        toolsAboveAd:!!tools&&tools.nextElementSibling===ad,
+        toolsPosition:getComputedStyle(tools).position
+      };
+    }
+  };
+  console.info('[V209] 설정 화면 단순화 · 이름 검색만 유지 · 보스러시 제거 · 경기 도구는 광고 위 일반 흐름 배치');
+})();
 </script>
 
 </body>
