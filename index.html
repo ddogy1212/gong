@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V200_RANDOM_RULE_MODE -->
+<!-- BUILD: V201_CLEAN_PLAYER_UI -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1588,14 +1588,47 @@ body.tournament-battle .speed-row{display:none!important}
 @media(max-width:559px){.mode-random-btn{grid-column:auto}.random-mode-intro-card{padding:23px 16px}}
 </style>
 </head>
+
+<style id="v201CleanUiStyle">
+/* V201 · 플레이어용 간결 UI */
+#battle .score .status,
+#battle .boss-ally-status{
+  display:none!important;
+  min-height:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+#battle .score .status::after,
+#battle .boss-ally-status::after{content:none!important;display:none!important}
+#battle .score{padding-bottom:8px}
+#battle .log{
+  min-height:0!important;
+  margin-top:8px;
+  padding:7px 10px;
+  border:2px solid #111;
+  border-radius:11px;
+  background:#f7f7f8;
+  color:#111;
+}
+#battle .log-top{margin:0!important}
+#battle #logText{display:none!important}
+#battle .timer{font-size:16px}
+#battle .alive{color:#555}
+#battle .kill-panel-head{justify-content:flex-start}
+#battle .kill-panel-head span:last-child{display:none!important}
+#battle .battle-title{max-width:58%}
+#battle .badge{max-width:42%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V200_RANDOM_RULE_MODE -->
+<!-- BUILD: V201_CLEAN_PLAYER_UI -->
 <div class="app">
 
 <section id="setup" class="screen">
   <h1>수원외고 공게임 🏟️</h1>
-  <div class="lead">자동전투·랜덤모드·개인전·팀전·보스전을 한곳에서 선택해. 모바일에서는 빠른 배정 버튼을 고른 뒤 캐릭터 카드를 누르면 편하게 참가시킬 수 있어.</div>
+  <div class="lead">원하는 전투 방식을 선택하고 캐릭터를 배정해.</div>
   <div class="setup-actions">
     <div class="showdown-bulk-actions">
       <button id="addAllShowdown" class="add-all-btn">➕ 개인전에 모두 추가</button>
@@ -1728,7 +1761,7 @@ body.tournament-battle .speed-row{display:none!important}
 
   <div class="panel">
     <div class="pool" data-zone="pool" style="--zone:#111">
-      <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">세로 스크롤 · 빠른 배정 후 카드 탭</span></div>
+      <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">캐릭터 선택</span></div>
       <div id="quickTargetBar" class="quick-target-bar" aria-label="캐릭터 빠른 배정 대상"></div>
       <div id="poolCards" class="pool-cards"></div>
     </div>
@@ -1803,7 +1836,7 @@ body.tournament-battle .speed-row{display:none!important}
   <div class="kill-panel">
     <div class="kill-panel-head">
       <span>☠ 처치 기록</span>
-      <span>최근 5개</span>
+      
     </div>
     <div id="killfeed" class="killfeed">
       <div class="kill-empty">아직 처치 기록이 없습니다.</div>
@@ -1858,7 +1891,7 @@ body.tournament-battle .speed-row{display:none!important}
 
 
 <div id="tournamentModal" class="tournament-modal hidden" aria-hidden="true"><div class="tournament-modal-card"><div class="tournament-modal-head"><div id="tournamentModalTitle" class="tournament-modal-title">토너먼트</div><button id="tournamentModalClose" class="tournament-modal-close" type="button">×</button></div><div id="tournamentModalBody" class="tournament-modal-body"></div></div></div>
-<div id="tournamentFastOverlay" class="tournament-fast-overlay hidden"><div class="t-fast-box"><div class="t-fast-title">⚡ 빠른 경기 진행 중</div><div id="tournamentFastMatch" class="t-fast-match">대진 준비</div><div class="t-fast-spinner"></div><div id="tournamentFastProgress" style="font-size:11px;font-weight:900;color:#e9deb5">실제 전투 로직을 고속 계산하고 있습니다.</div></div></div>
+<div id="tournamentFastOverlay" class="tournament-fast-overlay hidden"><div class="t-fast-box"><div class="t-fast-title">⚡ 빠른 경기 진행 중</div><div id="tournamentFastMatch" class="t-fast-match">대진 준비</div><div class="t-fast-spinner"></div><div id="tournamentFastProgress" style="font-size:11px;font-weight:900;color:#e9deb5">경기를 진행하고 있습니다.</div></div></div>
 <div id="tournamentCinematic" class="t-cinematic hidden" aria-hidden="true">
   <div id="tournamentCinematicParticles" class="t-cinematic-particles"></div>
   <div id="tournamentCinematicCard" class="t-cinematic-card"></div>
@@ -4703,30 +4736,27 @@ if(p.id==='gyumin'){p.cool={lips:2.2};p.data={collisionCount:0,contactCd:{},cast
   }
 
   paused=false;$('pause').textContent='일시정지';
-  $('battleTitle').textContent=currentConfig.participants.map(id=>DEFS[id].name).join(' VS ');
-  const expanded=
-    currentConfig.participants.length>10;
-
-  $('modeBadge').textContent=
-    currentConfig.mode==='boss'
-      ?`👑 ${DEFS[selectedBoss].name} 보스전`
+  const v201ModeTitle=currentConfig.mode==='boss'
+    ?`${DEFS[selectedBoss].name} 보스전`
+    :currentConfig.randomMode
+      ?'랜덤 배틀'
       :currentConfig.mode==='showdown'
-        ?expanded
-          ?`⚔️ 개인전 · 전장 ${arenaLogicalScale.toFixed(1)}×`
-          :'⚔️ 개인전'
-        :expanded
-          ?`🤝 ${livingTeams().length}팀전 · 전장 ${arenaLogicalScale.toFixed(1)}×`
-          :`🤝 ${livingTeams().length}팀전`;
+        ?'개인전'
+        :'팀전';
+  $('battleTitle').textContent=v201ModeTitle;
+  $('modeBadge').textContent=currentConfig.mode==='boss'
+    ?`👑 ${DEFS[selectedBoss].name} 보스전`
+    :currentConfig.randomMode
+      ?'🎲 랜덤모드'
+      :currentConfig.mode==='showdown'
+        ?'⚔️ 개인전'
+        :'🤝 팀전';
 
-  log(
-    currentConfig.mode==='showdown'
-      ?expanded
-        ?`<b>대규모 개인전 시작!</b> ${currentConfig.participants.length}명에 맞춰 경기장을 ${arenaLogicalScale.toFixed(1)}배 확장.`
-        :'<b>개인전 시작!</b> 마지막 한 명이 승리.'
-      :expanded
-        ?`<b>대규모 팀전 시작!</b> 경기장을 ${arenaLogicalScale.toFixed(1)}배 확장 · 같은 팀은 서로 공격하지 않음.`
-        :'<b>다중 팀전 시작!</b> 같은 팀은 서로 공격하지 않음.'
-  );
+  log(currentConfig.mode==='showdown'
+    ?'<b>개인전 시작!</b> 마지막 한 명이 승리.'
+    :currentConfig.mode==='boss'
+      ?'<b>보스전 시작!</b>'
+      :'<b>팀전 시작!</b> 같은 팀은 서로 공격하지 않음.');
   renderScores();
   renderBossAllies();
   updateUI();
@@ -5277,7 +5307,7 @@ function updateUI(){
       card.classList.toggle('hp-low',p.alive&&ratio<=.3);
 
       const stateEl=card.querySelector('.boss-ally-state');
-      if(p.id==='duo'){const t=p.data.taeyeonHp/p.data.taeyeonMax,g=p.data.gangeunHp/p.data.gangeunMax;card.querySelector('.duo-taeyeon').style.width=`${Math.max(0,t)*100}%`;card.querySelector('.duo-gangeun').style.width=`${Math.max(0,g)*100}%`;card.querySelector('.duo-taeyeon-text').textContent=`${Math.ceil(p.data.taeyeonHp)}/${p.data.taeyeonMax}`;card.querySelector('.duo-gangeun-text').textContent=`${Math.ceil(p.data.gangeunHp)}/${p.data.gangeunMax}`;const badge=card.querySelector('.duo-mode-badge');const colors={lucario:'#2563eb',pikachu:'#d5a900',charizard:'#ef4444'};badge.style.setProperty('--mode-color',colors[p.data.mode]);badge.style.background=colors[p.data.mode];badge.textContent=duoBothAlive(p)?`${duoModeLabel(p.data.mode)} 모드 · 벽 ${p.data.modeWallHits}/12`:p.data.taeyeonHp>0?'권태연 단독':'이강은 단독';stateEl.textContent=p.alive?'생존':'탈락';card.querySelector('.boss-ally-status').textContent=statusText(p);continue;}
+      if(p.id==='duo'){const t=p.data.taeyeonHp/p.data.taeyeonMax,g=p.data.gangeunHp/p.data.gangeunMax;card.querySelector('.duo-taeyeon').style.width=`${Math.max(0,t)*100}%`;card.querySelector('.duo-gangeun').style.width=`${Math.max(0,g)*100}%`;card.querySelector('.duo-taeyeon-text').textContent=`${Math.ceil(p.data.taeyeonHp)}/${p.data.taeyeonMax}`;card.querySelector('.duo-gangeun-text').textContent=`${Math.ceil(p.data.gangeunHp)}/${p.data.gangeunMax}`;const badge=card.querySelector('.duo-mode-badge');const colors={lucario:'#2563eb',pikachu:'#d5a900',charizard:'#ef4444'};badge.style.setProperty('--mode-color',colors[p.data.mode]);badge.style.background=colors[p.data.mode];badge.textContent=duoBothAlive(p)?`${duoModeLabel(p.data.mode)} 모드`:p.data.taeyeonHp>0?'권태연 단독':'이강은 단독';stateEl.textContent=p.alive?'생존':'탈락';card.querySelector('.boss-ally-status').textContent=statusText(p);continue;}
       const fillEl=card.querySelector('.boss-ally-hp-fill');
       stateEl.textContent=p.alive?'생존':'탈락';
       stateEl.style.color=!p.alive
@@ -5306,7 +5336,7 @@ function updateUI(){
 
   game.players.forEach(p=>{
     const el=$(`score-${p.id}`);if(!el)return;
-    if(p.id==='duo'){const t=p.data.taeyeonHp/p.data.taeyeonMax,g=p.data.gangeunHp/p.data.gangeunMax;el.querySelector('.duo-taeyeon').style.width=`${Math.max(0,t)*100}%`;el.querySelector('.duo-gangeun').style.width=`${Math.max(0,g)*100}%`;el.querySelector('.duo-taeyeon-text').textContent=`${Math.ceil(p.data.taeyeonHp)}/${p.data.taeyeonMax}`;el.querySelector('.duo-gangeun-text').textContent=`${Math.ceil(p.data.gangeunHp)}/${p.data.gangeunMax}`;const badge=el.querySelector('.duo-mode-badge');const colors={lucario:'#2563eb',pikachu:'#d5a900',charizard:'#ef4444'};badge.style.setProperty('--mode-color',colors[p.data.mode]);badge.style.background=colors[p.data.mode];badge.textContent=duoBothAlive(p)?`${duoModeLabel(p.data.mode)} 모드 · 벽 ${p.data.modeWallHits}/12`:p.data.taeyeonHp>0?'권태연 단독':'이강은 단독';el.querySelector('.status').textContent=statusText(p);el.style.opacity=p.alive?'1':'.52';return;}
+    if(p.id==='duo'){const t=p.data.taeyeonHp/p.data.taeyeonMax,g=p.data.gangeunHp/p.data.gangeunMax;el.querySelector('.duo-taeyeon').style.width=`${Math.max(0,t)*100}%`;el.querySelector('.duo-gangeun').style.width=`${Math.max(0,g)*100}%`;el.querySelector('.duo-taeyeon-text').textContent=`${Math.ceil(p.data.taeyeonHp)}/${p.data.taeyeonMax}`;el.querySelector('.duo-gangeun-text').textContent=`${Math.ceil(p.data.gangeunHp)}/${p.data.gangeunMax}`;const badge=el.querySelector('.duo-mode-badge');const colors={lucario:'#2563eb',pikachu:'#d5a900',charizard:'#ef4444'};badge.style.setProperty('--mode-color',colors[p.data.mode]);badge.style.background=colors[p.data.mode];badge.textContent=duoBothAlive(p)?`${duoModeLabel(p.data.mode)} 모드`:p.data.taeyeonHp>0?'권태연 단독':'이강은 단독';el.querySelector('.status').textContent=statusText(p);el.style.opacity=p.alive?'1':'.52';return;}
     const fill=el.querySelector('.hp-fill'),txt=el.querySelector('.hp-text');
     if(p.id==='hyeon'&&p.alive&&p.data.phase===2){
       fill.style.width='100%';
@@ -25465,7 +25495,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const spread=(v166LastResult.power.ratio*100).toFixed(1);
     const source=reused?'현재 선택 캐릭터 재편성':'전체 캐릭터 중 무작위 선발';
     const modeName=forcedMode==='random'?'랜덤':'밸런스';
-    v166SetSummary(`${modeName} 편성 완료 · ${teamN}팀 × ${size}명 · ${source}${forcedMode==='balance'?` · 예상 전력차 ${spread}%`:''}`,'success');
+    v166SetSummary(`${modeName} 편성 완료 · ${teamN}팀 × ${size}명 · ${source}`,'success');
     return v166LastResult;
   }
 
@@ -27500,8 +27530,8 @@ function v200ApplyRoundRule(){
       if(p.alive&&!p.hidden)normalizeSpeed(p,200);
     }
   }
-  const scale=arenaLogicalScale.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
-  document.getElementById('modeBadge').textContent=`🎲 ${rule?.name||'랜덤모드'} · ${game.players.length}명 · 전장 ${scale}×`;
+  document.getElementById('modeBadge').textContent=`🎲 ${rule?.name||'랜덤모드'}`;
+  const title=document.getElementById('battleTitle');if(title)title.textContent='랜덤 배틀';
   log(`<b>${rule?.icon||'🎲'} ${rule?.name||'랜덤모드'}</b> · ${rule?.description||''}`);
   renderScores();renderBossAllies();updateUI();
 }
@@ -27809,6 +27839,38 @@ console.info('[V199] 오서윤 양말이 폭발 피해 5 → 12 · 설명창 동
 <script>
 window.__GONG_LATEST_BUILD__='V200_RANDOM_RULE_MODE';
 console.info('[V200] 최신 빌드 활성화');
+</script>
+
+
+<script>
+(()=>{
+  const V201_BUILD='V201_CLEAN_PLAYER_UI';
+  window.__GONG_V201_BUILD__=V201_BUILD;
+  window.__GONG_LATEST_BUILD__=V201_BUILD;
+  window.__GONG_V201_CHANGES__=Object.freeze({
+    arenaScaleHidden:true,
+    compactBattleHeader:true,
+    detailedStatusHidden:true,
+    combatLogHidden:true,
+    redundantKillfeedMetaHidden:true,
+    duoInternalCounterHidden:true,
+    tournamentTechnicalCopySimplified:true
+  });
+  window.__GONG_V201_TEST__={
+    build:V201_BUILD,
+    verify(){
+      const style=document.getElementById('v201CleanUiStyle');
+      const badge=document.getElementById('modeBadge');
+      const logText=document.getElementById('logText');
+      const status=document.querySelector('#battle .score .status, #battle .boss-ally-status');
+      const badgeClean=!badge||!String(badge.textContent||'').includes('전장');
+      const logHidden=!logText||getComputedStyle(logText).display==='none';
+      const statusHidden=!status||getComputedStyle(status).display==='none';
+      return {ok:!!style&&badgeClean&&logHidden&&statusHidden,style:!!style,badgeClean,logHidden,statusHidden,build:window.__GONG_LATEST_BUILD__};
+    }
+  };
+  console.info('[V201] 플레이어용 간결 UI 활성화 · 전장 배율/상세 상태/전투 로그 등 내부 정보 숨김');
+})();
 </script>
 
 </body>
