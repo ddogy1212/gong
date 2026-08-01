@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V201_CLEAN_PLAYER_UI -->
+<!-- BUILD: V202_VERTICAL_SKILL_BROWSER -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -308,27 +308,63 @@ body.boss-battle .score-grid{grid-template-columns:repeat(auto-fit,minmax(155px,
 }
 .skill-modal.hidden{display:none!important}
 .skill-modal-card{
-  width:min(100%,620px);max-height:min(86vh,820px);background:#fff;border:3px solid #111;
-  border-radius:18px;overflow:hidden;box-shadow:0 18px 50px #0008
+  width:min(96vw,980px);height:min(92dvh,860px);max-height:min(92dvh,860px);
+  background:#fff;border:3px solid #111;border-radius:18px;overflow:hidden;
+  box-shadow:0 18px 50px #0008;display:grid;
+  grid-template-columns:minmax(150px,21%) minmax(0,1fr);
+  grid-template-rows:auto minmax(0,1fr)
 }
 .skill-modal-head{
-  display:flex;justify-content:space-between;align-items:center;padding:13px 14px;
+  grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:13px 14px;
   background:#111;color:#fff
 }
 .skill-modal-title{font-size:18px;font-weight:900}
 .skill-close{
   border:0;border-radius:9px;background:#fff;color:#111;font-weight:900;
-  width:34px;height:34px;cursor:pointer;font-size:18px
+  width:40px;height:40px;cursor:pointer;font-size:18px;touch-action:manipulation
 }
 .skill-tabs{
-  display:flex;gap:6px;padding:10px;overflow-x:auto;border-bottom:1px solid #ddd;background:#f5f5f5
+  grid-column:1;grid-row:2;min-width:0;min-height:0;display:flex;flex-direction:column;
+  gap:6px;padding:9px;overflow-y:auto;overflow-x:hidden;border-right:1px solid #d8d8d8;
+  background:#f5f5f5;overscroll-behavior:contain;scrollbar-gutter:stable
 }
 .skill-tab{
-  border:2px solid #ddd;border-radius:999px;background:#fff;padding:8px 11px;
-  white-space:nowrap;font-weight:900;cursor:pointer;color:var(--c)
+  width:100%;min-height:48px;flex:0 0 auto;border:2px solid #ddd;border-radius:12px;
+  background:#fff;padding:8px;display:grid;grid-template-columns:12px minmax(0,1fr);gap:8px;
+  align-items:center;text-align:left;white-space:normal;font-weight:900;cursor:pointer;color:#222;
+  line-height:1.2;touch-action:manipulation
 }
-.skill-tab.active{border-color:#111;background:#111;color:#fff}
-.skill-body{padding:13px;overflow:auto;max-height:calc(86vh - 118px)}
+.skill-tab-dot{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--c)}
+.skill-tab-name{min-width:0;overflow-wrap:anywhere}
+.skill-tab.active{border-color:var(--c);background:#111;color:#fff;box-shadow:inset 4px 0 0 var(--c)}
+.skill-tab.active .skill-tab-dot{box-shadow:0 0 0 2px #111,0 0 0 3px var(--c)}
+.skill-tab:focus-visible{outline:3px solid #4d90fe;outline-offset:1px}
+.skill-body{
+  grid-column:2;grid-row:2;min-width:0;min-height:0;padding:16px;overflow:auto;
+  overscroll-behavior:contain;scrollbar-gutter:stable
+}
+@media(max-width:640px){
+  .skill-modal{padding:4px;align-items:stretch}
+  .skill-modal-card{
+    width:100%;height:calc(100dvh - 8px);max-height:none;border-width:2px;border-radius:14px;
+    grid-template-columns:clamp(88px,24vw,112px) minmax(0,1fr)
+  }
+  .skill-modal-head{padding:9px 10px}
+  .skill-modal-title{font-size:15px}
+  .skill-close{width:40px;height:40px}
+  .skill-tabs{padding:6px;gap:5px;scrollbar-gutter:auto}
+  .skill-tab{min-height:48px;padding:7px 6px;grid-template-columns:9px minmax(0,1fr);gap:6px;font-size:12px;border-radius:10px}
+  .skill-tab-dot{width:9px;height:9px}
+  .skill-body{padding:8px;scrollbar-gutter:auto}
+  .skill-profile{gap:8px;padding:8px;margin-bottom:8px}
+  .skill-profile img{width:48px;height:48px;flex-basis:48px}
+  .skill-profile-name{font-size:18px}
+  .skill-profile-meta{font-size:10px;line-height:1.4}
+  .skill-section{padding:9px;margin-bottom:7px}
+  .skill-name{font-size:15px}
+  .skill-desc{font-size:11px}
+  .skill-points{font-size:10px;padding-left:16px}
+}
 .skill-profile{
   display:flex;align-items:center;gap:11px;border:2px solid #111;border-radius:14px;
   padding:10px;margin-bottom:10px;background:#fafafa
@@ -1623,7 +1659,7 @@ body.tournament-battle .speed-row{display:none!important}
 
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V201_CLEAN_PLAYER_UI -->
+<!-- BUILD: V202_VERTICAL_SKILL_BROWSER -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -3476,15 +3512,9 @@ function orderedCharacterIds(){
 
 let skillSelected='moon';
 
-function renderSkillModal(){
-  const ids=orderedCharacterIds();
-  if(!ids.includes(skillSelected))skillSelected=ids[0];
-  skillTabs.innerHTML=ids.map(id=>`
-    <button class="skill-tab ${id===skillSelected?'active':''}" data-skill-tab="${id}" style="--c:${DEFS[id].color}">
-      ${DEFS[id].name}
-    </button>`).join('');
-
+function renderSkillDetail(){
   const d=DEFS[skillSelected],info=SKILL_INFO[skillSelected];
+  if(!d||!info){skillBody.innerHTML='<div class="skill-empty">스킬 정보를 불러오지 못했습니다.</div>';return;}
   skillBody.innerHTML=`
     <div class="skill-profile" style="--c:${d.color}">
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
@@ -3501,14 +3531,54 @@ function renderSkillModal(){
         <ul class="skill-points">${s.points.map(p=>`<li>${p}</li>`).join('')}</ul>
       </section>`).join('')}
   `;
+  skillBody.scrollTop=0;
+}
 
+function updateSkillTabSelection(){
   skillTabs.querySelectorAll('[data-skill-tab]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      skillSelected=btn.dataset.skillTab;
-      renderSkillModal();
-    });
+    const active=btn.dataset.skillTab===skillSelected;
+    btn.classList.toggle('active',active);
+    btn.setAttribute('aria-selected',active?'true':'false');
+    btn.tabIndex=active?0:-1;
   });
 }
+
+function renderSkillModal(){
+  const ids=orderedCharacterIds();
+  if(!ids.includes(skillSelected))skillSelected=ids[0];
+  skillTabs.setAttribute('role','listbox');
+  skillTabs.setAttribute('aria-label','캐릭터 선택');
+  skillTabs.innerHTML=ids.map(id=>`
+    <button class="skill-tab ${id===skillSelected?'active':''}" data-skill-tab="${id}" role="option"
+      aria-selected="${id===skillSelected?'true':'false'}" tabindex="${id===skillSelected?'0':'-1'}" style="--c:${DEFS[id].color}">
+      <span class="skill-tab-dot" aria-hidden="true"></span>
+      <span class="skill-tab-name">${DEFS[id].name}</span>
+    </button>`).join('');
+  renderSkillDetail();
+  requestAnimationFrame(()=>skillTabs.querySelector(`[data-skill-tab="${skillSelected}"]`)?.scrollIntoView({block:'nearest'}));
+}
+
+skillTabs.addEventListener('click',e=>{
+  const btn=e.target.closest('[data-skill-tab]');
+  if(!btn)return;
+  skillSelected=btn.dataset.skillTab;
+  updateSkillTabSelection();
+  renderSkillDetail();
+  btn.scrollIntoView({block:'nearest'});
+});
+skillTabs.addEventListener('keydown',e=>{
+  if(!['ArrowUp','ArrowDown','Home','End'].includes(e.key))return;
+  const buttons=[...skillTabs.querySelectorAll('[data-skill-tab]')];
+  if(!buttons.length)return;
+  e.preventDefault();
+  let i=buttons.findIndex(btn=>btn.dataset.skillTab===skillSelected);
+  if(e.key==='ArrowUp')i=(i-1+buttons.length)%buttons.length;
+  if(e.key==='ArrowDown')i=(i+1)%buttons.length;
+  if(e.key==='Home')i=0;
+  if(e.key==='End')i=buttons.length-1;
+  buttons[i].click();
+  buttons[i].focus({preventScroll:true});
+});
 
 function openSkillModal(preferredId){
   const ids=orderedCharacterIds();
@@ -26825,8 +26895,8 @@ Object.assign(DEFS,{
 
 Object.assign(SKILL_INFO,{
   leesangeun:{summary:'전장 벼락·충돌 스택·벽 가속형',hp:'250',speed:'280',skills:[
-    {kind:'주기 광역 공격',type:'attack',name:'벼락치기',desc:'3~6초마다 모든 적의 현재 위치에 벼락을 떨어뜨린다.',points:['기본 피해 15','자신과 같은 팀은 공격하지 않음','각 적에게 쌓인 벼락 스택에 따라 피해 배수 증가']},
-    {kind:'충돌 스택',type:'special',name:'대들기',desc:'벼락치기가 발동하기 전까지 충돌한 적에게 벼락 스택을 쌓는다.',points:['같은 적과 부딪힐 때마다 스택 +1','벼락 피해: 15 × 최대(1, 해당 적의 스택)','벼락치기 발동 후 모든 스택 초기화']},
+    {kind:'주기 광역 공격',type:'attack',name:'벼락치기',desc:'3~6초마다 모든 적의 현재 위치에 벼락을 떨어뜨린다.',points:['기본 피해 22','자신과 같은 팀은 공격하지 않음','각 적에게 쌓인 벼락 스택에 따라 피해 배수 증가']},
+    {kind:'충돌 스택',type:'special',name:'대들기',desc:'벼락치기가 발동하기 전까지 충돌한 적에게 벼락 스택을 쌓는다.',points:['같은 적과 부딪힐 때마다 스택 +1','벼락 피해: 22 × 최대(1, 해당 적의 스택)','벼락치기 발동 후 모든 스택 초기화']},
     {kind:'벽 충돌 성장',type:'special',name:'자유로운학습실사용',desc:'벽에 튕길 때마다 이동속도가 1.2배씩 누적된다.',points:['벽 충돌마다 현재 속도 ×1.2','벽 충돌마다 15% 확률로 벼락치기 즉시 발동']}
   ]},
   kimseonghun:{summary:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',hp:'190',speed:'190',skills:[
@@ -26905,7 +26975,7 @@ function v191Lightning(owner,reason='벼락치기'){
   if(!owner?.alive)return 0;let count=0;
   for(const q of (game?.players||[])){
     if(!q.alive||q.hidden||!isEnemy(owner,q))continue;
-    const stacks=Math.max(1,owner.data.v191LightningStacks?.[v191Uid(q)]||0),dmg=15*stacks;
+    const stacks=Math.max(1,owner.data.v191LightningStacks?.[v191Uid(q)]||0),dmg=22*stacks;
     spawnAttackFx(q.x,q.y,'#f5d44f',`⚡ ${dmg}`,1.25);damage(q,dmg,owner,reason);count++;
   }
   owner.data.v191LightningStacks={};owner.data.v191LightningTimer=rand(3,6);spawnSkillBanner(`⚡ ${reason} · ${count}명`,'#8b7a25');return count;
@@ -27873,5 +27943,28 @@ console.info('[V200] 최신 빌드 활성화');
 })();
 </script>
 
+
+<script>
+(()=>{
+  const V202_BUILD='V202_VERTICAL_SKILL_BROWSER';
+  window.__GONG_V202_BUILD__=V202_BUILD;
+  window.__GONG_LATEST_BUILD__=V202_BUILD;
+  window.__GONG_V202_TEST__={
+    build:V202_BUILD,
+    verify(){
+      const css=getComputedStyle(document.querySelector('.skill-modal-card'));
+      const source=document.documentElement.innerHTML;
+      const code=source;
+      return {
+        ok:source.includes('기본 피해 22')&&source.includes('벼락 피해: 22')&&code.includes('dmg=22*stacks')&&css.display==='grid',
+        damageDescription:source.includes('기본 피해 22')&&source.includes('벼락 피해: 22'),
+        damageCode:code.includes('dmg=22*stacks'),
+        verticalBrowser:css.display==='grid',
+        build:window.__GONG_LATEST_BUILD__
+      };
+    }
+  };
+})();
+</script>
 </body>
 </html>
