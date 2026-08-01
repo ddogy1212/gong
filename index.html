@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V203_JULIA_BOSS_AND_BOSS_FIXES -->
+<!-- BUILD: V204_JULIA_UI_AND_RAID_BALANCE -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1642,6 +1642,19 @@ body.tournament-battle .speed-row{display:none!important}
 @media(max-width:620px){.boss-select-grid{grid-template-columns:1fr!important}.boss-card,.boss-placeholder-card{min-height:104px!important;grid-template-columns:64px minmax(0,1fr)}.boss-card img,.boss-placeholder-mark{width:64px!important;height:64px!important}.boss-info-title{font-size:21px!important}#battle>.boss-hud{width:100%!important;margin-bottom:7px!important;padding:7px 8px 11px!important}.boss-bar-shell{height:25px!important}.boss-hp-text{font-size:12px!important}}
 </style>
 
+
+<style id="v204Style">
+/* V204 · 보스 HUD 정렬, JULIA 스킬 가독성 및 이펙트 강화 */
+#battle>.boss-hud{overflow:visible!important;padding:9px 10px 10px!important}
+#battle>.boss-hud .boss-name{line-height:1.25!important;margin-bottom:6px!important}
+#battle>.boss-hud .boss-bar-shell{position:relative!important;height:32px!important;overflow:hidden!important}
+#battle>.boss-hud .boss-hp-text{position:absolute!important;inset:0!important;top:auto!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0 8px!important;box-sizing:border-box!important;line-height:1!important;font-size:14px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;z-index:3!important}
+.v144-boss-skill-line.v204-life-choice{display:flex!important;flex-direction:column!important;align-items:center!important;gap:2px!important;line-height:1.02!important}
+.v144-boss-skill-line.v204-life-choice small{display:block!important;margin:0 0 2px!important}
+.v204-life-choice-title{display:block;font-size:1em}
+.v204-life-choice-target{display:block;font-size:.78em;max-width:95%;overflow-wrap:anywhere;word-break:keep-all}
+@media(max-width:620px){#battle>.boss-hud .boss-bar-shell{height:29px!important}#battle>.boss-hud .boss-hp-text{font-size:12px!important}.v144-boss-skill-line.v204-life-choice{font-size:clamp(18px,7vw,29px)!important}}
+</style>
 </head>
 
 <style id="v201CleanUiStyle">
@@ -1678,7 +1691,7 @@ body.tournament-battle .speed-row{display:none!important}
 
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V203_JULIA_BOSS_AND_BOSS_FIXES -->
+<!-- BUILD: V204_JULIA_UI_AND_RAID_BALANCE -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -27850,7 +27863,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 })();
 
 (()=>{
-  const V203_BUILD='V203_JULIA_BOSS_AND_BOSS_FIXES';
+  const V203_BUILD='V204_JULIA_UI_AND_RAID_BALANCE';
   window.__GONG_V203_BUILD__=V203_BUILD;
   window.__GONG_LATEST_BUILD__=V203_BUILD;
 
@@ -27875,14 +27888,14 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     julia:{
       name:'JULIA',hp:22000,img:IMAGES.julia,meta:'상급보스 · HP 22000 · Speed 400',
       skills:[
-        ['Throwing koosh balls','When JULIA reaches 20,000 HP, she summons a Koosh Ball with 4,500 HP and 600 speed. It can be targeted by attacks. Contact deals 40 damage and launches the victim away.'],
+        ['Throwing koosh balls','When JULIA reaches 20,000 HP, she summons a Koosh Ball with 4,500 HP and 1,900 speed. It can be targeted by attacks. Contact deals 40 damage and launches the victim away.'],
         ['Your life choices','Every sixth wall collision pins each non-boss unit to the wall for 3 seconds. The result is 30% instant death, 40% current HP halved, or 30% full recovery.'],
-        ['NONONONONONONONONONO','For every 1,000 HP JULIA loses, she fires 66 red NO projectiles toward the nearest enemy. Each projectile deals 5 damage.'],
+        ['NONONONONONONONONONO','For every 1,000 HP JULIA loses, she fires 66 large red NO projectiles toward the nearest enemy. Each projectile deals 40 damage.'],
         ['Plagiarism','Whenever an enemy damages JULIA, that attacker is slowed by 20% for 3 seconds.'],
         ['cell phone in the cell phone box','Every 8–20 seconds, four non-overlapping boxes appear for 5 seconds. Touching a box traps the unit until the cast ends. Every enemy not attached to a box takes guaranteed 60 damage.'],
-        ['6Cproject','Below 5,000 HP, JULIA summons six large C balls. Each has 1,000 HP and 400 speed. Contact deals 70 damage and knocks the victim away; the C ball loses the same amount of HP it deals.'],
+        ['6Cproject','Below 5,000 HP, JULIA summons six large C balls. Each has 1,000 HP and 1,900 speed. Contact deals 70 damage and knocks the victim away; the C ball loses the same amount of HP it deals.'],
         ['Captin Captin Oh My Caption','Every 20 seconds, three Captins are selected. Each must deal at least 50 damage to JULIA within 3 seconds or die instantly.'],
-        ['Underline','For every 4,400 HP lost, JULIA creates three large fluorescent lines for 8 seconds. Contact applies 2 damage per second for 10 seconds and launches the victim away.'],
+        ['Underline','For every 4,400 HP lost, JULIA creates three large fluorescent lines that remain until the battle ends. Contact applies 2 damage per second for 10 seconds and launches the victim away.'],
         ['Everything is on the padlet','When JULIA reaches 4,000 HP, every living enemy that has dealt less than 50 total damage to JULIA is reduced to 1 HP.'],
         ['ALAN.','Seventeen seconds after the battle begins, ALAN!!!!!!!!!!!!! appears and Yoon Hyun is instantly eliminated.']
       ]
@@ -27928,6 +27941,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   /* 보스 체력바를 경기장 밖, 바로 위로 이동 */
   const v203ArenaWrap=document.querySelector('#battle .arena-wrap');
   if(bossHud&&v203ArenaWrap?.parentNode) v203ArenaWrap.parentNode.insertBefore(bossHud,v203ArenaWrap);
+  const v204BossBarShell=bossHud?.querySelector('.boss-bar-shell');
+  if(v204BossBarShell&&bossHpText&&bossHpText.parentElement!==v204BossBarShell)v204BossBarShell.appendChild(bossHpText);
 
   document.querySelector('.mode-btn[data-mode="boss"]')?.addEventListener('click',()=>{
     v182PreloadImages([IMAGES.julia,IMAGES.v203Koosh],3500).catch(()=>{});
@@ -27951,7 +27966,14 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     line.className=`v144-boss-skill-line ${extraClass}`.trim();
     line.style.setProperty('--boss-skill-color',v203BossColors[boss.id]||boss.color||'#d946ef');
     const small=document.createElement('small');small.textContent=`👑 ${boss.name}`;
-    line.appendChild(small);line.appendChild(document.createTextNode(skill));
+    const lifeChoiceMatch=String(skill).match(/^YOUR LIFE CHOICE\s+\"(.+)\"$/);
+    line.appendChild(small);
+    if(lifeChoiceMatch){
+      line.classList.add('v204-life-choice');
+      const title=document.createElement('span');title.className='v204-life-choice-title';title.textContent='YOUR LIFE CHOICE';
+      const targetName=document.createElement('strong');targetName.className='v204-life-choice-target';targetName.textContent=`"${lifeChoiceMatch[1]}"`;
+      line.append(title,targetName);
+    }else line.appendChild(document.createTextNode(skill));
     stack.appendChild(line);
     while(stack.children.length>4)stack.firstElementChild?.remove();
     setTimeout(()=>line.remove(),Math.max(900,duration*1000));
@@ -27974,7 +27996,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   }
   function v203MakeBossSummon(julia,kind,index){
     const koosh=kind==='koosh';
-    const angle=rand(0,Math.PI*2),radius=koosh?52:43,speed=koosh?600:400,maxHp=koosh?4500:1000;
+    const angle=rand(0,Math.PI*2),radius=koosh?52:43,speed=1900,maxHp=koosh?4500:1000;
     const x=clamp(julia.x+Math.cos(angle)*(julia.r+radius+25),radius,W-radius);
     const y=clamp(julia.y+Math.sin(angle)*(julia.r+radius+25),radius,H-radius);
     const imageObj=koosh?v182CachedImage(IMAGES.v203Koosh,'high'):new Image();
@@ -28002,17 +28024,20 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     for(let i=0;i<6;i++)game.players.push(v203MakeBossSummon(julia,'c',i));
     v203Announce(julia,'6Cproject',1.6);spawnAttackFx(julia.x,julia.y,'#7c3aed','6Cproject',2);
   }
-  function v203SpawnNoVolleys(julia,casts){
-    const target=v203HeroList(julia).sort((a,b)=>dist(julia,a)-dist(julia,b))[0];if(!target)return;
+  function v204ReleaseNoVolley(julia){
+    const target=v203HeroList(julia).sort((a,b)=>dist(julia,a)-dist(julia,b))[0];if(!target)return false;
     game.v203NoShots ||= [];
-    for(let cast=0;cast<casts;cast++){
-      const base=Math.atan2(target.y-julia.y,target.x-julia.x);
-      for(let i=0;i<66;i++){
-        const spread=(i-32.5)/65*1.15+rand(-.025,.025),a=base+spread,speed=rand(430,590);
-        game.v203NoShots.push({owner:julia,x:julia.x+Math.cos(a)*(julia.r+10),y:julia.y+Math.sin(a)*(julia.r+10),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:9,life:3.4,damage:5,hit:false});
-      }
+    const volleyId=++julia.data.v204NoVolleySerial;julia.data.v204NoVolleyHits[volleyId]=new Set();
+    const base=Math.atan2(target.y-julia.y,target.x-julia.x);
+    for(let i=0;i<66;i++){
+      const spread=(i-32.5)/65*1.15+rand(-.025,.025),a=base+spread,speed=rand(430,590);
+      game.v203NoShots.push({owner:julia,volleyId,x:julia.x+Math.cos(a)*(julia.r+10),y:julia.y+Math.sin(a)*(julia.r+10),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:15,life:3.4,damage:40,hit:false});
     }
-    v203Announce(julia,'NONONONONONONONONONO',1.1);
+    return true;
+  }
+  function v203SpawnNoVolleys(julia,casts){
+    julia.data.v204PendingNoVolleys=(julia.data.v204PendingNoVolleys||0)+casts;
+    if(casts>0)v203Announce(julia,'NONONONONONONONONONO',1.1);
   }
   function v203PointSegmentDistance(px,py,x1,y1,x2,y2){
     const vx=x2-x1,vy=y2-y1,wx=px-x1,wy=py-y1,len2=vx*vx+vy*vy||1,t=clamp((wx*vx+wy*vy)/len2,0,1),cx=x1+vx*t,cy=y1+vy*t;
@@ -28023,7 +28048,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const length=Math.hypot(W,H)*1.28;
     for(let c=0;c<casts;c++)for(let i=0;i<3;i++){
       const a=rand(0,Math.PI),cx=rand(W*.2,W*.8),cy=rand(H*.2,H*.8),dx=Math.cos(a)*length/2,dy=Math.sin(a)*length/2;
-      game.v203Underlines.push({owner:julia,x1:cx-dx,y1:cy-dy,x2:cx+dx,y2:cy+dy,width:18,t:8,max:8,hitAt:{}});
+      game.v203Underlines.push({owner:julia,x1:cx-dx,y1:cy-dy,x2:cx+dx,y2:cy+dy,width:18,permanent:true,hitAt:{}});
     }
     v203Announce(julia,'Underline',1.4);
   }
@@ -28038,7 +28063,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       }
       boxes.push(candidate||{x:size/2+20+(i%2)*(W-size-40),y:size/2+20+Math.floor(i/2)*(H-size-40),size});
     }
-    game.v203PhoneBoxCast={owner:julia,t:5,max:5,boxes,grabbed:new Set()};
+    game.v203PhoneBoxCast={owner:julia,t:5,max:5,boxes:boxes.map((b,i)=>({...b,id:i,pulse:rand(0,Math.PI*2)})),grabbed:new Set()};
     v203Announce(julia,'cell phone in the cell phone box',1.5);
   }
   function v203CastCaptins(julia){
@@ -28086,7 +28111,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const _v203ResetBattle=resetBattle;
   resetBattle=function(){
     const result=_v203ResetBattle();
-    game.v203NoShots=[];game.v203Underlines=[];game.v203PhoneBoxCast=null;
+    game.v203NoShots=[];game.v203Underlines=[];game.v203PhoneBoxCast=null;game.v204KillReasons={};
     const julia=game.players.find(p=>p.id==='julia');
     for(const p of game.players){
       if(p.isBoss&&!p.isBossSummon){
@@ -28096,9 +28121,12 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     if(julia){
       julia.isBoss=true;julia.isBossSummon=false;julia.maxHp=22000;julia.hp=22000;julia.speed=400;julia.r=88;julia.x=W/2;julia.y=H/2;
       normalizeSpeed(julia,400);
+      const v204RaidCount=game.players.filter(p=>p.alive&&!p.isBoss&&isEnemy(julia,p)).length;
       Object.assign(julia.data,{
         v203KooshSpawned:false,v203CSpawned:false,v203PadletUsed:false,v203AlanUsed:false,v203AlanTimer:17,
-        v203PhoneCd:rand(8,20),v203CaptainCd:20,v203Captains:[],v203NextNoHp:21000,v203NextUnderlineHp:17600,v203PlagiarismBannerCd:0
+        v203PhoneCd:rand(8,20),v203CaptainCd:20,v203Captains:[],v203NextNoHp:21000,v203NextUnderlineHp:17600,v203PlagiarismBannerCd:0,
+        v204RaidCount,v204RaidDamageTakenMult:v204RaidCount>=60?1.10:(v204RaidCount>=45?1.05:1),v204HazardDamageMult:1,
+        v204PendingNoVolleys:0,v204NoVolleyCd:0,v204NoVolleySerial:0,v204NoVolleyHits:{}
       });
     }
     renderScores();renderBossAllies();updateUI();return result;
@@ -28111,6 +28139,11 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const safeReflectionCap=Math.max(1,(source.maxHp||DEFS.kimseonghun?.hp||180)*1.1);
       amount=Math.min(amount,safeReflectionCap);
     }
+    const juliaMain=v203Julia();
+    if(target?.id==='julia'&&target.alive&&!opts?.selfDamage)amount*=target.data?.v204RaidDamageTakenMult||1;
+    const juliaSource=v203RootSource(source);
+    const fixedJuliaMechanic=/Your life choices|Everything is on the padlet|ALAN\.|Captin Captin Oh My Caption/.test(String(skill));
+    if(juliaMain?.alive&&juliaSource===juliaMain&&target&&!target.isBoss&&!fixedJuliaMechanic)amount*=juliaMain.data?.v204HazardDamageMult||1;
     const dealt=_v203Damage(target,amount,source,skill,opts);
     if(dealt>0&&target?.id==='julia'&&target.alive){
       const root=v203RootSource(source);
@@ -28165,7 +28198,12 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       for(let k=0;k<steps&&!dead;k++){
         s.x+=s.vx*step;s.y+=s.vy*step;
         if(s.x<-30||s.x>W+30||s.y<-30||s.y>H+30){dead=true;break;}
-        for(const p of v203HeroList(julia))if(Math.hypot(p.x-s.x,p.y-s.y)<p.r+s.r){damage(p,5,julia,'NONONONONONONONONONO');dead=true;break;}
+        for(const p of v203HeroList(julia))if(Math.hypot(p.x-s.x,p.y-s.y)<p.r+s.r){
+          const uid=v203Uid(p),raidSafe=(julia.data.v204RaidCount||0)>=60,hits=julia.data.v204NoVolleyHits?.[s.volleyId];
+          if(raidSafe&&hits?.has(uid))continue;
+          if(raidSafe)hits?.add(uid);
+          damage(p,s.damage||40,julia,'NONONONONONONONONONO');dead=true;break;
+        }
       }
       if(!dead)next.push(s);
     }
@@ -28180,14 +28218,18 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(box){p.x=box.x;p.y=box.y;p.vx=0;p.vy=0;p.frozen=Math.max(p.frozen||0,.2);}
     }
     if(cast.t<=0){
-      for(const p of v203HeroList(julia)){if(!cast.grabbed.has(p))damage(p,60,julia,'cell phone in the cell phone box',{trueDamage:true,v191Reflected:true});delete p.data.v203PhoneBox;}
+      for(const b of cast.boxes){spawnAttackFx(b.x,b.y,'#22d3ee','SIGNAL LOST',1.4);floater(b.x,b.y,'📵','#ec4899',24,1);}
+      for(const p of v203HeroList(julia)){
+        if(!cast.grabbed.has(p)){damage(p,60,julia,'cell phone in the cell phone box',{trueDamage:true,v191Reflected:true});spawnAttackFx(p.x,p.y,'#ec4899','NO PHONE',1.1);}
+        delete p.data.v203PhoneBox;
+      }
       game.v203PhoneBoxCast=null;
     }
   }
   function v203UpdateUnderlines(dt,julia){
     const lines=[];
     for(const line of game.v203Underlines||[]){
-      line.t-=dt;if(line.t<=0)continue;
+      if(!line.permanent){line.t-=dt;if(line.t<=0)continue;}
       for(const key of Object.keys(line.hitAt))line.hitAt[key]=Math.max(0,line.hitAt[key]-dt);
       for(const p of v203HeroList(julia)){
         const uid=v203Uid(p);if((line.hitAt[uid]||0)>0)continue;
@@ -28231,6 +28273,10 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     julia.data.v203AlanTimer-=dt;if(julia.data.v203AlanTimer<=0)v203Alan(julia);
     julia.data.v203PhoneCd-=dt;if(julia.data.v203PhoneCd<=0){julia.data.v203PhoneCd=rand(8,20);v203CastPhoneBoxes(julia);}
     julia.data.v203CaptainCd-=dt;if(julia.data.v203CaptainCd<=0){julia.data.v203CaptainCd=20;v203CastCaptins(julia);}
+    julia.data.v204NoVolleyCd=Math.max(0,(julia.data.v204NoVolleyCd||0)-dt);
+    if((julia.data.v204PendingNoVolleys||0)>0&&julia.data.v204NoVolleyCd<=0&&v204ReleaseNoVolley(julia)){
+      julia.data.v204PendingNoVolleys--;julia.data.v204NoVolleyCd=(julia.data.v204RaidCount||0)>=60?1.2:.45;
+    }
     v203UpdateNoShots(dt,julia);v203UpdatePhoneBoxes(dt,julia);v203UpdateUnderlines(dt,julia);v203UpdateDotsAndStates(dt,julia);v203UpdateCaptins(dt,julia);
     v203HandleJuliaThresholds(julia);return result;
   };
@@ -28241,16 +28287,32 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const ratio=clamp(boss.hp/boss.maxHp,0,1),danger=ratio<=.22;
     document.documentElement.style.setProperty('--boss-accent',danger?'#ef4444':'#d946ef');bossHud.style.setProperty('--boss-accent',danger?'#ef4444':'#d946ef');
     bossBarFill.style.background=danger?'linear-gradient(90deg,#ff5a5f,#b91c1c)':'linear-gradient(90deg,#f0abfc,#a21caf)';
-    bossHpText.textContent=`${Math.max(0,boss.hp).toFixed(1)} / ${boss.maxHp}${boss.hp<5000?' · 6C PHASE':''}`;
+    bossHpText.textContent=`${Math.round(Math.max(0,boss.hp)).toLocaleString()} / ${Math.round(boss.maxHp).toLocaleString()}`;
   };
 
   const _v203Draw=draw;
   draw=function(){
     const result=_v203Draw();if(!game)return result;
     const cast=game.v203PhoneBoxCast;
-    if(cast){ctx.save();for(const b of cast.boxes){ctx.globalAlpha=.18;ctx.fillStyle='#64748b';ctx.fillRect(b.x-b.size/2,b.y-b.size/2,b.size,b.size);ctx.globalAlpha=.9;ctx.strokeStyle='#111827';ctx.lineWidth=7;ctx.strokeRect(b.x-b.size/2,b.y-b.size/2,b.size,b.size);ctx.fillStyle='#111827';ctx.font='1000 13px Arial';ctx.textAlign='center';ctx.fillText(`PHONE BOX ${Math.max(0,cast.t).toFixed(1)}`,b.x,b.y+4);}ctx.restore();}
+    if(cast){
+      ctx.save();
+      const progress=clamp(cast.t/cast.max,0,1),warning=cast.t<1.25,pulse=.5+.5*Math.sin((game.t||0)*10);
+      for(const b of cast.boxes){
+        const x=b.x-b.size/2,y=b.y-b.size/2;
+        ctx.save();ctx.shadowColor=warning?'#fb7185':'#22d3ee';ctx.shadowBlur=22+12*pulse;
+        ctx.globalAlpha=.20+.08*pulse;ctx.fillStyle=warning?'#881337':'#083344';ctx.fillRect(x,y,b.size,b.size);
+        ctx.globalAlpha=.95;ctx.strokeStyle=warning?'#fb7185':'#67e8f9';ctx.lineWidth=5;ctx.strokeRect(x,y,b.size,b.size);
+        ctx.setLineDash([10,7]);ctx.lineDashOffset=-(game.t||0)*35;ctx.strokeStyle='#f0abfc';ctx.lineWidth=2;ctx.strokeRect(x+8,y+8,b.size-16,b.size-16);ctx.setLineDash([]);
+        ctx.shadowBlur=0;ctx.fillStyle='#fff';ctx.strokeStyle='#111827';ctx.lineWidth=5;ctx.font=`1000 ${Math.max(28,b.size*.34)}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.strokeText('📱',b.x,b.y-4);ctx.fillText('📱',b.x,b.y-4);
+        ctx.fillStyle=warning?'#fecdd3':'#cffafe';ctx.font='1000 12px Arial';ctx.fillText(`${Math.max(0,cast.t).toFixed(1)}s`,b.x,b.y+b.size*.27);
+        ctx.strokeStyle=warning?'#f43f5e':'#22d3ee';ctx.lineWidth=6;ctx.beginPath();ctx.arc(b.x,b.y,b.size*.42,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);ctx.stroke();
+        ctx.restore();
+      }
+      for(const p of cast.grabbed){if(!p?.alive)continue;const b=p.data?.v203PhoneBox;if(!b)continue;ctx.save();ctx.globalAlpha=.75;ctx.strokeStyle='#f0abfc';ctx.shadowColor='#d946ef';ctx.shadowBlur=10;ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore();}
+      ctx.restore();
+    }
     if(game.v203Underlines?.length){ctx.save();ctx.lineCap='round';for(const l of game.v203Underlines){const alpha=.30+.25*Math.sin((game.t||0)*9);ctx.globalAlpha=alpha;ctx.strokeStyle='#d9f99d';ctx.shadowColor='#a3e635';ctx.shadowBlur=26;ctx.lineWidth=l.width;ctx.beginPath();ctx.moveTo(l.x1,l.y1);ctx.lineTo(l.x2,l.y2);ctx.stroke();ctx.globalAlpha=.92;ctx.strokeStyle='#f7fee7';ctx.shadowBlur=0;ctx.lineWidth=4;ctx.stroke();}ctx.restore();}
-    if(game.v203NoShots?.length){ctx.save();ctx.fillStyle='#dc2626';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.font='1000 13px Arial';ctx.textAlign='center';ctx.textBaseline='middle';for(const s of game.v203NoShots){ctx.strokeText('NO',s.x,s.y);ctx.fillText('NO',s.x,s.y);}ctx.restore();}
+    if(game.v203NoShots?.length){ctx.save();ctx.fillStyle='#dc2626';ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.font='1000 24px Arial';ctx.textAlign='center';ctx.textBaseline='middle';for(const s of game.v203NoShots){ctx.strokeText('NO',s.x,s.y);ctx.fillText('NO',s.x,s.y);}ctx.restore();}
     for(const p of game.players){
       if(!p.alive||p.hidden)continue;
       if(p.isBoss&&!p.isBossSummon){const color=v203BossColors[p.id]||p.color||'#d946ef',pulse=.5+.5*Math.sin((game.t||0)*6);ctx.save();ctx.globalAlpha=.55+.25*pulse;ctx.strokeStyle=color;ctx.shadowColor=color;ctx.shadowBlur=26;ctx.lineWidth=8;ctx.beginPath();ctx.arc(p.x,p.y,p.r+13+3*pulse,0,Math.PI*2);ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle=color;ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.font='1000 14px Arial';ctx.textAlign='center';ctx.strokeText('👑 BOSS',p.x,p.y-p.r-24);ctx.fillText('👑 BOSS',p.x,p.y-p.r-24);ctx.restore();}
@@ -28262,10 +28324,16 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     return result;
   };
 
+  const _v204ShowKill=showKill;
+  showKill=function(killer,victim,skill){
+    if(game){game.v204KillReasons ||= {};const key=String(skill||'unknown');game.v204KillReasons[key]=(game.v204KillReasons[key]||0)+1;}
+    return _v204ShowKill(killer,victim,skill);
+  };
+
   /* 테스트·인수인계용 공개 상태 */
   window.__GONG_V203_CHANGES__=Object.freeze({
-    kimseonghunHp:180,kimseonghunReflectionUsesCurrentHp:true,juliaBoss:true,juliaHp:22000,juliaSpeed:400,
-    bossRanks:['초급보스','초중급보스','중급보스','중상급보스','상급보스'],bossHudOutsideArena:true,bossGlow:true
+    kimseonghunHp:180,kimseonghunReflectionUsesCurrentHp:true,juliaBoss:true,juliaHp:22000,juliaSpeed:400,juliaSummonSpeed:1900,juliaNoDamage:40,juliaUnderlinesPermanent:true,
+    bossRanks:['초급보스','초중급보스','중급보스','중상급보스','상급보스'],bossHudOutsideArena:true,bossGlow:true,bossHpTextInsideBar:true,raidTargetCount:67
   });
   window.__GONG_V203_TEST__={
     build:V203_BUILD,
@@ -28300,7 +28368,21 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     },500);
   }
 
-  console.info('[V203] JULIA 상급보스 · 보스 선택 간소화 · 보스바 외부 배치 · 김성훈 HP 180/보스 반사 폭딜 버그 수정');
+  window.__GONG_V204_CHANGES__=Object.freeze({
+    build:V203_BUILD,bossHpTextInsideBar:true,lifeChoiceNameOnSecondLine:true,kooshSpeed:1900,cBallSpeed:1900,noDamage:40,noVisualSize:24,phoneBoxFx:'neon-phone-lock',underlinesPermanent:true,raidTargetCount:67
+  });
+  window.__GONG_V204_TEST__={
+    startJulia(ids){return window.__GONG_V203_TEST__.startJulia(ids);},
+    normalIds(){return Object.keys(DEFS).filter(id=>!BOSS_IDS.has(id)&&id!=='handongSummon');},
+    state(){const j=v203Julia();return {build:window.__GONG_LATEST_BUILD__,hudInside:bossHpText?.parentElement?.classList?.contains('boss-bar-shell')||false,hpText:bossHpText?.textContent||'',julia:j?{hp:j.hp,raidCount:j.data?.v204RaidCount,damageTakenMult:j.data?.v204RaidDamageTakenMult,hazardMult:j.data?.v204HazardDamageMult}:null,koosh:(game?.players||[]).filter(p=>p.data?.v203Kind==='koosh').map(p=>p.speed),cballs:(game?.players||[]).filter(p=>p.data?.v203Kind==='c').map(p=>p.speed),noDamage:game?.v203NoShots?.[0]?.damage||40,pendingNo:j?.data?.v204PendingNoVolleys||0,underlines:(game?.v203Underlines||[]).map(l=>({permanent:!!l.permanent,t:l.t??null}))};},
+    forceHp(hp){return window.__GONG_V203_TEST__.forceJuliaHp(hp);},
+    previewLifeChoice(name='도예진'){
+      const j=v203Julia();if(!j)return null;v203Announce(j,`YOUR LIFE CHOICE "${name}"`,5);
+      const el=document.querySelector('.v204-life-choice');return el?{exists:true,title:el.querySelector('.v204-life-choice-title')?.textContent||'',target:el.querySelector('.v204-life-choice-target')?.textContent||'',direction:getComputedStyle(el).flexDirection}:null;
+    },
+    runTicks(seconds=180,step=.08){let elapsed=0;while(game&&!game.over&&elapsed<seconds){tick(step);elapsed+=step;}const j=v203Julia();return {elapsed,over:!!game?.over,juliaAlive:!!j?.alive,juliaHp:j?.hp??0,heroesAlive:(game?.players||[]).filter(p=>p.alive&&!p.isBoss).length,result:game?.resultTitle||'',killReasons:{...(game?.v204KillReasons||{})}};}
+  };
+  console.info('[V204] JULIA HUD/스킬 표시 수정 · 소환물 속도 1900 · NO 40 · 영구 Underline · 67인 레이드 밸런스');
 })();
 
 })();
@@ -28443,8 +28525,8 @@ console.info('[V200] 최신 빌드 활성화');
 </script>
 
 <script id="v203BuildMarker">
-window.__GONG_LATEST_BUILD__='V203_JULIA_BOSS_AND_BOSS_FIXES';
-console.info('[V203] 최신 빌드 활성화');
+window.__GONG_LATEST_BUILD__='V204_JULIA_UI_AND_RAID_BALANCE';
+console.info('[V204] 최신 빌드 활성화');
 </script>
 
 </body>
