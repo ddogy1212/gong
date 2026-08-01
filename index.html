@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V197_EXACT10_TOURNAMENT_SIMULATION -->
+<!-- BUILD: V198_ORIGIN_GHOST_BALL_FIX -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1571,7 +1571,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V197_EXACT10_TOURNAMENT_SIMULATION -->
+<!-- BUILD: V198_ORIGIN_GHOST_BALL_FIX -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -5131,173 +5131,6 @@ if(p.id==='chaewon'){
   if(p.data.chaewonMarkOwner?.alive)a.push(`🐹 ${p.data.chaewonMarkOwner.name} 표적`);
   if((p.data.hyeonCarrotDots||[]).length>0)a.push(`🥕 당근 지속 ${p.data.hyeonCarrotDots.length}중첩`);
 
-  if(p.id==='yoon'){
-    const phase2=p.data.phase===2;
-    const pulse=.76+.24*Math.sin(game.t*(phase2?15:9));
-
-    ctx.globalAlpha=.92*pulse;
-    ctx.strokeStyle=phase2?'#4fa4ff':'#3579d8';
-    ctx.lineWidth=phase2?7:4;
-    ctx.shadowColor=phase2?'#8bd0ff':'#3579d8';
-    ctx.shadowBlur=phase2?22:10;
-
-    ctx.beginPath();
-    ctx.arc(
-      0,
-      0,
-      p.r+(phase2?17:10),
-      0,
-      Math.PI*2
-    );
-    ctx.stroke();
-
-    if(phase2){
-      const shieldFlash=clamp(
-        p.data.phaseShieldFlash||0,
-        0,
-        1
-      );
-
-      ctx.save();
-      ctx.rotate(-game.t*1.7);
-
-      for(let i=0;i<4;i++){
-        const a=i*Math.PI/2;
-        const rr=p.r+27;
-
-        ctx.globalAlpha=.78+.2*Math.sin(game.t*12+i);
-        ctx.fillStyle='#4fa4ff';
-        ctx.strokeStyle='#ffffff';
-        ctx.lineWidth=2.5;
-        ctx.shadowColor='#5fc0ff';
-        ctx.shadowBlur=16;
-
-        ctx.beginPath();
-        ctx.moveTo(
-          Math.cos(a)*rr,
-          Math.sin(a)*rr
-        );
-        ctx.lineTo(
-          Math.cos(a+.22)*(rr+10),
-          Math.sin(a+.22)*(rr+10)
-        );
-        ctx.lineTo(
-          Math.cos(a)*(rr+17),
-          Math.sin(a)*(rr+17)
-        );
-        ctx.lineTo(
-          Math.cos(a-.22)*(rr+10),
-          Math.sin(a-.22)*(rr+10)
-        );
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-      }
-
-      ctx.restore();
-
-      ctx.globalAlpha=.94;
-      ctx.setLineDash([10,6]);
-      ctx.strokeStyle='#8bd0ff';
-      ctx.lineWidth=5;
-      ctx.shadowColor='#4fa4ff';
-      ctx.shadowBlur=22;
-
-      ctx.beginPath();
-      ctx.arc(
-        0,
-        0,
-        p.r+31+Math.sin(game.t*13)*2,
-        0,
-        Math.PI*2
-      );
-      ctx.stroke();
-
-      ctx.setLineDash([]);
-
-      if(shieldFlash>0){
-        ctx.globalAlpha=.9*shieldFlash;
-        ctx.fillStyle='#bfeaff';
-
-        ctx.beginPath();
-        ctx.arc(
-          0,
-          0,
-          p.r+38+(1-shieldFlash)*18,
-          0,
-          Math.PI*2
-        );
-        ctx.fill();
-
-        ctx.globalAlpha=shieldFlash;
-        ctx.strokeStyle='#ffffff';
-        ctx.lineWidth=9;
-        ctx.shadowColor='#ffffff';
-        ctx.shadowBlur=30;
-
-        ctx.beginPath();
-        ctx.arc(
-          0,
-          0,
-          p.r+40+(1-shieldFlash)*32,
-          0,
-          Math.PI*2
-        );
-        ctx.stroke();
-      }
-
-      ctx.globalAlpha=.98;
-      ctx.font='1000 13px Arial';
-      ctx.textAlign='center';
-      ctx.textBaseline='middle';
-      ctx.lineWidth=4;
-      ctx.strokeStyle='#ffffff';
-      ctx.fillStyle='#267fca';
-      ctx.strokeText('🛡 40%',0,p.r+33);
-      ctx.fillText('🛡 40%',0,p.r+33);
-    }
-
-    ctx.shadowBlur=0;
-    ctx.globalAlpha=.98;
-    ctx.font='1000 12px Arial';
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.lineWidth=3;
-    ctx.strokeStyle='#fff';
-    ctx.fillStyle=phase2?'#267fca':'#3579d8';
-
-    ctx.strokeText(
-      phase2?'PHASE 2':'PHASE 1',
-      0,
-      -p.r-(phase2?18:13)
-    );
-
-    ctx.fillText(
-      phase2?'PHASE 2':'PHASE 1',
-      0,
-      -p.r-(phase2?18:13)
-    );
-  }
-
-  if((p.data.sinkTimer||0)>0){
-    const pulse=.75+.25*Math.sin(game.t*10);
-    ctx.globalAlpha=.9*pulse;
-    ctx.strokeStyle='#69b7e8';
-    ctx.lineWidth=5;
-    ctx.shadowColor='#8fd7ff';
-    ctx.shadowBlur=14;
-    ctx.setLineDash([7,4]);
-    ctx.beginPath();
-    ctx.arc(0,0,p.r+13,0,Math.PI*2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.shadowBlur=0;
-    ctx.globalAlpha=.98;
-    ctx.font='17px "Apple Color Emoji","Segoe UI Emoji",Arial';
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    ctx.fillText('🛁',0,-p.r-17);
-  }
 
   const smellOwner=game.players.find(q=>q.id==='junghoon');
   const smellState=smellOwner?.data?.smellTargets?.[p.id];
@@ -17533,6 +17366,124 @@ function tick(dt){
 }
 
 
+
+function v198DrawYoonAndSinkStatusLocal(p){
+  if(!p||!p.alive||p.hidden||!Number.isFinite(p.r))return;
+  if(p.id!=='yoon'&&!((p.data?.sinkTimer||0)>0))return;
+
+  ctx.save();
+
+  if(p.id==='yoon'){
+    const phase2=p.data?.phase===2;
+    const pulse=.76+.24*Math.sin(game.t*(phase2?15:9));
+
+    ctx.globalAlpha=.92*pulse;
+    ctx.strokeStyle=phase2?'#4fa4ff':'#3579d8';
+    ctx.lineWidth=phase2?7:4;
+    ctx.shadowColor=phase2?'#8bd0ff':'#3579d8';
+    ctx.shadowBlur=phase2?22:10;
+    ctx.beginPath();
+    ctx.arc(0,0,p.r+(phase2?17:10),0,Math.PI*2);
+    ctx.stroke();
+
+    if(phase2){
+      const shieldFlash=clamp(p.data?.phaseShieldFlash||0,0,1);
+      ctx.save();
+      ctx.rotate(-game.t*1.7);
+      for(let i=0;i<4;i++){
+        const a=i*Math.PI/2;
+        const rr=p.r+27;
+        ctx.globalAlpha=.78+.2*Math.sin(game.t*12+i);
+        ctx.fillStyle='#4fa4ff';
+        ctx.strokeStyle='#ffffff';
+        ctx.lineWidth=2.5;
+        ctx.shadowColor='#5fc0ff';
+        ctx.shadowBlur=16;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a)*rr,Math.sin(a)*rr);
+        ctx.lineTo(Math.cos(a+.22)*(rr+10),Math.sin(a+.22)*(rr+10));
+        ctx.lineTo(Math.cos(a)*(rr+17),Math.sin(a)*(rr+17));
+        ctx.lineTo(Math.cos(a-.22)*(rr+10),Math.sin(a-.22)*(rr+10));
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.globalAlpha=.94;
+      ctx.setLineDash([10,6]);
+      ctx.strokeStyle='#8bd0ff';
+      ctx.lineWidth=5;
+      ctx.shadowColor='#4fa4ff';
+      ctx.shadowBlur=22;
+      ctx.beginPath();
+      ctx.arc(0,0,p.r+31+Math.sin(game.t*13)*2,0,Math.PI*2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if(shieldFlash>0){
+        ctx.globalAlpha=.9*shieldFlash;
+        ctx.fillStyle='#bfeaff';
+        ctx.beginPath();
+        ctx.arc(0,0,p.r+38+(1-shieldFlash)*18,0,Math.PI*2);
+        ctx.fill();
+        ctx.globalAlpha=shieldFlash;
+        ctx.strokeStyle='#ffffff';
+        ctx.lineWidth=9;
+        ctx.shadowColor='#ffffff';
+        ctx.shadowBlur=30;
+        ctx.beginPath();
+        ctx.arc(0,0,p.r+40+(1-shieldFlash)*32,0,Math.PI*2);
+        ctx.stroke();
+      }
+
+      ctx.shadowBlur=0;
+      ctx.globalAlpha=.98;
+      ctx.font='1000 13px Arial';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.lineWidth=4;
+      ctx.strokeStyle='#ffffff';
+      ctx.fillStyle='#267fca';
+      ctx.strokeText('🛡 40%',0,p.r+33);
+      ctx.fillText('🛡 40%',0,p.r+33);
+    }
+
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=.98;
+    ctx.font='1000 12px Arial';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.lineWidth=3;
+    ctx.strokeStyle='#fff';
+    ctx.fillStyle=phase2?'#267fca':'#3579d8';
+    ctx.strokeText(phase2?'PHASE 2':'PHASE 1',0,-p.r-(phase2?18:13));
+    ctx.fillText(phase2?'PHASE 2':'PHASE 1',0,-p.r-(phase2?18:13));
+  }
+
+  if((p.data?.sinkTimer||0)>0){
+    const pulse=.75+.25*Math.sin(game.t*10);
+    ctx.globalAlpha=.9*pulse;
+    ctx.strokeStyle='#69b7e8';
+    ctx.lineWidth=5;
+    ctx.shadowColor='#8fd7ff';
+    ctx.shadowBlur=14;
+    ctx.setLineDash([7,4]);
+    ctx.beginPath();
+    ctx.arc(0,0,p.r+13,0,Math.PI*2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=.98;
+    ctx.font='17px "Apple Color Emoji","Segoe UI Emoji",Arial';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText('🛁',0,-p.r-17);
+  }
+
+  ctx.restore();
+}
+
 function drawBall(p){
   if(p.hidden)return;
   if(p.id==='duo'){
@@ -18662,6 +18613,7 @@ if((p.data.hyeonCarrotDots||[]).length>0){
     ctx.textAlign='center';
     ctx.fillText('☠️',0,-p.r-11);
   }
+  v198DrawYoonAndSinkStatusLocal(p);
   ctx.restore()
 }
 
@@ -27356,6 +27308,41 @@ window.__GONG_V182_ASSET_TEST__={
 };
 console.info('[V182] 설명창 사진·권태연·도예진·썸네일 로딩·보스전 준비 패치 완료');
 
+const V198_BUILD='V198_ORIGIN_GHOST_BALL_FIX';
+const v198Test=Object.create(window.__GONG_V196_TEST__||window.__GONG_V174_TEST__||null);
+Object.defineProperties(v198Test,{
+  build:{configurable:true,get(){return V198_BUILD;}},
+  statusTextCanvasCalls:{
+    configurable:true,
+    value(id='yoon'){
+      const p=game?.players?.find(q=>q.id===id);
+      if(!p)return {ok:false,reason:'player-not-found',calls:0};
+      const methods=['arc','stroke','fill','fillText','strokeText','translate'];
+      const originals={};
+      let calls=0;
+      try{
+        for(const name of methods){
+          originals[name]=ctx[name];
+          ctx[name]=function(...args){calls++;return originals[name].apply(this,args);};
+        }
+        const value=statusText(p);
+        return {ok:calls===0,calls,value};
+      }finally{
+        for(const name of methods)ctx[name]=originals[name];
+      }
+    }
+  },
+  renderPatch:{configurable:true,get(){return {playerCoordinateRendering:true,statusTextSideEffectsRemoved:true};}}
+});
+window.__GONG_V198_TEST__=v198Test;
+window.__GONG_V198_CHANGES__=Object.freeze({
+  topLeftGhostBallFixed:true,
+  statusTextCanvasSideEffectsRemoved:true,
+  yoonAuraMovedToPlayerCoordinates:true,
+  sinkStatusMovedToPlayerCoordinates:true,
+  v197SimulationDataPreserved:true
+});
+
 
 })();
 </script>
@@ -27401,5 +27388,11 @@ window.__GONG_V197_CHANGES__=Object.freeze({exactTenBattleSimulation:true,oldSim
 window.__GONG_LATEST_BUILD__='V197_EXACT10_TOURNAMENT_SIMULATION';
 console.info('[V197] 123,240경기 전수 재실행 · 180초/.08tick · 좌우 교대 · 모드별 토너먼트 승률 적용');
 </script>
+
+<script>
+window.__GONG_LATEST_BUILD__='V198_ORIGIN_GHOST_BALL_FIX';
+console.info('[V198] 좌측 상단 유령 공 수정 · statusText 렌더링 부작용 제거 · 윤현/세면대 효과를 실제 공 좌표로 이동');
+</script>
+
 </body>
 </html>
