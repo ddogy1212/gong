@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V209_CLEAN_SETUP_SCROLL_TOOLS -->
+<!-- BUILD: V211_BANJUNSEO_LIVE_CAP2 -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1719,7 +1719,7 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
 
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V209_CLEAN_SETUP_SCROLL_TOOLS -->
+<!-- BUILD: V211_BANJUNSEO_LIVE_CAP2 -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -1762,7 +1762,7 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
     <div class="mode-row" id="modeHub" aria-label="전투 방식 선택">
       <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투<small>무작위 연속 전투</small></button>
       <button id="randomModeStart" class="mode-hub-btn mode-random-btn" type="button">🎲 랜덤모드<small>5가지 특수 규칙 연속 전투</small></button>
-      <button class="mode-btn active" data-mode="showdown">⚔️ 개인전<small>모두 적으로 전투</small></button>
+      <button class="mode-btn active" data-mode="showdown">⚔️ 쇼다운<small>모두 적으로 전투</small></button>
       <button class="mode-btn" data-mode="team">🤝 팀전<small>팀 수 직접 설정</small></button>
       <button class="mode-btn" data-mode="boss">👑 보스전<small>보스와 전투</small></button>
       <button id="tournamentModeBtn" class="mode-hub-btn mode-tournament-btn" type="button">🏆 토너먼트<small>개인·팀 대진표 · 예측 · 우승</small></button>
@@ -2015,7 +2015,6 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
 <div id="v208BattleTools" class="v208-battle-tools hidden" aria-label="경기 재현 도구">
   <span id="v208BattleCode">경기 코드 준비 중</span>
   <button id="v208ReplayBattle" type="button">↻ 같은 경기 재실행</button>
-  <button id="v208CopyBug" type="button">🐞 오류 기록 복사</button>
 </div>
 
 <section class="promo-banner" aria-label="굿즈 광고">
@@ -28655,7 +28654,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     summary:'충돌 가속·소환 타격·감속 반사형',hp:'200',speed:'250',
     skills:[
       {kind:'충돌 패시브',type:'passive',name:'블랙넛닮은꼴',desc:'적과 부딪힐 때마다 3초 동안 이동속도가 2배가 된다.',points:['기본 속도 250 → 500','다시 충돌하면 3초 지속시간 갱신','다른 감속 효과는 정상적으로 함께 적용']},
-      {kind:'벽 충돌 소환',type:'attack',name:'준서소환하기',desc:'벽에 6번 부딪힐 때마다 반준서를 소환한다.',points:['반준서 HP 50 · 속도 450','일반 공처럼 이동하고 공격 대상이 됨','적과 충돌하면 피해 30과 강한 넉백','반준서의 피해와 처치는 모두 유인성 기록으로 집계']},
+      {kind:'벽 충돌 소환',type:'attack',name:'준서소환하기',desc:'벽에 6번 부딪힐 때마다 반준서를 소환한다. 동시에 살아 있을 수 있는 반준서는 최대 2명이다.',points:['반준서 HP 50 · 속도 450','살아 있는 반준서가 2명이면 추가 소환하지 않음','한 명이 탈락하면 다음 벽 6회 조건부터 다시 보충 가능','일반 공처럼 이동하고 공격 대상이 됨','적과 충돌하면 피해 30과 강한 넉백','반준서의 피해와 처치는 모두 유인성 기록으로 집계']},
       {kind:'충돌 감속·반사',type:'defense',name:'임시담임',desc:'유인성과 충돌한 적의 이동속도를 3초 동안 80% 감소시킨다.',points:['감속 중인 적이 유인성에게 준 실제 피해를 1.2배로 반사','보스전 반사 피해는 1회 최대 200','같은 적과 다시 충돌하면 감속 시간이 3초로 갱신']}
     ]
   };
@@ -28681,11 +28680,21 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       rootOwner:owner,owner
     };
   }
+  function v207ActiveBanjunseos(owner){
+    if(!game?.players||!owner)return [];
+    return game.players.filter(p=>p.alive&&!p.hidden&&p.hp>0&&p.data?.v207Banjunseo&&p.data.v207Summoner===owner);
+  }
   function v207SpawnBanjunseo(owner){
     if(!owner?.alive||!game)return null;
+    const active=v207ActiveBanjunseos(owner);
+    if(active.length>=2){
+      floater(owner.x,owner.y-owner.r-24,'👥 반준서 최대 2명',owner.color,13,.75);
+      return null;
+    }
     const summon=v207MakeBanjunseo(owner);game.players.push(summon);
+    const count=active.length+1;
     spawnAttackFx(owner.x,owner.y,owner.color,'준서소환하기',1.5);
-    floater(owner.x,owner.y-owner.r-24,`👥 반준서 소환 · ${game.players.filter(p=>p.alive&&p.data?.v207Banjunseo&&p.data.v207Summoner===owner).length}명`,owner.color,15,1);
+    floater(owner.x,owner.y-owner.r-24,`👥 반준서 소환 · ${count}/2명`,owner.color,15,1);
     return summon;
   }
   function v207YuinsungContact(owner,target){
@@ -28723,14 +28732,16 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     reflect(amount=50){const y=game?.players?.find(q=>q.id==='yuinsung'),m=game?.players?.find(q=>q.id==='moon');if(!y||!m)return null;if(!(m.data.v207TeacherSlowTimer>0))v207YuinsungContact(y,m);const y0=y.hp,m0=m.hp,dealt=damage(y,amount,m,'V207 임시담임 테스트',{trueDamage:true});return {dealt,yuinsungLoss:y0-y.hp,attackerLoss:m0-m.hp,reflectionCount:y.data.v207ReflectionCount||0};},
     wall6(){const y=game?.players?.find(q=>q.id==='yuinsung');if(!y)return null;for(let i=0;i<6;i++){y.data.v138WallGate=0;onWallHit(y);}const s=game.players.find(q=>q.data?.v207Banjunseo);return s?{id:s.id,hp:s.hp,speed:s.speed,owner:s.data.v207Summoner?.id,team:s.team}:null;},
     summonHit(){const y=game?.players?.find(q=>q.id==='yuinsung'),m=game?.players?.find(q=>q.id==='moon');if(!y||!m)return null;let s=game.players.find(q=>q.data?.v207Banjunseo);if(!s)s=v207SpawnBanjunseo(y);const before=m.hp;v207BanjunseoContact(s,m);return {targetLoss:before-m.hp,ownerDamage:y.damageDealt,summonDamage:s.damageDealt,targetSpeed:Math.hypot(m.vx,m.vy)};},
-    spawn(){const p=game?.players?.find(q=>q.id==='yuinsung');return p?v207SpawnBanjunseo(p):null;}
+    spawn(){const p=game?.players?.find(q=>q.id==='yuinsung');return p?v207SpawnBanjunseo(p):null;},
+    capThree(){currentConfig={mode:'team',participants:['yuinsung','moon'],teams:{yuinsung:'A',moon:'B'},zoneNames:{A:'A팀',B:'B팀'}};resetBattle();paused=true;const owner=game.players.find(p=>p.id==='yuinsung');const a=v207SpawnBanjunseo(owner),b=v207SpawnBanjunseo(owner),c=v207SpawnBanjunseo(owner);return {spawned:[!!a,!!b,!!c],active:v207ActiveBanjunseos(owner).length,total:game.players.filter(p=>p.data?.v207Banjunseo&&p.data.v207Summoner===owner).length};},
+    capReplace(){currentConfig={mode:'team',participants:['yuinsung','moon'],teams:{yuinsung:'A',moon:'B'},zoneNames:{A:'A팀',B:'B팀'}};resetBattle();paused=true;const owner=game.players.find(p=>p.id==='yuinsung');const a=v207SpawnBanjunseo(owner),b=v207SpawnBanjunseo(owner);a.hp=0;a.alive=false;a.hidden=true;const c=v207SpawnBanjunseo(owner);return {replacement:!!c,active:v207ActiveBanjunseos(owner).length,total:game.players.filter(p=>p.data?.v207Banjunseo&&p.data.v207Summoner===owner).length};}
   };
   console.info('[V207] 로스터 색상 빨주노초파남보 자동 순환 · 유인성/반준서 추가 · 임시담임 감속 반사 구현');
 
 /* V208 bundled core systems */
 (()=>{
   'use strict';
-  const BUILD='V209_CLEAN_SETUP_SCROLL_TOOLS';
+  const BUILD='V211_BANJUNSEO_LIVE_CAP2';
   const $v=id=>document.getElementById(id);
   const clone=value=>{try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value))}};
   const v208MemoryStore=new Map();
@@ -28759,7 +28770,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   }
   function activateSeed(seed){
     seed=(Number(seed)>>>0)||1;seedState.seed=seed;seedState.state=seed;seedState.active=true;seedState.resultRecorded=false;
-    seedState.code=`V208-${seed.toString(36).toUpperCase().padStart(7,'0')}`;
+    seedState.code=`V211-${seed.toString(36).toUpperCase().padStart(7,'0')}`;
     return seed;
   }
   function seededRandom(){
@@ -28787,7 +28798,6 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     try{await navigator.clipboard.writeText(text);return true}catch(_){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(__){}ta.remove();return ok}
   }
   $v('v208ReplayBattle')?.addEventListener('click',()=>replayPacket());
-  $v('v208CopyBug')?.addEventListener('click',async()=>{const packet=battlePacket(),ok=await copyText(JSON.stringify(packet,null,2));const btn=$v('v208CopyBug');if(btn){const old=btn.textContent;btn.textContent=ok?'복사 완료 ✓':'복사 실패';setTimeout(()=>btn.textContent=old,1300)}});
   GongGameModules.registerSystem('seed-replay',{activateSeed,replayPacket,battlePacket});
 
   /* ---------- 3. large-battle performance system ---------- */
@@ -28893,7 +28903,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     replay(){const packet={seed:seedState.seed,config:clone(seedState.config)};replayPacket(packet);paused=true;return this.snapshot()},
     verify(){return {build:window.__GONG_LATEST_BUILD__,yuinsungEmbedded:String(DEFS.yuinsung?.img||'').startsWith('data:image/'),banjunseoEmbedded:String(IMAGES.banjunseo||'').startsWith('data:image/'),juliaEmbedded:String(IMAGES.julia||'').startsWith('data:image/'),kooshEmbedded:String(IMAGES.v203Koosh||'').startsWith('data:image/'),bossRushButton:!!$v('bossRushModeBtn'),nameSearch:!!$v('v208CharacterSearch'),gameSystemPanel:!!document.querySelector('.v208-system-panel'),toolsBeforeAd:$v('v208BattleTools')?.nextElementSibling?.classList.contains('promo-banner')||false,quality:perf.effective,modules:[...GongGameModules.systems.keys()],moduleCounts:{characters:GongGameModules.characters.size,bosses:GongGameModules.bosses.size,modes:GongGameModules.modes.size,systems:GongGameModules.systems.size}}}
   };
-  renderSetup();syncQuality();updateBattleCode();console.info('[V209] 게임 시스템 UI 제거 · 이름 검색만 유지 · 보스러시 제거 · 경기 도구 광고 위 일반 배치');
+  renderSetup();syncQuality();updateBattleCode();console.info('[V210] 모바일 전투 방식 2열 순서 정리 · 오류 기록 복사 버튼 제거');
 })();
 
 })();
@@ -29082,8 +29092,8 @@ html.v206-card-moving *{scroll-behavior:auto!important}
 
 
 <script id="v208BuildMarker">
-window.__GONG_V208_BUILD__='V209_CLEAN_SETUP_SCROLL_TOOLS';
-window.__GONG_LATEST_BUILD__='V209_CLEAN_SETUP_SCROLL_TOOLS';
+window.__GONG_V208_BUILD__='V211_BANJUNSEO_LIVE_CAP2';
+window.__GONG_LATEST_BUILD__='V211_BANJUNSEO_LIVE_CAP2';
 console.info('[V208] 최신 빌드 활성화');
 </script>
 
@@ -29097,7 +29107,7 @@ console.info('[V208] 최신 빌드 활성화');
 </style>
 <script id="v209BuildMarker">
 (()=>{
-  const BUILD='V209_CLEAN_SETUP_SCROLL_TOOLS';
+  const BUILD='V211_BANJUNSEO_LIVE_CAP2';
   window.__GONG_V209_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   const tools=document.getElementById('v208BattleTools');
@@ -29119,9 +29129,65 @@ console.info('[V208] 최신 빌드 활성화');
       };
     }
   };
-  console.info('[V209] 설정 화면 단순화 · 이름 검색만 유지 · 보스러시 제거 · 경기 도구는 광고 위 일반 흐름 배치');
+  console.info('[V210] 모바일 전투 방식 순서 정리 · 오류 기록 복사 버튼 제거 · 재실행 유지');
 })();
 </script>
 
+<style id="v210MobileModeOrderStyle">
+/* V210 · 모바일 2열 전투 방식 순서 및 경기 도구 단순화 */
+@media(max-width:559px){
+  #modeHub{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #autoBattleStart{order:1}
+  #tournamentModeBtn{order:2}
+  #modeHub .mode-btn[data-mode="showdown"]{order:3}
+  #modeHub .mode-btn[data-mode="team"]{order:4}
+  #modeHub .mode-btn[data-mode="boss"]{order:5}
+  #randomModeStart{order:6}
+}
+@media(max-width:430px){
+  #v208BattleTools #v208ReplayBattle{flex:1 1 100%!important}
+}
+</style>
+<script id="v210BuildMarker">
+(()=>{
+  const BUILD='V211_BANJUNSEO_LIVE_CAP2';
+  window.__GONG_V210_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  const expected=['자동전투','토너먼트','쇼다운','팀전','보스전','랜덤모드'];
+  function mobileModeOrder(){
+    return [...document.querySelectorAll('#modeHub > button')]
+      .map((el,index)=>({el,index,order:Number(getComputedStyle(el).order)||0}))
+      .sort((a,b)=>a.order-b.order||a.index-b.index)
+      .map(({el})=>(el.childNodes[0]?.textContent||el.textContent||'').replace(/[🤖🏆⚔️🤝👑🎲]/gu,'').trim());
+  }
+  window.__GONG_V210_TEST__={
+    verify(){
+      const order=mobileModeOrder();
+      return {
+        build:window.__GONG_LATEST_BUILD__,
+        viewport:innerWidth+'x'+innerHeight,
+        mobileOrder:order,
+        mobileOrderCorrect:innerWidth>=560||expected.every((name,i)=>order[i]===name),
+        twoColumns:innerWidth>=560||getComputedStyle(document.getElementById('modeHub')).gridTemplateColumns.split(' ').length===2,
+        errorCopyButtonRemoved:!document.getElementById('v208CopyBug'),
+        replayButtonPresent:!!document.getElementById('v208ReplayBattle'),
+        bossRushRemoved:!document.getElementById('bossRushModeBtn')
+      };
+    }
+  };
+  console.info('[V210] 모바일 전투 방식 자동전투·토너먼트 / 쇼다운·팀전 / 보스전·랜덤모드 · 오류 복사 버튼 제거');
+})();
+</script>
+
+
+<script id="v211BanjunseoCapMarker">
+(()=>{
+  const BUILD='V211_BANJUNSEO_LIVE_CAP2';
+  window.__GONG_V211_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V211_TEST__={build:BUILD,capThree:()=>window.__GONG_V207_TEST_INTERNAL__?.capThree?.(),capReplace:()=>window.__GONG_V207_TEST_INTERNAL__?.capReplace?.()};
+  console.info('[V211] 반준서 동시 생존 최대 2명 · 탈락 후 다음 조건에서 보충 소환');
+})();
+</script>
 </body>
 </html>
