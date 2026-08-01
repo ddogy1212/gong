@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V198_ORIGIN_GHOST_BALL_FIX -->
+<!-- BUILD: V199_YANGMALI_DAMAGE12 -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1571,7 +1571,7 @@ body.tournament-battle .speed-row{display:none!important}
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V198_ORIGIN_GHOST_BALL_FIX -->
+<!-- BUILD: V199_YANGMALI_DAMAGE12 -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -25784,7 +25784,7 @@ SKILL_INFO.uiyong={summary:'디버프 면역·벽 성장·충돌 회복 실드�
   {kind:'충돌 반격',type:'attack',name:'2반에서살아남기',desc:'적과 부딪힐 때마다 회복하고 실드를 얻으며 반격한다.',points:['충돌 시 HP 5 회복','2초 동안 받는 피해 50% 감소','충돌한 적에게 현재 공격력만큼 피해 (기본 4 · 최대 22)','짧은 내부 재사용 대기시간으로 과도한 중복 발동 방지']}
 ]};
 SKILL_INFO.oseoyoon={summary:'투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',hp:'220',speed:'220',skills:[
-  {kind:'패시브 소환',type:'attack',name:'양말상점',desc:'상대 투사체에 맞을 때마다 양말이를 소환한다.',points:['양말이: 체력 30 · 이동속도 290','양말이는 적과 닿으면 폭발하며 피해 5','오서윤·쵸텐·미쿠에게는 폭발하지 않고 피해도 주지 않음','양말이 피해는 오서윤 누적 피해량에 합산']},
+  {kind:'패시브 소환',type:'attack',name:'양말상점',desc:'상대 투사체에 맞을 때마다 양말이를 소환한다.',points:['양말이: 체력 30 · 이동속도 290','양말이는 적과 닿으면 폭발하며 피해 12','오서윤·쵸텐·미쿠에게는 폭발하지 않고 피해도 주지 않음','양말이 피해는 오서윤 누적 피해량에 합산']},
   {kind:'벽 충돌 회복',type:'defense',name:'마이멜로디',desc:'벽에 3번 부딪힐 때마다 아몬드 파운드케이크를 먹고 회복한다.',points:['0.5초 시전 후 HP 5 회복','시전 중에는 제자리에서 짧게 멈춘다']},
   {kind:'처치 전향',type:'special',name:'쵸텐',desc:'적을 처치하면 그 적을 아군 쵸텐으로 되살린다.',points:['1대1 상황에서는 발동하지 않음','되살아난 적은 이름이 쵸텐으로 바뀌고 4번 사진을 사용','쵸텐은 오서윤·미쿠·양말이와 같은 아군으로 처리','쵸텐이 넣은 피해와 킬은 오서윤 기록으로 합산']},
   {kind:'사후 소환',type:'special',name:'미쿠',desc:'오서윤이 죽으면 미쿠를 한 번만 소환한다.',points:['미쿠: 체력 50 · 이동속도 400','미쿠도 마이멜로디를 사용하고 적과 충돌 시 약한 피해를 준다','미쿠가 살아 있는 동안에는 오서윤이 생존한 것으로 판정되어 경기가 끝나지 않음','미쿠가 적을 처치하면 오서윤이 최대 체력의 절반으로 부활','미쿠의 피해와 킬도 오서윤 기록에 합산']}
@@ -26050,7 +26050,7 @@ function v185UpdateUnits(dt){
           if(!v185Ready(u,q,'v185ContactCd',u.kind==='yangmali'?0.25:0.45))continue;
           if(u.kind==='yangmali'){
             const beforeD=u.damageDealt||0,beforeK=u.kills||0,beforeH=u.healingDone||0;
-            damage(q,5,u,'양말이 폭발',{allowDeadSource:true});
+            damage(q,12,u,'양말이 폭발',{allowDeadSource:true});
             v185TransferSeoStats(u,beforeD,beforeK,beforeH);
             u.alive=false;u.hp=0;u.life=0;
             spawnAttackFx(u.x,u.y,'#d49744','양말이 폭발',1.1);
@@ -27392,6 +27392,31 @@ console.info('[V197] 123,240경기 전수 재실행 · 180초/.08tick · 좌우 
 <script>
 window.__GONG_LATEST_BUILD__='V198_ORIGIN_GHOST_BALL_FIX';
 console.info('[V198] 좌측 상단 유령 공 수정 · statusText 렌더링 부작용 제거 · 윤현/세면대 효과를 실제 공 좌표로 이동');
+</script>
+
+
+<script>
+window.__GONG_V199_BUILD__='V199_YANGMALI_DAMAGE12';
+window.__GONG_LATEST_BUILD__='V199_YANGMALI_DAMAGE12';
+window.__GONG_V199_CHANGES__=Object.freeze({
+  yangmaliExplosionDamage:12,
+  yangmaliDescriptionUpdated:true,
+  v198GhostBallFixPreserved:true,
+  v197SimulationDataPreserved:true
+});
+window.__GONG_V199_TEST__={
+  build:'V199_YANGMALI_DAMAGE12',
+  expectedYangmaliDamage:12,
+  verifySource(){
+    const source=document.documentElement.innerHTML;
+    return {
+      ok:source.includes("damage(q,12,u,'양말이 폭발'")&&source.includes('양말이는 적과 닿으면 폭발하며 피해 12'),
+      damageCall:source.includes("damage(q,12,u,'양말이 폭발'"),
+      description:source.includes('양말이는 적과 닿으면 폭발하며 피해 12')
+    };
+  }
+};
+console.info('[V199] 오서윤 양말이 폭발 피해 5 → 12 · 설명창 동기화');
 </script>
 
 </body>
