@@ -1592,7 +1592,12 @@ body.tournament-battle .speed-row{display:none!important}
 
 
 /* V183 mobile single-file image loading optimization (embedded WebP thumbnails) */
-.pool-cards .char-card{content-visibility:auto;contain-intrinsic-size:62px 220px}
+/* V206: 카드의 실제 높이와 다른 220px 가상 높이가 모바일 스크롤을 흔들던 문제 수정 */
+.pool-cards .char-card{
+  content-visibility:auto;
+  contain-intrinsic-width:auto;
+  contain-intrinsic-height:62px;
+}
 .char-card img,.skill-profile img,.boss-card img,.boss-info-head img{image-rendering:auto}
 .start-btn.is-loading{opacity:.72;cursor:wait;box-shadow:none;transform:translateY(2px)}
 .boss-load-note{display:none;margin-top:8px;text-align:center;font-size:11px;font-weight:900;color:#5d6675}
@@ -3987,20 +3992,77 @@ function renderSetup(){
   v165SyncActiveZoneUI(zones);
 }
 
+/* V206 · 단일 배정은 전체 80여 장을 다시 만들지 않고 기존 DOM 카드 하나만 이동한다. */
+const V206_CARD_ORDER=()=>new Map(orderedCharacterIds().map((charId,index)=>[charId,index]));
+function v206CardContainer(zone){
+  if(zone==='pool')return poolCards;
+  return board.querySelector(`.drop-zone[data-zone="${CSS.escape(zone)}"] .zone-cards`);
+}
+function v206UpdateZoneUi(zone){
+  if(zone==='pool')return;
+  const zoneEl=board.querySelector(`.drop-zone[data-zone="${CSS.escape(zone)}"]`);
+  const cards=zoneEl?.querySelector('.zone-cards');
+  if(!zoneEl||!cards)return;
+  const count=cards.querySelectorAll(':scope > .char-card').length;
+  const countEl=zoneEl.querySelector('.zone-count');
+  if(countEl)countEl.textContent=`${count}명`;
+  const hint=cards.querySelector(':scope > .zone-hint');
+  if(count===0&&!hint){
+    const empty=document.createElement('div');
+    empty.className='zone-hint';
+    empty.textContent='캐릭터를 여기에 드래그하거나 아래에서 탭';
+    cards.appendChild(empty);
+  }else if(count>0&&hint){
+    hint.remove();
+  }
+}
+function v206InsertCardOrdered(card,container){
+  const order=V206_CARD_ORDER();
+  const index=order.get(card.dataset.char)??Number.MAX_SAFE_INTEGER;
+  const next=[...container.querySelectorAll(':scope > .char-card')]
+    .find(other=>(order.get(other.dataset.char)??Number.MAX_SAFE_INTEGER)>index);
+  container.insertBefore(card,next||null);
+}
+function v206StableAnchor(source){
+  const siblings=[...source.parentElement.children].filter(node=>node!==source&&node.classList?.contains('char-card'));
+  const sourceIndex=[...source.parentElement.children].indexOf(source);
+  return siblings.find(node=>[...source.parentElement.children].indexOf(node)>sourceIndex)||siblings.at(-1)||null;
+}
 function moveCard(id,zone){
-  const source=document.querySelector(`.char-card[data-char="${id}"]`);
-  const anchor=source?.nextElementSibling?.dataset?.char||source?.previousElementSibling?.dataset?.char||null;
-  const anchorEl=anchor?document.querySelector(`.char-card[data-char="${anchor}"]`):null;
-  const anchorTop=anchorEl?.getBoundingClientRect().top;
+  if(!DEFS[id]||assignments[id]===zone)return;
+  const source=document.querySelector(`.char-card[data-char="${CSS.escape(id)}"]`);
+  const target=v206CardContainer(zone);
+  if(!source||!target){
+    assignments[id]=zone;
+    renderSetup();
+    return;
+  }
+
+  const oldZone=assignments[id]||'pool';
+  const anchor=v206StableAnchor(source);
+  const anchorTop=anchor?.getBoundingClientRect().top;
   const scrollBefore=window.scrollY;
-  assignments[id]=zone;renderSetup();
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    if(anchor&&Number.isFinite(anchorTop)){
-      const next=document.querySelector(`.char-card[data-char="${anchor}"]`);
-      if(next){const delta=next.getBoundingClientRect().top-anchorTop;if(Math.abs(delta)>.5)window.scrollBy(0,delta);return;}
-    }
-    if(Math.abs(window.scrollY-scrollBefore)>.5)window.scrollTo(0,scrollBefore);
-  }));
+  const oldContainer=source.parentElement;
+
+  assignments[id]=zone;
+  target.querySelector(':scope > .zone-hint')?.remove();
+  v206InsertCardOrdered(source,target);
+  v206UpdateZoneUi(oldZone);
+  v206UpdateZoneUi(zone);
+
+  /* 레이아웃을 지금 확정하고 같은 프레임 안에서 보이는 위치를 복구한다.
+     기존 코드는 두 번째 animation frame에서 복구해 한 프레임 크게 튀었다. */
+  if(anchor&&Number.isFinite(anchorTop)){
+    const delta=anchor.getBoundingClientRect().top-anchorTop;
+    if(Math.abs(delta)>.5)window.scrollBy(0,delta);
+  }else if(Math.abs(window.scrollY-scrollBefore)>.5){
+    window.scrollTo(0,scrollBefore);
+  }
+  v165SyncActiveZoneUI();
+
+  window.__GONG_V206_LAST_MOVE__={id,from:oldZone,to:zone,incremental:true,
+    sourceKept:source.isConnected,oldCount:oldContainer?.querySelectorAll(':scope > .char-card').length||0,
+    newCount:target.querySelectorAll(':scope > .char-card').length,at:performance.now()};
 }
 
 function bindDnD(){
@@ -28651,6 +28713,34 @@ console.info('[V200] 최신 빌드 활성화');
 <script id="v205BuildMarker">
 window.__GONG_LATEST_BUILD__='V205_JULIA_HARD70_LIGHTNING_MENTOR_CROSS_FIX';
 console.info('[V205] 최신 빌드 활성화');
+</script>
+
+<style id="v206AssignmentPerformanceStyle">
+#board,.pool,.pool-cards,.zone-cards{overflow-anchor:none}
+.char-card{contain:layout paint style}
+html.v206-card-moving{overflow-anchor:none!important}
+html.v206-card-moving *{scroll-behavior:auto!important}
+</style>
+<script id="v206BuildMarker">
+(()=>{
+  const V206_BUILD='V206_FAST_STABLE_CHARACTER_ASSIGNMENT';
+  window.__GONG_V206_BUILD__=V206_BUILD;
+  window.__GONG_LATEST_BUILD__=V206_BUILD;
+  window.__GONG_V206_CHANGES__=Object.freeze({
+    incrementalCharacterAssignment:true,
+    fullRosterRerenderOnSingleTap:false,
+    sameFrameScrollStabilization:true,
+    correctedIntrinsicCardHeight:62,
+    mobileOptimized:true
+  });
+  window.__GONG_V206_TEST__={
+    build:V206_BUILD,
+    get lastMove(){return window.__GONG_V206_LAST_MOVE__||null;},
+    move(id,zone){moveCard(id,zone);return {assignment:assignments[id],lastMove:this.lastMove};},
+    snapshot(){return {build:window.__GONG_LATEST_BUILD__,cards:document.querySelectorAll('.char-card').length,pool:poolCards?.querySelectorAll(':scope > .char-card').length||0,zones:[...document.querySelectorAll('.drop-zone[data-zone]')].map(z=>({zone:z.dataset.zone,count:z.querySelectorAll('.char-card').length,label:z.querySelector('.zone-count')?.textContent||''}))};}
+  };
+  console.info('[V206] 캐릭터 단일 배정 전체 재렌더 제거 · 첫 프레임 화면 튐 제거 · 모바일 카드 높이 보정');
+})();
 </script>
 
 </body>
