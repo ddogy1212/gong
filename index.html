@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V199_YANGMALI_DAMAGE12 -->
+<!-- BUILD: V200_RANDOM_RULE_MODE -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1568,15 +1568,34 @@ body.tournament-battle .speed-row{display:none!important}
 /* V192: 신규 캐릭터 사진을 빈 여백 없이 꽉 채운다. */
 .skill-profile img{object-fit:cover!important;padding:0!important;background:#111!important}
 </style>
+
+<style>
+/* V200 · 랜덤 규칙 연속 모드 */
+@media(min-width:560px){.mode-row{grid-template-columns:repeat(6,minmax(0,1fr))}.mode-btn,.mode-hub-btn{font-size:12px;padding-left:4px;padding-right:4px}}
+.mode-random-btn{border-color:#8b5cf6;background:linear-gradient(145deg,#f4ecff,#ddc9ff);color:#44226d;box-shadow:0 3px 0 #9f7bd0}
+.mode-random-btn:active{transform:translateY(2px);box-shadow:0 1px 0 #9f7bd0}
+.mode-random-btn.running{background:linear-gradient(145deg,#6d28d9,#9b5de5);border-color:#4c1d95;color:#fff;box-shadow:0 3px 0 #3f176e}
+.mode-random-btn.running small{color:#f3e8ff}
+.random-mode-intro{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(12,6,28,.76);backdrop-filter:blur(8px)}
+.random-mode-intro.hidden{display:none}
+.random-mode-intro-card{width:min(520px,92vw);border:3px solid #fff;border-radius:26px;padding:27px 22px;background:linear-gradient(145deg,#2e1065,#6d28d9 55%,#a855f7);color:#fff;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 0 8px rgba(255,255,255,.12);animation:v200IntroPop .22s ease-out}
+.random-mode-intro-kicker{font-size:12px;font-weight:1000;letter-spacing:.08em;color:#e9d5ff}
+.random-mode-intro-name{margin-top:8px;font-size:clamp(28px,7vw,48px);line-height:1.05;font-weight:1000;word-break:keep-all;text-shadow:0 3px 0 rgba(0,0,0,.22)}
+.random-mode-intro-desc{margin:13px auto 0;max-width:430px;font-size:14px;line-height:1.55;font-weight:900;color:#faf5ff}
+.random-mode-intro-count{display:inline-block;margin-top:16px;border:1.5px solid rgba(255,255,255,.6);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:1000;background:rgba(255,255,255,.13)}
+.random-mode-stop-inline{margin-left:8px;border:0;border-radius:999px;background:#8b1d3c;color:#fff;padding:6px 10px;font-weight:1000;cursor:pointer}
+@keyframes v200IntroPop{from{opacity:0;transform:scale(.88) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:559px){.mode-random-btn{grid-column:auto}.random-mode-intro-card{padding:23px 16px}}
+</style>
 </head>
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V199_YANGMALI_DAMAGE12 -->
+<!-- BUILD: V200_RANDOM_RULE_MODE -->
 <div class="app">
 
 <section id="setup" class="screen">
   <h1>수원외고 공게임 🏟️</h1>
-  <div class="lead">자동전투·개인전·팀전·보스전을 한곳에서 선택해. 모바일에서는 빠른 배정 버튼을 고른 뒤 캐릭터 카드를 누르면 편하게 참가시킬 수 있어.</div>
+  <div class="lead">자동전투·랜덤모드·개인전·팀전·보스전을 한곳에서 선택해. 모바일에서는 빠른 배정 버튼을 고른 뒤 캐릭터 카드를 누르면 편하게 참가시킬 수 있어.</div>
   <div class="setup-actions">
     <div class="showdown-bulk-actions">
       <button id="addAllShowdown" class="add-all-btn">➕ 개인전에 모두 추가</button>
@@ -1611,6 +1630,7 @@ body.tournament-battle .speed-row{display:none!important}
 
     <div class="mode-row" id="modeHub" aria-label="전투 방식 선택">
       <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투<small>무작위 연속 전투</small></button>
+      <button id="randomModeStart" class="mode-hub-btn mode-random-btn" type="button">🎲 랜덤모드<small>5가지 특수 규칙 연속 전투</small></button>
       <button class="mode-btn active" data-mode="showdown">⚔️ 개인전<small>모두 적으로 전투</small></button>
       <button class="mode-btn" data-mode="team">🤝 팀전<small>팀 수 직접 설정</small></button>
       <button class="mode-btn" data-mode="boss">👑 보스전<small>보스와 전투</small></button>
@@ -1814,6 +1834,16 @@ body.tournament-battle .speed-row{display:none!important}
   </div>
 </section>
 
+
+
+<div id="randomModeIntro" class="random-mode-intro hidden" aria-hidden="true">
+  <div class="random-mode-intro-card">
+    <div class="random-mode-intro-kicker">🎲 이번 랜덤 규칙</div>
+    <div id="randomModeIntroName" class="random-mode-intro-name">회복불가모드</div>
+    <div id="randomModeIntroDesc" class="random-mode-intro-desc">모든 회복 효과가 막힙니다.</div>
+    <div id="randomModeIntroCount" class="random-mode-intro-count">3명 전투 · 1초 후 시작</div>
+  </div>
+</div>
 
 <div id="resultModal" class="result-modal hidden" aria-hidden="true">
   <div class="result-card" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle">
@@ -4060,14 +4090,16 @@ function resize(){
   const r=canvas.getBoundingClientRect();
   const count=currentConfig?.participants?.length||0;
 
-  arenaLogicalScale=currentConfig?.mode==='boss'
-    ?Math.min(3.2,2+Math.max(0,count-10)*.055)
-    :count>10
-      ?Math.min(
-        1.65,
-        1+(count-10)*.08
-      )
-      :1;
+  arenaLogicalScale=currentConfig?.randomMode
+    ?clamp(.82+Math.max(0,Math.min(6,count-3))*(.38/6),.82,1.20)
+    :currentConfig?.mode==='boss'
+      ?Math.min(3.2,2+Math.max(0,count-10)*.055)
+      :count>10
+        ?Math.min(
+          1.65,
+          1+(count-10)*.08
+        )
+        :1;
 
   const displayW=Math.max(1,r.width);
   const displayH=Math.max(1,r.height);
@@ -6210,6 +6242,18 @@ function damage(target,amount,source,skill='공격',opts={}){
 
   if(source.id==='yoogeon'&&source.isBoss)amount=Math.round(amount*.40*10)/10;
   if(source.id==='naeonseong'&&source.isBoss)amount=Math.round(amount*.55*10)/10;
+
+  /* V200 랜덤 데미지: 캐릭터가 가하는 각 공격의 기본 최종값을 매번 1~40으로 다시 뽑는다.
+     이후 대상의 방어·보호막·피해 감소는 정상 적용된다. 방사능과 자해는 제외한다. */
+  if(
+    currentConfig?.randomMode&&
+    currentConfig.randomRule==='randomDamage'&&
+    source!==game?.arenaSource&&
+    !opts.selfDamage&&
+    !opts.v200FixedDamage
+  ){
+    amount=1+Math.floor(Math.random()*40);
+  }
 
 
   if(target.id==='youngsik'&&target.isBoss&&!opts.trueDamage){
@@ -10693,7 +10737,7 @@ function eatCorpse(yesung,corpse){
   yesung.maxHp+=30;
 
   const before=yesung.hp;
-  yesung.hp=Math.min(yesung.maxHp,yesung.hp+20);
+  if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))yesung.hp=Math.min(yesung.maxHp,yesung.hp+20);
   const actualHeal=Math.round((yesung.hp-before)*10)/10;
 
   floater(yesung.x,yesung.y-48,'🍴 시체 먹기!','#7a4cff',19,1.1);
@@ -13506,7 +13550,7 @@ function tryChaewonEatProjectile(chaewon,shot){
   shot.life=0;
 
   const before=chaewon.hp;
-  chaewon.hp=Math.min(chaewon.maxHp,chaewon.hp+10);
+  if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))chaewon.hp=Math.min(chaewon.maxHp,chaewon.hp+10);
   const healed=chaewon.hp-before;
 
   if(healed>0){
@@ -15131,7 +15175,7 @@ function updateYang(yang,dt){
     if(yang.data.longLoveTimer>=40){
       yang.data.longLoveUsed=true;
       yang.maxHp+=40;
-      yang.hp+=40;
+      if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))yang.hp+=40;
       spawnAttackFx(yang.x,yang.y,'#ef5da8','장기연애',1.8);
       floater(
         yang.x,
@@ -15622,7 +15666,7 @@ function updateSeoyoung(seoyoung,dt){
   if(!seoyoung.alive||seoyoung.hidden)return;
   if(seoyoung.data.animeCasting){
     seoyoung.vx=0;seoyoung.vy=0;seoyoung.data.animeProgress+=dt;
-    if(seoyoung.data.animeProgress>=5){seoyoung.data.animeCasting=false;seoyoung.data.animeProgress=0;seoyoung.data.noHitTimer=0;seoyoung.maxHp+=50;seoyoung.hp+=50;spawnAttackFx(seoyoung.x,seoyoung.y,'#704f9a','애니정주행 성공',1.6);floater(seoyoung.x,seoyoung.y-seoyoung.r-22,'📺 최대 HP +50','#704f9a',17,1);}
+    if(seoyoung.data.animeProgress>=5){seoyoung.data.animeCasting=false;seoyoung.data.animeProgress=0;seoyoung.data.noHitTimer=0;seoyoung.maxHp+=50;if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))seoyoung.hp+=50;spawnAttackFx(seoyoung.x,seoyoung.y,'#704f9a','애니정주행 성공',1.6);floater(seoyoung.x,seoyoung.y-seoyoung.r-22,'📺 최대 HP +50','#704f9a',17,1);}
     return;
   }
   seoyoung.data.noHitTimer+=dt;
@@ -22817,7 +22861,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     kimsihu:{id:'kimsihu',name:'김시후',generation:21,color:'#4f9fca',hp:200,speed:300,img:IMAGES.kimsihu,role:'영구 포옹 표식·야구 유도·강한 타격·확률 역회복형',skills:'포옹하기 · 야구하기(투수) · 야구하기(타자) · 야구하기(수비)'},
     kimeunwoo:{id:'kimeunwoo',name:'김은우',generation:20,color:'#4ba9c8',hp:200,speed:300,img:IMAGES.kimeunwoo,role:'강제 원거리 넉백 바람·취약 하트·고속 축구공형',skills:'숨이잘쉬어지는밴드 · 달달한 연애 · 수원외고축구천재'},
     yoonseoyoung:{id:'yoonseoyoung',name:'윤서영',generation:20,color:'#785d93',hp:200,speed:250,img:IMAGES.yoonseoyoung,role:'충돌 회복·취약 부여·피격 가시·누적 성장 시전형',skills:'잘뽑은반장 · 독설하기 · 호통치기 · 슬라임만지기'},
-    kimgyuwon:{id:'kimgyuwon',name:'김규원',generation:21,color:'#b1834f',hp:200,speed:180,img:IMAGES.kimgyuwon,role:'주기 완전 무적 변신·충돌 파동·아군 소환형',skills:'리락쿠마로 둔갑하기 · 불안력발사 · 효르몬발사'},
+    kimgyuwon:{id:'kimgyuwon',name:'김규원',generation:21,color:'#b1834f',hp:240,speed:180,img:IMAGES.kimgyuwon,role:'주기 완전 무적 변신·충돌 파동·아군 소환형',skills:'리락쿠마로 둔갑하기 · 불안력발사 · 효르몬발사'},
     yuhawon:{id:'yuhawon',name:'유하원',generation:21,color:'#d67b52',hp:200,speed:220,img:IMAGES.yuhawon,role:'무작위 신남 축적·초고속 느낌표 연사·자해 공격 강화형',skills:'신나하기 · 신남 표출하기 · 베트남홍고추'},
     choiyujin:{id:'choiyujin',name:'최유진',generation:21,color:'#5d748f',hp:200,speed:200,img:IMAGES.choiyujin,role:'윤현 소환·확률 무효·독서 회복·추적 하트형',skills:'운명론적멘토멘티 · 퀸의마인드 · 독서하기 · 예쁜언니따라가기'}
   });
@@ -22861,7 +22905,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       {kind:'벽 충돌 공격',type:'attack',name:'호통치기',desc:'벽에 5번 부딪힐 때마다 잠시 멈추고 가장 가까운 적 방향으로 가시 4개를 분사한다.',points:['가시 1개당 피해 10','벽 충돌 횟수는 발동 후 초기화']},
       {kind:'벽 충돌 성장 시전',type:'special',name:'슬라임만지기',desc:'벽에 3번 부딪힐 때마다 2초 동안 제자리에서 슬라임을 만진다.',points:['피격되어도 취소되지 않음','성공 1회마다 모든 공격 피해 1.5배 누적','독설 취약 지속시간 1.1배 누적']}
     ]},
-    kimgyuwon:{summary:'주기 완전 무적 변신·충돌 파동·아군 소환형',hp:'200',speed:'180',skills:[
+    kimgyuwon:{summary:'주기 완전 무적 변신·충돌 파동·아군 소환형',hp:'240',speed:'180',skills:[
       {kind:'주기 변신 방어',type:'defense',name:'리락쿠마로 둔갑하기',desc:'3~6초 무작위 쿨타임마다 4초 동안 리락쿠마 사진으로 변신한다.',points:['변신 중 모든 피해 완전 무효','4초 후 원래 사진으로 복귀']},
       {kind:'충돌 누적 파동',type:'attack',name:'불안력발사',desc:'적과 4번 충돌할 때마다 제자리에서 넓은 파동을 3번 발사한다.',points:['1차 파동 피해 15','2차 파동 피해 5와 5초 취약','3차 파동 피해 20']},
       {kind:'벽 충돌 아군 소환',type:'special',name:'효르몬발사',desc:'벽에 6번 부딪힐 때마다 HP 80·속도 260의 효르몬 공을 소환한다.',points:['김규원과 같은 팀','다른 공격의 대상이 되는 별도 개체','적과 충돌하면 폭발해 피해 25']}
@@ -23210,7 +23254,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
       p.data.maxWalls++;p.data.collectorWalls++;
       if(p.data.maxWalls>=5){
         p.data.maxWalls=0;
-        if(p.maxHp<400){const oldMax=p.maxHp;p.maxHp=Math.min(400,p.maxHp+5);const gain=p.maxHp-oldMax;p.hp=Math.min(p.maxHp,p.hp+gain);floater(p.x,p.y-p.r-22,`🏫 최대 HP +${gain} · 현재 HP +${gain}`,'#5f7f68',14,.9);}
+        if(p.maxHp<400){const oldMax=p.maxHp;p.maxHp=Math.min(400,p.maxHp+5);const gain=p.maxHp-oldMax;if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))p.hp=Math.min(p.maxHp,p.hp+gain);floater(p.x,p.y-p.r-22,`🏫 최대 HP +${gain} · 현재 HP +${gain}`,'#5f7f68',14,.9);}
         else floater(p.x,p.y-p.r-22,'🏫 최대 HP 상한 400','#5f7f68',13,.7);
       }
       if(p.data.collectorWalls>=5){p.data.collectorWalls=0;v151FireMinjiBubble(p);}
@@ -25887,12 +25931,14 @@ function v185UpdateMelodyCaster(entity,dt,healAmount=5,label='마이멜로디'){
   entity.vx=0;entity.vy=0;
   if('frozen' in entity)entity.frozen=Math.max(entity.frozen||0,dt+.03);
   if(entity.data.v185MelodyCast===0&&entity.alive!==false&&entity.hp>0){
-    entity.hp=Math.min(entity.maxHp,entity.hp+healAmount);
+    const before=entity.hp;
+    if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))entity.hp=Math.min(entity.maxHp,entity.hp+healAmount);
+    const actual=Math.max(0,entity.hp-before);
     const root=v185SeoRoot(entity)||entity;
-    if(root&&root!==entity&&Number.isFinite(root.healingDone))root.healingDone+=healAmount;
-    if(Number.isFinite(entity.healingDone))entity.healingDone=(entity.healingDone||0)+healAmount;
-    spawnAttackFx(entity.x,entity.y,'#f3a6c6',label+' 성공',1.15);
-    floater(entity.x,entity.y-entity.r-12,`🍰 HP +${healAmount}`,'#e56eb0',14,.8);
+    if(root&&root!==entity&&Number.isFinite(root.healingDone))root.healingDone+=actual;
+    if(Number.isFinite(entity.healingDone))entity.healingDone=(entity.healingDone||0)+actual;
+    spawnAttackFx(entity.x,entity.y,'#f3a6c6',actual>0?label+' 성공':'회복 불가',1.15);
+    floater(entity.x,entity.y-entity.r-12,actual>0?`🍰 HP +${actual}`:'🚫 회복 불가',actual>0?'#e56eb0':'#7c3aed',14,.8);
   }
 }
 function v185ApplyChoten(target,root){
@@ -26740,7 +26786,7 @@ Object.assign(IMAGES,{
 
 Object.assign(DEFS,{
   leesangeun:{id:'leesangeun',name:'이상은',generation:21,color:'#626d7b',hp:250,speed:280,img:IMAGES.leesangeun,role:'전장 벼락·충돌 스택·벽 가속형',skills:'벼락치기 · 대들기 · 자유로운학습실사용'},
-  kimseonghun:{id:'kimseonghun',name:'김성훈',generation:20,color:'#26394f',hp:210,speed:190,img:IMAGES.kimseonghun,role:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',skills:'윤현과룸메가되며나는통학으로돌릴거야 · 중국어5등급유경험자 · 드투 · 외모정병 · 거울독차지'},
+  kimseonghun:{id:'kimseonghun',name:'김성훈',generation:20,color:'#26394f',hp:190,speed:190,img:IMAGES.kimseonghun,role:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',skills:'윤현과룸메가되면나는통학으로돌릴거야 · 중국어5등급유경험자 · 드투 · 외모정병 · 거울독차지'},
   parkgarim:{id:'parkgarim',name:'박가림',generation:20,color:'#a14a70',hp:220,speed:220,img:IMAGES.parkgarim,role:'방송부·레이디버그 변신·닉 2페이즈·지속 하트형',skills:'방송부 · 변신 레이디버그! · 닉 소환하기 · 귀여워하기'},
   leeeunchae:{id:'leeeunchae',name:'이은채',generation:20,color:'#344d73',hp:200,speed:240,img:IMAGES.leeeunchae,role:'벽 공격 성장·확률 다리걸기·피격 확정 강화형',skills:'은채는 참지 않아 · 다리걸기 · 시비걸기'},
   nahyeongju:{id:'nahyeongju',name:'나형주',generation:21,color:'#2f6976',hp:235,speed:220,img:IMAGES.nahyeongju,role:'최고 체력 강화·누적 무효 실드·별 펄스형',skills:'잉쭈 · 무시하기 · 아스트열정남'},
@@ -26753,8 +26799,8 @@ Object.assign(SKILL_INFO,{
     {kind:'충돌 스택',type:'special',name:'대들기',desc:'벼락치기가 발동하기 전까지 충돌한 적에게 벼락 스택을 쌓는다.',points:['같은 적과 부딪힐 때마다 스택 +1','벼락 피해: 15 × 최대(1, 해당 적의 스택)','벼락치기 발동 후 모든 스택 초기화']},
     {kind:'벽 충돌 성장',type:'special',name:'자유로운학습실사용',desc:'벽에 튕길 때마다 이동속도가 1.2배씩 누적된다.',points:['벽 충돌마다 현재 속도 ×1.2','벽 충돌마다 15% 확률로 벼락치기 즉시 발동']}
   ]},
-  kimseonghun:{summary:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',hp:'210',speed:'190',skills:[
-    {kind:'패시브',type:'passive',name:'윤현과룸메가되며나는통학으로돌릴거야',desc:'윤현과의 팀 관계에 따라 능력치가 달라진다.',points:['윤현이 아군이면 최대·현재 HP 250','윤현이 적이면 이동속도 420']},
+  kimseonghun:{summary:'윤현 룸메이트·공격 반사·최대체력 봉쇄형',hp:'190',speed:'190',skills:[
+    {kind:'패시브',type:'passive',name:'윤현과룸메가되면나는통학으로돌릴거야',desc:'윤현과의 팀 관계에 따라 능력치가 달라진다.',points:['윤현이 아군이면 최대·현재 HP 250','윤현이 적이면 이동속도 420']},
     {kind:'주기 반사',type:'defense',name:'중국어5등급유경험자',desc:'5초 주기로 3초 동안 모든 공격과 디버프를 시전자에게 반사한다.',points:['활성 중 김성훈이 받을 피해 0','반사 피해는 공격 시전자에게 되돌아감','정지·감속·취약 등 디버프도 시전자에게 이전']},
     {kind:'벽 충돌 회복',type:'defense',name:'드투',desc:'벽에 3번 부딪힐 때마다 HP 10을 회복한다.',points:['벽 충돌 횟수는 발동 후 초기화']},
     {kind:'충돌 봉쇄',type:'attack',name:'외모정병',desc:'자신에게 부딪힌 적의 최대 체력을 그 순간의 현재 체력으로 고정하고 피해를 준다.',points:['적 최대 체력은 현재 체력 이하로 감소','감소 후 그 이상으로 회복 불가','추가 피해 5']},
@@ -27344,6 +27390,344 @@ window.__GONG_V198_CHANGES__=Object.freeze({
 });
 
 
+
+(function(){
+'use strict';
+const V200_BUILD='V200_RANDOM_RULE_MODE';
+const v200RandomButton=document.getElementById('randomModeStart');
+const v200Intro=document.getElementById('randomModeIntro');
+const v200IntroName=document.getElementById('randomModeIntroName');
+const v200IntroDesc=document.getElementById('randomModeIntroDesc');
+const v200IntroCount=document.getElementById('randomModeIntroCount');
+
+const V200_RANDOM_RULES=Object.freeze([
+  Object.freeze({id:'noHealing',name:'회복불가모드',description:'모든 캐릭터의 회복 효과가 0이 됩니다. 부활과 페이즈 전환은 유지됩니다.',icon:'🚫💚'}),
+  Object.freeze({id:'randomDamage',name:'공격 데미지 랜덤 모드',description:'캐릭터가 공격할 때마다 피해가 1~40 중 무작위로 결정됩니다.',icon:'🎯'}),
+  Object.freeze({id:'fixedSpeed',name:'속도 200 고정 모드',description:'모든 캐릭터의 기본 이동속도가 200으로 통일됩니다.',icon:'🏃'}),
+  Object.freeze({id:'randomHp',name:'랜덤 HP 모드',description:'경기 시작 때 각 캐릭터의 최대·현재 HP가 1~300으로 정해집니다.',icon:'❤️'}),
+  Object.freeze({id:'radiation',name:'방사능모드',description:'모든 생존 캐릭터가 1초마다 방사능 피해 2를 받습니다.',icon:'☢️'})
+]);
+const V200_RULE_MAP=Object.freeze(Object.fromEntries(V200_RANDOM_RULES.map(rule=>[rule.id,rule])));
+let v200RandomModeRunning=false;
+let v200RandomInternalBack=false;
+let v200RandomNextTimer=null;
+let v200RandomCountTimer=null;
+let v200RandomIntroTimer=null;
+let v200RandomHandledGame=null;
+let v200LastRule=null;
+
+function v200ClearTimers(){
+  if(v200RandomNextTimer){clearTimeout(v200RandomNextTimer);v200RandomNextTimer=null;}
+  if(v200RandomCountTimer){clearInterval(v200RandomCountTimer);v200RandomCountTimer=null;}
+  if(v200RandomIntroTimer){clearTimeout(v200RandomIntroTimer);v200RandomIntroTimer=null;}
+}
+function v200Shuffle(list){
+  const out=[...list];
+  for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
+  return out;
+}
+function v200ChooseRule(forcedId=null){
+  if(forcedId&&V200_RULE_MAP[forcedId])return V200_RULE_MAP[forcedId];
+  return V200_RANDOM_RULES[Math.floor(Math.random()*V200_RANDOM_RULES.length)];
+}
+function v200ChooseParticipants(forcedCount=null,forcedIds=null){
+  const roster=orderedCharacterIds();
+  if(roster.length<3)throw new Error('랜덤모드에는 일반 캐릭터가 최소 3명 필요합니다.');
+  if(Array.isArray(forcedIds)&&forcedIds.length>=3){
+    const valid=[...new Set(forcedIds)].filter(id=>roster.includes(id)).slice(0,9);
+    if(valid.length>=3)return valid;
+  }
+  const count=Math.min(roster.length,Math.max(3,Math.min(9,Number(forcedCount)||3+Math.floor(Math.random()*7))));
+  return v200Shuffle(roster).slice(0,count);
+}
+function v200SetIntro(rule,count){
+  v200IntroName.textContent=`${rule.icon} ${rule.name}`;
+  v200IntroDesc.textContent=rule.description;
+  v200IntroCount.textContent=`${count}명 전투 · 1초 후 시작`;
+  v200Intro.classList.remove('hidden');
+  v200Intro.setAttribute('aria-hidden','false');
+}
+function v200HideIntro(){
+  v200Intro.classList.add('hidden');
+  v200Intro.setAttribute('aria-hidden','true');
+}
+function v200SyncRandomUI(){
+  if(v200RandomButton){
+    v200RandomButton.classList.toggle('running',v200RandomModeRunning);
+    v200RandomButton.innerHTML=v200RandomModeRunning
+      ?'🎲 랜덤모드 진행 중<small>전투 종료 후 새 규칙으로 계속</small>'
+      :'🎲 랜덤모드<small>5가지 특수 규칙 연속 전투</small>';
+  }
+  if(v200RandomModeRunning){
+    const battleVisible=!battle.classList.contains('hidden');
+    autoBattleStop.classList.toggle('hidden',!battleVisible);
+    autoBattleStop.textContent='⏹ 랜덤모드 그만하기';
+  }
+}
+function v200AssignShowdown(ids){
+  forceShowdownSetup();
+  Object.keys(assignments).forEach(id=>assignments[id]='pool');
+  ids.forEach(id=>assignments[id]='showdown');
+  activeZone='showdown';
+  renderSetup();
+}
+function v200ApplyDuoRandomHp(p,total){
+  if(p.id!=='duo'||!p.data)return;
+  const tae=Math.max(1,Math.round(total*(170/230)));
+  const gang=Math.max(0,total-tae);
+  p.data.taeyeonMax=tae;p.data.taeyeonHp=tae;
+  p.data.gangeunMax=gang;p.data.gangeunHp=gang;
+  if(typeof syncDuoHp==='function')syncDuoHp(p);
+  p.maxHp=total;p.hp=total;
+}
+function v200ApplyRoundRule(){
+  if(!game||!currentConfig?.randomMode)return;
+  const rule=V200_RULE_MAP[currentConfig.randomRule];
+  game.v200RadiationAcc=0;
+  game.v200RuleId=rule?.id||null;
+  game.v200RuleName=rule?.name||'랜덤모드';
+  if(rule?.id==='randomHp'){
+    for(const p of game.players){
+      const hp=1+Math.floor(Math.random()*300);
+      p.maxHp=hp;p.hp=hp;
+      v200ApplyDuoRandomHp(p,hp);
+    }
+  }
+  if(rule?.id==='fixedSpeed'){
+    for(const p of game.players){
+      p.speed=200;
+      if(p.id==='duo'&&p.data?.partner){p.data.partner.vx=200;p.data.partner.vy=0;}
+      if(p.alive&&!p.hidden)normalizeSpeed(p,200);
+    }
+  }
+  const scale=arenaLogicalScale.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+  document.getElementById('modeBadge').textContent=`🎲 ${rule?.name||'랜덤모드'} · ${game.players.length}명 · 전장 ${scale}×`;
+  log(`<b>${rule?.icon||'🎲'} ${rule?.name||'랜덤모드'}</b> · ${rule?.description||''}`);
+  renderScores();renderBossAllies();updateUI();
+}
+
+const v200BaseResetBattle=resetBattle;
+resetBattle=function(){
+  const result=v200BaseResetBattle();
+  v200ApplyRoundRule();
+  return result;
+};
+
+const v200BaseHeal=heal;
+heal=function(target,amount,source,skill='회복',show=true){
+  if(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'){
+    if(show&&target?.alive&&Number(amount)>0&&Math.random()<.16){
+      floater(target.x,target.y-target.r-10,'🚫 회복 불가','#7c3aed',12,.45);
+    }
+    return 0;
+  }
+  return v200BaseHeal(target,amount,source,skill,show);
+};
+
+const v200BaseNormalSpeed=normalSpeed;
+normalSpeed=function(p){
+  if(currentConfig?.randomMode&&currentConfig.randomRule==='fixedSpeed'&&p&&!p.isBoss)return 200;
+  return v200BaseNormalSpeed(p);
+};
+
+const v200BaseTick=tick;
+tick=function(dt){
+  let noHealSnapshot=null;
+  if(game&&!game.over&&currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'){
+    noHealSnapshot=new Map(game.players.map(p=>[p,{alive:p.alive,hp:p.hp,tae:p.data?.taeyeonHp,gang:p.data?.gangeunHp}]));
+  }
+
+  if(game&&!game.over&&currentConfig?.randomMode&&currentConfig.randomRule==='radiation'){
+    game.v200RadiationAcc=(game.v200RadiationAcc||0)+dt;
+    while(game.v200RadiationAcc>=1&&!game.over){
+      game.v200RadiationAcc-=1;
+      const targets=game.players.filter(p=>p.alive&&!p.hidden);
+      for(const p of targets){
+        damage(p,2,game.arenaSource,'방사능',{trueDamage:true,selfDamage:true,allowFriendly:true,v200FixedDamage:true});
+        if(game.over)break;
+      }
+    }
+  }
+
+  const result=v200BaseTick(dt);
+
+  if(game&&noHealSnapshot){
+    for(const p of game.players){
+      const before=noHealSnapshot.get(p);
+      if(!before||!before.alive||!p.alive)continue;
+      if(p.id==='duo'&&p.data){
+        if(Number.isFinite(before.tae)&&p.data.taeyeonHp>before.tae)p.data.taeyeonHp=before.tae;
+        if(Number.isFinite(before.gang)&&p.data.gangeunHp>before.gang)p.data.gangeunHp=before.gang;
+        if(typeof syncDuoHp==='function')syncDuoHp(p);
+      }else if(p.hp>before.hp){p.hp=before.hp;}
+    }
+  }
+
+  if(game&&!game.over&&currentConfig?.randomMode&&currentConfig.randomRule==='fixedSpeed'){
+    for(const p of game.players){
+      if(!p.alive||p.hidden||p.isBoss)continue;
+      p.speed=200;
+      if(typeof hasSpecialMovement!=='function'||!hasSpecialMovement(p))normalizeSpeed(p,200);
+    }
+  }
+  return result;
+};
+
+function v200LaunchRound(forcedRuleId=null,forcedCount=null,forcedIds=null){
+  if(!v200RandomModeRunning)return;
+  v200ClearTimers();
+  v200HideIntro();
+  try{
+    closeResultModal();
+    if(!battle.classList.contains('hidden')){
+      v200RandomInternalBack=true;
+      document.getElementById('back').click();
+      v200RandomInternalBack=false;
+    }
+    const ids=v200ChooseParticipants(forcedCount,forcedIds);
+    const rule=v200ChooseRule(forcedRuleId);
+    v200LastRule=rule;
+    v200AssignShowdown(ids);
+    currentConfig={
+      mode:'showdown',participants:ids,
+      teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{},
+      randomMode:true,randomRule:rule.id,randomRuleName:rule.name,randomRuleDescription:rule.description
+    };
+    paused=true;last=0;
+    document.getElementById('pause').textContent='1초 후 시작';
+    document.body.classList.remove('boss-battle','boss-setup');
+    setup.classList.add('hidden');battle.classList.remove('hidden');
+    resize();resetBattle();paused=true;last=0;
+    v200RandomHandledGame=null;
+    v165FocusBattleScreen();
+    v200SetIntro(rule,ids.length);
+    v200SyncRandomUI();
+    const generation=battleGeneration;
+    v200RandomIntroTimer=setTimeout(()=>{
+      v200RandomIntroTimer=null;
+      if(!game||game.over||generation!==battleGeneration)return;
+      v200HideIntro();paused=false;last=0;
+      document.getElementById('pause').textContent='일시정지';
+      floater(W/2,42,`${rule.icon} ${rule.name}`,'#6d28d9',16,.9);
+    },1000);
+    console.info(`[V200 랜덤모드] ${rule.name} · ${ids.length}명`,ids);
+  }catch(error){
+    v200RandomModeRunning=false;v200ClearTimers();v200HideIntro();v200SyncRandomUI();
+    console.error('[V200 랜덤모드 오류]',error);
+    alert('랜덤모드를 시작하지 못했습니다. '+(error?.message||error));
+  }
+}
+function v200BeginRandomMode(){
+  if(v200RandomModeRunning)return;
+  if(autoBattleRunning)stopAutoBattle();
+  v200RandomModeRunning=true;
+  v200LaunchRound();
+}
+function v200StopRandomMode(){
+  const wasRunning=v200RandomModeRunning;
+  v200RandomModeRunning=false;
+  v200ClearTimers();v200RandomHandledGame=null;v200HideIntro();
+  autoBattleCountdown.classList.add('hidden');
+  if(paused&&game&&!game.over){paused=false;last=0;document.getElementById('pause').textContent='일시정지';}
+  v200SyncRandomUI();
+  if(wasRunning&&game&&!game.over)log('<b>랜덤모드 반복을 중지했습니다.</b> 현재 경기는 계속 진행됩니다.');
+}
+function v200BeginNextCountdown(){
+  if(!v200RandomModeRunning||!game?.over||resultModal.classList.contains('hidden'))return;
+  if(v200RandomHandledGame===game)return;
+  v200RandomHandledGame=game;
+  v200ClearTimers();
+  let remaining=2;
+  const render=()=>{autoBattleCountdown.innerHTML=`🎲 ${remaining}초 후 새 랜덤 규칙으로 재개 <button type="button" class="random-mode-stop-inline" data-v200-random-stop>그만하기</button>`;};
+  render();autoBattleCountdown.classList.remove('hidden');
+  v200RandomCountTimer=setInterval(()=>{remaining-=1;if(remaining>=1)render();},1000);
+  v200RandomNextTimer=setTimeout(()=>{
+    v200ClearTimers();
+    if(!v200RandomModeRunning)return;
+    autoBattleCountdown.classList.add('hidden');
+    closeResultModal();
+    v200LaunchRound();
+  },2000);
+}
+
+v200RandomButton?.addEventListener('click',v200BeginRandomMode);
+autoBattleStop.addEventListener('click',event=>{
+  if(!v200RandomModeRunning)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  v200StopRandomMode();
+},true);
+autoBattleCountdown.addEventListener('click',event=>{
+  if(event.target.closest('[data-v200-random-stop]'))v200StopRandomMode();
+});
+document.getElementById('back').addEventListener('click',()=>{
+  if(v200RandomModeRunning&&!v200RandomInternalBack)v200StopRandomMode();
+},true);
+autoBattleStart.addEventListener('click',()=>{if(v200RandomModeRunning)v200StopRandomMode();},true);
+document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{if(v200RandomModeRunning)v200StopRandomMode();},true));
+document.getElementById('tournamentModeBtn')?.addEventListener('click',()=>{if(v200RandomModeRunning)v200StopRandomMode();},true);
+const v200ResultObserver=new MutationObserver(()=>{
+  v200SyncRandomUI();
+  if(!resultModal.classList.contains('hidden'))v200BeginNextCountdown();
+});
+v200ResultObserver.observe(resultModal,{attributes:true,attributeFilter:['class']});
+
+const v200BaseSyncAutoBattleUI=syncAutoBattleUI;
+syncAutoBattleUI=function(){v200BaseSyncAutoBattleUI();v200SyncRandomUI();};
+setInterval(v200SyncRandomUI,250);
+
+// Card values are reasserted after every legacy patch has loaded.
+if(DEFS.kimgyuwon)DEFS.kimgyuwon.hp=240;
+if(SKILL_INFO.kimgyuwon)SKILL_INFO.kimgyuwon.hp='240';
+if(DEFS.kimseonghun){DEFS.kimseonghun.hp=190;DEFS.kimseonghun.skills=String(DEFS.kimseonghun.skills).replace('윤현과룸메가되며나는통학으로돌릴거야','윤현과룸메가되면나는통학으로돌릴거야');}
+if(SKILL_INFO.kimseonghun){
+  SKILL_INFO.kimseonghun.hp='190';
+  for(const skill of SKILL_INFO.kimseonghun.skills||[])if(skill.name==='윤현과룸메가되며나는통학으로돌릴거야')skill.name='윤현과룸메가되면나는통학으로돌릴거야';
+}
+try{renderSetup();}catch(_){ }
+
+window.__GONG_V200_BUILD__=V200_BUILD;
+window.__GONG_LATEST_BUILD__=V200_BUILD;
+window.__GONG_V200_CHANGES__=Object.freeze({
+  kimgyuwonHp:240,kimseonghunHp:190,
+  kimseonghunPassiveName:'윤현과룸메가되면나는통학으로돌릴거야',
+  randomMode:true,participantRange:Object.freeze([3,9]),introSeconds:1,continuous:true,
+  rules:Object.freeze(V200_RANDOM_RULES.map(rule=>rule.id)),adaptiveArena:true
+});
+window.__GONG_V200_TEST__={
+  build:V200_BUILD,
+  rules:V200_RANDOM_RULES,
+  verify(){
+    return {
+      ok:DEFS.kimgyuwon?.hp===240&&DEFS.kimseonghun?.hp===190&&String(DEFS.kimseonghun?.skills||'').includes('윤현과룸메가되면나는통학으로돌릴거야')&&!!v200RandomButton&&V200_RANDOM_RULES.length===5,
+      kimgyuwonHp:DEFS.kimgyuwon?.hp,
+      kimseonghunHp:DEFS.kimseonghun?.hp,
+      passive:DEFS.kimseonghun?.skills,
+      buttonInsideModeHub:document.getElementById('modeHub')?.contains(v200RandomButton)||false,
+      rules:V200_RANDOM_RULES.map(rule=>rule.id)
+    };
+  },
+  startRule(ruleId='noHealing',count=3,ids=null){
+    if(autoBattleRunning)stopAutoBattle();
+    v200RandomModeRunning=true;v200LaunchRound(ruleId,count,ids);
+    return {rule:currentConfig?.randomRule,count:currentConfig?.participants?.length,participants:[...(currentConfig?.participants||[])]};
+  },
+  stop:v200StopRandomMode,
+  inspect(){return {
+    running:v200RandomModeRunning,rule:currentConfig?.randomRule,ruleName:v200LastRule?.name||null,
+    count:currentConfig?.participants?.length||0,paused,arenaLogicalScale,gameTime:game?.t||0,
+    badge:document.getElementById('modeBadge')?.textContent||'',
+    players:(game?.players||[]).map(p=>({id:p.id,hp:p.hp,maxHp:p.maxHp,speed:p.speed,velocity:Math.round(Math.hypot(p.vx,p.vy))}))
+  };},
+  probeNoHealing(){const p=game?.players?.[0];if(!p)return null;p.hp=Math.max(1,p.maxHp-50);const before=p.hp;const got=heal(p,20,p,'V200 테스트',false);return {before,after:p.hp,got};},
+  probeRandomDamage(times=12){const a=game?.players?.[0],b=game?.players?.[1];if(!a||!b)return [];const out=[];for(let i=0;i<times;i++){b.hp=b.maxHp;out.push(damage(b,10,a,'V200 랜덤 테스트',{v200Test:true}));}return out;},
+  probeTick(seconds=.1){tick(seconds);return this.inspect();},
+  probeRadiation(){const before=(game?.players||[]).map(p=>p.hp);tick(1.01);return (game?.players||[]).map((p,i)=>({id:p.id,before:before[i],after:p.hp,diff:Math.round((before[i]-p.hp)*10)/10}));},
+  forceFinish(){if(!game)return null;const live=game.players.filter(p=>p.alive&&!p.hidden);for(const p of live.slice(1)){p.hp=0;p.alive=false;}checkEnd();return {over:game.over,title:game.resultTitle,generation:battleGeneration};},
+  get state(){return this.inspect();}
+};
+console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 · 5종 랜덤 규칙 연속 모드 추가');
+})();
+
 })();
 </script>
 
@@ -27417,6 +27801,14 @@ window.__GONG_V199_TEST__={
   }
 };
 console.info('[V199] 오서윤 양말이 폭발 피해 5 → 12 · 설명창 동기화');
+</script>
+
+
+
+
+<script>
+window.__GONG_LATEST_BUILD__='V200_RANDOM_RULE_MODE';
+console.info('[V200] 최신 빌드 활성화');
 </script>
 
 </body>
