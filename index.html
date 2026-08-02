@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V241_MASTERY_KILL_BANNER_PREMIUM_FRAME -->
+<!-- BUILD: V243_COMPETITIVE_TEAM_PERFORMANCE_SCORE_NO_ZERO -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -29223,7 +29223,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const LEGACY_KEYS=['gonggame_v215_competitive_rank'];
   const HISTORY_KEY='gonggame_competitive_season_history';
   const POINTS_PER_TIER=50;
-  const SCORING_VERSION=2;
+  const SCORING_VERSION=3;
+  const SCORE_BOUNDS=Object.freeze({winMin:16,winMax:40,lossMin:20,lossMax:45});
   const KST_OFFSET_MS=9*60*60*1000;
   const WEEK_MS=7*24*60*60*1000;
   const FAMILY_META=[
@@ -29313,8 +29314,11 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     if(startButton){startButton.disabled=info.locked;startButton.textContent=info.locked?'경쟁전 정산 중 · 00:00 입장 가능':'시작'}
     if(road)road.innerHTML=FAMILY_META.map((m,i)=>{const rr=RANKS.find(x=>x.familyIndex===i)||RANKS.at(-1);return `<span class="competitive-tier-chip ${i===r.familyIndex?'active':''}">${iconSvg(rr,true)}${m.family}</span>`}).join('');
   }
-  function teamPerformance(){
-    const main=(game?.players||[]).filter(p=>!p.isBoss&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo);
+  function rankedTeamPlayers(players=game?.players||[]){
+    return (players||[]).filter(p=>(p?.team==='T1'||p?.team==='T2')&&!p.isBoss&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo);
+  }
+  function teamPerformance(players=game?.players||[]){
+    const main=rankedTeamPlayers(players);
     const user=main.filter(p=>p.team==='T1'),ai=main.filter(p=>p.team==='T2');
     const sum=(list,key)=>list.reduce((s,p)=>s+(Number(p[key])||0),0);
     const userDamage=sum(user,'damageDealt'),aiDamage=sum(ai,'damageDealt'),userKills=sum(user,'kills'),aiKills=sum(ai,'kills');
@@ -29326,6 +29330,29 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const healShare=allHealing>0?healing/allHealing:.5;
     return Math.max(0,Math.min(1,damageShare*.38+killShare*.25+survival*.22+hpRatio*.1+healShare*.05));
   }
+  function settlementRow(team,players){
+    const members=rankedTeamPlayers(players).filter(p=>p.team===team),sum=(key)=>members.reduce((total,p)=>total+(Number(p[key])||0),0),maxHp=members.reduce((total,p)=>total+Math.max(1,Number(p.maxHp)||1),0)||1;
+    return {team,alive:members.filter(p=>p.alive&&!p.hidden).length,hpRatio:members.reduce((total,p)=>total+Math.max(0,Number(p.hp)||0),0)/maxHp,damage:sum('damageDealt'),kills:sum('kills'),healing:sum('healingDone')};
+  }
+  function resolveCompetitiveWinner(players=game?.players||[],title=game?.resultTitle||''){
+    const resultTitle=String(title||'');
+    for(const team of ['T1','T2']){
+      const labels=[currentConfig?.zoneNames?.[team],typeof teamName==='function'?teamName(team):''].filter(Boolean);
+      if(labels.some(label=>resultTitle.includes(`${label} 승리`)))return {winnerTeam:team,decidedBy:'battle-result'};
+    }
+    const liveTeams=[...new Set(rankedTeamPlayers(players).filter(p=>p.alive&&!p.hidden).map(p=>p.team))];
+    if(liveTeams.length===1)return {winnerTeam:liveTeams[0],decidedBy:'survival'};
+    const rows=['T1','T2'].map(team=>settlementRow(team,players)).sort((a,b)=>b.alive-a.alive||b.hpRatio-a.hpRatio||b.damage-a.damage||b.kills-a.kills||b.healing-a.healing);
+    const first=rows[0],second=rows[1],different=first.alive!==second.alive||Math.abs(first.hpRatio-second.hpRatio)>1e-9||Math.abs(first.damage-second.damage)>1e-9||first.kills!==second.kills||Math.abs(first.healing-second.healing)>1e-9;
+    if(different)return {winnerTeam:first.team,decidedBy:'team-performance'};
+    const seed=(Number(game?.v208BattleSeed)||Number(game?.v212Draft?.battleSeed)||Number(currentConfig?.draft?.battleSeed)||1)>>>0;
+    return {winnerTeam:seed%2===0?'T2':'T1',decidedBy:'seed-tiebreak'};
+  }
+  function scoreDelta(win,performance){
+    const p=Math.max(0,Math.min(1,Number(performance)||0));
+    if(win)return Math.max(SCORE_BOUNDS.winMin,Math.min(SCORE_BOUNDS.winMax,SCORE_BOUNDS.winMin+Math.round(p*(SCORE_BOUNDS.winMax-SCORE_BOUNDS.winMin))));
+    return -Math.max(SCORE_BOUNDS.lossMin,Math.min(SCORE_BOUNDS.lossMax,SCORE_BOUNDS.lossMax-Math.round(p*(SCORE_BOUNDS.lossMax-SCORE_BOUNDS.lossMin))));
+  }
   function applyPoints(delta){
     ensureCurrentSeason();const beforeIndex=profile.rankIndex,beforePoints=profile.points;profile.points+=delta;
     while(profile.points>=POINTS_PER_TIER&&profile.rankIndex<RANKS.length-1){profile.points-=POINTS_PER_TIER;profile.rankIndex++}
@@ -29336,18 +29363,17 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   }
   function settleMatch(){
     ensureCurrentSeason();const draft=game?.v212Draft||currentConfig?.draft;if(!draft||draft.friendly||draft.competitive===false||document.body.classList.contains('friendly-battle')||game?.v215RankSettled)return null;game.v215RankSettled=true;
-    const liveTeams=[...new Set((game.players||[]).filter(p=>p.alive&&!p.hidden).map(p=>p.team))];
-    const win=liveTeams.length===1&&liveTeams[0]==='T1',loss=liveTeams.length===1&&liveTeams[0]==='T2',perf=teamPerformance();let delta=0,outcome='draw';
-    if(win){delta=10+Math.round(perf*20);profile.wins++;outcome='win'}else if(loss){delta=-(40-Math.round(perf*20));profile.losses++;outcome='loss'}
+    const resolution=resolveCompetitiveWinner(),win=resolution.winnerTeam==='T1',perf=teamPerformance(),delta=scoreDelta(win,perf),outcome=win?'win':'loss';
+    if(win)profile.wins++;else profile.losses++;
     profile.matches++;profile.lastPerformance=perf;const movement=applyPoints(delta);profile.lastChange=delta;save();renderRank();
-    const before=RANKS[movement.beforeIndex],after=RANKS[movement.afterIndex];game.v215RankResult={outcome,delta,performance:perf,before:before.name,after:after.name,points:profile.points,promoted:movement.promoted,demoted:movement.demoted,seasonId:profile.seasonId};return game.v215RankResult;
+    const before=RANKS[movement.beforeIndex],after=RANKS[movement.afterIndex];game.v215RankResult={outcome,delta,performance:perf,before:before.name,after:after.name,points:profile.points,promoted:movement.promoted,demoted:movement.demoted,seasonId:profile.seasonId,winnerTeam:resolution.winnerTeam,decidedBy:resolution.decidedBy};return game.v215RankResult;
   }
   const originalCheckEnd=checkEnd;checkEnd=function(){const wasOver=!!game?.over,result=originalCheckEnd();if(!wasOver&&game?.over&&game?.v212Draft)settleMatch();return result};
   const originalRenderResultModal=renderResultModal;renderResultModal=function(){originalRenderResultModal();const rr=game?.v215RankResult;if(!rr)return;const card=document.createElement('div');card.className='competitive-result-card';const cls=rr.delta>0?'positive':rr.delta<0?'negative':'draw',move=rr.promoted?' · 승급!':rr.demoted?' · 강등':'',info=seasonInfo();card.innerHTML=`<div style="font-size:11px;font-weight:1000;color:#6b7280">${info.label} 경쟁전 점수</div><div class="rank-change ${cls}">${rr.delta>0?'+':''}${rr.delta}점</div><div class="rank-after">${rr.after}${move}</div><div class="rank-detail">활약도 ${Math.round(rr.performance*100)}% · 현재 ${rr.points}${rr.after==='신'?'':` / ${POINTS_PER_TIER}`}점</div>`;resultBody.prepend(card)};
   const draftBtn=document.getElementById('draftModeBtn');draftBtn?.addEventListener('click',()=>requestAnimationFrame(renderRank));document.getElementById('draftStartBtn')?.addEventListener('click',renderRank);
   addEventListener('beforeunload',save);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();else renderRank()});setInterval(()=>{const before=profile.seasonId,wasLocked=!!seasonInfo(new Date(Date.now()-60000)).locked;ensureCurrentSeason();const info=seasonInfo();if(before!==profile.seasonId||wasLocked!==info.locked)renderRank()},30000);
   renderRank();
-  const api={build:BUILD,profile:()=>{ensureCurrentSeason();return JSON.parse(JSON.stringify(profile))},rank:()=>rank().name,aiProfile,render:renderRank,iconSvg,season:(date)=>seasonInfo(date),isLocked:(date)=>seasonInfo(date).locked,lockMessage:()=>`${seasonInfo().label} 정산 중이야. 월요일 00:00(KST)에 새 시즌이 시작돼.`,history:()=>readJson(HISTORY_KEY,[]),reset(){profile=defaultProfile();save();renderRank();return this.profile()},setRank(index,points=0){ensureCurrentSeason();profile.rankIndex=Math.max(0,Math.min(RANKS.length-1,Number(index)||0));profile.points=Math.max(0,Math.min(profile.rankIndex<RANKS.length-1?POINTS_PER_TIER-1:999,Number(points)||0));profile.pointUnit=POINTS_PER_TIER;profile.scoringVersion=SCORING_VERSION;save();renderRank();return this.profile()},importProfile(raw,{emit=false}={}){const info=seasonInfo(),value=typeof raw==='string'?(()=>{try{return JSON.parse(raw)}catch(_){return null}})():raw;if(!value||typeof value!=='object')return this.profile();profile=normalizeProfile(value,info);if(profile.seasonId!==info.id)profile=defaultProfile(info);profile.seasonLabel=info.label;profile.seasonEndsAt=info.endsAt;profile.seasonStartedAt=profile.seasonStartedAt||info.startsAt;profile.updatedAt=new Date().toISOString();writeJson(STORAGE_KEY,profile);renderRank();if(emit)window.dispatchEvent(new CustomEvent('gong-competitive-profile-change',{detail:{seasonId:profile.seasonId,rankIndex:profile.rankIndex,points:profile.points,wins:profile.wins,losses:profile.losses,matches:profile.matches}}));return this.profile()},preview(win=true,performance=.5){const p=Math.max(0,Math.min(1,performance));return win?10+Math.round(p*20):-(40-Math.round(p*20))},ranks:RANKS.map(r=>r.name),pointsPerTier:POINTS_PER_TIER,testSeasonReset(){profile={...profile,seasonId:'2000-01-03',seasonLabel:'테스트 이전 주간 시즌'};const changed=ensureCurrentSeason();renderRank();return {changed,profile:this.profile(),history:this.history()}},testMigrate(raw){return normalizeProfile(raw,seasonInfo(new Date('2026-08-05T03:00:00Z')))}};
+  const api={build:BUILD,profile:()=>{ensureCurrentSeason();return JSON.parse(JSON.stringify(profile))},rank:()=>rank().name,aiProfile,render:renderRank,iconSvg,season:(date)=>seasonInfo(date),isLocked:(date)=>seasonInfo(date).locked,lockMessage:()=>`${seasonInfo().label} 정산 중이야. 월요일 00:00(KST)에 새 시즌이 시작돼.`,history:()=>readJson(HISTORY_KEY,[]),reset(){profile=defaultProfile();save();renderRank();return this.profile()},setRank(index,points=0){ensureCurrentSeason();profile.rankIndex=Math.max(0,Math.min(RANKS.length-1,Number(index)||0));profile.points=Math.max(0,Math.min(profile.rankIndex<RANKS.length-1?POINTS_PER_TIER-1:999,Number(points)||0));profile.pointUnit=POINTS_PER_TIER;profile.scoringVersion=SCORING_VERSION;save();renderRank();return this.profile()},importProfile(raw,{emit=false}={}){const info=seasonInfo(),value=typeof raw==='string'?(()=>{try{return JSON.parse(raw)}catch(_){return null}})():raw;if(!value||typeof value!=='object')return this.profile();profile=normalizeProfile(value,info);if(profile.seasonId!==info.id)profile=defaultProfile(info);profile.seasonLabel=info.label;profile.seasonEndsAt=info.endsAt;profile.seasonStartedAt=profile.seasonStartedAt||info.startsAt;profile.updatedAt=new Date().toISOString();writeJson(STORAGE_KEY,profile);renderRank();if(emit)window.dispatchEvent(new CustomEvent('gong-competitive-profile-change',{detail:{seasonId:profile.seasonId,rankIndex:profile.rankIndex,points:profile.points,wins:profile.wins,losses:profile.losses,matches:profile.matches}}));return this.profile()},preview(win=true,performance=.5){return scoreDelta(!!win,performance)},resolveWinnerForTest(players,title=''){return resolveCompetitiveWinner(players,title)},settlementForTest(players,title=''){const resolution=resolveCompetitiveWinner(players,title),performance=teamPerformance(players),win=resolution.winnerTeam==='T1';return {...resolution,performance,outcome:win?'win':'loss',delta:scoreDelta(win,performance)}},scoreBounds:{...SCORE_BOUNDS},ranks:RANKS.map(r=>r.name),pointsPerTier:POINTS_PER_TIER,testSeasonReset(){profile={...profile,seasonId:'2000-01-03',seasonLabel:'테스트 이전 주간 시즌'};const changed=ensureCurrentSeason();renderRank();return {changed,profile:this.profile(),history:this.history()}},testMigrate(raw){return normalizeProfile(raw,seasonInfo(new Date('2026-08-05T03:00:00Z')))}};
   window.__GONG_V215_COMPETITIVE__=api;window.__GONG_V216_COMPETITIVE__=api;
   document.body.classList.toggle('competitive-battle',document.body.classList.contains('draft-battle'));window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V234] KST 주간 시즌 · 일요일 23시 정산 잠금 · 월요일 00시 시작 · 티어당 50점 · 기존 점수 1/2 환산');
@@ -29666,8 +29692,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const previousShowKill=showKill;showKill=function(killer,victim,skill){
     const result=previousShowKill.apply(this,arguments);try{
       const root=typeof v194RootActor==='function'?(v194RootActor(killer)||killer):killer,lv=levelInfo(root?.id).level||1;if(lv<5)return result;
-      const theme=themeFor(root),item=killfeed?.firstElementChild;if(item){item.classList.add('v224-mastery-kill');item.dataset.v224MasteryId=root?.id||'';item.dataset.v224MasteryLevel=String(lv);item.style.setProperty('--v224-accent',theme.accent);item.style.setProperty('--v224-accent2',theme.accent2);item.innerHTML=`<span class="v224-kill-main"><b class="v224-kill-icon">${theme.icon}</b><b class="v224-kill-name">${root.name}</b><span class="v224-kill-mark">MASTERY KILL</span><span>➜</span><b class="v224-kill-victim">${victim.name}</b></span><span class="skill">${skill}</span>`}
-      if(centerKill){centerKill.classList.add('v224-mastery-center');centerKill.dataset.v224MasteryId=root?.id||'';centerKill.dataset.v224MasteryLevel=String(lv);centerKill.style.setProperty('--v224-accent',theme.accent);centerKill.innerHTML=`<span class="v224-center-icon">${theme.icon}</span><b class="v224-center-name">${root.name}</b> <span>MASTER KILL</span> ${victim.name}`;setTimeout(()=>centerKill.classList.remove('v224-mastery-center'),1600)}stats.specialKills++
+      const theme=themeFor(root),item=killfeed?.firstElementChild;if(item){item.classList.add('v224-mastery-kill');item.dataset.v224MasteryId=root?.id||'';item.dataset.v224MasteryLevel=String(lv);item.style.setProperty('--v224-accent',theme.accent);item.style.setProperty('--v224-accent2',theme.accent2);item.innerHTML=`<span class="v224-kill-main"><b class="v224-kill-icon">${theme.icon}</b><b class="v224-kill-name">${root.name}</b><span class="v224-kill-mark">SPECIAL KILL</span><span>➜</span><b class="v224-kill-victim">${victim.name}</b></span><span class="skill">${skill}</span>`}
+      if(centerKill){centerKill.classList.add('v224-mastery-center');centerKill.dataset.v224MasteryId=root?.id||'';centerKill.dataset.v224MasteryLevel=String(lv);centerKill.style.setProperty('--v224-accent',theme.accent);centerKill.innerHTML=`<span class="v224-center-icon">${theme.icon}</span><b class="v224-center-name">${root.name}</b> <span>SPECIAL KILL</span> ${victim.name}`;setTimeout(()=>centerKill.classList.remove('v224-mastery-center'),1600)}stats.specialKills++
     }catch(_){}return result
   };
   function setAllForTest(level=30){const xp=level>=30?MAX_XP:api()?.masteryThreshold?.(level)||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
@@ -30104,7 +30130,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* ---------- V231 · Firebase season leaderboard + two-player friendly competitive rooms ---------- */
   (()=>{
-    const BUILD='V237_ATOMIC_FRIENDLY_JOIN_AND_DEDUPED_TOP10';
+    const BUILD='V242_FRIENDLY_EXPLICIT_ENTRY_ONLY';
     const ROOM_ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const ROOM_CODE_LENGTH=6;
     const ROOM_TTL=2*60*60*1000;
@@ -30114,7 +30140,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const LEADERBOARD_LIMIT=10;
     const LEADERBOARD_FETCH_LIMIT=50;
     const ui={leaderboard:null,leaderboardBody:null,friendly:null,status:null,code:null,joinInput:null,createBtn:null,joinBtn:null,copyBtn:null,leaveBtn:null};
-    const live={leaderboardOff:null,leaderboardSeason:'',leaderboardRows:[],ownRow:null,roomOff:null,roomRef:null,disconnectOp:null,serverOffsetOff:null,serverOffset:0,roomCode:'',side:'',room:null,launching:false,leaving:false,restoring:false,lastProfileSignature:'',syncBusy:false,pendingSync:false,lastError:'',lastSyncVerified:false,lastJoinPreflightVerified:false,legacyDuplicatesHidden:0,legacyCleanupBusy:false,legacyCleanupAttempted:new Set(),legacyCleanupRemoved:0};
+    const live={leaderboardOff:null,leaderboardSeason:'',leaderboardRows:[],ownRow:null,roomOff:null,roomRef:null,disconnectOp:null,serverOffsetOff:null,serverOffset:0,roomCode:'',side:'',room:null,launching:false,leaving:false,restoring:false,storedSessionDiscarded:false,autoRestoreBlocked:0,lastProfileSignature:'',syncBusy:false,pendingSync:false,lastError:'',lastSyncVerified:false,lastJoinPreflightVerified:false,legacyDuplicatesHidden:0,legacyCleanupBusy:false,legacyCleanupAttempted:new Set(),legacyCleanupRemoved:0};
 
     function esc(value){return String(value??'').replace(/[&<>\"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]))}
     function backend(){return window.__GONG_V230__?.backend?.()||null}
@@ -30265,13 +30291,14 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(live.leaving)return;live.leaving=true;const b=backend(),target=live.roomRef;try{await live.disconnectOp?.cancel?.();if(removeRemote&&b&&target)await b.dbmod.remove(target)}catch(_){}finally{cleanupRoomState(true)}
     }
     async function copyRoomCode(){if(!live.roomCode)return;try{await navigator.clipboard.writeText(live.roomCode);setFriendlyStatus(`코드 ${live.roomCode} 복사 완료 · 상대에게 보내면 돼.`,'connected')}catch(_){if(ui.joinInput){ui.joinInput.value=live.roomCode;ui.joinInput.select()}setFriendlyStatus(`코드 ${live.roomCode} · 길게 눌러 복사해.`,'connected')}}
-    async function restoreRoom(){const b=backend(),session=readRoomSession();if(!b||!session||live.roomCode||live.restoring)return false;live.restoring=true;try{const target=b.dbmod.ref(b.db,`friendlyRooms/v1/${session.code}`),snap=await b.dbmod.get(target),room=snap.val(),expectedUid=session.side==='host'?room?.hostUid:room?.guestUid;if(!room||expectedUid!==b.user.uid||Number(room.expiresAt)<serverNow()){saveRoomSession('','');return false}await attachRoom(session.code,session.side);return true}catch(_){return false}finally{live.restoring=false}}
-    function onlineReady(){installUi();const b=backend();if(b){if(!live.serverOffsetOff)live.serverOffsetOff=b.dbmod.onValue(b.dbmod.ref(b.db,'.info/serverTimeOffset'),snap=>{live.serverOffset=Number(snap.val())||0});setFriendlyStatus(live.roomCode?`방 ${live.roomCode} 연결 중`:'방 만들기 또는 6자리 코드로 참가할 수 있어.','connected');if(live.roomCode&&live.side&&!live.roomOff)attachRoom(live.roomCode,live.side);else restoreRoom();syncLeaderboard()}else setFriendlyStatus('Firebase 연결을 기다리고 있어.')}
+    function discardStoredRoomSession(){const session=readRoomSession();if(!session)return false;saveRoomSession('','');live.storedSessionDiscarded=true;live.autoRestoreBlocked++;return true}
+    async function restoreRoom(explicit=false){const b=backend(),session=readRoomSession();if(!explicit){if(session)discardStoredRoomSession();return false}if(!b||!session||live.roomCode||live.restoring)return false;live.restoring=true;try{const target=b.dbmod.ref(b.db,`friendlyRooms/v1/${session.code}`),snap=await b.dbmod.get(target),room=snap.val(),expectedUid=session.side==='host'?room?.hostUid:room?.guestUid;if(!room||expectedUid!==b.user.uid||Number(room.expiresAt)<serverNow()){saveRoomSession('','');return false}await attachRoom(session.code,session.side);return true}catch(_){return false}finally{live.restoring=false}}
+    function onlineReady(){installUi();const b=backend();if(b){if(!live.serverOffsetOff)live.serverOffsetOff=b.dbmod.onValue(b.dbmod.ref(b.db,'.info/serverTimeOffset'),snap=>{live.serverOffset=Number(snap.val())||0});setFriendlyStatus(live.roomCode?`방 ${live.roomCode} 연결 중`:'방 만들기 또는 6자리 코드로 참가할 수 있어.','connected');if(live.roomCode&&live.side&&!live.roomOff)attachRoom(live.roomCode,live.side);syncLeaderboard()}else setFriendlyStatus('Firebase 연결을 기다리고 있어.')}
 
     window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{live.lastProfileSignature='';onlineReady();syncLeaderboard({force:true})},0));window.addEventListener('gong-v232-auth-changed',event=>{live.lastProfileSignature='';live.ownRow=null;if(live.roomCode&&event.detail?.initial!==true)cleanupRoomState(true);setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});window.addEventListener('gong-competitive-profile-change',()=>setTimeout(syncLeaderboard,0));window.addEventListener('gong-v232-nickname-ready',()=>{live.lastProfileSignature='';setTimeout(()=>syncLeaderboard({force:true}),0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden){onlineReady();syncLeaderboard({force:true})}});window.addEventListener('pagehide',()=>{live.leaderboardOff?.();live.leaderboardOff=null;live.roomOff?.();live.roomOff=null;live.serverOffsetOff?.();live.serverOffsetOff=null});window.addEventListener('pageshow',()=>{live.lastProfileSignature='';setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});setInterval(()=>{if(backend()){onlineReady();syncLeaderboard();if(!live.roomCode)setFriendlyStatus('방 만들기 또는 6자리 코드로 참가할 수 있어.','connected')}},12000);
-    installUi();onlineReady();
-    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,leaveRoom,restoreRoom,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
-    window.__GONG_V231_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V237] 트랜잭션 초기 null 오판 제거 · 원자적 친선방 참가 · 익명/Google 중복 제거 TOP 10');
+    discardStoredRoomSession();installUi();onlineReady();
+    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,leaveRoom,restoreRoom,discardStoredRoomSession,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,storedSessionDiscarded:live.storedSessionDiscarded,autoRestoreBlocked:live.autoRestoreBlocked,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
+    window.__GONG_V231_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V242] 친선 경쟁전은 방 만들기 또는 코드 입장 이후에만 열림 · 현재 화면 재연결 유지');
   })();
 
   /* ---------- V234 · reliable Google login, profile creation and nickname updates ---------- */
@@ -31187,39 +31214,39 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 .kill-item.v241-tier-max{background:linear-gradient(115deg,#06040d,#211035 46%,#080713 73%,#25152c) padding-box,conic-gradient(from 90deg,var(--v224-accent,#f6c453),#fff,#54e8ff,#ff69cf,var(--v224-accent,#f6c453)) border-box!important;box-shadow:0 0 0 1px #fff9 inset,0 0 0 3px #070a13,0 6px 18px #0008,0 0 27px var(--v224-accent,#f6c453)!important}
 
 .center-kill.v241-mastery-center{
-  width:min(82%,500px);
+  width:min(68%,300px);
   box-sizing:border-box;
   padding:0!important;
   overflow:hidden;
   white-space:normal!important;
   border:2px solid transparent!important;
-  border-radius:4px 18px 4px 18px!important;
+  border-radius:3px 12px 3px 12px!important;
   color:#fff!important;
   background:
     linear-gradient(125deg,rgba(3,5,12,.97),rgba(20,27,50,.97) 46%,rgba(9,8,20,.98)) padding-box,
     linear-gradient(110deg,var(--v224-accent,#f6c453),#fff 24%,var(--v224-accent2,#8b5cf6) 51%,#fff 76%,var(--v224-accent,#f6c453)) border-box!important;
-  box-shadow:0 0 0 1px rgba(255,255,255,.2) inset,0 0 0 5px rgba(0,0,0,.55),0 12px 34px #000b,0 0 34px color-mix(in srgb,var(--v224-accent,#f6c453) 65%,transparent)!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.2) inset,0 0 0 3px rgba(0,0,0,.55),0 7px 18px #000a,0 0 18px color-mix(in srgb,var(--v224-accent,#f6c453) 58%,transparent)!important;
   text-shadow:none!important;
   isolation:isolate;
 }
 .center-kill.show.v241-mastery-center{animation:v241CenterDeploy 1.72s cubic-bezier(.16,.86,.2,1) both!important}
-.center-kill.v241-mastery-center:before{content:"";position:absolute;z-index:0;inset:5px;pointer-events:none;border:1px solid rgba(255,255,255,.18);background:repeating-linear-gradient(118deg,transparent 0 25px,rgba(255,255,255,.035) 26px 27px)}
+.center-kill.v241-mastery-center:before{content:"";position:absolute;z-index:0;inset:3px;pointer-events:none;border:1px solid rgba(255,255,255,.18);background:repeating-linear-gradient(118deg,transparent 0 19px,rgba(255,255,255,.035) 20px 21px)}
 .center-kill.v241-mastery-center:after{content:"";position:absolute;z-index:1;top:-110%;bottom:-110%;left:-30%;width:20%;transform:rotate(17deg);pointer-events:none;background:linear-gradient(90deg,transparent,#fff,transparent);animation:v241CenterSweep 1.25s .12s ease-out both}
 .v241-center-top,.v241-center-main,.v241-center-skill{position:relative;z-index:2}
-.v241-center-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 44px;border-bottom:1px solid rgba(255,255,255,.16);color:#d8e0f3;font-size:8px;font-weight:1000;letter-spacing:2px;line-height:1;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 22%,transparent),transparent)}
+.v241-center-top{display:flex;align-items:center;justify-content:center;gap:4px;padding:3px 7px;border-bottom:1px solid rgba(255,255,255,.16);color:#d8e0f3;font-size:5.5px;font-weight:1000;letter-spacing:.9px;line-height:1;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 22%,transparent),transparent)}
 .v241-center-top:before,.v241-center-top:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--v224-accent,#f6c453))}
 .v241-center-top:after{background:linear-gradient(90deg,var(--v224-accent2,#8b5cf6),transparent)}
-.v241-center-tier{color:#fff;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 70%,#fff);padding:3px 5px;letter-spacing:.8px;background:rgba(255,255,255,.08)}
-.v241-center-main{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:center;padding:10px 18px 8px;text-align:left}
-.v241-center-sigil{width:54px;height:54px;display:grid;place-items:center;position:relative;clip-path:polygon(24% 0,76% 0,100% 24%,100% 76%,76% 100%,24% 100%,0 76%,0 24%);background:radial-gradient(circle,color-mix(in srgb,var(--v224-accent,#f6c453) 58%,#fff),transparent 48%),linear-gradient(145deg,#34405e,#05070d 67%);color:#fff;font-size:27px;text-shadow:0 0 11px #fff,0 0 19px var(--v224-accent,#f6c453);box-shadow:0 0 24px var(--v224-accent,#f6c453)}
-.v241-center-sigil:before{content:"";position:absolute;inset:4px;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 72%,#fff);clip-path:inherit}
+.v241-center-tier{color:#fff;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 70%,#fff);padding:2px 3px;letter-spacing:.5px;background:rgba(255,255,255,.08)}
+.v241-center-main{display:grid;grid-template-columns:30px minmax(0,1fr);gap:6px;align-items:center;padding:5px 8px 3px;text-align:left}
+.v241-center-sigil{width:28px;height:28px;display:grid;place-items:center;position:relative;clip-path:polygon(24% 0,76% 0,100% 24%,100% 76%,76% 100%,24% 100%,0 76%,0 24%);background:radial-gradient(circle,color-mix(in srgb,var(--v224-accent,#f6c453) 58%,#fff),transparent 48%),linear-gradient(145deg,#34405e,#05070d 67%);color:#fff;font-size:14px;text-shadow:0 0 7px #fff,0 0 11px var(--v224-accent,#f6c453);box-shadow:0 0 12px var(--v224-accent,#f6c453)}
+.v241-center-sigil:before{content:"";position:absolute;inset:3px;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 72%,#fff);clip-path:inherit}
 .v241-center-copy{min-width:0;overflow:hidden}
-.v241-center-label{display:block;color:color-mix(in srgb,var(--v224-accent,#f6c453) 82%,#fff);font-size:9px;font-weight:1000;letter-spacing:1.8px;line-height:1}
-.v241-center-duel{display:flex;align-items:baseline;gap:8px;min-width:0;margin-top:5px;white-space:nowrap}
-.v241-center-name{max-width:45%;overflow:hidden;text-overflow:ellipsis;color:#fff;font-size:clamp(16px,3.8vw,25px);font-weight:1000;line-height:1;text-shadow:0 0 14px color-mix(in srgb,var(--v224-accent,#f6c453) 66%,transparent)}
-.v241-center-vs{flex:0 0 auto;color:var(--v224-accent,#f6c453);font-size:10px;font-weight:1000;letter-spacing:-1px;transform:skewX(-15deg)}
-.v241-center-victim{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#ff718d;font-size:clamp(12px,2.8vw,18px);font-weight:1000}
-.v241-center-skill{margin:0 18px 9px 88px;padding:5px 8px;border-left:2px solid var(--v224-accent2,#8b5cf6);background:linear-gradient(90deg,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 23%,transparent),transparent);color:#e8edfa;font-size:8px;font-weight:1000;letter-spacing:.45px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v241-center-label{display:none}
+.v241-center-duel{display:flex;align-items:baseline;gap:4px;min-width:0;margin-top:0;white-space:nowrap}
+.v241-center-name{max-width:45%;overflow:hidden;text-overflow:ellipsis;color:#fff;font-size:clamp(10px,2.4vw,13px);font-weight:1000;line-height:1;text-shadow:0 0 9px color-mix(in srgb,var(--v224-accent,#f6c453) 66%,transparent)}
+.v241-center-vs{flex:0 0 auto;color:var(--v224-accent,#f6c453);font-size:6px;font-weight:1000;letter-spacing:-1px;transform:skewX(-15deg)}
+.v241-center-victim{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#ff718d;font-size:clamp(9px,2vw,11px);font-weight:1000}
+.v241-center-skill{margin:0 8px 5px 42px;padding:2px 4px;border-left:2px solid var(--v224-accent2,#8b5cf6);background:linear-gradient(90deg,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 23%,transparent),transparent);color:#e8edfa;font-size:6px;font-weight:1000;letter-spacing:.2px;line-height:1.1;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .v241-center-skill b{color:#fff}
 .center-kill.v241-tier-max{background:linear-gradient(125deg,rgba(4,3,10,.98),rgba(34,16,51,.97),rgba(8,8,20,.98)) padding-box,conic-gradient(from 90deg,var(--v224-accent,#f6c453),#fff,#54e8ff,#ff69cf,var(--v224-accent,#f6c453)) border-box!important}
 
@@ -31233,7 +31260,7 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
   .v241-kill-kicker{font-size:6px;letter-spacing:.75px}.v241-kill-kicker:before{width:7px}.v241-kill-tier{padding:2px 3px}
   .v241-kill-duel{gap:4px}.v241-kill-name{font-size:10px}.v241-kill-victim{font-size:8px}.v241-kill-slash{font-size:7px}
   .kill-item.v241-mastery-kill .v241-kill-skill{max-width:82px!important;padding:3px 4px!important}.v241-kill-skill small{font-size:5px}.v241-kill-skill b{font-size:7px}
-  .center-kill.v241-mastery-center{width:min(88%,410px)}.v241-center-top{padding:5px 12px;font-size:6px;letter-spacing:1px}.v241-center-main{grid-template-columns:46px minmax(0,1fr);gap:9px;padding:8px 12px 6px}.v241-center-sigil{width:44px;height:44px;font-size:21px}.v241-center-label{font-size:7px}.v241-center-skill{margin:0 12px 7px 67px;font-size:7px}
+  .center-kill.v241-mastery-center{width:min(72%,290px)}.v241-center-top{padding:3px 6px;font-size:5px;letter-spacing:.7px}.v241-center-main{grid-template-columns:28px minmax(0,1fr);gap:5px;padding:4px 7px 3px}.v241-center-sigil{width:26px;height:26px;font-size:13px}.v241-center-skill{margin:0 7px 4px 38px;font-size:5.5px}
 }
 @media(max-width:410px){
   .kill-item.v224-mastery-kill.v241-mastery-kill{grid-template-columns:34px minmax(0,1fr)!important}
@@ -31242,9 +31269,9 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 @media(prefers-reduced-motion:reduce){.kill-item.v241-mastery-kill,.kill-item.v241-mastery-kill:after,.center-kill.show.v241-mastery-center,.center-kill.v241-mastery-center:after{animation:none!important}}
 </style>
 
-<script id="v241MasteryKillBannerScript">
+<script id="v242MasteryKillBannerScript">
 (()=>{
-  const BUILD='V241_MASTERY_KILL_BANNER_PREMIUM_FRAME';
+  const BUILD='V242_FRIENDLY_EXPLICIT_ENTRY_NO_MASTER_BANNER';
   const TIER_CLASSES=['v241-tier-awakened','v241-tier-radiant','v241-tier-mythic','v241-tier-max'];
   const stats={decorated:0,centerBanners:0,lastLevel:0,lastTier:''};
   let centerToken=0;
@@ -31260,7 +31287,7 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
     if(!item)return false;
     const tier=tierFor(level),skillText=String(skill||'기본 충돌');
     item.classList.add('v241-mastery-kill');setTier(item,tier);item.dataset.v241Level=String(level);item.dataset.v241Tier=tier.key;
-    item.innerHTML=`<span class="v241-kill-sigil" aria-hidden="true"><b>${esc(icon||'✦')}</b></span><span class="v241-kill-copy"><span class="v241-kill-kicker">MASTERY <em class="v241-kill-tier">LV.${level} · ${tier.label}</em></span><span class="v241-kill-duel"><b class="v241-kill-name">${esc(root?.name||'캐릭터')}</b><i class="v241-kill-slash">///</i><b class="v241-kill-victim">${esc(victim?.name||'상대')}</b></span></span><span class="skill v241-kill-skill"><small>FINISH SKILL</small><b>${esc(skillText)}</b></span>`;
+    item.innerHTML=`<span class="v241-kill-sigil" aria-hidden="true"><b>${esc(icon||'✦')}</b></span><span class="v241-kill-copy"><span class="v241-kill-kicker">SPECIAL <em class="v241-kill-tier">LV.${level} · ${tier.label}</em></span><span class="v241-kill-duel"><b class="v241-kill-name">${esc(root?.name||'캐릭터')}</b><i class="v241-kill-slash">///</i><b class="v241-kill-victim">${esc(victim?.name||'상대')}</b></span></span><span class="skill v241-kill-skill"><small>FINISH SKILL</small><b>${esc(skillText)}</b></span>`;
     stats.decorated++;stats.lastLevel=level;stats.lastTier=tier.key;return true
   }
   function clearCenterClasses(){const center=centerElement();if(!center)return;center.classList.remove('v241-mastery-center',...TIER_CLASSES);delete center.dataset.v241Level;delete center.dataset.v241Tier}
@@ -31268,7 +31295,7 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
     const center=centerElement();if(!center)return false;
     const tier=tierFor(level),token=String(++centerToken),skillText=String(skill||'기본 충돌');
     clearCenterClasses();center.classList.add('v241-mastery-center');setTier(center,tier);center.dataset.v241Level=String(level);center.dataset.v241Tier=tier.key;center.dataset.v241Token=token;
-    center.innerHTML=`<span class="v241-center-top">MASTERY KILL BANNER <b class="v241-center-tier">LV.${level} · ${tier.label}</b></span><span class="v241-center-main"><span class="v241-center-sigil" aria-hidden="true">${esc(icon||'✦')}</span><span class="v241-center-copy"><span class="v241-center-label">전용 킬 배너</span><span class="v241-center-duel"><b class="v241-center-name">${esc(root?.name||'캐릭터')}</b><i class="v241-center-vs">///</i><b class="v241-center-victim">${esc(victim?.name||'상대')}</b></span></span></span><span class="v241-center-skill">처치 기술 · <b>${esc(skillText)}</b></span>`;
+    center.innerHTML=`<span class="v241-center-top">SPECIAL <b class="v241-center-tier">LV.${level} · ${tier.label}</b></span><span class="v241-center-main"><span class="v241-center-sigil" aria-hidden="true">${esc(icon||'✦')}</span><span class="v241-center-copy"><span class="v241-center-label">전용 킬 배너</span><span class="v241-center-duel"><b class="v241-center-name">${esc(root?.name||'캐릭터')}</b><i class="v241-center-vs">///</i><b class="v241-center-victim">${esc(victim?.name||'상대')}</b></span></span></span><span class="v241-center-skill">처치 기술 · <b>${esc(skillText)}</b></span>`;
     stats.centerBanners++;
     setTimeout(()=>{if(centerElement()?.dataset.v241Token===token)clearCenterClasses()},1760);
     return true
@@ -31290,10 +31317,11 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
     return {level,tier:tier.key,itemClass:item.className,itemText:item.textContent||'',centerClass:center?.className||'',centerText:center?.textContent||'',item}
   }
   const api={build:BUILD,tierFor,stats:()=>({...stats}),previewForTest,decorateLatest};
-  window.__GONG_V241__=api;window.__GONG_V241_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V241] Lv.5+ 캐릭터 전용 메탈 킬 배너 · 이중 테두리 · 중앙 대형 배너');
+  window.__GONG_V241__=api;window.__GONG_V242__=api;window.__GONG_V241_BUILD__=BUILD;window.__GONG_V242_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V242] 친선전 자동 진입 차단 · 특별 킬 배너 MASTER 문구 제거');
 })();
 </script>
-<script id="v241FinalBuildScript">(()=>{const BUILD='V241_MASTERY_KILL_BANNER_PREMIUM_FRAME';window.__GONG_V241_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v242FinalBuildScript">(()=>{const BUILD='V242_FRIENDLY_EXPLICIT_ENTRY_NO_MASTER_BANNER';window.__GONG_V242_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v243FinalBuildScript">(()=>{const BUILD='V243_COMPETITIVE_TEAM_PERFORMANCE_SCORE_NO_ZERO',competitive=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;window.__GONG_V243__={build:BUILD,competitive,scoreBounds:competitive?.scoreBounds||{winMin:16,winMax:40,lossMin:20,lossMax:45}};window.__GONG_V243_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V243] 경쟁전 팀 활약도 점수 승리 +16~+40 · 패배 -20~-45 · 0점 정산 제거');})();</script>
 </body>
 </html>
