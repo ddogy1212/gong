@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V217_COMPETITIVE_RETURN_AND_TOURNAMENT_CLEANUP -->
+<!-- BUILD: V218_COMPETITIVE_COPY_CLEANUP -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1913,7 +1913,7 @@ body.competitive-battle #restart{display:none!important}
         <div class="competitive-rank-progress"><span id="competitiveRankProgress" style="width:0%"></span></div>
         <div class="competitive-rank-meta"><span id="competitiveRankPoints">0 / 100점</span><span id="competitiveAiLevel">상대 AI · 솔리언 1</span></div>
         <div id="competitiveRankRecord" class="competitive-rank-record">0승 0패 · 0경기</div>
-        <div id="competitiveSeasonMeta" class="competitive-season-meta">2026년 8월 시즌 · 8월 31일까지 · 자동 저장</div>
+        <div id="competitiveSeasonMeta" class="competitive-season-meta">2026년 8월 시즌 · 자동 저장</div>
       </div>
       <div id="competitiveTierRoad" class="competitive-tier-road" aria-label="경쟁전 티어 순서"></div>
     </div>
@@ -29174,7 +29174,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function renderRank(){
     ensureCurrentSeason();
     const info=seasonInfo(),r=rank(),icon=document.getElementById('competitiveRankIcon'),name=document.getElementById('competitiveRankName'),points=document.getElementById('competitiveRankPoints'),bar=document.getElementById('competitiveRankProgress'),ai=document.getElementById('competitiveAiLevel'),record=document.getElementById('competitiveRankRecord'),season=document.getElementById('competitiveSeasonMeta'),road=document.getElementById('competitiveTierRoad');
-    if(icon)icon.innerHTML=iconSvg(r);if(name)name.textContent=r.name;if(points)points.textContent=r.familyIndex===6?`${profile.points}점`:`${profile.points} / 100점`;if(bar)bar.style.width=`${r.familyIndex===6?Math.min(100,profile.points/5):Math.max(0,Math.min(100,profile.points))}%`;if(ai)ai.textContent=`상대 AI · ${aiProfile().label}`;if(record)record.textContent=`${profile.wins}승 ${profile.losses}패 · ${profile.matches}경기`;if(season)season.textContent=`${info.label} · ${info.endLabel} · 자동 저장`;
+    if(icon)icon.innerHTML=iconSvg(r);if(name)name.textContent=r.name;if(points)points.textContent=r.familyIndex===6?`${profile.points}점`:`${profile.points} / 100점`;if(bar)bar.style.width=`${r.familyIndex===6?Math.min(100,profile.points/5):Math.max(0,Math.min(100,profile.points))}%`;if(ai)ai.textContent=`상대 AI · ${aiProfile().label}`;if(record)record.textContent=`${profile.wins}승 ${profile.losses}패 · ${profile.matches}경기`;if(season)season.textContent=`${info.label} · 자동 저장`;
     if(road)road.innerHTML=FAMILY_META.map((m,i)=>{const rr=RANKS.find(x=>x.familyIndex===i)||RANKS.at(-1);return `<span class="competitive-tier-chip ${i===r.familyIndex?'active':''}">${iconSvg(rr,true)}${m.family}</span>`}).join('');
   }
   function teamPerformance(){
@@ -29207,7 +29207,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const before=RANKS[movement.beforeIndex],after=RANKS[movement.afterIndex];game.v215RankResult={outcome,delta,performance:perf,before:before.name,after:after.name,points:profile.points,promoted:movement.promoted,demoted:movement.demoted,seasonId:profile.seasonId};return game.v215RankResult;
   }
   const originalCheckEnd=checkEnd;checkEnd=function(){const wasOver=!!game?.over,result=originalCheckEnd();if(!wasOver&&game?.over&&game?.v212Draft)settleMatch();return result};
-  const originalRenderResultModal=renderResultModal;renderResultModal=function(){originalRenderResultModal();const rr=game?.v215RankResult;if(!rr)return;const card=document.createElement('div');card.className='competitive-result-card';const cls=rr.delta>0?'positive':rr.delta<0?'negative':'draw',move=rr.promoted?' · 승급!':rr.demoted?' · 강등':'',info=seasonInfo();card.innerHTML=`<div style="font-size:11px;font-weight:1000;color:#6b7280">${info.label} 경쟁전 점수</div><div class="rank-change ${cls}">${rr.delta>0?'+':''}${rr.delta}점</div><div class="rank-after">${rr.after}${move}</div><div class="rank-detail">활약도 ${Math.round(rr.performance*100)}% · 현재 ${rr.points}${rr.after==='신'?'':' / 100'}점<br>승리 시 +10~30점, 패배 시 -20~40점 · ${info.endLabel}</div>`;resultBody.prepend(card)};
+  const originalRenderResultModal=renderResultModal;renderResultModal=function(){originalRenderResultModal();const rr=game?.v215RankResult;if(!rr)return;const card=document.createElement('div');card.className='competitive-result-card';const cls=rr.delta>0?'positive':rr.delta<0?'negative':'draw',move=rr.promoted?' · 승급!':rr.demoted?' · 강등':'',info=seasonInfo();card.innerHTML=`<div style="font-size:11px;font-weight:1000;color:#6b7280">${info.label} 경쟁전 점수</div><div class="rank-change ${cls}">${rr.delta>0?'+':''}${rr.delta}점</div><div class="rank-after">${rr.after}${move}</div><div class="rank-detail">활약도 ${Math.round(rr.performance*100)}% · 현재 ${rr.points}${rr.after==='신'?'':' / 100'}점</div>`;resultBody.prepend(card)};
   const draftBtn=document.getElementById('draftModeBtn');draftBtn?.addEventListener('click',()=>requestAnimationFrame(renderRank));document.getElementById('draftStartBtn')?.addEventListener('click',renderRank);
   addEventListener('beforeunload',save);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();else renderRank()});setInterval(()=>{if(ensureCurrentSeason())renderRank()},60000);
   renderRank();
