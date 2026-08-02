@@ -1715,6 +1715,32 @@ body.competitive-battle #restart{display:none!important}
 @media(prefers-reduced-motion:reduce){.v221-skill-mastery:before,.v221-skill-mastery:after{animation:none!important}}
 </style>
 
+
+<style id="v229CompetitiveUxStyles">
+/* V229 · 모바일 경쟁전 가독성/조작 안정화 */
+.draft-recent-action{margin-top:9px;border:1px solid rgba(255,255,255,.28);border-radius:12px;background:#242424;padding:8px 10px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:48px;overflow:hidden}
+.draft-recent-action.hidden{display:none!important}.draft-recent-action.user{background:linear-gradient(135deg,#0d2f5f,#164e8f)}.draft-recent-action.ai{background:linear-gradient(135deg,#5b1118,#9f1239)}
+.draft-recent-action img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff}.draft-recent-copy{min-width:0;display:flex;flex-direction:column;gap:2px}.draft-recent-copy strong{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.draft-recent-copy span{font-size:10px;color:#e5e7eb;font-weight:800}.draft-recent-badge{border-radius:999px;background:#fff;color:#111;padding:4px 7px;font-size:10px;font-weight:1000}
+.draft-card-action{display:none;position:absolute;right:5px;bottom:5px;min-width:30px;height:22px;border-radius:999px;align-items:center;justify-content:center;padding:0 7px;background:#111;color:#fff;font-size:10px;font-weight:1000;box-shadow:0 1px 4px #0004;pointer-events:none}
+.draft-card-action.ban{background:#be123c}.draft-card-action.pick{background:#047857}
+.draft-auto-start-note{font-weight:1000;color:#ddd}
+@keyframes v229RecentPop{0%{transform:scale(.97);opacity:.35}100%{transform:scale(1);opacity:1}}
+.draft-recent-action:not(.hidden){animation:v229RecentPop .18s ease-out}
+@media(max-width:700px){
+  .draft-status-card{position:sticky;top:4px;z-index:30;box-shadow:0 8px 18px rgba(0,0,0,.28)}
+  .draft-team-grid{grid-template-columns:1fr 1fr!important;gap:6px;margin-bottom:10px}
+  .draft-team{padding:6px;border-radius:14px}.draft-team-head{margin-bottom:4px}.draft-team-head strong{font-size:12px}.draft-team-head span{font-size:9px}
+  .draft-subtitle{font-size:9px;margin:3px 0}.draft-slot-row,.draft-ban-row{gap:3px;min-height:32px}.draft-ban-row{min-height:25px}
+  .draft-slot{border-radius:7px;min-height:30px}.draft-slot img{height:30px}.draft-ban-row .draft-slot{min-height:24px}.draft-ban-row .draft-slot img{height:24px}.draft-slot span{display:none}.draft-ban-row .draft-slot::after{font-size:16px}
+  .draft-sequence-wrap{display:flex;align-items:center;gap:7px;overflow:hidden}.draft-sequence-label{display:block;margin:0;padding:0}.draft-turn-order{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}.draft-turn-order::-webkit-scrollbar{display:none}.draft-turn-chip{flex:0 0 auto}
+  .draft-pool-grid{gap:7px}.draft-card{min-height:76px;padding:7px 6px 26px}.draft-card-action{display:flex}.draft-card-help{top:6px;right:6px}
+  .draft-pool-head{align-items:flex-start}.draft-pool-head strong{font-size:15px}.draft-pool-head span{max-width:52%;font-size:10px}
+}
+@media(max-width:420px){
+  .draft-shell{padding:7px}.draft-status-card{padding:10px}.draft-recent-action{grid-template-columns:30px minmax(0,1fr) auto;padding:6px 7px;min-height:42px}.draft-recent-action img{width:30px;height:30px}.draft-recent-copy strong{font-size:11px}.draft-recent-copy span{font-size:9px}.draft-recent-badge{font-size:9px;padding:3px 6px}
+  .draft-card{grid-template-columns:38px minmax(0,1fr) 25px;min-height:74px}.draft-card img{width:38px;height:38px}.draft-card-name{font-size:11px}.draft-card-meta{font-size:8px}
+}
+</style>
 </head>
 
 <style id="v201CleanUiStyle">
@@ -1941,6 +1967,7 @@ body.competitive-battle #restart{display:none!important}
           <div id="draftCountdown" class="draft-countdown" aria-live="polite"><b>15</b><span>초</span></div>
         </div>
         <small id="draftStatusText">24명 후보를 뽑는 중</small>
+        <div id="draftRecentAction" class="draft-recent-action hidden" aria-live="assertive"></div>
         <div class="draft-sequence-wrap">
           <span id="draftSequenceLabel" class="draft-sequence-label">밴 순서</span>
           <div id="draftTurnOrder" class="draft-turn-order" aria-label="경쟁전 차례"></div>
@@ -2180,6 +2207,7 @@ body.competitive-battle #restart{display:none!important}
 
 <script>
 (() => {
+const defs=()=>DEFS; // shared legacy-safe roster accessor for V214/V226 skill and reward UI
 var v224DrawMasteryTrails=null;
 const IMAGES={
   moon:'data:image/webp;base64,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',
@@ -29060,7 +29088,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     {ids:['choiyujin','yewon','limseoyoon'],bonus:1.65,name:'윤현멘티크로스'},
     {ids:['yoomin','songhyeon','nakyung'],bonus:1.05,name:'102다플 삼인방'}
   ];
-  let selectedSize=4,state=null,aiTimer=0,turnTimer=0,countdownTimer=0;
+  let selectedSize=4,state=null,aiTimer=0,turnTimer=0,countdownTimer=0,autoLaunchTimer=0;
 
   function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
   function esc(v){return String(v??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]))}
@@ -29122,30 +29150,38 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function phaseActors(){if(!state||state.phase==='done')return [];const first=state.phase==='ban'?state.banFirst:state.pickFirst;return Array.from({length:state.size*2},(_,i)=>i%2===0?first:(first==='user'?'ai':'user'))}
   function completedActions(){if(!state)return 0;return state.phase==='ban'?state.userBans.length+state.aiBans.length:state.phase==='pick'?state.userPicks.length+state.aiPicks.length:state.size*2}
   function renderTurnOrder(){const label=$d('draftSequenceLabel'),root=$d('draftTurnOrder');if(!label||!root||!state)return;if(state.phase==='done'){label.textContent='진행 결과';root.innerHTML='<span class="draft-turn-chip done current">밴픽 완료</span>';return}label.textContent=state.phase==='ban'?'밴 순서':'선택 순서';const done=completedActions();root.innerHTML=phaseActors().map((actor,i)=>`<span class="draft-turn-chip ${i<done?'done':''} ${i===done?'current':''} ${actor==='ai'?'ai':'user'}">${i+1}. ${actorName(actor)}</span>`).join('')}
-  function statusCopy(){if(!state)return;const phase=state.phase,turn=state.turn;if(phase==='done')return ['완료','양 팀 선택 완료','팀을 확인하고 전투를 시작해.'];const action=phase==='ban'?'밴':'선택',who=turn==='user'?'내 차례':'AI 차례';const left=state.size-(turn==='user'?(phase==='ban'?state.userBans.length:state.userPicks.length):(phase==='ban'?state.aiBans.length:state.aiPicks.length));const base=`${turn==='user'?'제한시간 안에 캐릭터를 눌러':'최적 조합을 계산하고 있어'} · 남은 ${Math.max(0,left)}명`;return [phase==='ban'?'BAN':'PICK',`${who} · ${action}`,state.notice?`${state.notice} · ${base}`:base]}
+  function statusCopy(){if(!state)return;const phase=state.phase,turn=state.turn;if(phase==='done')return ['완료','양 팀 선택 완료','1초 뒤 자동으로 전투를 시작해.'];const action=phase==='ban'?'밴':'선택',who=turn==='user'?'내 차례':'AI 차례';const left=state.size-(turn==='user'?(phase==='ban'?state.userBans.length:state.userPicks.length):(phase==='ban'?state.aiBans.length:state.aiPicks.length));const base=`${turn==='user'?'제한시간 안에 캐릭터를 눌러':'최적 조합을 계산하고 있어'} · 남은 ${Math.max(0,left)}명`;return [phase==='ban'?'BAN':'PICK',`${who} · ${action}`,state.notice?`${state.notice} · ${base}`:base]}
   function updateCountdown(){const el=$d('draftCountdown');if(!el||!state)return;if(state.phase==='done'||!state.deadline){el.className='draft-countdown hidden';return}const remain=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));el.className=`draft-countdown ${remain<=5?'urgent':''}`;el.innerHTML=`<b>${remain}</b><span>초</span>`}
-  function render(){if(!state)return;const [badge,title,desc]=statusCopy();$d('draftPhaseBadge').textContent=badge;$d('draftPhaseBadge').className=`draft-phase-badge ${state.phase==='pick'?'pick':state.phase==='done'?'done':''}`;$d('draftTurnText').textContent=title;$d('draftStatusText').textContent=desc;$d('draftUserPickCount').textContent=`${state.userPicks.length}/${state.size}명`;$d('draftAiPickCount').textContent=`${state.aiPicks.length}/${state.size}명`;$d('draftUserPicks').innerHTML=slots(state.userPicks,state.size,'선택');$d('draftAiPicks').innerHTML=slots(state.aiPicks,state.size,'선택');$d('draftUserBans').innerHTML=slots(state.userBans,state.size,'밴');$d('draftAiBans').innerHTML=slots(state.aiBans,state.size,'밴');$d('draftPoolMeta').textContent=state.phase==='done'?'선택이 끝났어.':state.turn==='user'?`${state.phase==='ban'?'밴할':'내 팀으로 선택할'} 캐릭터를 눌러.`:'AI가 다음 수를 계산 중이야.';
-    $d('draftPool').innerHTML=state.pool.map(id=>{const d=DEFS[id],[cls,label]=cardState(id),used=!!cls,disabled=used||state.phase==='done'||state.turn!=='user';return `<button type="button" class="draft-card ${cls}" data-draft-char="${id}" style="--c:${d.color}" ${disabled?'disabled':''}><img src="${d.img}" alt="${esc(d.name)}" loading="lazy" decoding="async" style="object-position:${crop(id)}"><span class="draft-card-copy"><span class="draft-card-name">${esc(d.name)}</span><span class="draft-card-meta">HP ${d.hp} · 속도 ${d.speed}</span></span><span class="draft-card-help" role="button" aria-label="${esc(d.name)} 스킬 보기" data-draft-info="${id}">?</span>${used?`<span class="draft-card-state">${label}</span>`:''}</button>`}).join('');
-    renderTurnOrder();updateCountdown();$d('draftBattleStart').classList.toggle('hidden',state.phase!=='done');
+  function renderRecentAction(){
+    const el=$d('draftRecentAction');if(!el||!state)return;
+    const row=state.lastAction,id=row?.id,d=id&&DEFS[id];
+    if(!row||!d){el.className='draft-recent-action hidden';el.innerHTML='';return}
+    const actorLabel=row.actor==='ai'?'상대 AI':'내 선택',actionLabel=row.phase==='ban'?'밴':'픽';
+    el.className=`draft-recent-action ${row.actor}`;
+    el.innerHTML=`<img src="${d.img}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span class="draft-recent-copy"><strong>${actorLabel} · ${esc(d.name)}</strong><span>${row.timedOut?'시간 종료로 자동 ':''}${actionLabel} 완료${row.actor==='ai'?' · 상대 팀 변화가 아래에 바로 반영됨':''}</span></span><span class="draft-recent-badge">${actionLabel}</span>`;
   }
-  function clearDraftTimers(){clearTimeout(aiTimer);clearTimeout(turnTimer);clearInterval(countdownTimer);aiTimer=0;turnTimer=0;countdownTimer=0}
+  function render(){if(!state)return;const [badge,title,desc]=statusCopy();$d('draftPhaseBadge').textContent=badge;$d('draftPhaseBadge').className=`draft-phase-badge ${state.phase==='pick'?'pick':state.phase==='done'?'done':''}`;$d('draftTurnText').textContent=title;$d('draftStatusText').textContent=desc;$d('draftUserPickCount').textContent=`${state.userPicks.length}/${state.size}명`;$d('draftAiPickCount').textContent=`${state.aiPicks.length}/${state.size}명`;$d('draftUserPicks').innerHTML=slots(state.userPicks,state.size,'선택');$d('draftAiPicks').innerHTML=slots(state.aiPicks,state.size,'선택');$d('draftUserBans').innerHTML=slots(state.userBans,state.size,'밴');$d('draftAiBans').innerHTML=slots(state.aiBans,state.size,'밴');$d('draftPoolMeta').textContent=state.phase==='done'?'선택이 끝났어.':state.turn==='user'?`${state.phase==='ban'?'밴할':'내 팀으로 선택할'} 캐릭터를 눌러.`:'AI가 다음 수를 계산 중이야.';
+    $d('draftPool').innerHTML=state.pool.map(id=>{const d=DEFS[id],[cls,label]=cardState(id),used=!!cls,disabled=used||state.phase==='done'||state.turn!=='user',actionClass=state.phase==='ban'?'ban':'pick',actionText=!disabled?(state.phase==='ban'?'밴':'픽'):'';return `<button type="button" class="draft-card ${cls} ${disabled?'is-disabled':''}" data-draft-char="${id}" data-disabled="${disabled?'1':'0'}" style="--c:${d.color}"><img src="${d.img}" alt="${esc(d.name)}" loading="lazy" decoding="async" style="object-position:${crop(id)}"><span class="draft-card-copy"><span class="draft-card-name">${esc(d.name)}</span><span class="draft-card-meta">HP ${d.hp} · 속도 ${d.speed}</span></span><span class="draft-card-help" role="button" aria-label="${esc(d.name)} 스킬 보기" data-draft-info="${id}">?</span>${actionText?`<span class="draft-card-action ${actionClass}">${actionText}</span>`:''}${used?`<span class="draft-card-state">${label}</span>`:''}</button>`}).join('');
+    renderRecentAction();renderTurnOrder();updateCountdown();$d('draftBattleStart').classList.add('hidden');
+  }
+  function clearDraftTimers(){clearTimeout(aiTimer);clearTimeout(turnTimer);clearInterval(countdownTimer);clearTimeout(autoLaunchTimer);aiTimer=0;turnTimer=0;countdownTimer=0;autoLaunchTimer=0}
   function nextTurn(){if(state.phase==='ban'&&state.userBans.length>=state.size&&state.aiBans.length>=state.size){state.phase='pick';state.turn=state.pickFirst;return}if(state.phase==='pick'&&state.userPicks.length>=state.size&&state.aiPicks.length>=state.size){state.phase='done';state.turn=null;return}state.turn=state.turn==='user'?'ai':'user'}
-  function armTurn({schedule=true}={}){clearTimeout(aiTimer);clearTimeout(turnTimer);clearInterval(countdownTimer);if(!state||state.phase==='done'){if(state)state.deadline=0;updateCountdown();return}state.deadline=Date.now()+TURN_MS;updateCountdown();if(!schedule)return;countdownTimer=setInterval(updateCountdown,200);turnTimer=setTimeout(()=>{if(!state||state.phase==='done')return;const actor=state.turn;const id=actor==='ai'?chooseAi():chooseUserTimeout();if(id)act(id,actor,{schedule:true,timedOut:true})},TURN_MS+80);if(state.turn==='ai')scheduleAi()}
-  function act(id,actor=state?.turn,{schedule=true,timedOut=false}={}){if(!state||state.phase==='done'||actor!==state.turn||!available().includes(id))return false;clearDraftTimers();const action=state.phase==='ban'?'밴':'선택';const target=state.phase==='ban'?(actor==='user'?state.userBans:state.aiBans):(actor==='user'?state.userPicks:state.aiPicks);target.push(id);state.notice=timedOut?`시간 종료 · ${defs()[id].name} 자동 ${action}`:'';nextTurn();render();armTurn({schedule});return true}
+  function armTurn({schedule=true}={}){clearTimeout(aiTimer);clearTimeout(turnTimer);clearInterval(countdownTimer);clearTimeout(autoLaunchTimer);autoLaunchTimer=0;if(!state||state.phase==='done'){if(state)state.deadline=0;updateCountdown();if(state?.phase==='done'&&schedule)autoLaunchTimer=setTimeout(()=>{if(state?.phase==='done')launchBattle()},900);return}state.deadline=Date.now()+TURN_MS;updateCountdown();if(!schedule)return;countdownTimer=setInterval(updateCountdown,200);turnTimer=setTimeout(()=>{if(!state||state.phase==='done')return;const actor=state.turn;const id=actor==='ai'?chooseAi():chooseUserTimeout();if(id)act(id,actor,{schedule:true,timedOut:true})},TURN_MS+80);if(state.turn==='ai')scheduleAi()}
+  function act(id,actor=state?.turn,{schedule=true,timedOut=false}={}){if(!state||state.phase==='done'||actor!==state.turn||!available().includes(id))return false;clearDraftTimers();const phase=state.phase,action=phase==='ban'?'밴':'선택';const target=phase==='ban'?(actor==='user'?state.userBans:state.aiBans):(actor==='user'?state.userPicks:state.aiPicks);target.push(id);state.lastAction={id,actor,phase,timedOut,at:Date.now()};state.notice=timedOut?`시간 종료 · ${defs()[id].name} 자동 ${action}`:actor==='ai'?`AI가 ${defs()[id].name} ${action}`:`${defs()[id].name} ${action} 완료`;nextTurn();render();armTurn({schedule});return true}
   function scheduleAi(){clearTimeout(aiTimer);if(!state||state.turn!=='ai'||state.phase==='done')return;aiTimer=setTimeout(()=>{const id=chooseAi();if(id)act(id,'ai')},650)}
-  function startDraft(size=selectedSize,{pool=null,schedule=true}={}){clearDraftTimers();const roster=orderedCharacterIds().filter(id=>DEFS[id]&&!BOSS_IDS.has(id));if(roster.length<POOL_SIZE){alert('경쟁전을 시작하려면 일반 캐릭터가 24명 이상 필요해.');return null}const banFirst=Math.random()<.5?'user':'ai';state={size:Number(size)===5?5:4,pool:pool?.filter(id=>roster.includes(id)).slice(0,POOL_SIZE)||shuffle(roster).slice(0,POOL_SIZE),phase:'ban',turn:banFirst,banFirst,pickFirst:banFirst==='user'?'ai':'user',userBans:[],aiBans:[],userPicks:[],aiPicks:[],deadline:0,notice:''};if(state.pool.length<POOL_SIZE)state.pool=[...new Set([...state.pool,...shuffle(roster)])].slice(0,POOL_SIZE);$d('draftSetupCard').classList.add('hidden');$d('draftPlayArea').classList.remove('hidden');render();armTurn({schedule});return state}
+  function startDraft(size=selectedSize,{pool=null,schedule=true}={}){clearDraftTimers();const roster=orderedCharacterIds().filter(id=>DEFS[id]&&!BOSS_IDS.has(id));if(roster.length<POOL_SIZE){alert('경쟁전을 시작하려면 일반 캐릭터가 24명 이상 필요해.');return null}const banFirst=Math.random()<.5?'user':'ai';state={size:Number(size)===5?5:4,pool:pool?.filter(id=>roster.includes(id)).slice(0,POOL_SIZE)||shuffle(roster).slice(0,POOL_SIZE),phase:'ban',turn:banFirst,banFirst,pickFirst:banFirst==='user'?'ai':'user',userBans:[],aiBans:[],userPicks:[],aiPicks:[],deadline:0,notice:'',lastAction:null};if(state.pool.length<POOL_SIZE)state.pool=[...new Set([...state.pool,...shuffle(roster)])].slice(0,POOL_SIZE);$d('draftSetupCard').classList.add('hidden');$d('draftPlayArea').classList.remove('hidden');render();armTurn({schedule});return state}
   function openDraft(){clearDraftTimers();setup.classList.add('hidden');document.getElementById('tournamentScreen')?.classList.add('hidden');battle.classList.add('hidden');draftScreen.classList.remove('hidden');draftScreen.setAttribute('aria-hidden','false');state=null;$d('draftSetupCard').classList.remove('hidden');$d('draftPlayArea').classList.add('hidden');window.scrollTo(0,0)}
   function closeDraft(){clearDraftTimers();state=null;draftScreen.classList.add('hidden');draftScreen.setAttribute('aria-hidden','true');setup.classList.remove('hidden');window.scrollTo(0,0)}
   function launchBattle(){if(!state||state.phase!=='done')return false;clearDraftTimers();const participants=[...state.userPicks,...state.aiPicks];currentConfig={mode:'team',participants,teams:Object.fromEntries([...state.userPicks.map(id=>[id,'T1']),...state.aiPicks.map(id=>[id,'T2'])]),zoneNames:{T1:'내 경쟁전 팀',T2:'AI 경쟁전 팀'},draft:{competitive:true,rankBefore:window.__GONG_V215_COMPETITIVE__?.profile?.(),size:state.size,pool:[...state.pool],userBans:[...state.userBans],aiBans:[...state.aiBans],userPicks:[...state.userPicks],aiPicks:[...state.aiPicks]}};mode='team';paused=false;last=0;document.body.classList.remove('boss-battle');document.body.classList.add('draft-battle','competitive-battle');draftScreen.classList.add('hidden');battle.classList.remove('hidden');resize();resetBattle();if(game)game.v212Draft=structuredClone?structuredClone(currentConfig.draft):JSON.parse(JSON.stringify(currentConfig.draft));const title=$d('battleTitle'),badge=$d('modeBadge');if(title)title.textContent=`경쟁전 ${state.size}대${state.size}`;if(badge)badge.textContent='🏅 경쟁전';v165FocusBattleScreen();return true}
 
   draftBtn.addEventListener('click',openDraft);$d('draftBackBtn').addEventListener('click',closeDraft);$d('draftResetBtn').addEventListener('click',()=>{if(state&&!confirm('현재 밴픽을 버리고 새로운 24명을 뽑을까?'))return;startDraft(selectedSize)});$d('draftStartBtn').addEventListener('click',()=>startDraft(selectedSize));$d('draftBattleStart').addEventListener('click',launchBattle);
   document.querySelectorAll('[data-draft-size]').forEach(btn=>btn.addEventListener('click',()=>{selectedSize=Number(btn.dataset.draftSize)===5?5:4;document.querySelectorAll('[data-draft-size]').forEach(b=>b.classList.toggle('active',b===btn))}));
-  $d('draftPool').addEventListener('click',event=>{const info=event.target.closest('[data-draft-info]');if(info){event.preventDefault();event.stopPropagation();openSkillModal(info.dataset.draftInfo);return}const card=event.target.closest('[data-draft-char]');if(card&&!card.disabled)act(card.dataset.draftChar,'user')});
+  $d('draftPool').addEventListener('click',event=>{const info=event.target.closest('[data-draft-info]');if(info){event.preventDefault();event.stopPropagation();openSkillModal(info.dataset.draftInfo);return}const card=event.target.closest('[data-draft-char]');if(card&&card.dataset.disabled!=='1')act(card.dataset.draftChar,'user')});
   document.getElementById('back')?.addEventListener('click',()=>document.body.classList.remove('draft-battle','competitive-battle'));
 
   function simulate(size=4){startDraft(size,{schedule:false});let guard=100;while(state&&state.phase!=='done'&&guard--){const id=state.turn==='ai'?chooseAi():available().sort((a,b)=>basePower(b)-basePower(a))[0];if(!id||!act(id,state.turn,{schedule:false}))break}render();return snapshot()}
   function snapshot(){return state?{size:state.size,pool:[...state.pool],phase:state.phase,turn:state.turn,userBans:[...state.userBans],aiBans:[...state.aiBans],userPicks:[...state.userPicks],aiPicks:[...state.aiPicks],deadline:state.deadline}:null}
-  window.__GONG_V212_DRAFT__={build:BUILD,open:openDraft,start:(size,pool)=>startDraft(size,{pool,schedule:false}),select:id=>act(id,state?.turn,{schedule:false}),aiChoice:chooseAi,simulate,snapshot,launch:launchBattle,turnSeconds:TURN_SECONDS};
+  window.__GONG_V212_DRAFT__={build:BUILD,open:openDraft,start:(size,pool)=>startDraft(size,{pool,schedule:false}),select:id=>act(id,state?.turn,{schedule:false}),aiChoice:chooseAi,simulate,snapshot,launch:launchBattle,turnSeconds:TURN_SECONDS,autoLaunchDelay:900};
   window.__GONG_V215_DRAFT_TEST__={build:BUILD,verify(){const sim=simulate(4);return {ok:!!draftBtn&&sim?.pool.length===24&&sim.userBans.length===4&&sim.aiBans.length===4&&sim.userPicks.length===4&&sim.aiPicks.length===4&&sim.phase==='done'&&TURN_SECONDS===15,pool:sim?.pool.length,userBans:sim?.userBans.length,aiBans:sim?.aiBans.length,userPicks:sim?.userPicks.length,aiPicks:sim?.aiPicks.length,phase:sim?.phase,turnSeconds:TURN_SECONDS}}};
   window.__GONG_V212_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V214] 경쟁전 카드 정렬 · 밴/픽 차례 표시 · 15초 카운트다운 · 시간 초과 자동 선택');
@@ -29682,6 +29718,308 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     console.info('[V225] 일반 캐릭터 크기 통일 · 명시적 크기 스킬만 예외 · 경기 중 레벨 숫자 숨김');
   })();
 
+
+  /* V227 moved into the main game closure in V228 so it can safely share game state. */
+(()=>{
+    const BUILD='V227_COMPETITIVE_SEASON_MASTERY_REWARDS';
+    const STORE_KEY='gonggame_v227_competitive_season_mastery_rewards_v1';
+    const HISTORY_KEY='gonggame_competitive_season_history';
+    const PROFILE_KEY='gonggame_competitive_rank_state';
+    const BOSS_SET=new Set(['james','yoogeon','youngsik','naeonseong','julia']);
+    const defs=()=>window.__GONG_V134_DEBUG__?.defs||{};
+    const RANK_NAMES=['솔리언 1','솔리언 2','솔리언 3','브론즈 1','브론즈 2','브론즈 3','실버 1','실버 2','실버 3','골드 1','골드 2','골드 3','플래티넘 1','플래티넘 2','플래티넘 3','졸업생 1','졸업생 2','졸업생 3','신'];
+    const clampRank=index=>Math.max(0,Math.min(18,Math.floor(Number(index)||0)));
+    const rewardForRank=index=>Math.min(100000,10000+clampRank(index)*5000);
+    const read=(key,fallback)=>{try{const raw=localStorage.getItem(key);return raw==null?fallback:JSON.parse(raw)}catch(_){return fallback}};
+    const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}};
+    let state=read(STORE_KEY,{version:1,initialized:false,seenSeasons:[],rewards:[]});
+    if(!state||typeof state!=='object')state={version:1,initialized:false,seenSeasons:[],rewards:[]};
+    if(!Array.isArray(state.seenSeasons))state.seenSeasons=[];
+    if(!Array.isArray(state.rewards))state.rewards=[];
+    function save(){state.version=1;state.updatedAt=new Date().toISOString();write(STORE_KEY,state)}
+    function history(){const rows=read(HISTORY_KEY,[]);return Array.isArray(rows)?rows:[]}
+    function currentProfile(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;try{return api?.profile?.()||read(PROFILE_KEY,null)}catch(_){return read(PROFILE_KEY,null)}}
+    function validSeasonId(id){return /^\d{4}-\d{2}$/.test(String(id||''))}
+    function pending(){return state.rewards.find(r=>r&&!r.claimed)||null}
+    function queueFromRow(row,{force=false}={}){
+      const seasonId=String(row?.seasonId||'');
+      if(!validSeasonId(seasonId))return null;
+      const rewardId=`competitive:${seasonId}`;
+      let existing=state.rewards.find(r=>r?.id===rewardId);
+      if(existing)return existing;
+      if(!force&&state.seenSeasons.includes(seasonId))return null;
+      const rankIndex=clampRank(row?.rankIndex),rankName=RANK_NAMES[rankIndex],xp=rewardForRank(rankIndex);
+      existing={id:rewardId,type:'competitive-season',seasonId,seasonLabel:row?.seasonLabel||`${seasonId} 시즌`,rankIndex,rankName,xp,points:Math.max(0,Number(row?.points)||0),wins:Math.max(0,Number(row?.wins)||0),losses:Math.max(0,Number(row?.losses)||0),matches:Math.max(0,Number(row?.matches)||0),claimed:false,characterId:null,createdAt:new Date().toISOString(),claimedAt:null};
+      state.rewards.push(existing);state.rewards=state.rewards.slice(-36);save();return existing
+    }
+    function initialize(){
+      if(state.initialized)return;
+      state.initialized=true;
+      state.activatedSeasonId=currentProfile()?.seasonId||null;
+      state.seenSeasons=[...new Set(history().map(r=>String(r?.seasonId||'')).filter(validSeasonId))];
+      save();
+    }
+    function scan(){
+      initialize();
+      currentProfile();
+      let queued=0;
+      for(const row of history()){
+        const id=String(row?.seasonId||'');
+        if(!validSeasonId(id)||state.seenSeasons.includes(id))continue;
+        state.seenSeasons.push(id);
+        if(queueFromRow(row,{force:true}))queued++;
+      }
+      state.seenSeasons=[...new Set(state.seenSeasons)].slice(-48);save();
+      updateRankMeta();
+      if(queued)seasonToast(`경쟁전 시즌 보상 ${queued}개가 도착했어!`);
+      maybeOpen();
+      return queued;
+    }
+    function seasonToast(message){let el=document.getElementById('v227SeasonToast');if(!el){el=document.createElement('div');el.id='v227SeasonToast';el.className='v227-season-toast';document.body.appendChild(el)}el.textContent=message;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2600)}
+    function characters(){const d=defs();return Object.keys(d).filter(id=>d[id]&&!BOSS_SET.has(id))}
+    function masteryApi(){return window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V220__||window.__GONG_V219__}
+    function currentXp(id){const data=masteryApi()?.mastery?.();return Math.max(0,Number(data?.characters?.[id]?.xp)||0)}
+    function levelInfo(xp){return masteryApi()?.levelInfo?.(xp)||{level:1,max:false}}
+    function ensureModal(){
+      let modal=document.getElementById('v227SeasonRewardModal');if(modal)return modal;
+      modal=document.createElement('div');modal.id='v227SeasonRewardModal';modal.className='v227-season-modal hidden';modal.setAttribute('aria-hidden','true');
+      modal.innerHTML=`<section class="v227-season-card" role="dialog" aria-modal="true" aria-labelledby="v227SeasonRewardTitle"><header class="v227-season-head"><div class="v227-season-head-copy"><strong id="v227SeasonRewardTitle">🏆 경쟁전 시즌 숙련도 보상</strong><span class="v227-season-subtitle">시즌 종료 등급에 따라 원하는 캐릭터 한 명에게 숙련도 XP를 지급해.</span></div><button type="button" class="v227-season-later">나중에 선택</button></header><div class="v227-season-summary"><span>시즌 종료 티어<b class="v227-season-tier">-</b></span><span>선택 지급 XP<b class="v227-season-xp">-</b></span></div><div class="v227-season-tools"><input class="v227-season-search" type="search" placeholder="캐릭터 이름 검색" autocomplete="off"><span class="v227-season-count"></span></div><div class="v227-season-list"></div><footer class="v227-season-bottom"><div class="v227-season-choice">캐릭터를 선택해.</div><button type="button" class="v227-season-confirm" disabled>선택한 캐릭터에게 XP 지급</button></footer></section>`;
+      document.body.appendChild(modal);
+      modal.querySelector('.v227-season-later').addEventListener('click',close);
+      modal.querySelector('.v227-season-search').addEventListener('input',render);
+      modal.querySelector('.v227-season-list').addEventListener('click',event=>{const card=event.target.closest('[data-v227-season-char]');if(!card)return;modal.dataset.selectedId=card.dataset.v227SeasonChar;render()});
+      modal.querySelector('.v227-season-confirm').addEventListener('click',()=>claim(modal.dataset.selectedId));
+      return modal
+    }
+    function open(force=false){const reward=pending();if(!reward)return false;const modal=ensureModal();if(!force&&!modal.classList.contains('hidden'))return true;modal.dataset.rewardId=reward.id;modal.dataset.selectedId='';modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');render();setTimeout(()=>modal.querySelector('.v227-season-search')?.focus(),60);return true}
+    function close(){const modal=document.getElementById('v227SeasonRewardModal');if(!modal)return;modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');modal.dataset.selectedId=''}
+    function render(){
+      const reward=pending(),modal=ensureModal();if(!reward){close();return}
+      const query=String(modal.querySelector('.v227-season-search')?.value||'').trim().toLowerCase(),selected=modal.dataset.selectedId||'',ids=characters().filter(id=>!query||String(defs()[id]?.name||'').toLowerCase().includes(query));
+      modal.querySelector('#v227SeasonRewardTitle').textContent=`🏆 ${reward.seasonLabel} 경쟁전 보상`;
+      modal.querySelector('.v227-season-subtitle').textContent=`${reward.rankName}으로 시즌 마무리 · 원하는 캐릭터 한 명에게 숙련도 ${reward.xp.toLocaleString()} XP`;
+      modal.querySelector('.v227-season-tier').textContent=reward.rankName;
+      modal.querySelector('.v227-season-xp').textContent=`${reward.xp.toLocaleString()} XP`;
+      modal.querySelector('.v227-season-count').textContent=`${ids.length}명`;
+      modal.querySelector('.v227-season-list').innerHTML=ids.map(id=>{const d=defs()[id],xp=currentXp(id),lv=levelInfo(xp),chosen=id===selected;return `<button type="button" class="v227-season-char ${chosen?'selected':''}" data-v227-season-char="${id}" style="--c:${d.color}"><img src="${d.img}" alt="${String(d.name||'').replace(/"/g,'&quot;')}" loading="lazy" decoding="async" style="object-position:50% 50%"><span class="v227-season-char-copy"><span class="v227-season-char-name">${d.name}</span><span class="v227-season-char-meta">Lv.${lv.level} · 누적 ${Math.round(xp).toLocaleString()} XP</span></span></button>`}).join('');
+      const choice=modal.querySelector('.v227-season-choice'),confirm=modal.querySelector('.v227-season-confirm');
+      if(selected&&defs()[selected]){const xp=currentXp(selected),before=levelInfo(xp),after=levelInfo(xp+reward.xp);choice.className='v227-season-choice ready';choice.textContent=`${defs()[selected].name} · Lv.${before.level}${after.level>before.level?` → Lv.${after.level}`:''} · +${reward.xp.toLocaleString()} XP`;confirm.disabled=false;confirm.textContent=`${defs()[selected].name}에게 +${reward.xp.toLocaleString()} XP 지급`}else{choice.className='v227-season-choice';choice.textContent='캐릭터를 선택해.';confirm.disabled=true;confirm.textContent=`선택한 캐릭터에게 +${reward.xp.toLocaleString()} XP 지급`}
+    }
+    function claim(id){
+      const reward=pending(),api=masteryApi();if(!reward||!id||!defs()[id]||BOSS_SET.has(id)||!api?.setMasteryXp)return false;
+      const beforeXp=currentXp(id),before=levelInfo(beforeXp).level,afterXp=beforeXp+Math.max(1,Number(reward.xp)||0);api.setMasteryXp(id,afterXp);
+      reward.claimed=true;reward.characterId=id;reward.claimedAt=new Date().toISOString();save();const after=levelInfo(afterXp).level;close();seasonToast(`${defs()[id].name} 숙련도 +${reward.xp.toLocaleString()} XP${after>before?` · Lv.${after} 달성!`:''}`);setTimeout(()=>maybeOpen(),180);return true
+    }
+    function dailyRewardBlocking(){
+      const daily=window.__GONG_V226__?.pendingDailyRewards?.()||[];
+      const dailyModal=document.getElementById('v226MasteryRewardModal');
+      return daily.length>0||!!(dailyModal&&!dailyModal.classList.contains('hidden'))
+    }
+    function maybeOpen(){if(!pending()||dailyRewardBlocking())return false;return open(false)}
+    function updateRankMeta(){
+      const seasonMeta=document.getElementById('competitiveSeasonMeta');if(!seasonMeta)return;
+      let el=document.getElementById('v227CompetitiveSeasonRewardMeta');if(!el){el=document.createElement('div');el.id='v227CompetitiveSeasonRewardMeta';el.className='v227-season-reward-meta';seasonMeta.insertAdjacentElement('afterend',el)}
+      const profile=currentProfile(),index=clampRank(profile?.rankIndex),xp=rewardForRank(index),count=state.rewards.filter(r=>!r.claimed).length;
+      el.textContent=`시즌 종료 예상 보상 · ${RANK_NAMES[index]} 기준 원하는 캐릭터 +${xp.toLocaleString()} XP${count?` · 미수령 ${count}개`:''}`
+    }
+    initialize();updateRankMeta();setTimeout(scan,180);setInterval(scan,30000);setInterval(maybeOpen,1200);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()});
+    document.getElementById('draftModeBtn')?.addEventListener('click',()=>setTimeout(updateRankMeta,0));
+    const api={build:BUILD,rewardForRank,rankRewards:RANK_NAMES.map((name,index)=>({name,index,xp:rewardForRank(index)})),pending:()=>state.rewards.filter(r=>!r.claimed).map(r=>({...r})),history:()=>state.rewards.map(r=>({...r})),scan,open:()=>open(true),claim,queueSeasonRewardForTest(rankIndex=0,seasonId='2099-01'){const row={seasonId,seasonLabel:`${seasonId} 테스트 시즌`,rankIndex:clampRank(rankIndex),points:0,wins:0,losses:0,matches:0};const r=queueFromRow(row,{force:true});if(r){state.seenSeasons.push(seasonId);save();open(true)}return r?{...r}:null},resetRewardsForTest(){state={version:1,initialized:true,activatedSeasonId:currentProfile()?.seasonId||null,seenSeasons:history().map(r=>r?.seasonId).filter(validSeasonId),rewards:[]};save();close();updateRankMeta();return true}};
+    window.__GONG_V227__=api;window.__GONG_V227_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+    console.info('[V227] 경쟁전 시즌 종료 티어별 캐릭터 숙련도 선택 보상 · 솔리언 1 10,000 XP ~ 신 100,000 XP');
+  })();
+
+  /* V228 Firebase integration runs in the main game closure for reliable hooks. */
+(()=>{
+    const BUILD='V228_FIREBASE_PRESENCE_AND_COMMUNITY_STATS';
+    const SDK_VERSION='12.17.0';
+    const LIVE_HOST='ddogy1212.github.io';
+    const CONFIG={
+      apiKey:'AIzaSyCcCFaMN7WMfwgkLu2d1ksxQ9LYfcL1VKw',
+      authDomain:'salw-gong-game.firebaseapp.com',
+      databaseURL:'https://salw-gong-game-default-rtdb.asia-southeast1.firebasedatabase.app/',
+      projectId:'salw-gong-game',
+      storageBucket:'salw-gong-game.firebasestorage.app',
+      messagingSenderId:'301115328104',
+      appId:'1:301115328104:web:f748d4e7fe2dfd24fd9ddd'
+    };
+    const MODE_LABELS={all:'전체',showdown:'쇼다운',team:'팀전',competitive:'경쟁전',tournament:'토너먼트',boss:'보스전',random:'랜덤모드',auto:'자동전투'};
+    const MODE_KEYS=['showdown','team','competitive','tournament','boss','random','auto'];
+    const QUEUE_KEY='gonggame_v228_online_result_queue_v1';
+    const SESSION_KEY='gonggame_v228_presence_connection';
+    const nf=new Intl.NumberFormat('ko-KR');
+    const liveHost=location.hostname===LIVE_HOST;
+    const state={status:'loading',message:'Firebase 연결 준비 중',online:0,user:null,ready:false,db:null,auth:null,mods:null,presenceRef:null,presenceCountOff:null,connectedOff:null,hiddenTimer:null,statsOffs:[],activeStats:{id:null,mode:'all'},lastSubmit:'',lastError:'',flushBusy:false};
+    const safeJson=(value,fallback)=>{try{return JSON.parse(value)}catch(_){return fallback}};
+    const readQueue=()=>{try{const rows=safeJson(localStorage.getItem(QUEUE_KEY)||'[]',[]);return Array.isArray(rows)?rows:[]}catch(_){return[]}};
+    const saveQueue=rows=>{try{localStorage.setItem(QUEUE_KEY,JSON.stringify(rows.slice(-20)))}catch(_){}};
+    const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const randomId=()=>{try{return crypto.randomUUID().replace(/[^a-zA-Z0-9_-]/g,'')}catch(_){return `m${Date.now().toString(36)}${Math.random().toString(36).slice(2,12)}`}};
+    function statusClass(){return state.status==='connected'?'connected':state.status==='error'?'error':'pending'}
+    function statusText(){if(state.status==='connected')return `현재 ${nf.format(state.online)}명 접속 중`;if(state.status==='error')return '온라인 연결 실패';return '동접 확인 중'}
+    function buildUi(){
+      if(!document.getElementById('v228OnlinePanel')){
+        const panel=document.createElement('section');panel.id='v228OnlinePanel';panel.className='v228-online-panel';panel.innerHTML=`<div class="v228-online-main"><div class="v228-online-title"><span class="v228-live-dot"></span><span class="v228-live-count-text">동접 확인 중</span></div><div class="v228-online-sub">회원가입 없이 익명으로 연결돼. Google 연결은 선택사항이며, 커뮤니티 통계에는 이름이나 이메일을 저장하지 않아.</div></div><div class="v228-online-actions"><button type="button" class="v228-google-link">Google 계정 연결</button><button type="button" class="v228-online-retry">연결 다시 시도</button></div>`;
+        const modeHub=document.getElementById('modeHub');if(modeHub)modeHub.insertAdjacentElement('beforebegin',panel);else document.getElementById('setup')?.prepend(panel);
+        panel.querySelector('.v228-google-link')?.addEventListener('click',linkGoogle);
+        panel.querySelector('.v228-online-retry')?.addEventListener('click',()=>initFirebase(true));
+      }
+      if(!document.getElementById('v228BattleOnline')){
+        const pill=document.createElement('span');pill.id='v228BattleOnline';pill.className='v228-live-pill pending';pill.innerHTML=`<span class="v228-live-dot"></span><span class="v228-live-count-text">동접 확인 중</span>`;
+        document.querySelector('#battle .battle-actions')?.appendChild(pill);
+      }
+      renderStatus();
+    }
+    function renderStatus(){
+      const cls=statusClass();
+      document.querySelectorAll('#v228OnlinePanel').forEach(el=>{el.classList.remove('connected','error','pending');el.classList.add(cls)});
+      document.querySelectorAll('.v228-live-pill').forEach(el=>{el.classList.remove('connected','error','pending');el.classList.add(cls)});
+      document.querySelectorAll('.v228-live-count-text').forEach(el=>el.textContent=statusText());
+      const panel=document.getElementById('v228OnlinePanel'),btn=panel?.querySelector('.v228-google-link'),retry=panel?.querySelector('.v228-online-retry'),sub=panel?.querySelector('.v228-online-sub');
+      if(btn){const linked=!!state.user&&!state.user.isAnonymous;btn.disabled=!state.user||linked||state.status==='loading';btn.textContent=linked?'✓ Google 연결됨':'Google 계정 연결'}
+      if(retry)retry.hidden=state.status!=='error';
+      if(sub){sub.textContent=state.status==='error'?`게임은 오프라인으로 정상 작동해. ${state.message||'Firebase 설정과 보안 규칙을 확인해.'}`:'회원가입 없이 익명으로 연결돼. Google 연결은 선택사항이며, 커뮤니티 통계에는 이름이나 이메일을 저장하지 않아.'}
+    }
+    function setState(status,message=''){state.status=status;state.message=message;if(status==='error')state.lastError=message;renderStatus()}
+    function connectionId(){let id='';try{id=sessionStorage.getItem(SESSION_KEY)||''}catch(_){}if(!id){id=`c_${randomId()}`;try{sessionStorage.setItem(SESSION_KEY,id)}catch(_){}}return id}
+    function countPresence(snapshot){let count=0;snapshot.forEach(uidSnap=>{if(uidSnap.hasChildren())count++});return count}
+    async function markPresence(){
+      if(!state.ready||!state.user||document.hidden)return;
+      const {ref,set,onDisconnect,serverTimestamp}=state.mods.dbmod;
+      const connectionRef=ref(state.db,`presence/${state.user.uid}/${connectionId()}`);state.presenceRef=connectionRef;
+      try{await onDisconnect(connectionRef).remove();await set(connectionRef,{online:true,connectedAt:serverTimestamp()})}catch(error){setState('error',`동접 기록 실패: ${error?.code||error?.message||error}`)}
+    }
+    async function removePresence(){if(!state.presenceRef||!state.mods)return;try{await state.mods.dbmod.remove(state.presenceRef)}catch(_){}}
+    function startPresence(){
+      const {ref,onValue}=state.mods.dbmod;
+      state.connectedOff?.();state.presenceCountOff?.();
+      state.connectedOff=onValue(ref(state.db,'.info/connected'),snap=>{if(snap.val()===true){setState('connected');markPresence();flushQueue()}else if(state.status!=='error')setState('loading','Firebase 재연결 중')},error=>setState('error',`연결 상태 확인 실패: ${error?.code||error?.message||error}`));
+      state.presenceCountOff=onValue(ref(state.db,'presence'),snap=>{state.online=countPresence(snap);if(state.status!=='error')setState('connected')},error=>setState('error',`동접 읽기 실패: ${error?.code||error?.message||error}`));
+    }
+    async function ensureAuth(){
+      const {getAuth,setPersistence,browserLocalPersistence,onAuthStateChanged,signInAnonymously,getRedirectResult}=state.mods.authmod;
+      const auth=getAuth(state.mods.app);state.auth=auth;await setPersistence(auth,browserLocalPersistence);
+      try{await getRedirectResult(auth)}catch(error){if(error?.code&&error.code!=='auth/no-auth-event')state.lastError=error.code}
+      const user=await new Promise((resolve,reject)=>{let settled=false;const off=onAuthStateChanged(auth,u=>{if(settled)return;if(u){settled=true;off();resolve(u)}else signInAnonymously(auth).catch(err=>{if(!settled){settled=true;off();reject(err)}})},reject)});
+      state.user=user;return user
+    }
+    async function initFirebase(force=false){
+      buildUi();if(state.ready&&!force){renderStatus();return true}if(!liveHost){setState('loading','GitHub Pages 배포 환경에서 온라인 기능이 활성화돼.');return false}
+      if(force){state.ready=false;state.connectedOff?.();state.presenceCountOff?.();state.connectedOff=null;state.presenceCountOff=null}
+      setState('loading','Firebase SDK 불러오는 중');
+      try{
+        const [appmod,authmod,dbmod]=await Promise.all([
+          import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-app.js`),
+          import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-auth.js`),
+          import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-database.js`)
+        ]);
+        const app=appmod.getApps().length?appmod.getApp():appmod.initializeApp(CONFIG);state.mods={app,appmod,authmod,dbmod};state.db=dbmod.getDatabase(app,CONFIG.databaseURL);
+        await ensureAuth();state.ready=true;setState('connected');startPresence();flushQueue();refreshOpenStats();window.dispatchEvent(new CustomEvent('gong-v228-online-ready'));return true
+      }catch(error){state.ready=false;setState('error',`${error?.code||error?.message||error}`);return false}
+    }
+    async function linkGoogle(){
+      if(!state.ready||!state.user){setState('error','Firebase 연결 후 다시 시도해.');return}
+      if(!state.user.isAnonymous)return;
+      const {GoogleAuthProvider,linkWithPopup,linkWithRedirect}=state.mods.authmod,provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
+      const btn=document.querySelector('.v228-google-link');if(btn){btn.disabled=true;btn.textContent='Google 연결 중...'}
+      try{if(matchMedia?.('(pointer:coarse)')?.matches||innerWidth<=720)await linkWithRedirect(state.user,provider);else{const result=await linkWithPopup(state.user,provider);state.user=result.user;renderStatus()}}
+      catch(error){setState('error',error?.code==='auth/credential-already-in-use'?'이미 다른 공게임 계정에 연결된 Google 계정이야.':`Google 연결 실패: ${error?.code||error?.message||error}`)}finally{renderStatus()}
+    }
+    function modeKey(){
+      if(game?._tournamentMatchKey||document.body.classList.contains('tournament-battle'))return 'tournament';
+      if(game?.v212Draft||currentConfig?.draft?.competitive||document.body.classList.contains('competitive-battle'))return 'competitive';
+      if(currentConfig?.randomMode)return 'random';
+      if(typeof autoBattleRunning!=='undefined'&&autoBattleRunning)return 'auto';
+      if(currentConfig?.mode==='boss')return 'boss';
+      if(currentConfig?.mode==='team')return 'team';
+      return 'showdown';
+    }
+    function validPlayer(p){return p&&!p.isBoss&&!p.isBossSummon&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo&&DEFS[p.id]&&!BOSS_IDS.has(p.id)}
+    function groupedPlayers(){
+      const map=new Map();
+      for(const p of game?.players||[]){if(!validPlayer(p))continue;let g=map.get(p.id);if(!g){g={id:p.id,name:p.name||DEFS[p.id]?.name||p.id,team:p.team,damage:0,kills:0,healing:0,hp:0,maxHp:0,survived:false,eliminationOrder:0};map.set(p.id,g)}g.damage+=Math.max(0,Number(p.damageDealt)||0);g.kills+=Math.max(0,Number(p.kills)||0);g.healing+=Math.max(0,Number(p.healingDone)||0);g.hp+=Math.max(0,Number(p.hp)||0);g.maxHp+=Math.max(1,Number(p.maxHp)||1);g.survived=g.survived||!!(p.alive&&!p.hidden);g.eliminationOrder=Math.max(g.eliminationOrder,Number(p.eliminationOrder)||0)}
+      return [...map.values()]
+    }
+    function individualRanking(rows){return [...rows].sort((a,b)=>Number(b.survived)-Number(a.survived)||(b.hp/b.maxHp)-(a.hp/a.maxHp)||b.damage-a.damage||b.kills-a.kills||b.eliminationOrder-a.eliminationOrder||String(a.id).localeCompare(String(b.id)))}
+    function winningSet(rows,mode){
+      const winners=new Set();if(!rows.length)return winners;
+      if(mode==='boss'){
+        const boss=(game?.players||[]).find(p=>p.isBoss||BOSS_IDS.has(p.id));const heroesWon=!!boss&&(!boss.alive||boss.hidden||boss.hp<=0);if(heroesWon)rows.forEach(r=>winners.add(r.id));return winners
+      }
+      if(currentConfig?.mode==='team'){
+        const teams=new Map();for(const r of rows){let t=teams.get(r.team);if(!t){t={team:r.team,hp:0,maxHp:0,damage:0,kills:0,alive:false};teams.set(r.team,t)}t.hp+=r.hp;t.maxHp+=r.maxHp;t.damage+=r.damage;t.kills+=r.kills;t.alive=t.alive||r.survived}
+        const alive=[...teams.values()].filter(t=>t.alive);const winnerTeam=(alive.length===1?alive:[...teams.values()].sort((a,b)=>(b.hp/b.maxHp)-(a.hp/a.maxHp)||b.damage-a.damage||b.kills-a.kills))[0]?.team;rows.filter(r=>r.team===winnerTeam).forEach(r=>winners.add(r.id));return winners
+      }
+      const first=individualRanking(rows)[0];if(first)winners.add(first.id);return winners
+    }
+    function capturePacket(){
+      if(!game||!game.over)return null;const mode=modeKey(),rows=groupedPlayers();if(rows.length<1)return null;
+      const winners=winningSet(rows,mode),ranking=individualRanking(rows),placeMap=new Map(ranking.map((r,i)=>[r.id,i+1]));
+      const matchId=String(game.v228OnlineMatchId||`m_${Date.now().toString(36)}_${randomId()}`).slice(0,100);game.v228OnlineMatchId=matchId;
+      return {matchId,mode,players:rows.length,duration:Math.max(0,Math.round((Number(game.t)||0)*10)/10),results:rows.map(r=>({id:r.id,win:winners.has(r.id),kills:Math.min(500,Math.round(r.kills)),damage:Math.min(10000000,Math.round(r.damage*10)/10),healing:Math.min(10000000,Math.round(r.healing*10)/10),survived:!!r.survived,place:Math.max(1,Math.min(100,placeMap.get(r.id)||rows.length))}))}
+    }
+    function enqueue(packet){if(!packet)return;const queue=readQueue();if(queue.some(x=>x.matchId===packet.matchId))return;queue.push({...packet,queuedAt:Date.now()});saveQueue(queue)}
+    function resultSyncNote(text,error=false){
+      const actions=document.querySelector('#resultBody .v219-result-actions'),winner=document.querySelector('#resultBody .result-winner');if(!actions&&!winner)return;
+      let note=document.getElementById('v228ResultSync');if(!note){note=document.createElement('div');note.id='v228ResultSync';note.className='v228-result-sync';(actions||winner).insertAdjacentElement('afterend',note)}note.classList.toggle('error',!!error);note.textContent=text
+    }
+    async function sendPacket(packet){
+      if(!state.ready||!state.user||!packet)return false;const {ref,update,serverTimestamp,get}=state.mods.dbmod,uid=state.user.uid,resultId=`${packet.matchId}_${uid.slice(0,12)}`.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,120),receiptPath=`matchReceipts/v1/${uid}/${resultId}`;
+      try{const receipt=await get(ref(state.db,receiptPath));if(receipt.exists())return true}catch(_){}
+      const updates={};for(const row of packet.results){const base=`characterResults/v1/${row.id}/${packet.mode}/${resultId}`;updates[base]={uid,matchId:packet.matchId,mode:packet.mode,characterId:row.id,win:row.win,kills:row.kills,damage:row.damage,healing:row.healing,survived:row.survived,contribution:Math.min(100000000,Math.max(0,Math.round((row.damage+row.kills*150+row.healing*.6+(row.survived?100:0))*10)/10)),place:row.place,players:packet.players,duration:packet.duration,timestamp:serverTimestamp(),version:1}}
+      updates[receiptPath]={matchId:packet.matchId,mode:packet.mode,characters:packet.results.length,createdAt:serverTimestamp(),version:1};
+      await update(ref(state.db),updates);state.lastSubmit=packet.matchId;resultSyncNote(`🌐 ${MODE_LABELS[packet.mode]||'경기'} 결과가 커뮤니티 통계에 반영됐어.`);return true
+    }
+    async function flushQueue(){
+      if(!liveHost||!state.ready||state.flushBusy)return;state.flushBusy=true;let queue=readQueue(),changed=false;
+      try{for(const packet of [...queue]){try{if(await sendPacket(packet)){queue=queue.filter(x=>x.matchId!==packet.matchId);changed=true}}catch(error){state.lastError=error?.code||error?.message||String(error);resultSyncNote('온라인 통계 전송 대기 중 · 게임 진행에는 영향 없어.',true);break}}}finally{if(changed)saveQueue(queue);state.flushBusy=false}
+    }
+    function submitCurrentBattle(){
+      if(!liveHost||!game||game.v228OnlineSubmitted)return false;const packet=capturePacket();if(!packet)return false;game.v228OnlineSubmitted=true;enqueue(packet);flushQueue();return true
+    }
+    function detachStats(){for(const off of state.statsOffs.splice(0)){try{off()}catch(_){}}}
+    function rowsFromSnapshot(snapshot){const rows=[];snapshot.forEach(child=>{const v=child.val();if(v&&typeof v==='object')rows.push(v)});return rows}
+    function statsSummary(rows){
+      rows=[...rows].filter(Boolean).sort((a,b)=>(Number(b.timestamp)||0)-(Number(a.timestamp)||0)).slice(0,500);const games=rows.length,wins=rows.filter(r=>r.win).length,kills=rows.reduce((s,r)=>s+(Number(r.kills)||0),0),damage=rows.reduce((s,r)=>s+(Number(r.damage)||0),0),healing=rows.reduce((s,r)=>s+(Number(r.healing)||0),0),survived=rows.filter(r=>r.survived).length,last=Math.max(0,...rows.map(r=>Number(r.timestamp)||0));return {games,wins,losses:games-wins,winRate:games?wins/games*100:0,avgKills:games?kills/games:0,avgDamage:games?damage/games:0,avgHealing:games?healing/games:0,survival:games?survived/games*100:0,last}
+    }
+    function renderStatsSummary(card,summary,mode){
+      if(!card||card.dataset.charId!==state.activeStats.id||card.dataset.mode!==mode)return;const body=card.querySelector('.v228-community-body'),stateEl=card.querySelector('.v228-community-state');if(!body)return;
+      const sample=summary.games<10?'<span class="v228-community-warning">표본 수집 중</span>':`${summary.games>=500?'최근 ':''}${nf.format(summary.games)}경기`;
+      stateEl.textContent=summary.games?`${summary.winRate.toFixed(1)}%`:'데이터 없음';
+      body.innerHTML=`<div class="v228-community-grid"><div class="v228-community-stat"><b>${nf.format(summary.games)}</b><span>수집 경기</span></div><div class="v228-community-stat"><b>${summary.winRate.toFixed(1)}%</b><span>승률</span></div><div class="v228-community-stat"><b>${summary.avgKills.toFixed(1)}</b><span>평균 킬</span></div><div class="v228-community-stat"><b>${nf.format(Math.round(summary.avgDamage))}</b><span>평균 피해</span></div><div class="v228-community-stat"><b>${nf.format(Math.round(summary.avgHealing))}</b><span>평균 회복</span></div><div class="v228-community-stat"><b>${summary.survival.toFixed(1)}%</b><span>생존율</span></div><div class="v228-community-stat"><b>${nf.format(summary.wins)}</b><span>승리</span></div><div class="v228-community-stat"><b>${nf.format(summary.losses)}</b><span>패배</span></div></div><div class="v228-community-foot"><span>${sample} · 익명 이용자 결과를 실시간 집계한 커뮤니티 통계${summary.last?` · ${new Date(summary.last).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})} 갱신`:''}</span><button type="button" class="v228-community-refresh">새로고침</button></div>`;
+      body.querySelector('.v228-community-refresh')?.addEventListener('click',()=>loadStats(state.activeStats.id,mode,true))
+    }
+    function findCommunityCard(id){return [...document.querySelectorAll('.v228-community-card')].find(el=>el.dataset.charId===String(id))||null}
+    function loadStats(id,mode='all',force=false){
+      const card=findCommunityCard(id);if(!card)return;state.activeStats={id,mode};card.dataset.mode=mode;card.querySelectorAll('.v228-community-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===mode));card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">실시간 통계를 불러오는 중...</div>';detachStats();
+      if(!liveHost){card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">GitHub Pages에 V229를 배포하면 실제 커뮤니티 통계가 표시돼.</div>';return}
+      if(!state.ready){card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">Firebase 연결을 기다리는 중...</div>';window.addEventListener('gong-v228-online-ready',()=>loadStats(id,mode,true),{once:true});return}
+      const {ref,query,orderByChild,limitToLast,onValue}=state.mods.dbmod,modes=mode==='all'?MODE_KEYS:[mode],bucket=new Map();let loaded=0,failed=false;
+      for(const key of modes){const q=query(ref(state.db,`characterResults/v1/${id}/${key}`),orderByChild('timestamp'),limitToLast(mode==='all'?80:500));const off=onValue(q,snapshot=>{bucket.set(key,rowsFromSnapshot(snapshot));loaded=Math.max(loaded,bucket.size);if(loaded===modes.length&&!failed)renderStatsSummary(card,statsSummary([...bucket.values()].flat()),mode)},error=>{failed=true;card.querySelector('.v228-community-body').innerHTML=`<div class="v228-community-loading">통계를 읽지 못했어. Realtime Database 규칙을 확인해.<br>${escapeHtml(error?.code||error?.message||error)}</div>`});state.statsOffs.push(off)}
+    }
+    function communityCard(id){
+      const d=DEFS[id];if(!d)return null;const card=document.createElement('section');card.className='v228-community-card';card.dataset.charId=id;card.dataset.mode='all';card.innerHTML=`<div class="v228-community-head"><div class="v228-community-title">🌐 전체 이용자 통계<small>최근 최대 500경기 · 모드별 실시간 공유</small></div><span class="v228-community-state">연결 중</span></div><div class="v228-community-tabs">${['all',...MODE_KEYS].map(key=>`<button type="button" class="v228-community-tab ${key==='all'?'active':''}" data-mode="${key}">${MODE_LABELS[key]}</button>`).join('')}</div><div class="v228-community-body"><div class="v228-community-loading">실시간 통계를 준비하는 중...</div></div>`;card.addEventListener('click',event=>{const btn=event.target.closest('.v228-community-tab');if(btn)loadStats(id,btn.dataset.mode,true)});return card
+    }
+    function appendCommunityStats(){
+      detachStats();const id=skillSelected;if(!id||!DEFS[id])return;const card=communityCard(id),mastery=skillBody.querySelector('.v221-skill-mastery');if(mastery)mastery.insertAdjacentElement('afterend',card);else skillBody.prepend(card);loadStats(id,'all')
+    }
+    const previousSkillRender=renderSkillDetail;renderSkillDetail=function(){const result=previousSkillRender.apply(this,arguments);try{appendCommunityStats()}catch(error){console.warn('[V229] 커뮤니티 통계 카드 오류를 격리했어.',error)}return result};
+    const previousSkillClose=closeSkillModal;closeSkillModal=function(){detachStats();return previousSkillClose.apply(this,arguments)};
+    const previousReset=resetBattle;resetBattle=function(){const result=previousReset.apply(this,arguments);if(game){game.v228OnlineMatchId=`m_${Date.now().toString(36)}_${randomId()}`;game.v228OnlineSubmitted=false}return result};
+    const previousCheckEnd=checkEnd;checkEnd=function(){const wasOver=!!game?.over,result=previousCheckEnd.apply(this,arguments);if(!wasOver&&game?.over)setTimeout(submitCurrentBattle,0);return result};
+    const previousResultRender=renderResultModal;renderResultModal=function(){const result=previousResultRender.apply(this,arguments);submitCurrentBattle();return result};
+    document.addEventListener('visibilitychange',()=>{clearTimeout(state.hiddenTimer);if(document.hidden)state.hiddenTimer=setTimeout(removePresence,60000);else{markPresence();flushQueue()}});
+    window.addEventListener('online',()=>{initFirebase();flushQueue()});window.addEventListener('beforeunload',()=>{removePresence()});setInterval(flushQueue,45000);
+    buildUi();initFirebase();
+    window.__GONG_V228__={build:BUILD,config:{projectId:CONFIG.projectId,databaseURL:CONFIG.databaseURL,liveHost:LIVE_HOST},status:()=>({status:state.status,message:state.message,online:state.online,ready:state.ready,anonymous:state.user?.isAnonymous??null,queued:readQueue().length,lastSubmit:state.lastSubmit,lastError:state.lastError}),previewCurrentBattle:()=>capturePacket(),submitCurrentBattle,flushQueue,openStats(id,mode='all'){openSkillModal(id);setTimeout(()=>loadStats(id,mode,true),0)},reconnect:()=>initFirebase(true),modeKey,disconnect:removePresence};
+    window.__GONG_V228_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+    console.info('[V228] Firebase 익명 연결 · 실시간 동접자수 · 캐릭터별 커뮤니티 통계');
+  })();
+
+  window.__GONG_V229_BUILD__='V229_FIREBASE_AND_COMPETITIVE_MOBILE_FIX';window.__GONG_LATEST_BUILD__=window.__GONG_V229_BUILD__;
+  console.info('[V229] 스킬 설명창 복구 · 경쟁전 자동 시작 · 모바일 밴픽 가독성 개선 · Firebase 규칙/전송 일치');
+
   renderSetup();syncQuality();updateBattleCode();console.info('[V217] 경쟁전 종료 흐름 및 토너먼트 UI 정리 활성화');
 })();
 
@@ -29983,7 +30321,7 @@ console.info('[V208] 최신 빌드 활성화');
 .draft-primary{width:100%;border:0;border-radius:15px;background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;padding:15px;font-size:17px;font-weight:1000;cursor:pointer;box-shadow:0 5px 0 #34106f}.draft-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .draft-play.hidden,.draft-battle-start.hidden{display:none!important}.draft-status-card{border:2px solid #111;border-radius:18px;background:#111;color:#fff;padding:12px 14px;margin-bottom:12px}.draft-status-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.draft-status-title{display:flex;align-items:center;gap:9px;min-width:0}.draft-status-card strong{font-size:16px}.draft-status-card>small{display:block;margin-top:7px;font-size:11px;color:#ddd;text-align:left;line-height:1.35}.draft-phase-badge{border-radius:999px;background:#f59e0b;color:#111;padding:5px 9px;font-size:11px;font-weight:1000;flex:0 0 auto}.draft-phase-badge.pick{background:#22c55e}.draft-phase-badge.done{background:#a78bfa;color:#fff}.draft-countdown{display:flex;align-items:baseline;justify-content:center;gap:2px;min-width:58px;border:2px solid #fff;border-radius:14px;padding:5px 8px;background:#fff;color:#111;font-weight:1000}.draft-countdown b{font-size:23px;line-height:1}.draft-countdown span{font-size:10px}.draft-countdown.urgent{background:#ef4444;color:#fff;border-color:#fecaca;animation:draftTimerPulse .65s infinite alternate}.draft-countdown.hidden{visibility:hidden}.draft-sequence-wrap{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.23)}.draft-sequence-label{font-size:10px;font-weight:1000;color:#fef3c7;white-space:nowrap;padding-top:4px}.draft-turn-order{display:flex;flex-wrap:wrap;gap:4px;min-width:0}.draft-turn-chip{border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:3px 6px;font-size:9px;font-weight:1000;color:#cbd5e1;background:#252525}.draft-turn-chip.user{color:#bfdbfe}.draft-turn-chip.ai{color:#fecaca}.draft-turn-chip.done{opacity:.45;text-decoration:line-through}.draft-turn-chip.current{opacity:1;text-decoration:none;background:#fff;color:#111;border-color:#fff;box-shadow:0 0 0 2px #f59e0b}@keyframes draftTimerPulse{from{transform:scale(1)}to{transform:scale(1.06)}}
 .draft-team-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}.draft-team{border:2px solid #bfc5d0;border-radius:18px;background:#fff;padding:11px;min-width:0}.draft-team.user-team{border-color:#3b82f6}.draft-team.ai-team{border-color:#ef4444}.draft-team-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.draft-team-head strong{font-size:16px}.draft-team-head span{font-size:12px;font-weight:1000;color:#606675}.draft-subtitle{font-size:11px;font-weight:1000;color:#334155;margin:5px 0}.draft-subtitle.ban{color:#9f1239}.draft-slot-row,.draft-ban-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;min-height:54px}.draft-ban-row{min-height:38px}.draft-slot{position:relative;min-width:0;border:1px dashed #b6bdc9;border-radius:10px;background:#f5f7fa;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#8a909c;font-size:10px;font-weight:900}.draft-slot.filled{border-style:solid;background:#fff}.draft-slot img{width:100%;height:52px;object-fit:cover}.draft-slot span{position:absolute;left:2px;right:2px;bottom:2px;background:rgba(0,0,0,.72);color:#fff;border-radius:5px;padding:2px;font-size:8px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.draft-ban-row .draft-slot{min-height:36px;background:#fff1f2}.draft-ban-row .draft-slot img{height:36px;filter:grayscale(1)}.draft-ban-row .draft-slot::after{content:'×';position:absolute;color:#dc2626;font-size:24px;font-weight:1000;text-shadow:0 1px #fff}
-.draft-pool-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:4px 2px 9px}.draft-pool-head strong{font-size:17px}.draft-pool-head span{font-size:11px;font-weight:800;color:#626978;text-align:right}.draft-pool-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.draft-card{position:relative;display:grid;grid-template-columns:45px minmax(0,1fr) 28px;align-items:center;gap:8px;min-width:0;border:2px solid var(--c,#777);border-radius:14px;background:#fff;padding:7px;text-align:left;cursor:pointer;transition:transform .12s,opacity .12s,box-shadow .12s}.draft-card:not(:disabled):active{transform:scale(.98)}.draft-card:not(:disabled):hover{box-shadow:0 4px 12px rgba(0,0,0,.12)}.draft-card img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:3px solid var(--c,#777)}.draft-card-copy{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}.draft-card-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:12px;font-weight:1000;line-height:1.13;word-break:keep-all;overflow-wrap:anywhere}.draft-card-meta{font-size:9px;color:#656b76;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.draft-card-help{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;justify-self:end;width:27px;height:27px;border:0;border-radius:50%;background:#111;color:#fff;font-size:14px;font-weight:1000;line-height:1;cursor:pointer;box-shadow:0 0 0 2px #fff,0 0 0 3px #cbd5e1}.draft-card-help:active{transform:scale(.92)}.draft-card:disabled{cursor:default;opacity:.42;filter:grayscale(.3)}.draft-card.user-pick{background:#dbeafe;border-color:#2563eb}.draft-card.ai-pick{background:#fee2e2;border-color:#dc2626}.draft-card.banned{background:#f4f4f5;filter:grayscale(1);opacity:.34}.draft-card-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,0,0,.58);color:#fff;font-size:12px;font-weight:1000}.draft-battle-start{margin-top:13px;background:linear-gradient(135deg,#b91c1c,#ef4444);box-shadow:0 5px 0 #7f1d1d}
+.draft-pool-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:4px 2px 9px}.draft-pool-head strong{font-size:17px}.draft-pool-head span{font-size:11px;font-weight:800;color:#626978;text-align:right}.draft-pool-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.draft-card{position:relative;display:grid;grid-template-columns:45px minmax(0,1fr) 28px;align-items:center;gap:8px;min-width:0;border:2px solid var(--c,#777);border-radius:14px;background:#fff;padding:7px;text-align:left;cursor:pointer;transition:transform .12s,opacity .12s,box-shadow .12s}.draft-card:not(.is-disabled):active{transform:scale(.98)}.draft-card:not(.is-disabled):hover{box-shadow:0 4px 12px rgba(0,0,0,.12)}.draft-card img{width:45px;height:45px;border-radius:50%;object-fit:cover;border:3px solid var(--c,#777)}.draft-card-copy{display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}.draft-card-name{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:12px;font-weight:1000;line-height:1.13;word-break:keep-all;overflow-wrap:anywhere}.draft-card-meta{font-size:9px;color:#656b76;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.draft-card-help{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;justify-self:end;width:27px;height:27px;border:0;border-radius:50%;background:#111;color:#fff;font-size:14px;font-weight:1000;line-height:1;cursor:pointer;box-shadow:0 0 0 2px #fff,0 0 0 3px #cbd5e1}.draft-card-help:active{transform:scale(.92)}.draft-card.is-disabled{cursor:default;opacity:.42;filter:grayscale(.3)}.draft-card.user-pick{background:#dbeafe;border-color:#2563eb}.draft-card.ai-pick{background:#fee2e2;border-color:#dc2626}.draft-card.banned{background:#f4f4f5;filter:grayscale(1);opacity:.34}.draft-card-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(0,0,0,.58);color:#fff;font-size:12px;font-weight:1000}.draft-battle-start{margin-top:13px;background:linear-gradient(135deg,#b91c1c,#ef4444);box-shadow:0 5px 0 #7f1d1d}
 body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3aed}
 @media(max-width:700px){.draft-screen{padding:7px}.draft-shell{padding:9px;border-radius:18px}.draft-topbar{grid-template-columns:auto 1fr;gap:8px}.draft-topbar .draft-reset{grid-column:1/-1}.draft-topbar h2{font-size:20px}.draft-topbar p{font-size:11px}.draft-team-grid{grid-template-columns:1fr}.draft-pool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.draft-card{min-height:68px;grid-template-columns:41px minmax(0,1fr) 26px;gap:6px;padding:7px 6px}.draft-card-help{width:25px;height:25px;font-size:13px}.draft-status-card>small{text-align:left}.draft-slot-row,.draft-ban-row{grid-template-columns:repeat(5,minmax(0,1fr))}.draft-sequence-wrap{display:block}.draft-sequence-label{display:block;margin-bottom:6px;padding-top:0}.draft-turn-chip{font-size:9px;padding:3px 6px}}
 @media(max-width:559px){#draftModeBtn{order:7;grid-column:1/-1}.draft-size-btn{padding:12px 6px;font-size:17px}.draft-card-name{font-size:11.5px}.draft-card-meta{font-size:8px}.draft-card img{width:41px;height:41px}.draft-team{padding:8px}.draft-slot img{height:47px}.draft-status-top{align-items:flex-start}.draft-status-title strong{font-size:14px}.draft-countdown{min-width:54px}.draft-countdown b{font-size:21px}}
@@ -30068,118 +30406,19 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 @media(max-width:700px){.v227-season-card{max-height:94vh;border-radius:17px}.v227-season-head{padding:11px 12px}.v227-season-head strong{font-size:17px}.v227-season-head span{font-size:10px}.v227-season-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:8px}.v227-season-char{grid-template-columns:42px minmax(0,1fr);gap:7px;padding:7px}.v227-season-char img{width:42px;height:42px}.v227-season-tools{grid-template-columns:1fr}.v227-season-count{text-align:right}}
 @media(max-width:390px){.v227-season-summary{grid-template-columns:1fr 1fr}.v227-season-list{grid-template-columns:1fr 1fr}.v227-season-char{grid-template-columns:38px minmax(0,1fr)}.v227-season-char img{width:38px;height:38px}.v227-season-char-meta{font-size:8px}}
 </style>
-<script id="v227CompetitiveSeasonRewardScript">
-(()=>{
-  const BUILD='V227_COMPETITIVE_SEASON_MASTERY_REWARDS';
-  const STORE_KEY='gonggame_v227_competitive_season_mastery_rewards_v1';
-  const HISTORY_KEY='gonggame_competitive_season_history';
-  const PROFILE_KEY='gonggame_competitive_rank_state';
-  const BOSS_SET=new Set(['james','yoogeon','youngsik','naeonseong','julia']);
-  const defs=()=>window.__GONG_V134_DEBUG__?.defs||{};
-  const RANK_NAMES=['솔리언 1','솔리언 2','솔리언 3','브론즈 1','브론즈 2','브론즈 3','실버 1','실버 2','실버 3','골드 1','골드 2','골드 3','플래티넘 1','플래티넘 2','플래티넘 3','졸업생 1','졸업생 2','졸업생 3','신'];
-  const clampRank=index=>Math.max(0,Math.min(18,Math.floor(Number(index)||0)));
-  const rewardForRank=index=>Math.min(100000,10000+clampRank(index)*5000);
-  const read=(key,fallback)=>{try{const raw=localStorage.getItem(key);return raw==null?fallback:JSON.parse(raw)}catch(_){return fallback}};
-  const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}};
-  let state=read(STORE_KEY,{version:1,initialized:false,seenSeasons:[],rewards:[]});
-  if(!state||typeof state!=='object')state={version:1,initialized:false,seenSeasons:[],rewards:[]};
-  if(!Array.isArray(state.seenSeasons))state.seenSeasons=[];
-  if(!Array.isArray(state.rewards))state.rewards=[];
-  function save(){state.version=1;state.updatedAt=new Date().toISOString();write(STORE_KEY,state)}
-  function history(){const rows=read(HISTORY_KEY,[]);return Array.isArray(rows)?rows:[]}
-  function currentProfile(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;try{return api?.profile?.()||read(PROFILE_KEY,null)}catch(_){return read(PROFILE_KEY,null)}}
-  function validSeasonId(id){return /^\d{4}-\d{2}$/.test(String(id||''))}
-  function pending(){return state.rewards.find(r=>r&&!r.claimed)||null}
-  function queueFromRow(row,{force=false}={}){
-    const seasonId=String(row?.seasonId||'');
-    if(!validSeasonId(seasonId))return null;
-    const rewardId=`competitive:${seasonId}`;
-    let existing=state.rewards.find(r=>r?.id===rewardId);
-    if(existing)return existing;
-    if(!force&&state.seenSeasons.includes(seasonId))return null;
-    const rankIndex=clampRank(row?.rankIndex),rankName=RANK_NAMES[rankIndex],xp=rewardForRank(rankIndex);
-    existing={id:rewardId,type:'competitive-season',seasonId,seasonLabel:row?.seasonLabel||`${seasonId} 시즌`,rankIndex,rankName,xp,points:Math.max(0,Number(row?.points)||0),wins:Math.max(0,Number(row?.wins)||0),losses:Math.max(0,Number(row?.losses)||0),matches:Math.max(0,Number(row?.matches)||0),claimed:false,characterId:null,createdAt:new Date().toISOString(),claimedAt:null};
-    state.rewards.push(existing);state.rewards=state.rewards.slice(-36);save();return existing
-  }
-  function initialize(){
-    if(state.initialized)return;
-    state.initialized=true;
-    state.activatedSeasonId=currentProfile()?.seasonId||null;
-    state.seenSeasons=[...new Set(history().map(r=>String(r?.seasonId||'')).filter(validSeasonId))];
-    save();
-  }
-  function scan(){
-    initialize();
-    currentProfile();
-    let queued=0;
-    for(const row of history()){
-      const id=String(row?.seasonId||'');
-      if(!validSeasonId(id)||state.seenSeasons.includes(id))continue;
-      state.seenSeasons.push(id);
-      if(queueFromRow(row,{force:true}))queued++;
-    }
-    state.seenSeasons=[...new Set(state.seenSeasons)].slice(-48);save();
-    updateRankMeta();
-    if(queued)seasonToast(`경쟁전 시즌 보상 ${queued}개가 도착했어!`);
-    maybeOpen();
-    return queued;
-  }
-  function seasonToast(message){let el=document.getElementById('v227SeasonToast');if(!el){el=document.createElement('div');el.id='v227SeasonToast';el.className='v227-season-toast';document.body.appendChild(el)}el.textContent=message;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2600)}
-  function characters(){const d=defs();return Object.keys(d).filter(id=>d[id]&&!BOSS_SET.has(id))}
-  function masteryApi(){return window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V220__||window.__GONG_V219__}
-  function currentXp(id){const data=masteryApi()?.mastery?.();return Math.max(0,Number(data?.characters?.[id]?.xp)||0)}
-  function levelInfo(xp){return masteryApi()?.levelInfo?.(xp)||{level:1,max:false}}
-  function ensureModal(){
-    let modal=document.getElementById('v227SeasonRewardModal');if(modal)return modal;
-    modal=document.createElement('div');modal.id='v227SeasonRewardModal';modal.className='v227-season-modal hidden';modal.setAttribute('aria-hidden','true');
-    modal.innerHTML=`<section class="v227-season-card" role="dialog" aria-modal="true" aria-labelledby="v227SeasonRewardTitle"><header class="v227-season-head"><div class="v227-season-head-copy"><strong id="v227SeasonRewardTitle">🏆 경쟁전 시즌 숙련도 보상</strong><span class="v227-season-subtitle">시즌 종료 등급에 따라 원하는 캐릭터 한 명에게 숙련도 XP를 지급해.</span></div><button type="button" class="v227-season-later">나중에 선택</button></header><div class="v227-season-summary"><span>시즌 종료 티어<b class="v227-season-tier">-</b></span><span>선택 지급 XP<b class="v227-season-xp">-</b></span></div><div class="v227-season-tools"><input class="v227-season-search" type="search" placeholder="캐릭터 이름 검색" autocomplete="off"><span class="v227-season-count"></span></div><div class="v227-season-list"></div><footer class="v227-season-bottom"><div class="v227-season-choice">캐릭터를 선택해.</div><button type="button" class="v227-season-confirm" disabled>선택한 캐릭터에게 XP 지급</button></footer></section>`;
-    document.body.appendChild(modal);
-    modal.querySelector('.v227-season-later').addEventListener('click',close);
-    modal.querySelector('.v227-season-search').addEventListener('input',render);
-    modal.querySelector('.v227-season-list').addEventListener('click',event=>{const card=event.target.closest('[data-v227-season-char]');if(!card)return;modal.dataset.selectedId=card.dataset.v227SeasonChar;render()});
-    modal.querySelector('.v227-season-confirm').addEventListener('click',()=>claim(modal.dataset.selectedId));
-    return modal
-  }
-  function open(force=false){const reward=pending();if(!reward)return false;const modal=ensureModal();if(!force&&!modal.classList.contains('hidden'))return true;modal.dataset.rewardId=reward.id;modal.dataset.selectedId='';modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');render();setTimeout(()=>modal.querySelector('.v227-season-search')?.focus(),60);return true}
-  function close(){const modal=document.getElementById('v227SeasonRewardModal');if(!modal)return;modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');modal.dataset.selectedId=''}
-  function render(){
-    const reward=pending(),modal=ensureModal();if(!reward){close();return}
-    const query=String(modal.querySelector('.v227-season-search')?.value||'').trim().toLowerCase(),selected=modal.dataset.selectedId||'',ids=characters().filter(id=>!query||String(defs()[id]?.name||'').toLowerCase().includes(query));
-    modal.querySelector('#v227SeasonRewardTitle').textContent=`🏆 ${reward.seasonLabel} 경쟁전 보상`;
-    modal.querySelector('.v227-season-subtitle').textContent=`${reward.rankName}으로 시즌 마무리 · 원하는 캐릭터 한 명에게 숙련도 ${reward.xp.toLocaleString()} XP`;
-    modal.querySelector('.v227-season-tier').textContent=reward.rankName;
-    modal.querySelector('.v227-season-xp').textContent=`${reward.xp.toLocaleString()} XP`;
-    modal.querySelector('.v227-season-count').textContent=`${ids.length}명`;
-    modal.querySelector('.v227-season-list').innerHTML=ids.map(id=>{const d=defs()[id],xp=currentXp(id),lv=levelInfo(xp),chosen=id===selected;return `<button type="button" class="v227-season-char ${chosen?'selected':''}" data-v227-season-char="${id}" style="--c:${d.color}"><img src="${d.img}" alt="${String(d.name||'').replace(/"/g,'&quot;')}" loading="lazy" decoding="async" style="object-position:50% 50%"><span class="v227-season-char-copy"><span class="v227-season-char-name">${d.name}</span><span class="v227-season-char-meta">Lv.${lv.level} · 누적 ${Math.round(xp).toLocaleString()} XP</span></span></button>`}).join('');
-    const choice=modal.querySelector('.v227-season-choice'),confirm=modal.querySelector('.v227-season-confirm');
-    if(selected&&defs()[selected]){const xp=currentXp(selected),before=levelInfo(xp),after=levelInfo(xp+reward.xp);choice.className='v227-season-choice ready';choice.textContent=`${defs()[selected].name} · Lv.${before.level}${after.level>before.level?` → Lv.${after.level}`:''} · +${reward.xp.toLocaleString()} XP`;confirm.disabled=false;confirm.textContent=`${defs()[selected].name}에게 +${reward.xp.toLocaleString()} XP 지급`}else{choice.className='v227-season-choice';choice.textContent='캐릭터를 선택해.';confirm.disabled=true;confirm.textContent=`선택한 캐릭터에게 +${reward.xp.toLocaleString()} XP 지급`}
-  }
-  function claim(id){
-    const reward=pending(),api=masteryApi();if(!reward||!id||!defs()[id]||BOSS_SET.has(id)||!api?.setMasteryXp)return false;
-    const beforeXp=currentXp(id),before=levelInfo(beforeXp).level,afterXp=beforeXp+Math.max(1,Number(reward.xp)||0);api.setMasteryXp(id,afterXp);
-    reward.claimed=true;reward.characterId=id;reward.claimedAt=new Date().toISOString();save();const after=levelInfo(afterXp).level;close();seasonToast(`${defs()[id].name} 숙련도 +${reward.xp.toLocaleString()} XP${after>before?` · Lv.${after} 달성!`:''}`);setTimeout(()=>maybeOpen(),180);return true
-  }
-  function dailyRewardBlocking(){
-    const daily=window.__GONG_V226__?.pendingDailyRewards?.()||[];
-    const dailyModal=document.getElementById('v226MasteryRewardModal');
-    return daily.length>0||!!(dailyModal&&!dailyModal.classList.contains('hidden'))
-  }
-  function maybeOpen(){if(!pending()||dailyRewardBlocking())return false;return open(false)}
-  function updateRankMeta(){
-    const seasonMeta=document.getElementById('competitiveSeasonMeta');if(!seasonMeta)return;
-    let el=document.getElementById('v227CompetitiveSeasonRewardMeta');if(!el){el=document.createElement('div');el.id='v227CompetitiveSeasonRewardMeta';el.className='v227-season-reward-meta';seasonMeta.insertAdjacentElement('afterend',el)}
-    const profile=currentProfile(),index=clampRank(profile?.rankIndex),xp=rewardForRank(index),count=state.rewards.filter(r=>!r.claimed).length;
-    el.textContent=`시즌 종료 예상 보상 · ${RANK_NAMES[index]} 기준 원하는 캐릭터 +${xp.toLocaleString()} XP${count?` · 미수령 ${count}개`:''}`
-  }
-  initialize();updateRankMeta();setTimeout(scan,180);setInterval(scan,30000);setInterval(maybeOpen,1200);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()});
-  document.getElementById('draftModeBtn')?.addEventListener('click',()=>setTimeout(updateRankMeta,0));
-  const api={build:BUILD,rewardForRank,rankRewards:RANK_NAMES.map((name,index)=>({name,index,xp:rewardForRank(index)})),pending:()=>state.rewards.filter(r=>!r.claimed).map(r=>({...r})),history:()=>state.rewards.map(r=>({...r})),scan,open:()=>open(true),claim,queueSeasonRewardForTest(rankIndex=0,seasonId='2099-01'){const row={seasonId,seasonLabel:`${seasonId} 테스트 시즌`,rankIndex:clampRank(rankIndex),points:0,wins:0,losses:0,matches:0};const r=queueFromRow(row,{force:true});if(r){state.seenSeasons.push(seasonId);save();open(true)}return r?{...r}:null},resetRewardsForTest(){state={version:1,initialized:true,activatedSeasonId:currentProfile()?.seasonId||null,seenSeasons:history().map(r=>r?.seasonId).filter(validSeasonId),rewards:[]};save();close();updateRankMeta();return true}};
-  window.__GONG_V227__=api;window.__GONG_V227_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V227] 경쟁전 시즌 종료 티어별 캐릭터 숙련도 선택 보상 · 솔리언 1 10,000 XP ~ 신 100,000 XP');
-})();
-</script>
+
 <script id="v227FinalBuildMarker">(()=>{const BUILD='V227_COMPETITIVE_SEASON_MASTERY_REWARDS';window.__GONG_V227_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
+
+
+<style id="v228FirebaseCommunityStyle">
+.v228-online-panel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin:10px 0 12px;padding:11px 12px;border:2px solid #12291d;border-radius:16px;background:linear-gradient(135deg,#effff5,#f5f8ff 52%,#fff9df);box-shadow:0 4px 0 #1111;overflow:hidden}
+.v228-online-main{min-width:0}.v228-online-title{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:14px;font-weight:1000;color:#142018}.v228-live-dot{width:10px;height:10px;border-radius:50%;background:#a0a7b0;box-shadow:0 0 0 3px #a0a7b022;flex:0 0 auto}.v228-online-panel.connected .v228-live-dot,.v228-live-pill.connected .v228-live-dot{background:#1bb968;box-shadow:0 0 0 3px #1bb96822,0 0 10px #1bb96888}.v228-online-panel.error .v228-live-dot,.v228-live-pill.error .v228-live-dot{background:#e44a4a;box-shadow:0 0 0 3px #e44a4a22}.v228-online-sub{margin-top:4px;font-size:9px;font-weight:850;color:#5e6672;line-height:1.45;overflow-wrap:anywhere}.v228-online-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}.v228-google-link{border:2px solid #111;border-radius:11px;background:#fff;color:#202124;padding:8px 10px;font-size:10px;font-weight:1000;cursor:pointer;white-space:nowrap}.v228-google-link:disabled{opacity:.52;cursor:default}.v228-online-retry{border:1px solid #8e98a8;border-radius:10px;background:#fff;padding:7px 9px;font-size:9px;font-weight:1000;cursor:pointer}.v228-live-pill{display:inline-flex;align-items:center;gap:5px;min-height:31px;border:1px solid #b9c5bd;border-radius:999px;background:#f4fff8;padding:5px 9px;font-size:9px;font-weight:1000;color:#203a2b;white-space:nowrap}.v228-live-pill .v228-live-dot{width:7px;height:7px}.v228-live-pill.error{background:#fff3f3;color:#7f2525;border-color:#e5b4b4}.v228-live-pill.pending{background:#f5f6f8;color:#5c6370}.v228-community-card{position:relative;border:2px solid #196d48;border-radius:15px;background:linear-gradient(145deg,#f2fff8,#f7f6ff);padding:10px;margin:0 0 10px;overflow:hidden}.v228-community-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.v228-community-title{font-size:13px;font-weight:1000;color:#133c2a}.v228-community-title small{display:block;margin-top:2px;font-size:8px;color:#67716c;font-weight:850}.v228-community-state{flex:0 0 auto;border-radius:999px;background:#e2f7eb;color:#12643f;padding:4px 7px;font-size:8px;font-weight:1000}.v228-community-tabs{display:flex;gap:5px;overflow-x:auto;margin-top:8px;padding:1px 0 4px;scrollbar-width:thin}.v228-community-tab{flex:0 0 auto;border:1px solid #bfc8c2;border-radius:999px;background:#fff;padding:5px 8px;font-size:8px;font-weight:1000;color:#4b5650;cursor:pointer}.v228-community-tab.active{border-color:#155f3e;background:#155f3e;color:#fff}.v228-community-body{margin-top:7px}.v228-community-loading{padding:14px;text-align:center;border:1px dashed #b7c6bc;border-radius:11px;background:#fff;color:#66716b;font-size:9px;font-weight:900}.v228-community-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.v228-community-stat{min-width:0;border:1px solid #d6dfd9;border-radius:10px;background:#fff;padding:7px 4px;text-align:center}.v228-community-stat b{display:block;font-size:14px;color:#111;overflow:hidden;text-overflow:ellipsis}.v228-community-stat span{display:block;margin-top:2px;font-size:7px;font-weight:900;color:#6c746f}.v228-community-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:7px;font-size:8px;font-weight:850;color:#68716c;line-height:1.35}.v228-community-refresh{border:1px solid #aebbb3;border-radius:9px;background:#fff;padding:5px 7px;font-size:8px;font-weight:1000;color:#274b38;cursor:pointer}.v228-community-warning{color:#9a5b00}.v228-result-sync{margin:7px 0 0;border-radius:10px;background:#f2fff7;border:1px solid #b9dfca;padding:6px 8px;font-size:8px;font-weight:900;color:#24603f;text-align:center}.v228-result-sync.error{background:#fff2f2;border-color:#e5baba;color:#8b3030}
+@media(max-width:620px){.v228-online-panel{grid-template-columns:1fr;padding:10px}.v228-online-actions{justify-content:stretch}.v228-google-link,.v228-online-retry{flex:1 1 45%;min-height:42px}.v228-community-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v228-community-foot{display:block}.v228-community-refresh{width:100%;margin-top:6px;min-height:35px}.battle-actions .v228-live-pill{order:4;flex:1 1 100%;justify-content:center}}
+</style>
+
+<script id="v228FinalBuildMarker">(()=>{const BUILD='V228_FIREBASE_PRESENCE_AND_COMMUNITY_STATS';window.__GONG_V228_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
+<script id="v229FinalBuildScript">window.__GONG_V229_BUILD__='V229_FIREBASE_AND_COMPETITIVE_MOBILE_FIX';window.__GONG_LATEST_BUILD__=window.__GONG_V229_BUILD__;</script>
 </body>
 </html>
