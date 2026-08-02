@@ -29832,13 +29832,13 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* V228 Firebase integration runs in the main game closure for reliable hooks. */
 (()=>{
-    const BUILD='V228_FIREBASE_PRESENCE_AND_COMMUNITY_STATS';
+    const BUILD='V230_FIREBASE_VERIFIED_PRESENCE';
     const SDK_VERSION='12.17.0';
-    const LIVE_HOST='ddogy1212.github.io';
+    const APP_NAME='gonggame-online';
     const CONFIG={
       apiKey:'AIzaSyCcCFaMN7WMfwgkLu2d1ksxQ9LYfcL1VKw',
       authDomain:'salw-gong-game.firebaseapp.com',
-      databaseURL:'https://salw-gong-game-default-rtdb.asia-southeast1.firebasedatabase.app/',
+      databaseURL:'https://salw-gong-game-default-rtdb.asia-southeast1.firebasedatabase.app',
       projectId:'salw-gong-game',
       storageBucket:'salw-gong-game.firebasestorage.app',
       messagingSenderId:'301115328104',
@@ -29849,18 +29849,21 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const QUEUE_KEY='gonggame_v228_online_result_queue_v1';
     const SESSION_KEY='gonggame_v228_presence_connection';
     const nf=new Intl.NumberFormat('ko-KR');
-    const liveHost=location.hostname===LIVE_HOST;
-    const state={status:'loading',message:'Firebase 연결 준비 중',online:0,user:null,ready:false,db:null,auth:null,mods:null,presenceRef:null,presenceCountOff:null,connectedOff:null,hiddenTimer:null,statsOffs:[],activeStats:{id:null,mode:'all'},lastSubmit:'',lastError:'',flushBusy:false};
+    const allowedEnvironment=location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
+    const state={status:'loading',message:'Firebase 연결 준비 중',online:0,user:null,ready:false,authReady:false,socketConnected:false,presenceRegistered:false,selfPresenceConfirmed:false,db:null,auth:null,mods:null,presenceRef:null,presenceCountOff:null,selfPresenceOff:null,connectedOff:null,hiddenTimer:null,retryTimer:null,statsOffs:[],activeStats:{id:null,mode:'all'},lastSubmit:'',lastError:'',flushBusy:false};
     const safeJson=(value,fallback)=>{try{return JSON.parse(value)}catch(_){return fallback}};
     const readQueue=()=>{try{const rows=safeJson(localStorage.getItem(QUEUE_KEY)||'[]',[]);return Array.isArray(rows)?rows:[]}catch(_){return[]}};
     const saveQueue=rows=>{try{localStorage.setItem(QUEUE_KEY,JSON.stringify(rows.slice(-20)))}catch(_){}};
     const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const randomId=()=>{try{return crypto.randomUUID().replace(/[^a-zA-Z0-9_-]/g,'')}catch(_){return `m${Date.now().toString(36)}${Math.random().toString(36).slice(2,12)}`}};
+    function errorCode(error){return String(error?.code||error?.message||error||'알 수 없는 오류')}
+    function friendlyError(error){const code=errorCode(error);if(code.includes('auth/operation-not-allowed')||code.includes('OPERATION_NOT_ALLOWED'))return 'Firebase Authentication에서 익명 로그인을 사용 설정해야 해.';if(code.includes('auth/unauthorized-domain'))return 'Authentication 승인된 도메인에 ddogy1212.github.io를 추가해야 해.';if(code.includes('permission-denied')||code.includes('PERMISSION_DENIED'))return 'Realtime Database 보안 규칙이 V230 코드와 맞지 않아. V230 규칙을 게시해.';if(code.includes('Failed to fetch')||code.includes('NetworkError')||code.includes('network-request-failed'))return 'Firebase SDK 또는 네트워크에 연결하지 못했어. 인터넷 연결과 브라우저 차단 설정을 확인해.';return code}
+    function diagnosticsText(){const auth=state.authReady?'인증 ✓':'인증 …',db=state.socketConnected?'DB ✓':'DB …',self=state.selfPresenceConfirmed?'내 접속 ✓':'내 접속 …';return `${auth} · ${db} · ${self}`}
     function statusClass(){return state.status==='connected'?'connected':state.status==='error'?'error':'pending'}
-    function statusText(){if(state.status==='connected')return `현재 ${nf.format(state.online)}명 접속 중`;if(state.status==='error')return '온라인 연결 실패';return '동접 확인 중'}
+    function statusText(){if(state.status==='connected'&&state.presenceRegistered)return `현재 ${nf.format(Math.max(1,state.online))}명 접속 중`;if(state.status==='error')return '온라인 연결 실패';if(state.authReady&&state.socketConnected)return '내 접속 등록 중';if(state.authReady)return '실시간 DB 연결 중';return '동접 확인 중'}
     function buildUi(){
       if(!document.getElementById('v228OnlinePanel')){
-        const panel=document.createElement('section');panel.id='v228OnlinePanel';panel.className='v228-online-panel';panel.innerHTML=`<div class="v228-online-main"><div class="v228-online-title"><span class="v228-live-dot"></span><span class="v228-live-count-text">동접 확인 중</span></div><div class="v228-online-sub">회원가입 없이 익명으로 연결돼. Google 연결은 선택사항이며, 커뮤니티 통계에는 이름이나 이메일을 저장하지 않아.</div></div><div class="v228-online-actions"><button type="button" class="v228-google-link">Google 계정 연결</button><button type="button" class="v228-online-retry">연결 다시 시도</button></div>`;
+        const panel=document.createElement('section');panel.id='v228OnlinePanel';panel.className='v228-online-panel';panel.innerHTML=`<div class="v228-online-main"><div class="v228-online-title"><span class="v228-live-dot"></span><span class="v228-live-count-text">동접 확인 중</span></div><div class="v228-online-sub">회원가입 없이 익명으로 연결돼. 접속자 수에는 현재 보고 있는 나 자신도 포함돼.</div></div><div class="v228-online-actions"><button type="button" class="v228-google-link">Google 계정 연결</button><button type="button" class="v228-online-retry">Firebase 다시 연결</button></div>`;
         const modeHub=document.getElementById('modeHub');if(modeHub)modeHub.insertAdjacentElement('beforebegin',panel);else document.getElementById('setup')?.prepend(panel);
         panel.querySelector('.v228-google-link')?.addEventListener('click',linkGoogle);
         panel.querySelector('.v228-online-retry')?.addEventListener('click',()=>initFirebase(true));
@@ -29879,23 +29882,29 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const panel=document.getElementById('v228OnlinePanel'),btn=panel?.querySelector('.v228-google-link'),retry=panel?.querySelector('.v228-online-retry'),sub=panel?.querySelector('.v228-online-sub');
       if(btn){const linked=!!state.user&&!state.user.isAnonymous;btn.disabled=!state.user||linked||state.status==='loading';btn.textContent=linked?'✓ Google 연결됨':'Google 계정 연결'}
       if(retry)retry.hidden=state.status!=='error';
-      if(sub){sub.textContent=state.status==='error'?`게임은 오프라인으로 정상 작동해. ${state.message||'Firebase 설정과 보안 규칙을 확인해.'}`:'회원가입 없이 익명으로 연결돼. Google 연결은 선택사항이며, 커뮤니티 통계에는 이름이나 이메일을 저장하지 않아.'}
+      if(sub){if(state.status==='error')sub.textContent=`게임은 오프라인으로 정상 작동해. ${state.message||'Firebase 설정과 보안 규칙을 확인해.'}`;else if(state.status==='connected')sub.textContent=`${diagnosticsText()} · 현재 숫자에는 나 자신도 포함됨 · 커뮤니티 통계 실시간 공유 준비 완료`;else sub.textContent=`${diagnosticsText()} · 회원가입 없이 익명 연결을 준비하고 있어.`}
     }
-    function setState(status,message=''){state.status=status;state.message=message;if(status==='error')state.lastError=message;renderStatus()}
+    function setState(status,message=''){state.status=status;state.message=message;if(status==='error'){state.lastError=message;clearTimeout(state.retryTimer);state.retryTimer=setTimeout(()=>initFirebase(true),15000)}renderStatus()}
     function connectionId(){let id='';try{id=sessionStorage.getItem(SESSION_KEY)||''}catch(_){}if(!id){id=`c_${randomId()}`;try{sessionStorage.setItem(SESSION_KEY,id)}catch(_){}}return id}
     function countPresence(snapshot){let count=0;snapshot.forEach(uidSnap=>{if(uidSnap.hasChildren())count++});return count}
     async function markPresence(){
-      if(!state.ready||!state.user||document.hidden)return;
-      const {ref,set,onDisconnect,serverTimestamp}=state.mods.dbmod;
-      const connectionRef=ref(state.db,`presence/${state.user.uid}/${connectionId()}`);state.presenceRef=connectionRef;
-      try{await onDisconnect(connectionRef).remove();await set(connectionRef,{online:true,connectedAt:serverTimestamp()})}catch(error){setState('error',`동접 기록 실패: ${error?.code||error?.message||error}`)}
+      if(!state.ready||!state.user||!state.socketConnected||document.hidden)return false;
+      const {ref,set,get,onDisconnect,serverTimestamp}=state.mods.dbmod;
+      const connectionRef=ref(state.db,`presence/${state.user.uid}/${connectionId()}`);state.presenceRef=connectionRef;state.presenceRegistered=false;state.selfPresenceConfirmed=false;renderStatus();
+      try{
+        await onDisconnect(connectionRef).remove();
+        await set(connectionRef,{online:true,connectedAt:serverTimestamp()});
+        const verify=await get(connectionRef);if(!verify.exists())throw new Error('presence-verification-failed');
+        state.presenceRegistered=true;state.selfPresenceConfirmed=true;state.online=Math.max(1,state.online);clearTimeout(state.retryTimer);setState('connected','Firebase 연결 및 내 접속 등록 완료');flushQueue();return true
+      }catch(error){state.presenceRegistered=false;state.selfPresenceConfirmed=false;setState('error',`동접 등록 실패 · ${friendlyError(error)}`);return false}
     }
-    async function removePresence(){if(!state.presenceRef||!state.mods)return;try{await state.mods.dbmod.remove(state.presenceRef)}catch(_){}}
+    async function removePresence(){state.presenceRegistered=false;state.selfPresenceConfirmed=false;if(!state.presenceRef||!state.mods){renderStatus();return}try{await state.mods.dbmod.remove(state.presenceRef)}catch(_){}finally{state.presenceRef=null;renderStatus()}}
     function startPresence(){
       const {ref,onValue}=state.mods.dbmod;
-      state.connectedOff?.();state.presenceCountOff?.();
-      state.connectedOff=onValue(ref(state.db,'.info/connected'),snap=>{if(snap.val()===true){setState('connected');markPresence();flushQueue()}else if(state.status!=='error')setState('loading','Firebase 재연결 중')},error=>setState('error',`연결 상태 확인 실패: ${error?.code||error?.message||error}`));
-      state.presenceCountOff=onValue(ref(state.db,'presence'),snap=>{state.online=countPresence(snap);if(state.status!=='error')setState('connected')},error=>setState('error',`동접 읽기 실패: ${error?.code||error?.message||error}`));
+      state.connectedOff?.();state.presenceCountOff?.();state.selfPresenceOff?.();
+      state.connectedOff=onValue(ref(state.db,'.info/connected'),snap=>{state.socketConnected=snap.val()===true;if(state.socketConnected){setState('loading','실시간 DB 연결됨 · 내 접속 등록 중');markPresence()}else{state.presenceRegistered=false;state.selfPresenceConfirmed=false;if(state.status!=='error')setState('loading','Firebase 재연결 중')}},error=>setState('error',`DB 연결 확인 실패 · ${friendlyError(error)}`));
+      state.presenceCountOff=onValue(ref(state.db,'presence'),snap=>{const counted=countPresence(snap);state.online=state.presenceRegistered?Math.max(1,counted):counted;if(state.presenceRegistered&&state.selfPresenceConfirmed&&state.status!=='error')setState('connected','동접 집계 갱신 완료');else renderStatus()},error=>setState('error',`동접 읽기 실패 · ${friendlyError(error)}`));
+      state.selfPresenceOff=onValue(ref(state.db,`presence/${state.user.uid}`),snap=>{state.selfPresenceConfirmed=snap.hasChildren();if(state.selfPresenceConfirmed){state.presenceRegistered=true;state.online=Math.max(1,state.online);if(state.socketConnected)setState('connected','내 접속 확인 완료')}else if(state.socketConnected&&state.presenceRegistered){state.presenceRegistered=false;setState('loading','내 접속 다시 등록 중');markPresence()}},error=>setState('error',`내 접속 확인 실패 · ${friendlyError(error)}`));
     }
     async function ensureAuth(){
       const {getAuth,setPersistence,browserLocalPersistence,onAuthStateChanged,signInAnonymously,getRedirectResult}=state.mods.authmod;
@@ -29905,8 +29914,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       state.user=user;return user
     }
     async function initFirebase(force=false){
-      buildUi();if(state.ready&&!force){renderStatus();return true}if(!liveHost){setState('loading','GitHub Pages 배포 환경에서 온라인 기능이 활성화돼.');return false}
-      if(force){state.ready=false;state.connectedOff?.();state.presenceCountOff?.();state.connectedOff=null;state.presenceCountOff=null}
+      buildUi();if(state.ready&&state.presenceRegistered&&!force){renderStatus();return true}if(!allowedEnvironment){setState('loading','HTTPS 또는 localhost 환경에서 온라인 기능이 활성화돼.');return false}
+      if(force){state.ready=false;state.authReady=false;state.socketConnected=false;state.presenceRegistered=false;state.selfPresenceConfirmed=false;state.connectedOff?.();state.presenceCountOff?.();state.selfPresenceOff?.();state.connectedOff=null;state.presenceCountOff=null;state.selfPresenceOff=null}
       setState('loading','Firebase SDK 불러오는 중');
       try{
         const [appmod,authmod,dbmod]=await Promise.all([
@@ -29914,9 +29923,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
           import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-auth.js`),
           import(`https://www.gstatic.com/firebasejs/${SDK_VERSION}/firebase-database.js`)
         ]);
-        const app=appmod.getApps().length?appmod.getApp():appmod.initializeApp(CONFIG);state.mods={app,appmod,authmod,dbmod};state.db=dbmod.getDatabase(app,CONFIG.databaseURL);
-        await ensureAuth();state.ready=true;setState('connected');startPresence();flushQueue();refreshOpenStats();window.dispatchEvent(new CustomEvent('gong-v228-online-ready'));return true
-      }catch(error){state.ready=false;setState('error',`${error?.code||error?.message||error}`);return false}
+        const app=appmod.getApps().find(item=>item.name===APP_NAME)||appmod.initializeApp(CONFIG,APP_NAME);state.mods={app,appmod,authmod,dbmod};state.db=dbmod.getDatabase(app,CONFIG.databaseURL);
+        await ensureAuth();state.authReady=true;state.ready=true;setState('loading','익명 인증 완료 · 실시간 DB 연결 중');startPresence();if(state.activeStats.id)setTimeout(()=>loadStats(state.activeStats.id,state.activeStats.mode||'all',true),0);window.dispatchEvent(new CustomEvent('gong-v228-online-ready'));window.dispatchEvent(new CustomEvent('gong-v230-online-ready'));return true
+      }catch(error){state.ready=false;state.authReady=false;setState('error',`Firebase 초기화 실패 · ${friendlyError(error)}`);return false}
     }
     async function linkGoogle(){
       if(!state.ready||!state.user){setState('error','Firebase 연결 후 다시 시도해.');return}
@@ -29972,11 +29981,11 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       await update(ref(state.db),updates);state.lastSubmit=packet.matchId;resultSyncNote(`🌐 ${MODE_LABELS[packet.mode]||'경기'} 결과가 커뮤니티 통계에 반영됐어.`);return true
     }
     async function flushQueue(){
-      if(!liveHost||!state.ready||state.flushBusy)return;state.flushBusy=true;let queue=readQueue(),changed=false;
+      if(!allowedEnvironment||!state.ready||state.flushBusy)return;state.flushBusy=true;let queue=readQueue(),changed=false;
       try{for(const packet of [...queue]){try{if(await sendPacket(packet)){queue=queue.filter(x=>x.matchId!==packet.matchId);changed=true}}catch(error){state.lastError=error?.code||error?.message||String(error);resultSyncNote('온라인 통계 전송 대기 중 · 게임 진행에는 영향 없어.',true);break}}}finally{if(changed)saveQueue(queue);state.flushBusy=false}
     }
     function submitCurrentBattle(){
-      if(!liveHost||!game||game.v228OnlineSubmitted)return false;const packet=capturePacket();if(!packet)return false;game.v228OnlineSubmitted=true;enqueue(packet);flushQueue();return true
+      if(!allowedEnvironment||!game||game.v228OnlineSubmitted)return false;const packet=capturePacket();if(!packet)return false;game.v228OnlineSubmitted=true;enqueue(packet);flushQueue();return true
     }
     function detachStats(){for(const off of state.statsOffs.splice(0)){try{off()}catch(_){}}}
     function rowsFromSnapshot(snapshot){const rows=[];snapshot.forEach(child=>{const v=child.val();if(v&&typeof v==='object')rows.push(v)});return rows}
@@ -29993,7 +30002,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     function findCommunityCard(id){return [...document.querySelectorAll('.v228-community-card')].find(el=>el.dataset.charId===String(id))||null}
     function loadStats(id,mode='all',force=false){
       const card=findCommunityCard(id);if(!card)return;state.activeStats={id,mode};card.dataset.mode=mode;card.querySelectorAll('.v228-community-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===mode));card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">실시간 통계를 불러오는 중...</div>';detachStats();
-      if(!liveHost){card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">GitHub Pages에 V229를 배포하면 실제 커뮤니티 통계가 표시돼.</div>';return}
+      if(!allowedEnvironment){card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">HTTPS로 배포하면 실제 커뮤니티 통계가 표시돼.</div>';return}
       if(!state.ready){card.querySelector('.v228-community-body').innerHTML='<div class="v228-community-loading">Firebase 연결을 기다리는 중...</div>';window.addEventListener('gong-v228-online-ready',()=>loadStats(id,mode,true),{once:true});return}
       const {ref,query,orderByChild,limitToLast,onValue}=state.mods.dbmod,modes=mode==='all'?MODE_KEYS:[mode],bucket=new Map();let loaded=0,failed=false;
       for(const key of modes){const q=query(ref(state.db,`characterResults/v1/${id}/${key}`),orderByChild('timestamp'),limitToLast(mode==='all'?80:500));const off=onValue(q,snapshot=>{bucket.set(key,rowsFromSnapshot(snapshot));loaded=Math.max(loaded,bucket.size);if(loaded===modes.length&&!failed)renderStatsSummary(card,statsSummary([...bucket.values()].flat()),mode)},error=>{failed=true;card.querySelector('.v228-community-body').innerHTML=`<div class="v228-community-loading">통계를 읽지 못했어. Realtime Database 규칙을 확인해.<br>${escapeHtml(error?.code||error?.message||error)}</div>`});state.statsOffs.push(off)}
@@ -30010,15 +30019,18 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const previousCheckEnd=checkEnd;checkEnd=function(){const wasOver=!!game?.over,result=previousCheckEnd.apply(this,arguments);if(!wasOver&&game?.over)setTimeout(submitCurrentBattle,0);return result};
     const previousResultRender=renderResultModal;renderResultModal=function(){const result=previousResultRender.apply(this,arguments);submitCurrentBattle();return result};
     document.addEventListener('visibilitychange',()=>{clearTimeout(state.hiddenTimer);if(document.hidden)state.hiddenTimer=setTimeout(removePresence,60000);else{markPresence();flushQueue()}});
-    window.addEventListener('online',()=>{initFirebase();flushQueue()});window.addEventListener('beforeunload',()=>{removePresence()});setInterval(flushQueue,45000);
+    window.addEventListener('online',()=>{initFirebase(true);flushQueue()});window.addEventListener('pagehide',()=>{removePresence()});setInterval(flushQueue,45000);
     buildUi();initFirebase();
-    window.__GONG_V228__={build:BUILD,config:{projectId:CONFIG.projectId,databaseURL:CONFIG.databaseURL,liveHost:LIVE_HOST},status:()=>({status:state.status,message:state.message,online:state.online,ready:state.ready,anonymous:state.user?.isAnonymous??null,queued:readQueue().length,lastSubmit:state.lastSubmit,lastError:state.lastError}),previewCurrentBattle:()=>capturePacket(),submitCurrentBattle,flushQueue,openStats(id,mode='all'){openSkillModal(id);setTimeout(()=>loadStats(id,mode,true),0)},reconnect:()=>initFirebase(true),modeKey,disconnect:removePresence};
-    window.__GONG_V228_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-    console.info('[V228] Firebase 익명 연결 · 실시간 동접자수 · 캐릭터별 커뮤니티 통계');
+    const onlineApi={build:BUILD,config:{projectId:CONFIG.projectId,databaseURL:CONFIG.databaseURL,allowedEnvironment},status:()=>({status:state.status,message:state.message,online:state.presenceRegistered?Math.max(1,state.online):state.online,ready:state.ready,authReady:state.authReady,socketConnected:state.socketConnected,presenceRegistered:state.presenceRegistered,selfPresenceConfirmed:state.selfPresenceConfirmed,anonymous:state.user?.isAnonymous??null,uid:state.user?.uid||null,queued:readQueue().length,lastSubmit:state.lastSubmit,lastError:state.lastError,diagnostics:diagnosticsText()}),previewCurrentBattle:()=>capturePacket(),submitCurrentBattle,flushQueue,openStats(id,mode='all'){openSkillModal(id);setTimeout(()=>loadStats(id,mode,true),0)},reconnect:()=>initFirebase(true),modeKey,disconnect:removePresence};
+    window.__GONG_V228__=onlineApi;window.__GONG_V230__=onlineApi;
+    window.__GONG_V228_BUILD__=BUILD;window.__GONG_V230_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+    console.info('[V230] Firebase 프로젝트 고정 초기화 · 인증/DB/내 접속 검증 · 본인 포함 실시간 동접자수');
   })();
 
-  window.__GONG_V229_BUILD__='V229_FIREBASE_AND_COMPETITIVE_MOBILE_FIX';window.__GONG_LATEST_BUILD__=window.__GONG_V229_BUILD__;
+  window.__GONG_V229_BUILD__='V229_FIREBASE_AND_COMPETITIVE_MOBILE_FIX';
   console.info('[V229] 스킬 설명창 복구 · 경쟁전 자동 시작 · 모바일 밴픽 가독성 개선 · Firebase 규칙/전송 일치');
+  window.__GONG_V230_BUILD__='V230_FIREBASE_VERIFIED_PRESENCE';window.__GONG_LATEST_BUILD__=window.__GONG_V230_BUILD__;
+  console.info('[V230] Firebase 실제 연결 상태 검증 · 본인 포함 동접 집계 · 자동 재연결 진단');
 
   renderSetup();syncQuality();updateBattleCode();console.info('[V217] 경쟁전 종료 흐름 및 토너먼트 UI 정리 활성화');
 })();
@@ -30420,5 +30432,6 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 <script id="v228FinalBuildMarker">(()=>{const BUILD='V228_FIREBASE_PRESENCE_AND_COMMUNITY_STATS';window.__GONG_V228_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 <script id="v229FinalBuildScript">window.__GONG_V229_BUILD__='V229_FIREBASE_AND_COMPETITIVE_MOBILE_FIX';window.__GONG_LATEST_BUILD__=window.__GONG_V229_BUILD__;</script>
+<script id="v230FinalBuildScript">(()=>{const BUILD='V230_FIREBASE_VERIFIED_PRESENCE';window.__GONG_V230_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V230] 최종 빌드 활성화 · Firebase 실제 연결 검증 · 본인 포함 동접');})();</script>
 </body>
 </html>
