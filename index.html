@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V240_FRIENDLY_REPLAY_RANDOM_POOL_START_LABEL -->
+<!-- BUILD: V241_MASTERY_KILL_BANNER_PREMIUM_FRAME -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -29534,7 +29534,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       setTimeout(()=>{if(v226PendingReward())v226OpenMasteryReward(true)},160);
       return true
     }
-    function v221MasteryEffectName(stage,level=1){return level>=30?'MAX · 특색 킬로그 · 사진·테두리 광택 · 트레일':level>=20?'특색 킬로그 · 사진 광택 · 테두리 반짝임':level>=15?'특색 킬로그 · 사진 반짝임':level>=5?'캐릭터 특색 킬로그':'Lv.5에서 특별 킬로그 해금'}
+    function v221MasteryEffectName(stage,level=1){return level>=30?'MAX · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=20?'신화 킬 배너 · 사진 광택 · 테두리 반짝임':level>=15?'광휘 킬 배너 · 사진 반짝임':level>=5?'캐릭터 전용 메탈 킬 배너':'Lv.5에서 전용 메탈 킬 배너 해금'}
     function v221MasteryHtml(id){
       const d=DEFS[id];if(!d)return '';
       const e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp),stage=v220MasteryStage(id),winRate=e.games?Math.round(e.wins/e.games*100):0;
@@ -29666,8 +29666,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const previousShowKill=showKill;showKill=function(killer,victim,skill){
     const result=previousShowKill.apply(this,arguments);try{
       const root=typeof v194RootActor==='function'?(v194RootActor(killer)||killer):killer,lv=levelInfo(root?.id).level||1;if(lv<5)return result;
-      const theme=themeFor(root),item=killfeed?.firstElementChild;if(item){item.classList.add('v224-mastery-kill');item.style.setProperty('--v224-accent',theme.accent);item.style.setProperty('--v224-accent2',theme.accent2);item.innerHTML=`<span class="v224-kill-main"><b class="v224-kill-icon">${theme.icon}</b><b class="v224-kill-name">${root.name}</b><span class="v224-kill-mark">MASTERY KILL</span><span>➜</span><b class="v224-kill-victim">${victim.name}</b></span><span class="skill">${skill}</span>`}
-      if(centerKill){centerKill.classList.add('v224-mastery-center');centerKill.style.setProperty('--v224-accent',theme.accent);centerKill.innerHTML=`<span class="v224-center-icon">${theme.icon}</span><b class="v224-center-name">${root.name}</b> <span>MASTER KILL</span> ${victim.name}`;setTimeout(()=>centerKill.classList.remove('v224-mastery-center'),1600)}stats.specialKills++
+      const theme=themeFor(root),item=killfeed?.firstElementChild;if(item){item.classList.add('v224-mastery-kill');item.dataset.v224MasteryId=root?.id||'';item.dataset.v224MasteryLevel=String(lv);item.style.setProperty('--v224-accent',theme.accent);item.style.setProperty('--v224-accent2',theme.accent2);item.innerHTML=`<span class="v224-kill-main"><b class="v224-kill-icon">${theme.icon}</b><b class="v224-kill-name">${root.name}</b><span class="v224-kill-mark">MASTERY KILL</span><span>➜</span><b class="v224-kill-victim">${victim.name}</b></span><span class="skill">${skill}</span>`}
+      if(centerKill){centerKill.classList.add('v224-mastery-center');centerKill.dataset.v224MasteryId=root?.id||'';centerKill.dataset.v224MasteryLevel=String(lv);centerKill.style.setProperty('--v224-accent',theme.accent);centerKill.innerHTML=`<span class="v224-center-icon">${theme.icon}</span><b class="v224-center-name">${root.name}</b> <span>MASTER KILL</span> ${victim.name}`;setTimeout(()=>centerKill.classList.remove('v224-mastery-center'),1600)}stats.specialKills++
     }catch(_){}return result
   };
   function setAllForTest(level=30){const xp=level>=30?MAX_XP:api()?.masteryThreshold?.(level)||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
@@ -31087,5 +31087,213 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 
 <script id="v239FinalBuildScript">(()=>{const BUILD='V239_FRIENDLY_REPLAY_XP100_COUPON_ITEMS';window.__GONG_V239_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v240FinalBuildScript">(()=>{const BUILD='V240_FRIENDLY_REPLAY_RANDOM_POOL_START_LABEL';window.__GONG_V240__={...(window.__GONG_V239__||{}),build:BUILD,replayPoolRandomized:true,competitiveStartLabel:'시작'};window.__GONG_V240_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V240] 친선 다시 플레이 후보 24명 재추첨 · 경쟁전 시작 버튼 문구 간소화');})();</script>
+
+<style id="v241MasteryKillBannerStyle">
+/* V241 · Lv.5+ 전용 메탈 킬 배너 */
+.kill-item.v224-mastery-kill.v241-mastery-kill{
+  --v241-metal:#0b1020;
+  position:relative;
+  isolation:isolate;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) minmax(74px,auto)!important;
+  align-items:center;
+  gap:8px;
+  min-height:52px;
+  padding:6px 9px!important;
+  overflow:hidden;
+  border:2px solid transparent!important;
+  border-radius:10px 3px 10px 3px;
+  color:#f8fbff;
+  background:
+    linear-gradient(115deg,#050812 0%,#111a31 44%,#090c18 73%,#151022 100%) padding-box,
+    linear-gradient(105deg,var(--v224-accent,#f6c453),#f8fbff 24%,var(--v224-accent2,#8b5cf6) 52%,#f8fbff 76%,var(--v224-accent,#f6c453)) border-box!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.13) inset,
+    0 0 0 3px rgba(4,7,15,.88),
+    0 5px 15px rgba(0,0,0,.34),
+    0 0 18px color-mix(in srgb,var(--v224-accent,#f6c453) 40%,transparent)!important;
+  animation:v241KillDeploy .42s cubic-bezier(.16,.9,.2,1) both!important;
+}
+.kill-item.v241-mastery-kill:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:4px;
+  pointer-events:none;
+  opacity:.7;
+  background:
+    linear-gradient(90deg,var(--v224-accent,#f6c453),transparent) left top/34% 1px no-repeat,
+    linear-gradient(90deg,transparent,var(--v224-accent2,#8b5cf6)) right bottom/34% 1px no-repeat,
+    repeating-linear-gradient(118deg,transparent 0 17px,rgba(255,255,255,.032) 18px 19px);
+  border-left:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 70%,#fff);
+  border-right:1px solid color-mix(in srgb,var(--v224-accent2,#8b5cf6) 70%,#fff);
+}
+.kill-item.v241-mastery-kill:after{
+  content:"";
+  position:absolute;
+  z-index:1;
+  top:-120%;
+  bottom:-120%;
+  left:-35%;
+  width:23%;
+  transform:rotate(16deg);
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.92),transparent);
+  filter:blur(.3px);
+  animation:v241KillSweep 1.35s .14s ease-out both!important;
+}
+.v241-kill-sigil,.v241-kill-copy,.v241-kill-skill{position:relative;z-index:2;min-width:0}
+.v241-kill-sigil{
+  width:38px;height:38px;
+  display:grid;place-items:center;
+  color:#fff;
+  background:
+    radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--v224-accent,#f6c453) 52%,#fff),transparent 44%),
+    linear-gradient(145deg,#27314d,#070a12 65%);
+  clip-path:polygon(24% 0,76% 0,100% 24%,100% 76%,76% 100%,24% 100%,0 76%,0 24%);
+  box-shadow:0 0 17px var(--v224-accent,#f6c453);
+  font-size:19px;
+  text-shadow:0 0 8px #fff,0 0 13px var(--v224-accent,#f6c453);
+}
+.v241-kill-sigil:before,.v241-kill-sigil:after{content:"";position:absolute;inset:3px;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 78%,#fff);clip-path:inherit}
+.v241-kill-sigil:after{inset:7px;border-color:rgba(255,255,255,.32)}
+.v241-kill-sigil b{position:relative;z-index:1;font-size:19px;line-height:1}
+.v241-kill-copy{display:flex;flex-direction:column;justify-content:center;gap:3px;overflow:hidden}
+.v241-kill-kicker{display:flex;align-items:center;gap:4px;color:#cfd8ee;font-size:7px;font-weight:1000;letter-spacing:1.25px;line-height:1;white-space:nowrap}
+.v241-kill-kicker:before{content:"";width:13px;height:2px;background:var(--v224-accent,#f6c453);box-shadow:0 0 7px var(--v224-accent,#f6c453)}
+.v241-kill-tier{border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 70%,#fff);border-radius:2px;padding:2px 4px;color:#fff;background:color-mix(in srgb,var(--v224-accent,#f6c453) 27%,transparent);font-style:normal;letter-spacing:.55px}
+.v241-kill-duel{display:flex;align-items:baseline;gap:6px;min-width:0;white-space:nowrap;line-height:1.05}
+.v241-kill-name{max-width:43%;overflow:hidden;text-overflow:ellipsis;color:#fff;font-size:12px;font-weight:1000;text-shadow:0 0 9px color-mix(in srgb,var(--v224-accent,#f6c453) 70%,transparent)}
+.v241-kill-slash{flex:0 0 auto;color:var(--v224-accent,#f6c453);font-size:9px;font-weight:1000;letter-spacing:-2px;transform:skewX(-15deg)}
+.v241-kill-victim{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#ff718d;font-size:10px;font-weight:1000}
+.kill-item.v241-mastery-kill .v241-kill-skill{
+  align-self:stretch;
+  display:flex!important;
+  flex-direction:column;
+  justify-content:center;
+  max-width:112px!important;
+  padding:4px 7px!important;
+  border-left:1px solid color-mix(in srgb,var(--v224-accent2,#8b5cf6) 62%,#fff);
+  color:#fff!important;
+  text-align:left!important;
+  white-space:normal!important;
+  line-height:1.05!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 18%,transparent),transparent);
+}
+.v241-kill-skill small{display:block;margin-bottom:3px;color:color-mix(in srgb,var(--v224-accent,#f6c453) 82%,#fff);font-size:6px;font-weight:1000;letter-spacing:1px}
+.v241-kill-skill b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:8px;font-weight:1000;line-height:1.18}
+.kill-item.v241-tier-radiant{box-shadow:0 0 0 1px #fff7 inset,0 0 0 3px #070a13,0 5px 16px #0007,0 0 22px color-mix(in srgb,var(--v224-accent,#fff) 55%,transparent)!important}
+.kill-item.v241-tier-mythic{background:linear-gradient(115deg,#05040c,#17102d 46%,#080714 73%,#20112f) padding-box,linear-gradient(105deg,var(--v224-accent,#f6c453),#fff 20%,var(--v224-accent2,#8b5cf6) 48%,#54e8ff 70%,var(--v224-accent,#f6c453)) border-box!important}
+.kill-item.v241-tier-max{background:linear-gradient(115deg,#06040d,#211035 46%,#080713 73%,#25152c) padding-box,conic-gradient(from 90deg,var(--v224-accent,#f6c453),#fff,#54e8ff,#ff69cf,var(--v224-accent,#f6c453)) border-box!important;box-shadow:0 0 0 1px #fff9 inset,0 0 0 3px #070a13,0 6px 18px #0008,0 0 27px var(--v224-accent,#f6c453)!important}
+
+.center-kill.v241-mastery-center{
+  width:min(82%,500px);
+  box-sizing:border-box;
+  padding:0!important;
+  overflow:hidden;
+  white-space:normal!important;
+  border:2px solid transparent!important;
+  border-radius:4px 18px 4px 18px!important;
+  color:#fff!important;
+  background:
+    linear-gradient(125deg,rgba(3,5,12,.97),rgba(20,27,50,.97) 46%,rgba(9,8,20,.98)) padding-box,
+    linear-gradient(110deg,var(--v224-accent,#f6c453),#fff 24%,var(--v224-accent2,#8b5cf6) 51%,#fff 76%,var(--v224-accent,#f6c453)) border-box!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.2) inset,0 0 0 5px rgba(0,0,0,.55),0 12px 34px #000b,0 0 34px color-mix(in srgb,var(--v224-accent,#f6c453) 65%,transparent)!important;
+  text-shadow:none!important;
+  isolation:isolate;
+}
+.center-kill.show.v241-mastery-center{animation:v241CenterDeploy 1.72s cubic-bezier(.16,.86,.2,1) both!important}
+.center-kill.v241-mastery-center:before{content:"";position:absolute;z-index:0;inset:5px;pointer-events:none;border:1px solid rgba(255,255,255,.18);background:repeating-linear-gradient(118deg,transparent 0 25px,rgba(255,255,255,.035) 26px 27px)}
+.center-kill.v241-mastery-center:after{content:"";position:absolute;z-index:1;top:-110%;bottom:-110%;left:-30%;width:20%;transform:rotate(17deg);pointer-events:none;background:linear-gradient(90deg,transparent,#fff,transparent);animation:v241CenterSweep 1.25s .12s ease-out both}
+.v241-center-top,.v241-center-main,.v241-center-skill{position:relative;z-index:2}
+.v241-center-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 44px;border-bottom:1px solid rgba(255,255,255,.16);color:#d8e0f3;font-size:8px;font-weight:1000;letter-spacing:2px;line-height:1;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 22%,transparent),transparent)}
+.v241-center-top:before,.v241-center-top:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--v224-accent,#f6c453))}
+.v241-center-top:after{background:linear-gradient(90deg,var(--v224-accent2,#8b5cf6),transparent)}
+.v241-center-tier{color:#fff;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 70%,#fff);padding:3px 5px;letter-spacing:.8px;background:rgba(255,255,255,.08)}
+.v241-center-main{display:grid;grid-template-columns:58px minmax(0,1fr);gap:12px;align-items:center;padding:10px 18px 8px;text-align:left}
+.v241-center-sigil{width:54px;height:54px;display:grid;place-items:center;position:relative;clip-path:polygon(24% 0,76% 0,100% 24%,100% 76%,76% 100%,24% 100%,0 76%,0 24%);background:radial-gradient(circle,color-mix(in srgb,var(--v224-accent,#f6c453) 58%,#fff),transparent 48%),linear-gradient(145deg,#34405e,#05070d 67%);color:#fff;font-size:27px;text-shadow:0 0 11px #fff,0 0 19px var(--v224-accent,#f6c453);box-shadow:0 0 24px var(--v224-accent,#f6c453)}
+.v241-center-sigil:before{content:"";position:absolute;inset:4px;border:1px solid color-mix(in srgb,var(--v224-accent,#f6c453) 72%,#fff);clip-path:inherit}
+.v241-center-copy{min-width:0;overflow:hidden}
+.v241-center-label{display:block;color:color-mix(in srgb,var(--v224-accent,#f6c453) 82%,#fff);font-size:9px;font-weight:1000;letter-spacing:1.8px;line-height:1}
+.v241-center-duel{display:flex;align-items:baseline;gap:8px;min-width:0;margin-top:5px;white-space:nowrap}
+.v241-center-name{max-width:45%;overflow:hidden;text-overflow:ellipsis;color:#fff;font-size:clamp(16px,3.8vw,25px);font-weight:1000;line-height:1;text-shadow:0 0 14px color-mix(in srgb,var(--v224-accent,#f6c453) 66%,transparent)}
+.v241-center-vs{flex:0 0 auto;color:var(--v224-accent,#f6c453);font-size:10px;font-weight:1000;letter-spacing:-1px;transform:skewX(-15deg)}
+.v241-center-victim{min-width:0;overflow:hidden;text-overflow:ellipsis;color:#ff718d;font-size:clamp(12px,2.8vw,18px);font-weight:1000}
+.v241-center-skill{margin:0 18px 9px 88px;padding:5px 8px;border-left:2px solid var(--v224-accent2,#8b5cf6);background:linear-gradient(90deg,color-mix(in srgb,var(--v224-accent2,#8b5cf6) 23%,transparent),transparent);color:#e8edfa;font-size:8px;font-weight:1000;letter-spacing:.45px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v241-center-skill b{color:#fff}
+.center-kill.v241-tier-max{background:linear-gradient(125deg,rgba(4,3,10,.98),rgba(34,16,51,.97),rgba(8,8,20,.98)) padding-box,conic-gradient(from 90deg,var(--v224-accent,#f6c453),#fff,#54e8ff,#ff69cf,var(--v224-accent,#f6c453)) border-box!important}
+
+@keyframes v241KillDeploy{0%{opacity:0;transform:translateX(20px) scale(.92);filter:brightness(2)}55%{opacity:1;transform:translateX(-3px) scale(1.025);filter:brightness(1.28)}100%{opacity:1;transform:none;filter:none}}
+@keyframes v241KillSweep{0%{left:-35%;opacity:0}18%{opacity:.9}100%{left:125%;opacity:0}}
+@keyframes v241CenterSweep{0%{left:-30%;opacity:0}18%{opacity:.9}100%{left:125%;opacity:0}}
+@keyframes v241CenterDeploy{0%{opacity:0;transform:translate(-50%,-50%) scale(.6) rotateX(16deg);filter:brightness(2.3)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.045);filter:brightness(1.35)}22%,72%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:none}100%{opacity:0;transform:translate(-50%,-62%) scale(1.035);filter:blur(1px)}}
+@media(max-width:560px){
+  .kill-item.v224-mastery-kill.v241-mastery-kill{grid-template-columns:35px minmax(0,1fr) minmax(60px,82px)!important;gap:5px;min-height:47px;padding:5px 6px!important}
+  .v241-kill-sigil{width:32px;height:32px;font-size:16px}.v241-kill-sigil b{font-size:16px}
+  .v241-kill-kicker{font-size:6px;letter-spacing:.75px}.v241-kill-kicker:before{width:7px}.v241-kill-tier{padding:2px 3px}
+  .v241-kill-duel{gap:4px}.v241-kill-name{font-size:10px}.v241-kill-victim{font-size:8px}.v241-kill-slash{font-size:7px}
+  .kill-item.v241-mastery-kill .v241-kill-skill{max-width:82px!important;padding:3px 4px!important}.v241-kill-skill small{font-size:5px}.v241-kill-skill b{font-size:7px}
+  .center-kill.v241-mastery-center{width:min(88%,410px)}.v241-center-top{padding:5px 12px;font-size:6px;letter-spacing:1px}.v241-center-main{grid-template-columns:46px minmax(0,1fr);gap:9px;padding:8px 12px 6px}.v241-center-sigil{width:44px;height:44px;font-size:21px}.v241-center-label{font-size:7px}.v241-center-skill{margin:0 12px 7px 67px;font-size:7px}
+}
+@media(max-width:410px){
+  .kill-item.v224-mastery-kill.v241-mastery-kill{grid-template-columns:34px minmax(0,1fr)!important}
+  .kill-item.v241-mastery-kill .v241-kill-skill{grid-column:2;max-width:none!important;min-height:12px;border-left:0;border-top:1px solid color-mix(in srgb,var(--v224-accent2,#8b5cf6) 55%,#fff);padding:3px 2px 0!important;display:block!important;white-space:nowrap!important}.v241-kill-skill small{display:inline;margin-right:4px}.v241-kill-skill b{display:inline;font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){.kill-item.v241-mastery-kill,.kill-item.v241-mastery-kill:after,.center-kill.show.v241-mastery-center,.center-kill.v241-mastery-center:after{animation:none!important}}
+</style>
+
+<script id="v241MasteryKillBannerScript">
+(()=>{
+  const BUILD='V241_MASTERY_KILL_BANNER_PREMIUM_FRAME';
+  const TIER_CLASSES=['v241-tier-awakened','v241-tier-radiant','v241-tier-mythic','v241-tier-max'];
+  const stats={decorated:0,centerBanners:0,lastLevel:0,lastTier:''};
+  let centerToken=0;
+  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function masteryLevel(id){
+    try{const info=(window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V219__)?.masteryLevelForId?.(id);return Math.max(1,Number(info?.level||info)||1)}catch(_){return 1}
+  }
+  const centerElement=()=>document.getElementById('centerKill');
+  const killfeedElement=()=>document.getElementById('killfeed');
+  function tierFor(level){return level>=30?{key:'max',label:'ASCENDED'}:level>=20?{key:'mythic',label:'MYTHIC'}:level>=15?{key:'radiant',label:'RADIANT'}:{key:'awakened',label:'AWAKENED'}}
+  function setTier(element,tier){if(!element)return;element.classList.remove(...TIER_CLASSES);element.classList.add(`v241-tier-${tier.key}`)}
+  function renderKillItem(item,root,victim,skill,level,icon){
+    if(!item)return false;
+    const tier=tierFor(level),skillText=String(skill||'기본 충돌');
+    item.classList.add('v241-mastery-kill');setTier(item,tier);item.dataset.v241Level=String(level);item.dataset.v241Tier=tier.key;
+    item.innerHTML=`<span class="v241-kill-sigil" aria-hidden="true"><b>${esc(icon||'✦')}</b></span><span class="v241-kill-copy"><span class="v241-kill-kicker">MASTERY <em class="v241-kill-tier">LV.${level} · ${tier.label}</em></span><span class="v241-kill-duel"><b class="v241-kill-name">${esc(root?.name||'캐릭터')}</b><i class="v241-kill-slash">///</i><b class="v241-kill-victim">${esc(victim?.name||'상대')}</b></span></span><span class="skill v241-kill-skill"><small>FINISH SKILL</small><b>${esc(skillText)}</b></span>`;
+    stats.decorated++;stats.lastLevel=level;stats.lastTier=tier.key;return true
+  }
+  function clearCenterClasses(){const center=centerElement();if(!center)return;center.classList.remove('v241-mastery-center',...TIER_CLASSES);delete center.dataset.v241Level;delete center.dataset.v241Tier}
+  function renderCenter(root,victim,skill,level,icon){
+    const center=centerElement();if(!center)return false;
+    const tier=tierFor(level),token=String(++centerToken),skillText=String(skill||'기본 충돌');
+    clearCenterClasses();center.classList.add('v241-mastery-center');setTier(center,tier);center.dataset.v241Level=String(level);center.dataset.v241Tier=tier.key;center.dataset.v241Token=token;
+    center.innerHTML=`<span class="v241-center-top">MASTERY KILL BANNER <b class="v241-center-tier">LV.${level} · ${tier.label}</b></span><span class="v241-center-main"><span class="v241-center-sigil" aria-hidden="true">${esc(icon||'✦')}</span><span class="v241-center-copy"><span class="v241-center-label">전용 킬 배너</span><span class="v241-center-duel"><b class="v241-center-name">${esc(root?.name||'캐릭터')}</b><i class="v241-center-vs">///</i><b class="v241-center-victim">${esc(victim?.name||'상대')}</b></span></span></span><span class="v241-center-skill">처치 기술 · <b>${esc(skillText)}</b></span>`;
+    stats.centerBanners++;
+    setTimeout(()=>{if(centerElement()?.dataset.v241Token===token)clearCenterClasses()},1760);
+    return true
+  }
+  function decorateLatest(){
+    try{
+      const item=killfeedElement()?.firstElementChild;
+      if(!item?.classList.contains('v224-mastery-kill')||item.classList.contains('v241-mastery-kill'))return false;
+      const id=item.dataset.v224MasteryId||'',level=Math.max(1,Number(item.dataset.v224MasteryLevel)||masteryLevel(id));
+      if(level<5)return false;
+      const root={id,name:item.querySelector('.v224-kill-name')?.textContent||'캐릭터'},victim={name:item.querySelector('.v224-kill-victim')?.textContent||'상대'},skill=item.querySelector('.skill')?.textContent||'기본 충돌',icon=item.querySelector('.v224-kill-icon')?.textContent||centerElement()?.querySelector('.v224-center-icon')?.textContent||'✦';
+      renderKillItem(item,root,victim,skill,level,icon);renderCenter(root,victim,skill,level,icon);return true
+    }catch(error){console.warn('[V241 킬 배너 보호]',error);return false}
+  }
+  const liveKillfeed=killfeedElement();if(liveKillfeed)new MutationObserver(()=>queueMicrotask(decorateLatest)).observe(liveKillfeed,{childList:true,subtree:true});
+  function previewForTest({killerId='moon',victimId='geun',level=5,skill='숙련도 테스트'}={}){
+    const defs=window.__GONG_V134_DEBUG__?.defs||{},root={id:killerId,name:defs[killerId]?.name||'테스트 캐릭터'},victim={id:victimId,name:defs[victimId]?.name||'테스트 상대'},tier=tierFor(level),item=document.createElement('div');
+    item.className='kill-item v224-mastery-kill';item.style.setProperty('--v224-accent',defs[killerId]?.color||'#f6c453');item.style.setProperty('--v224-accent2','#8b5cf6');killfeedElement()?.prepend(item);renderKillItem(item,root,victim,skill,level,'✦');renderCenter(root,victim,skill,level,'✦');const center=centerElement();
+    return {level,tier:tier.key,itemClass:item.className,itemText:item.textContent||'',centerClass:center?.className||'',centerText:center?.textContent||'',item}
+  }
+  const api={build:BUILD,tierFor,stats:()=>({...stats}),previewForTest,decorateLatest};
+  window.__GONG_V241__=api;window.__GONG_V241_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V241] Lv.5+ 캐릭터 전용 메탈 킬 배너 · 이중 테두리 · 중앙 대형 배너');
+})();
+</script>
+<script id="v241FinalBuildScript">(()=>{const BUILD='V241_MASTERY_KILL_BANNER_PREMIUM_FRAME';window.__GONG_V241_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 </body>
 </html>
