@@ -21379,7 +21379,7 @@ function v137StandardPlayerRadius(){
   return count<=2?42:count===3?37:count===4?33:count===5?29:23;
 }
 function v137UsesStandardRadius(p){
-  return !!p&&!p.isBoss&&p.id!=='sunha'&&p.id!=='yoomin'&&p.id!=='duo';
+  return !!p&&!p.isBoss&&p.id!=='sunha'&&p.id!=='yoomin'&&p.id!=='duo'&&p.id!=='uiyong';
 }
 function v137NormalizePlayerRadius(p){
   if(!v137UsesStandardRadius(p))return false;
@@ -29558,7 +29558,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     }
   }
   const previousTick=tick;tick=function(dt){const result=previousTick.apply(this,arguments);try{updateTrails(Math.max(0,Number(dt)||0))}catch(_){}return result};
-  const previousDraw=draw;draw=function(){const result=previousDraw.apply(this,arguments);stats.frames++;try{drawLevelBadges()}catch(_){}return result};
+  const previousDraw=draw;draw=function(){const result=previousDraw.apply(this,arguments);stats.frames++;stats.lastLabels=0;return result};
   const previousShowKill=showKill;showKill=function(killer,victim,skill){
     const result=previousShowKill.apply(this,arguments);try{
       const root=typeof v194RootActor==='function'?(v194RootActor(killer)||killer):killer,lv=levelInfo(root?.id).level||1;if(lv<5)return result;
@@ -29569,11 +29569,104 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function setAllForTest(level=30){const xp=level>=30?MAX_XP:api()?.masteryThreshold?.(level)||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
   window.__GONG_V224__={build:BUILD,maxLevel:MAX_LEVEL,maxXp:MAX_XP,levelInfo:xp=>api()?.levelInfo?.(xp),threshold:lv=>api()?.masteryThreshold?.(lv),stats:()=>({...stats}),debugPlayers:()=>((game?.players||[]).map(p=>({id:p.id,alive:p.alive,hidden:p.hidden,level:levelInfo(p.id).level,trail:p.data?.v224MasteryTrail?.length||0,x:p.x,y:p.y}))),theme:id=>themeFor({id}),setAllForTest,testKillLog(){const list=(game?.players||[]).filter(eligible);if(list.length<2)return null;showKill(list[0],list[1],'숙련도 테스트');const item=killfeed?.firstElementChild;return {className:item?.className||'',text:item?.textContent||'',specialKills:stats.specialKills}}};
   window.__GONG_V224_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V224] 숙련도 최대 Lv.30 · 경기 중 레벨 · Lv.5 킬로그 · Lv.15 사진 광택 · Lv.20 테두리 · Lv.30 트레일');
+  console.info('[V224] 숙련도 최대 Lv.30 · Lv.5 킬로그 · Lv.15 사진 광택 · Lv.20 테두리 · Lv.30 트레일');
 
   }
 
 
+
+
+
+  /* =========================================================
+     V225 일반 캐릭터 크기 통일 · 숙련도 숫자 배지 제거
+     ========================================================= */
+  (()=>{
+    const BUILD='V225_UNIFORM_RADIUS_AND_STABILITY_AUDIT';
+    const EXPLICIT_RADIUS_IDS=new Set(['sunha','yoomin','duo','uiyong']);
+    const stats={normalizations:0,drawGuards:0,tickGuards:0,lastMismatchCount:0};
+
+    function isSummonedPlayer(p){
+      return !!(p?.isBossSummon||p?.data?.v151Hormone||p?.data?.v151MentorYoon||p?.data?.v207Banjunseo||p?._sunhaTargetProxy);
+    }
+    function isMainRosterPlayer(p){
+      return !!(p&&DEFS[p.id]&&!p.isBoss&&!BOSS_IDS.has(p.id)&&!isSummonedPlayer(p));
+    }
+    function standardRadius(){
+      return typeof v137StandardPlayerRadius==='function'?v137StandardPlayerRadius():23;
+    }
+    function expectedRadius(p){
+      if(!isMainRosterPlayer(p))return Number.isFinite(p?.r)?p.r:standardRadius();
+      const base=standardRadius();
+      if(p.id==='duo')return typeof v138DuoRadius==='function'?v138DuoRadius():Math.max(12,base*.5);
+      if(p.id==='yoomin')return p.data?.mode==='child'?Math.max(8,base*.5):base*2;
+      if(p.id==='sunha')return typeof v136SunhaExpectedRadius==='function'?v136SunhaExpectedRadius(p):base;
+      if(p.id==='uiyong'){
+        const current=Number(p.r);
+        return Number.isFinite(current)?Math.max(base,Math.min(base*2.1,current)):base;
+      }
+      return base;
+    }
+    function normalizeOne(p){
+      if(!isMainRosterPlayer(p))return false;
+      const expected=expectedRadius(p);
+      if(!Number.isFinite(expected)||expected<=0)return false;
+      const current=Number(p.r);
+      const changed=!Number.isFinite(current)||Math.abs(current-expected)>.001;
+      if(changed){p.r=expected;stats.normalizations++}
+      p.data||(p.data={});p.data.v225ExpectedRadius=expected;
+      if(Number.isFinite(p.x))p.x=clamp(p.x,expected,W-expected);
+      if(Number.isFinite(p.y))p.y=clamp(p.y,expected,H-expected);
+      if(p.id==='duo'&&p.data.partner){
+        const q=p.data.partner;q.r=expected;
+        if(Number.isFinite(q.x))q.x=clamp(q.x,expected,W-expected);
+        if(Number.isFinite(q.y))q.y=clamp(q.y,expected,H-expected);
+      }
+      return changed;
+    }
+    function normalizeAll(){
+      if(!game?.players)return 0;
+      let mismatches=0;
+      for(const p of game.players){
+        if(!isMainRosterPlayer(p))continue;
+        const before=p.r,expected=expectedRadius(p);
+        if(!Number.isFinite(before)||Math.abs(before-expected)>.001)mismatches++;
+        normalizeOne(p);
+      }
+      stats.lastMismatchCount=mismatches;
+      return mismatches;
+    }
+
+    v137UsesStandardRadius=function(p){
+      return !!p&&!p.isBoss&&!BOSS_IDS.has(p.id)&&!isSummonedPlayer(p)&&!EXPLICIT_RADIUS_IDS.has(p.id);
+    };
+
+    const previousCreate=createPlayer;
+    createPlayer=function(s){const p=previousCreate.apply(this,arguments);normalizeOne(p);return p};
+    const previousReset=resetBattle;
+    resetBattle=function(){const result=previousReset.apply(this,arguments);normalizeAll();return result};
+    const previousWall=onWallHit;
+    onWallHit=function(p){const result=previousWall.apply(this,arguments);normalizeOne(p);return result};
+    const previousTick=tick;
+    tick=function(dt){const result=previousTick.apply(this,arguments);stats.tickGuards++;normalizeAll();return result};
+    const previousDraw=draw;
+    draw=function(){stats.drawGuards++;normalizeAll();return previousDraw.apply(this,arguments)};
+
+    function audit(){
+      const rows=(game?.players||[]).filter(isMainRosterPlayer).map(p=>({
+        id:p.id,name:p.name,r:Number(p.r),expected:expectedRadius(p),exception:EXPLICIT_RADIUS_IDS.has(p.id)
+      }));
+      return {base:standardRadius(),rows,mismatches:rows.filter(x=>Math.abs(x.r-x.expected)>.001),exceptions:[...EXPLICIT_RADIUS_IDS],stats:{...stats}};
+    }
+    function corruptAndRepair(id,r=99){
+      const p=(game?.players||[]).find(x=>x.id===id);
+      if(!p)return null;
+      p.r=r;const before=p.r;normalizeOne(p);
+      return {id,before,after:p.r,expected:expectedRadius(p)};
+    }
+    window.__GONG_V225__={build:BUILD,exceptions:[...EXPLICIT_RADIUS_IDS],expectedRadius,audit,normalizeAll,corruptAndRepair,stats:()=>({...stats}),get game(){return game},startMode:(modeName,ids,teams=null,bossId='james')=>v138StartMode(modeName,ids,teams,bossId),step:dt=>tick(dt),wallHit:p=>onWallHit(p),drawNow:()=>draw()};
+    window.__GONG_V225_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+    console.info('[V225] 일반 캐릭터 크기 통일 · 명시적 크기 스킬만 예외 · 경기 중 레벨 숫자 숨김');
+  })();
 
   renderSetup();syncQuality();updateBattleCode();console.info('[V217] 경쟁전 종료 흐름 및 토너먼트 UI 정리 활성화');
 })();
@@ -29906,6 +29999,9 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 </style>
 
 <script id="v224FinalBuildMarker">(()=>{const BUILD='V224_MASTERY_BATTLE_EFFECTS_LV30';window.__GONG_V224_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V224] 최신 빌드 활성화');})();</script>
+
+
+<script id="v225FinalBuildMarker">(()=>{const BUILD='V225_UNIFORM_RADIUS_AND_STABILITY_AUDIT';window.__GONG_V225_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 </body>
 </html>
