@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V216_MONTHLY_COMPETITIVE_SEASONS -->
+<!-- BUILD: V217_COMPETITIVE_RETURN_AND_TOURNAMENT_CLEANUP -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1695,6 +1695,7 @@ body[data-v208-quality="low"] canvas{image-rendering:auto}body.v208-reduce-motio
 body.competitive-battle #modeBadge{background:#fff2b8;color:#5a3a00;border-color:#d99a00}
 .competitive-season-meta{margin-top:5px;padding:5px 8px;border-radius:9px;background:#fff;color:#5b4a16;border:1px solid #d7c274;font-size:9px;font-weight:1000;line-height:1.35}
 body.competitive-battle #v208ReplayBattle{display:none!important}
+body.competitive-battle #restart{display:none!important}
 @media(max-width:560px){.competitive-rank-panel{grid-template-columns:65px minmax(0,1fr);padding:10px;gap:9px}.competitive-rank-icon{width:62px;height:62px}.competitive-rank-title strong{font-size:19px}.competitive-rank-meta{display:grid;grid-template-columns:1fr;gap:2px}.competitive-tier-road{padding-top:7px}.competitive-tier-chip{padding:3px 7px;font-size:8px}}
 </style>
 
@@ -1845,7 +1846,7 @@ body.competitive-battle #v208ReplayBattle{display:none!important}
         <div class="tournament-choice-grid three" id="tournamentSelectChoices">
           <button class="t-choice active" data-t-select="direct">직접 선택</button><button class="t-choice" data-t-select="random">전체 랜덤</button><button class="t-choice" data-t-select="fixed">선택 인원 고정 + 나머지 랜덤</button>
         </div>
-        <div class="tournament-toolbar"><span id="tournamentSelectedCount" class="tournament-count">0 / 8명 선택</span><button id="tournamentRandomPreview" class="t-small-btn dark" type="button">🎲 랜덤 선발</button><button id="tournamentClearSelection" class="t-small-btn red" type="button">전체 해제</button></div>
+        <div class="tournament-toolbar"><span id="tournamentSelectedCount" class="tournament-count">0 / 8명 선택</span><button id="tournamentClearSelection" class="t-small-btn red" type="button">전체 해제</button></div>
         <div id="tournamentPicker" class="tournament-picker"></div>
       </div>
       <div class="tournament-step">
@@ -20586,7 +20587,6 @@ function frame(ts){
   el('tournamentTeamSizeChoices').querySelectorAll('[data-t-team-size]').forEach(b=>b.addEventListener('click',()=>{setupKind='team';setupTeamSize=Number(b.dataset.tTeamSize);while(setupSelected.size>selectedTargetCount())setupSelected.delete([...setupSelected].pop());renderPicker();}));
   el('tournamentSelectChoices').querySelectorAll('[data-t-select]').forEach(b=>b.addEventListener('click',()=>{setupSelect=b.dataset.tSelect;setActiveChoice(el('tournamentSelectChoices'),'data-t-select',setupSelect);renderPicker();}));
   el('tournamentClearSelection').addEventListener('click',()=>{setupSelected.clear();renderPicker();});
-  el('tournamentRandomPreview').addEventListener('click',()=>{setupSelected=new Set(shuffled(orderedCharacterIds()).slice(0,selectedTargetCount()));if(setupSelect==='random')setupSelect='direct';setActiveChoice(el('tournamentSelectChoices'),'data-t-select',setupSelect);renderPicker();});
 
   function prepareParticipants(){
     const all=orderedCharacterIds(),targetCount=selectedTargetCount();
@@ -29217,7 +29217,67 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   console.info('[V216] SAWL 솔리언 아이콘 · 티어 자동 저장 · 월간 시즌 초기화 · 경쟁전 재실행 숨김');
 })();
 
-  renderSetup();syncQuality();updateBattleCode();console.info('[V216] 월간 경쟁전 시즌 시스템 활성화');
+  /* ---------- V217 · competitive return flow and tournament cleanup ---------- */
+(()=>{
+  const BUILD='V217_COMPETITIVE_RETURN_AND_TOURNAMENT_CLEANUP';
+  let returning=false;
+  function isCompetitiveBattle(){
+    return document.body.classList.contains('competitive-battle')||!!game?.v212Draft?.competitive;
+  }
+  function returnToCompetitiveHome(){
+    if(returning||!isCompetitiveBattle())return false;
+    returning=true;
+    paused=true;
+    last=0;
+    battleGeneration++;
+    resultModal.classList.add('hidden');
+    resultModal.setAttribute('aria-hidden','true');
+    openResultsBtn.classList.add('hidden');
+    document.body.classList.remove('boss-battle','draft-battle','competitive-battle');
+    bossHud.classList.remove('show');
+    bossAlliesPanel.classList.add('hidden');
+    battle.classList.add('hidden');
+    if(window.__GONG_V212_DRAFT__?.open){
+      window.__GONG_V212_DRAFT__.open();
+    }else{
+      setup.classList.add('hidden');
+      const draftScreen=document.getElementById('draftScreen');
+      draftScreen?.classList.remove('hidden');
+      draftScreen?.setAttribute('aria-hidden','false');
+      document.getElementById('draftSetupCard')?.classList.remove('hidden');
+      document.getElementById('draftPlayArea')?.classList.add('hidden');
+      window.scrollTo(0,0);
+    }
+    window.__GONG_V216_COMPETITIVE__?.render?.();
+    requestAnimationFrame(()=>{returning=false});
+    return true;
+  }
+  const closeBtn=document.getElementById('closeResults');
+  closeBtn?.addEventListener('click',()=>{
+    if(isCompetitiveBattle())setTimeout(returnToCompetitiveHome,0);
+  });
+  resultModal?.addEventListener('click',event=>{
+    if(event.target===resultModal&&isCompetitiveBattle())setTimeout(returnToCompetitiveHome,0);
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&isCompetitiveBattle()&&!resultModal.classList.contains('hidden'))setTimeout(returnToCompetitiveHome,0);
+  });
+  window.__GONG_V217_TEST__={
+    build:BUILD,
+    returnToCompetitiveHome,
+    verify(){
+      return {
+        tournamentRandomButton:!!document.getElementById('tournamentRandomPreview'),
+        competitiveRestartRule:[...document.styleSheets].some(sheet=>{try{return [...sheet.cssRules].some(rule=>String(rule.cssText||'').includes('body.competitive-battle #restart'))}catch(_){return false}}),
+        competitiveActive:isCompetitiveBattle()
+      };
+    }
+  };
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V217] 경쟁전 다시 경기 제거 · 결과 닫기 후 경쟁전 첫 화면 복귀 · 토너먼트 랜덤 선발 제거');
+})();
+
+  renderSetup();syncQuality();updateBattleCode();console.info('[V217] 경쟁전 종료 흐름 및 토너먼트 UI 정리 활성화');
 })();
 
 })();
@@ -29407,7 +29467,7 @@ html.v206-card-moving *{scroll-behavior:auto!important}
 
 <script id="v208BuildMarker">
 window.__GONG_V208_BUILD__='V211_BANJUNSEO_LIVE_CAP2';
-window.__GONG_LATEST_BUILD__='V216_MONTHLY_COMPETITIVE_SEASONS';
+window.__GONG_LATEST_BUILD__='V217_COMPETITIVE_RETURN_AND_TOURNAMENT_CLEANUP';
 console.info('[V208] 최신 빌드 활성화');
 </script>
 
@@ -29523,12 +29583,12 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 @media(max-width:700px){.draft-screen{padding:7px}.draft-shell{padding:9px;border-radius:18px}.draft-topbar{grid-template-columns:auto 1fr;gap:8px}.draft-topbar .draft-reset{grid-column:1/-1}.draft-topbar h2{font-size:20px}.draft-topbar p{font-size:11px}.draft-team-grid{grid-template-columns:1fr}.draft-pool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.draft-card{min-height:68px;grid-template-columns:41px minmax(0,1fr) 26px;gap:6px;padding:7px 6px}.draft-card-help{width:25px;height:25px;font-size:13px}.draft-status-card>small{text-align:left}.draft-slot-row,.draft-ban-row{grid-template-columns:repeat(5,minmax(0,1fr))}.draft-sequence-wrap{display:block}.draft-sequence-label{display:block;margin-bottom:6px;padding-top:0}.draft-turn-chip{font-size:9px;padding:3px 6px}}
 @media(max-width:559px){#draftModeBtn{order:7;grid-column:1/-1}.draft-size-btn{padding:12px 6px;font-size:17px}.draft-card-name{font-size:11.5px}.draft-card-meta{font-size:8px}.draft-card img{width:41px;height:41px}.draft-team{padding:8px}.draft-slot img{height:47px}.draft-status-top{align-items:flex-start}.draft-status-title strong{font-size:14px}.draft-countdown{min-width:54px}.draft-countdown b{font-size:21px}}
 </style>
-<script id="v212BuildMarker">
+<script id="v217BuildMarker">
 (()=>{
-  const BUILD='V212_SMART_24_POOL_DRAFT';
-  window.__GONG_V212_BUILD__=BUILD;
+  const BUILD='V217_COMPETITIVE_RETURN_AND_TOURNAMENT_CLEANUP';
+  window.__GONG_V217_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V212] 최신 빌드 활성화 · 경쟁전 4대4/5대5');
+  console.info('[V217] 최신 빌드 활성화');
 })();
 </script>
 
