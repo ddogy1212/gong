@@ -17908,61 +17908,88 @@ function v198DrawYoonAndSinkStatusLocal(p){
 
 
 function v220DrawMasteryAuraLocal(p){
-  if(!p||p.alive===false||p.hidden||!DEFS[p.id]||BOSS_IDS.has(p.id))return;
+  if(!p||p.alive===false||p.hidden||!DEFS[p.id]||BOSS_IDS.has(p.id)||window.__GONG_V222_DECOR_DISABLED__)return;
   const getStage=window.__GONG_V220_MASTERY_STAGE__;
   const stage=typeof getStage==='function'?Number(getStage(p.id)||0):0;
   if(stage<=0||!Number.isFinite(p.r))return;
   const t=Number(game?.t)||0;
-  const crowded=(game?.players?.filter(x=>x&&!x.hidden).length||0)>=30;
-  const pulse=.78+.22*Math.sin(t*(stage===3?7:5)+(String(p.id).length*.7));
-  ctx.save();
+  const visibleCount=game?.players?.filter(x=>x&&!x.hidden&&x.alive!==false).length||0;
+  const mobile=!!window.__GONG_V222_MOBILE__;
+  const recording=document.body?.dataset?.v222Recording==='1';
+  const crowded=visibleCount>=24;
+  const emergency=mobile&&(crowded||recording||window.__GONG_V208_PERFORMANCE__?.effective==='low');
+  let saved=false;
+  try{
+    ctx.save();saved=true;
+    ctx.globalCompositeOperation='source-over';
+    ctx.setLineDash([]);ctx.lineDashOffset=0;ctx.shadowBlur=0;
+    const pulse=.80+.20*Math.sin(t*(stage===3?5:4)+(String(p.id).length*.47));
+    const rr=p.r+6+(stage===3&&!emergency?Math.sin(t*4):0);
 
-  // Stage 2+ gives the portrait itself a moving shine. In large raids it is
-  // intentionally reduced to keep mobile rendering smooth.
-  if(stage>=2&&(!crowded||stage>=3)){
-    ctx.save();
-    ctx.beginPath();ctx.arc(0,0,Math.max(1,p.r-3),0,Math.PI*2);ctx.clip();
-    ctx.globalCompositeOperation='screen';
-    ctx.globalAlpha=stage===3?.34:.22;
-    ctx.rotate(t*(stage===3?.9:.62));
-    const shine=ctx.createLinearGradient(-p.r*1.7,0,p.r*1.7,0);
-    shine.addColorStop(0,'rgba(255,255,255,0)');
-    shine.addColorStop(.38,'rgba(255,255,255,0)');
-    shine.addColorStop(.5,stage===3?'rgba(255,244,164,.95)':'rgba(255,255,255,.92)');
-    shine.addColorStop(.62,'rgba(255,255,255,0)');
-    shine.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=shine;ctx.fillRect(-p.r*2,-p.r*2,p.r*4,p.r*4);
-    ctx.restore();
-  }
+    // 모바일/녹화 중에는 그라디언트와 큰 shadowBlur를 사용하지 않는다.
+    // 캐릭터 본체와 글자 렌더링이 장식보다 항상 우선이다.
+    if(emergency){
+      ctx.globalAlpha=stage===1?.72:stage===2?.82:.9;
+      ctx.lineWidth=stage===1?3:stage===2?4:5;
+      ctx.strokeStyle=stage===1?'#f8cf55':stage===2?'#79e8ff':['#ff4d6d','#ffb703','#36d675','#4cc9f0','#b04cff'][Math.floor(t*3)%5];
+      if(stage>=2){ctx.setLineDash(stage===2?[8,5]:[5,4]);ctx.lineDashOffset=-t*(stage===2?14:20)}
+      ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke();
+      ctx.setLineDash([]);
+      if(stage===3&&!crowded){
+        for(let i=0;i<2;i++){
+          const a=t*1.25+i*Math.PI,orbit=p.r+12,x=Math.cos(a)*orbit,y=Math.sin(a)*orbit;
+          ctx.globalAlpha=.7;ctx.fillStyle=i?'#fff4a3':'#fff';ctx.fillRect(x-1.5,y-1.5,3,3);
+        }
+      }
+      return;
+    }
 
-  const rr=p.r+7+(stage===3?2*Math.sin(t*6):Math.sin(t*5));
-  ctx.lineCap='round';
-  if(stage===1){
-    ctx.globalAlpha=.58+.24*pulse;ctx.strokeStyle='#f8cf55';ctx.lineWidth=3.5;
-    ctx.shadowColor='#ffd76a';ctx.shadowBlur=crowded?7:13;ctx.setLineDash([7,5]);
-    ctx.lineDashOffset=-t*18;ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
-  }else if(stage===2){
-    ctx.globalAlpha=.72+.2*pulse;ctx.strokeStyle='#79e8ff';ctx.lineWidth=4.5;
-    ctx.shadowColor='#8b5cf6';ctx.shadowBlur=crowded?10:19;
-    ctx.setLineDash([10,5]);ctx.lineDashOffset=-t*25;ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);
-    if(!crowded){ctx.globalAlpha=.55;ctx.strokeStyle='#d8b4fe';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(0,0,rr+6,0,Math.PI*2);ctx.stroke();}
-  }else{
-    ctx.globalAlpha=.82+.16*pulse;ctx.lineWidth=crowded?5:6;ctx.shadowColor='#fff7a8';ctx.shadowBlur=crowded?13:25;
-    let rainbow=null;
-    try{rainbow=ctx.createConicGradient(t*1.25,0,0);['#ff4d6d','#ffb703','#f8f32b','#36d675','#4cc9f0','#4361ee','#b04cff','#ff4d6d'].forEach((c,i,a)=>rainbow.addColorStop(i/(a.length-1),c));}catch(_){}
-    ctx.strokeStyle=rainbow||'#fff06a';ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke();
-  }
-  ctx.shadowBlur=0;ctx.setLineDash([]);
+    // 데스크톱 또는 여유 있는 모바일: 기존 3단계 감각을 유지하되 안전하게 축소.
+    if(stage>=2&&!crowded){
+      ctx.save();
+      try{
+        ctx.beginPath();ctx.arc(0,0,Math.max(1,p.r-3),0,Math.PI*2);ctx.clip();
+        ctx.globalCompositeOperation='screen';ctx.globalAlpha=stage===3?.24:.16;
+        const shineX=((t*(stage===3?46:34))%(p.r*4))-p.r*2;
+        ctx.fillStyle=stage===3?'rgba(255,244,164,.82)':'rgba(255,255,255,.78)';
+        ctx.translate(shineX,0);ctx.rotate(.38);ctx.fillRect(-p.r*.18,-p.r*2,p.r*.36,p.r*4);
+      }finally{ctx.restore()}
+    }
 
-  const sparks=crowded?(stage===3?2:0):(stage===3?7:stage===2?4:0);
-  for(let i=0;i<sparks;i++){
-    const a=t*(stage===3?1.7:1.15)+i*Math.PI*2/sparks;
-    const orbit=p.r+13+(i%2)*5;
-    const x=Math.cos(a)*orbit,y=Math.sin(a)*orbit,size=stage===3?3.4:2.5;
-    ctx.globalAlpha=.55+.4*Math.sin(t*8+i)**2;ctx.fillStyle=stage===3?(i%2?'#fff4a3':'#ffffff'):'#c4f1ff';
-    ctx.beginPath();ctx.moveTo(x,y-size*2);ctx.lineTo(x+size,y-size*.4);ctx.lineTo(x+size*2,y);ctx.lineTo(x+size,y+size*.4);ctx.lineTo(x,y+size*2);ctx.lineTo(x-size,y+size*.4);ctx.lineTo(x-size*2,y);ctx.lineTo(x-size,y-size*.4);ctx.closePath();ctx.fill();
+    ctx.lineCap='round';ctx.globalAlpha=.62+.24*pulse;
+    if(stage===1){
+      ctx.strokeStyle='#f8cf55';ctx.lineWidth=3.5;ctx.shadowColor='#ffd76a';ctx.shadowBlur=9;ctx.setLineDash([7,5]);ctx.lineDashOffset=-t*14;
+    }else if(stage===2){
+      ctx.strokeStyle='#79e8ff';ctx.lineWidth=4.5;ctx.shadowColor='#8b5cf6';ctx.shadowBlur=12;ctx.setLineDash([9,5]);ctx.lineDashOffset=-t*19;
+    }else{
+      // createConicGradient는 일부 모바일 브라우저에서 불안정하므로 데스크톱에서만 시도.
+      let rainbow=null;
+      if(!mobile&&typeof ctx.createConicGradient==='function'){
+        try{
+          rainbow=ctx.createConicGradient(t*.75,0,0);
+          const colors=['#ff4d6d','#ffb703','#f8f32b','#36d675','#4cc9f0','#4361ee','#b04cff','#ff4d6d'];
+          colors.forEach((color,index)=>rainbow.addColorStop(index/(colors.length-1),color));
+        }catch(_){rainbow=null}
+      }
+      ctx.strokeStyle=rainbow||['#ff4d6d','#ffb703','#36d675','#4cc9f0','#b04cff'][Math.floor(t*4)%5];
+      ctx.lineWidth=5.5;ctx.shadowColor='#fff7a8';ctx.shadowBlur=14;
+    }
+    ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.shadowBlur=0;
+
+    const sparks=stage===3?(crowded?1:4):stage===2&&!crowded?2:0;
+    for(let i=0;i<sparks;i++){
+      const a=t*(stage===3?1.35:1.0)+i*Math.PI*2/sparks,orbit=p.r+12+(i%2)*3;
+      const x=Math.cos(a)*orbit,y=Math.sin(a)*orbit,size=stage===3?2.8:2;
+      ctx.globalAlpha=.6+.28*Math.abs(Math.sin(t*6+i));ctx.fillStyle=stage===3?(i%2?'#fff4a3':'#fff'):'#c4f1ff';
+      ctx.beginPath();ctx.moveTo(x,y-size*1.7);ctx.lineTo(x+size,y);ctx.lineTo(x,y+size*1.7);ctx.lineTo(x-size,y);ctx.closePath();ctx.fill();
+    }
+  }catch(error){
+    window.__GONG_V222_RENDER_ERRORS__=(window.__GONG_V222_RENDER_ERRORS__||0)+1;
+    if(window.__GONG_V222_RENDER_ERRORS__<=3)console.warn('[V222 숙련도 효과 안전 차단]',error);
+  }finally{
+    if(saved){try{ctx.restore()}catch(_){}}
+    try{ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.shadowBlur=0;ctx.setLineDash([]);ctx.filter='none'}catch(_){}
   }
-  ctx.restore();
 }
 
 function drawBall(p){
@@ -26270,7 +26297,7 @@ SKILL_INFO.uiyong={summary:'디버프 면역·벽 성장·충돌 회복 실드�
 SKILL_INFO.oseoyoon={summary:'투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',hp:'220',speed:'220',skills:[
   {kind:'패시브 소환',type:'attack',name:'양말상점',desc:'상대 투사체에 맞을 때마다 양말이를 소환한다.',points:['양말이: 체력 30 · 이동속도 290','양말이는 적과 닿으면 폭발하며 피해 12','오서윤·쵸텐·미쿠에게는 폭발하지 않고 피해도 주지 않음','양말이 피해는 오서윤 누적 피해량에 합산']},
   {kind:'벽 충돌 회복',type:'defense',name:'마이멜로디',desc:'벽에 3번 부딪힐 때마다 아몬드 파운드케이크를 먹고 회복한다.',points:['0.5초 시전 후 HP 5 회복','시전 중에는 제자리에서 짧게 멈춘다']},
-  {kind:'처치 전향',type:'special',name:'쵸텐',desc:'적을 처치하면 그 적을 아군 쵸텐으로 되살린다.',points:['1대1 상황에서는 발동하지 않음','되살아난 적은 이름이 쵸텐으로 바뀌고 4번 사진을 사용','쵸텐은 오서윤·미쿠·양말이와 같은 아군으로 처리','쵸텐이 넣은 피해와 킬은 오서윤 기록으로 합산']},
+  {kind:'처치 전향',type:'special',name:'쵸텐',desc:'적을 처치하면 그 적을 아군 쵸텐으로 되살린다.',points:['1대1 상황에서는 발동하지 않음','되살아난 적은 이름이 쵸텐으로 바뀌고 4번 사진을 사용','쵸텐은 오서윤·미쿠·양말이와 같은 아군으로 처리','동시에 살아 있을 수 있는 쵸텐은 최대 3명','쵸텐이 사라지면 다음 처치 때 다시 보충 가능','쵸텐이 넣은 피해와 킬은 오서윤 기록으로 합산']},
   {kind:'사후 소환',type:'special',name:'미쿠',desc:'오서윤이 죽으면 미쿠를 한 번만 소환한다.',points:['미쿠: 체력 50 · 이동속도 400','미쿠도 마이멜로디를 사용하고 적과 충돌 시 약한 피해를 준다','미쿠가 살아 있는 동안에는 오서윤이 생존한 것으로 판정되어 경기가 끝나지 않음','미쿠가 적을 처치하면 오서윤이 최대 체력의 절반으로 부활','미쿠의 피해와 킬도 오서윤 기록에 합산']}
 ]};
 
@@ -26404,11 +26431,21 @@ function v185ApplyChoten(target,root){
   renderScores();updateUI();
   return true;
 }
+function v222ActiveChotenCount(root){
+  if(!root||!game?.players)return 0;
+  return game.players.filter(p=>p?.alive&&!p.hidden&&p.data?.v185Choten&&v185SeoRoot(p)===root).length;
+}
 function v185MaybeConvertTarget(target,source){
   const root=v185SeoRoot(source);
   if(!root||!target||target.isBoss||target===root)return false;
   if(target.alive||target.hidden)return false;
   if((currentConfig?.participants?.filter(id=>!BOSS_IDS.has(id)).length||0)<=2)return false;
+  // V222: 오서윤 한 명이 동시에 유지할 수 있는 쵸텐은 최대 3명.
+  // 기존 쵸텐이 쓰러지거나 사라지면 다음 처치 때 빈자리를 다시 채울 수 있다.
+  if(v222ActiveChotenCount(root)>=3){
+    floater(root.x,root.y-root.r-17,'💙 쵸텐 최대 3명','#f08bc2',12,.65);
+    return false;
+  }
   return v185ApplyChoten(target,root);
 }
 function v185MaybeReviveOwnerFromMiku(source,target){
@@ -26660,7 +26697,7 @@ const _v185StatusText=statusText;
 statusText=function(p){
   const base=_v185StatusText(p),a=[];
   if(p?.id==='uiyong')a.push(`🧠 디버프 면역 · 벽 ${p.data.v185ReboundWalls||0} · 공격 ${v185Finite(p.data.v185ReboundDamage||4,4,22).toFixed(2)}/22${(p.data.v185ShieldTimer||0)>0?` · 실드 ${(p.data.v185ShieldTimer||0).toFixed(1)}s`:''}`);
-  if(p?.id==='oseoyoon')a.push(`🧦 양말이 ${(game?.v185Units||[]).filter(u=>u.kind==='yangmali'&&u.rootOwner===p).length}마리 · 마이멜로디 ${p.data.v185MelodyWalls||0}/3${p.data.v185MikuUsed?' · 미쿠 사용':' · 미쿠 대기'}`);
+  if(p?.id==='oseoyoon')a.push(`🧦 양말이 ${(game?.v185Units||[]).filter(u=>u.kind==='yangmali'&&u.rootOwner===p).length}마리 · 💙 쵸텐 ${v222ActiveChotenCount(p)}/3 · 마이멜로디 ${p.data.v185MelodyWalls||0}/3${p.data.v185MikuUsed?' · 미쿠 사용':' · 미쿠 대기'}`);
   if(p?.data?.v185Choten){const root=v185SeoRoot(p);a.push(`💙 쵸텐 · 소유자 ${root?.name||'오서윤'}`);}
   return a.length?((base&&base!=='정상'?base+' · ':'')+a.join(' · ')):base;
 };
@@ -28968,9 +29005,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const qualitySelect=$v('v208QualitySelect'),reduceMotion=$v('v208ReduceMotion');
   if(qualitySelect){qualitySelect.value=perf.selected;qualitySelect.addEventListener('change',()=>{perf.selected=qualitySelect.value;savePerf();syncQuality();if(!battle.classList.contains('hidden'))resize()})}
   if(reduceMotion){reduceMotion.checked=!!perf.reduceMotion;reduceMotion.addEventListener('change',()=>{perf.reduceMotion=reduceMotion.checked;savePerf();syncQuality()})}
-  let monitorLast=performance.now();function monitorFrame(now){const delta=Math.min(100,now-monitorLast);monitorLast=now;perf.avgFrame=perf.avgFrame*.94+delta*.06;syncQuality();requestAnimationFrame(monitorFrame)}requestAnimationFrame(monitorFrame);
-  const oldResize=resize;resize=function(){oldResize();const cap=perf.effective==='low'?1:perf.effective==='medium'?1.5:2;if(dpr>cap){const r=canvas.getBoundingClientRect();dpr=cap;canvas.width=Math.round(Math.max(1,r.width)*dpr);canvas.height=Math.round(Math.max(1,r.height)*dpr);const logicalPixelScale=dpr/arenaLogicalScale;ctx.setTransform(logicalPixelScale,0,0,logicalPixelScale,0,0)}};
-  const oldDraw=draw;draw=function(){const now=performance.now(),gap=perf.effective==='low'?33.3:perf.effective==='medium'?20:0;if(!paused&&!game?.over&&gap&&now-perf.lastDraw<gap)return;perf.lastDraw=now;return oldDraw()};
+  let monitorLast=performance.now(),v222LastQualitySync=0;function monitorFrame(now){const delta=Math.min(100,now-monitorLast);monitorLast=now;perf.avgFrame=perf.avgFrame*.94+delta*.06;if(now-v222LastQualitySync>=500){v222LastQualitySync=now;syncQuality()}requestAnimationFrame(monitorFrame)}requestAnimationFrame(monitorFrame);
+  const oldResize=resize;resize=function(){oldResize();const mobile=!!window.__GONG_V222_MOBILE__;const cap=mobile?(perf.effective==='low'?1:perf.effective==='medium'?1.2:1.45):(perf.effective==='low'?1:perf.effective==='medium'?1.5:2);if(dpr>cap){const r=canvas.getBoundingClientRect();dpr=cap;canvas.width=Math.round(Math.max(1,r.width)*dpr);canvas.height=Math.round(Math.max(1,r.height)*dpr);const logicalPixelScale=dpr/arenaLogicalScale;ctx.setTransform(logicalPixelScale,0,0,logicalPixelScale,0,0)}};
+  const oldDraw=draw;draw=function(){const now=performance.now(),mobile=!!window.__GONG_V222_MOBILE__,gap=mobile?(perf.effective==='low'?36:perf.effective==='medium'?30:20):(perf.effective==='low'?33.3:perf.effective==='medium'?20:0);if(!paused&&!game?.over&&gap&&now-perf.lastDraw<gap)return;perf.lastDraw=now;return oldDraw()};
   const oldTrim=trimBattleObjects;trimBattleObjects=function(){oldTrim();if(!game)return;const low=perf.effective==='low',mid=perf.effective==='medium';const caps=low?{particles:70,floaters:30,attackFx:15,shots:150,waves:45,lasers:35}:{particles:mid?150:400,floaters:mid?75:180,attackFx:mid?40:100};for(const [key,cap] of Object.entries(caps)){const arr=game[key];if(Array.isArray(arr)&&arr.length>cap)arr.splice(0,arr.length-cap)}};
   const oldCollidePlayersFast=collidePlayersFast;
   collidePlayersFast=function(vis){
@@ -29357,7 +29394,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* ---------- V219 · mastery, daily competitive rewards, video, Instagram sharing ---------- */
   {
-    const BUILD='V221_RANKED_MASTERY_AND_SKILL_DETAIL';
+    const BUILD='V222_MOBILE_RENDER_STABILITY_AND_CHOTEN_CAP';
     const MASTERY_KEY='gonggame_v219_mastery_v1',DAILY_KEY='gonggame_v219_daily_v1',v219Memory=new Map();
     const v219Clone=v=>{try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v))}};
     const v219Store={get(key,fallback){try{const raw=localStorage.getItem(key);if(raw!=null)return JSON.parse(raw)}catch(_){}return v219Memory.has(key)?v219Clone(v219Memory.get(key)):fallback},set(key,value){v219Memory.set(key,v219Clone(value));try{localStorage.setItem(key,JSON.stringify(value))}catch(_){}return true}};
@@ -29441,8 +29478,29 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     let v219RecordSession=0,v219Video={session:0,recorder:null,stream:null,chunks:[],blob:null,url:null,mime:'',status:'idle',error:''};
     function v219SupportedMime(){return ['video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>window.MediaRecorder?.isTypeSupported?.(t))||''}
     function v219ClearVideo(){if(v219Video.url)URL.revokeObjectURL(v219Video.url);v219Video={session:++v219RecordSession,recorder:null,stream:null,chunks:[],blob:null,url:null,mime:'',status:'idle',error:''}}
-    function v219StartRecording(){v219ClearVideo();const session=v219Video.session;if(!canvas?.captureStream||!window.MediaRecorder){v219Video.status='unsupported';v219Video.error='이 브라우저는 캔버스 영상 녹화를 지원하지 않아.';return}try{const stream=canvas.captureStream(30),mime=v219SupportedMime(),opts={videoBitsPerSecond:1100000};if(mime)opts.mimeType=mime;const recorder=new MediaRecorder(stream,opts);v219Video={session,recorder,stream,chunks:[],blob:null,url:null,mime:mime||recorder.mimeType||'video/webm',status:'recording',error:''};if(game)game.v219RecordingSession=session;recorder.ondataavailable=e=>{if(session===v219Video.session&&e.data?.size)v219Video.chunks.push(e.data)};recorder.onerror=e=>{if(session===v219Video.session){v219Video.status='error';v219Video.error=e?.error?.message||'영상 녹화 오류';v219UpdateMediaButtons()}};recorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());if(session!==v219Video.session)return;v219Video.blob=new Blob(v219Video.chunks,{type:v219Video.mime||'video/webm'});v219Video.status=v219Video.blob.size?'ready':'error';v219Video.error=v219Video.blob.size?'':'저장할 영상 데이터가 없어.';if(v219Video.blob.size)v219Video.url=URL.createObjectURL(v219Video.blob);v219UpdateMediaButtons()};recorder.start(1000)}catch(error){v219Video.status='unsupported';v219Video.error=error?.message||'영상 녹화를 시작하지 못했어.'}}
-    function v219StopRecording(){if(v219Video.status==='recording'&&v219Video.recorder?.state==='recording'){v219Video.status='preparing';try{v219Video.recorder.requestData()}catch(_){}try{v219Video.recorder.stop()}catch(_){v219Video.status='error'}v219UpdateMediaButtons()}}
+    function v219StartRecording(){
+      v219ClearVideo();const session=v219Video.session;
+      document.body.dataset.v222Recording='0';
+      if(!canvas?.captureStream||!window.MediaRecorder){v219Video.status='unsupported';v219Video.error='이 브라우저는 캔버스 영상 녹화를 지원하지 않아.';return}
+      try{
+        const mobile=!!window.__GONG_V222_MOBILE__,count=currentConfig?.participants?.length||0;
+        const fps=mobile?(count>=24?10:15):(count>=45?18:30);
+        const bitrate=mobile?(count>=24?360000:520000):1100000;
+        const stream=canvas.captureStream(fps),mime=v219SupportedMime(),opts={videoBitsPerSecond:bitrate};if(mime)opts.mimeType=mime;
+        const recorder=new MediaRecorder(stream,opts);
+        v219Video={session,recorder,stream,chunks:[],blob:null,url:null,mime:mime||recorder.mimeType||'video/webm',status:'recording',error:''};
+        document.body.dataset.v222Recording='1';
+        if(game){game.v219RecordingSession=session;game.v222RecordingFps=fps}
+        recorder.ondataavailable=e=>{if(session===v219Video.session&&e.data?.size)v219Video.chunks.push(e.data)};
+        recorder.onerror=e=>{if(session===v219Video.session){document.body.dataset.v222Recording='0';v219Video.status='error';v219Video.error=e?.error?.message||'영상 녹화 오류';v219UpdateMediaButtons()}};
+        recorder.onstop=()=>{document.body.dataset.v222Recording='0';stream.getTracks().forEach(t=>t.stop());if(session!==v219Video.session)return;v219Video.blob=new Blob(v219Video.chunks,{type:v219Video.mime||'video/webm'});v219Video.status=v219Video.blob.size?'ready':'error';v219Video.error=v219Video.blob.size?'':'저장할 영상 데이터가 없어.';if(v219Video.blob.size)v219Video.url=URL.createObjectURL(v219Video.blob);v219UpdateMediaButtons()};
+        recorder.start(mobile?1600:1000)
+      }catch(error){document.body.dataset.v222Recording='0';v219Video.status='unsupported';v219Video.error=error?.message||'영상 녹화를 시작하지 못했어.'}
+    }
+    function v219StopRecording(){
+      document.body.dataset.v222Recording='0';
+      if(v219Video.status==='recording'&&v219Video.recorder?.state==='recording'){v219Video.status='preparing';try{v219Video.recorder.requestData()}catch(_){}try{v219Video.recorder.stop()}catch(_){v219Video.status='error'}v219UpdateMediaButtons()}
+    }
     function v219SafeName(value){return String(value||'공게임').replace(/[\\/:*?"<>|]+/g,'_').slice(0,80)}
     function v219Download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000)}
     function v219SaveVideo(){if(v219Video.status==='recording')v219StopRecording();if(v219Video.status==='preparing'){v219Toast('영상을 마무리하는 중이야. 잠시 뒤 다시 눌러줘.');return}if(!v219Video.blob){v219Toast(v219Video.error||'이 브라우저에서는 영상 저장을 지원하지 않아.');return}const ext=v219Video.mime.includes('mp4')?'mp4':'webm';v219Download(v219Video.blob,`${v219SafeName(resultWinnerText())}_${v219KstDay()}.${ext}`)}
@@ -29470,7 +29528,37 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     v219RenderDaily();
     const v220Api={build:BUILD,mastery:()=>v219Clone(v219Mastery),daily:()=>v219Clone(v219Daily),openMastery:v219OpenMastery,masteryHtml:v221MasteryHtml,levelInfo:v219LevelInfo,masteryStage:v220MasteryStage,previewRankedXp:v221RankedXp,recording:()=>({status:v219Video.status,size:v219Video.blob?.size||0,mime:v219Video.mime}),stopRecording:v219StopRecording,shareStory:v219ShareStory,awardDaily:v219AwardDaily,refreshDaily:v220CheckDailyRollover,setMasteryXp(id,xp){v219MasteryEntry(id).xp=Math.max(0,Number(xp)||0);v219Store.set(MASTERY_KEY,v219Mastery);return v220MasteryStage(id)},completeDailyForTest(){v219Daily.claimed={battles:true,damage:true,competitive:true,all:true};v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();return document.getElementById('v219DailyPanel')?.hidden===true},rollDailyForTest(){v219Daily.date='2000-01-01';v220CheckDailyRollover();return document.getElementById('v219DailyPanel')?.hidden===false}};window.__GONG_V219__=v220Api;window.__GONG_V220__=v220Api;window.__GONG_V221__=v220Api;window.__GONG_V220_MASTERY_STAGE__=v220MasteryStage;
     window.__GONG_LATEST_BUILD__=BUILD;
-    console.info('[V221] 꼴등 최소 XP · 공헌도 순위별 차등 XP · 보스 공헌자 차등 XP · 숙련도 스킬 설명 통합');
+    console.info('[V222] 모바일 렌더링 안정화 · 숙련도 효과 경량화 · 영상 녹화 최적화 · 쵸텐 최대 3명');
+  }
+
+
+  /* ---------- V222 · mobile render stability guard ---------- */
+  {
+    const BUILD='V222_MOBILE_RENDER_STABILITY_AND_CHOTEN_CAP';
+    const mobile=matchMedia?.('(pointer:coarse)')?.matches||/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||Math.min(innerWidth,screen?.width||innerWidth)<=720;
+    window.__GONG_V222_MOBILE__=!!mobile;
+    window.__GONG_V222_DECOR_DISABLED__=false;
+    window.__GONG_V222_RENDER_ERRORS__=0;
+    const stats={build:BUILD,mobile:!!mobile,frames:0,retries:0,errors:0,lastError:'',chotenLimit:3};
+    function resetContextState(){
+      try{
+        ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';ctx.shadowBlur=0;ctx.shadowColor='transparent';ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;ctx.filter='none';ctx.setLineDash([]);ctx.lineDashOffset=0;
+      }catch(_){}
+    }
+    const previousDraw=draw;
+    draw=function(){
+      stats.frames++;resetContextState();
+      try{return previousDraw.apply(this,arguments)}
+      catch(error){
+        stats.errors++;stats.lastError=String(error?.stack||error);window.__GONG_V222_DECOR_DISABLED__=true;resetContextState();
+        if(stats.errors<=3)console.error('[V222 모바일 렌더링 재시도]',error);
+        try{stats.retries++;return previousDraw.apply(this,arguments)}catch(second){stats.errors++;stats.lastError=String(second?.stack||second);if(stats.errors<=4)console.error('[V222 렌더링 보호 실패]',second)}
+      }finally{resetContextState()}
+    };
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)resetContextState()});
+    window.__GONG_V222__={build:BUILD,mobile:!!mobile,stats:()=>({...stats,decorDisabled:!!window.__GONG_V222_DECOR_DISABLED__,recording:document.body.dataset.v222Recording==='1'}),activeChoten(root){return typeof v222ActiveChotenCount==='function'?v222ActiveChotenCount(root):0},verifyChotenCap(){const owner=game?.players?.find(p=>p.id==='oseoyoon');if(!owner)return {ok:false,reason:'오서윤이 전투에 없음'};owner.alive=true;owner.hidden=false;owner.hp=Math.max(1,owner.hp||1);owner.data.v190MikuPhase=false;owner.data.v185Miku=false;owner.data.v185SeoProxyOwner=null;const existing=game.players.filter(p=>p.data?.v185Choten);for(const p of existing){p.data.v185Choten=false;p.data.v185SeoProxyOwner=null;p.alive=false;p.hidden=false;p.hp=0}const targets=game.players.filter(p=>p!==owner&&!p.isBoss&&!p.data?.v185Choten).slice(0,4);const outcomes=[];for(const target of targets){target.alive=false;target.hidden=false;target.hp=0;outcomes.push(v185MaybeConvertTarget(target,owner))}const count=v222ActiveChotenCount(owner);return {ok:count===3&&outcomes.filter(Boolean).length===3,count,outcomes}},setDecorDisabled(value){window.__GONG_V222_DECOR_DISABLED__=!!value}};
+    window.__GONG_LATEST_BUILD__=BUILD;
+    console.info(`[V222] ${mobile?'모바일':'데스크톱'} 렌더링 안정화 활성화 · 쵸텐 최대 3명`);
   }
 
 
@@ -29793,6 +29881,6 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 .v219-result-actions{position:relative!important;inset:auto!important;float:none!important;clear:both;width:100%;max-width:100%;box-sizing:border-box;display:block;margin:0 0 12px;padding:10px;border:2px solid #d7dbe4;border-radius:15px;background:#f8f9fc;overflow:hidden;isolation:isolate}.v219-media-title{margin:0 0 8px;font-size:12px;font-weight:1000;color:#303744;text-align:left}.v219-media-buttons{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;width:100%}.v219-result-actions button{position:static!important;inset:auto!important;float:none!important;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:48px;border:2px solid #111;border-radius:13px;padding:10px 8px;font-size:13px;line-height:1.25;font-weight:1000;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.v219-video-save{background:#111;color:#fff}.v219-story-share{background:linear-gradient(135deg,#ff4ca0,#7c3aed);color:#fff}.v219-result-actions button:disabled{opacity:.48;cursor:not-allowed}.v219-media-note{width:100%;box-sizing:border-box;margin-top:7px;text-align:center;font-size:9px;font-weight:850;color:#687080;line-height:1.4;overflow-wrap:anywhere}.v219-mastery-gains{border:2px solid #d8c36d;border-radius:14px;background:#fff9d5;padding:10px;margin:0 0 10px}.v219-mastery-gains h3{margin:0 0 7px;font-size:14px}.v219-mastery-gain-list{display:grid;gap:5px}.v219-mastery-gain{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;border-radius:9px;background:#fff;padding:6px 8px;font-size:10px;font-weight:900}.v219-mastery-gain b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.v219-mastery-gain .level{color:#6d28d9}.v219-mastery-gain .xp{color:#16834f}.v219-daily-panel{border:3px solid #111;border-radius:18px;background:linear-gradient(145deg,#fff9d5,#f3efff);padding:12px;margin:12px 0;box-shadow:0 5px 0 rgba(17,17,17,.1)}.v219-daily-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:9px}.v219-daily-head strong{font-size:17px}.v219-daily-head span{font-size:10px;font-weight:900;color:#5f6570;text-align:right}.v219-daily-list{display:grid;gap:7px}.v219-daily-task{border:2px solid #d6d2df;border-radius:12px;background:#fff;padding:8px}.v219-daily-task.done{border-color:#22a06b;background:#effdf5}.v219-daily-task-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:1000}.v219-daily-task-top span:last-child{white-space:nowrap;color:#6d28d9}.v219-daily-progress{height:8px;border-radius:999px;background:#e6e8ed;overflow:hidden;margin-top:6px}.v219-daily-progress span{display:block;height:100%;background:linear-gradient(90deg,#7c3aed,#f59e0b);border-radius:999px}.v219-daily-foot{margin-top:8px;font-size:9px;font-weight:850;color:#5e6572;line-height:1.4;text-align:center}.v219-mastery-btn{border:2px solid #6d28d9!important;background:#f3efff!important;color:#421c85!important}.v219-mastery-modal{position:fixed;inset:0;z-index:180;background:#000b;display:grid;place-items:center;padding:12px}.v219-mastery-modal.hidden{display:none!important}.v219-mastery-card{width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;border:3px solid #111;border-radius:18px;background:#fff;overflow:hidden}.v219-mastery-head{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#111;color:#fff;padding:12px 14px}.v219-mastery-head strong{font-size:18px}.v219-mastery-head button{width:34px;height:34px;border:0;border-radius:9px;background:#fff;font-size:18px;font-weight:1000}.v219-mastery-tools{padding:10px;border-bottom:1px solid #ddd}.v219-mastery-tools input{width:100%;border:2px solid #cdd2da;border-radius:11px;padding:10px;font-size:16px}.v219-mastery-list{padding:10px;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v219-mastery-row{display:grid;grid-template-columns:46px minmax(0,1fr);gap:9px;align-items:center;border:2px solid var(--c,#999);border-radius:13px;padding:7px;background:#fff}.v219-mastery-row img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--c,#999)}.v219-mastery-row.stage-1 img{box-shadow:0 0 10px #f8cf55}.v219-mastery-row.stage-2 img{box-shadow:0 0 13px #79e8ff,0 0 20px #8b5cf688}.v219-mastery-row.stage-3 img{box-shadow:0 0 10px #fff,0 0 18px #ff4ca0,0 0 26px #4cc9f0}.v219-mastery-name{font-size:12px;font-weight:1000}.v219-mastery-meta{font-size:9px;font-weight:850;color:#666;margin-top:2px}.v219-mastery-bar{height:7px;border-radius:99px;background:#e9e9ed;overflow:hidden;margin-top:5px}.v219-mastery-bar span{display:block;height:100%;background:var(--c,#7c3aed)}.v219-toast{position:fixed;left:50%;bottom:22px;z-index:220;transform:translateX(-50%);max-width:min(90vw,520px);border:2px solid #fff;border-radius:999px;background:#111;color:#fff;padding:9px 14px;font-size:11px;font-weight:1000;box-shadow:0 8px 30px #0008;opacity:0;pointer-events:none;transition:opacity .18s}.v219-toast.show{opacity:1}@media(max-width:560px){.v219-media-buttons{grid-template-columns:1fr}.v219-mastery-list{grid-template-columns:1fr}.v219-daily-head{display:block}.v219-daily-head span{display:block;text-align:left;margin-top:3px}}
 </style>
 
-<script id="v221BuildMarker">(()=>{const BUILD='V221_RANKED_MASTERY_AND_SKILL_DETAIL';window.__GONG_V219_BUILD__=BUILD;window.__GONG_V220_BUILD__=BUILD;window.__GONG_V221_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V221] 최신 빌드 활성화');})();</script>
+<script id="v222BuildMarker">(()=>{const BUILD='V222_MOBILE_RENDER_STABILITY_AND_CHOTEN_CAP';window.__GONG_V219_BUILD__=BUILD;window.__GONG_V220_BUILD__=BUILD;window.__GONG_V221_BUILD__=BUILD;window.__GONG_V222_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V222] 최신 빌드 활성화');})();</script>
 </body>
 </html>
