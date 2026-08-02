@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V220_MASTERY_DAILY_EFFECTS_MEDIA_LAYOUT -->
+<!-- BUILD: V221_RANKED_MASTERY_AND_SKILL_DETAIL -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -1699,6 +1699,22 @@ body.competitive-battle #restart{display:none!important}
 @media(max-width:560px){.competitive-rank-panel{grid-template-columns:65px minmax(0,1fr);padding:10px;gap:9px}.competitive-rank-icon{width:62px;height:62px}.competitive-rank-title strong{font-size:19px}.competitive-rank-meta{display:grid;grid-template-columns:1fr;gap:2px}.competitive-tier-road{padding-top:7px}.competitive-tier-chip{padding:3px 7px;font-size:8px}}
 </style>
 
+
+<style id="v221MasterySkillStyle">
+#v219MasteryOpen,.v219-mastery-modal{display:none!important}
+.v221-skill-mastery{position:relative;overflow:hidden;border:2px solid var(--c,#777);border-radius:15px;background:linear-gradient(145deg,#fff,#f6f4fb);padding:11px;margin:0 0 10px;box-shadow:0 3px 0 color-mix(in srgb,var(--c,#777) 24%,transparent)}
+.v221-skill-mastery:after{content:"";position:absolute;inset:-45% auto -45% -30%;width:28%;transform:rotate(18deg);background:linear-gradient(90deg,transparent,#fff9,transparent);opacity:0;pointer-events:none}
+.v221-mastery-title{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;font-weight:1000;color:#24212b}.v221-mastery-title b{font-size:18px;color:var(--c,#6d28d9)}
+.v221-mastery-progress{height:9px;border-radius:999px;background:#e5e7eb;overflow:hidden;margin-top:8px}.v221-mastery-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--c,#6d28d9),#f59e0b)}
+.v221-mastery-xp{margin-top:5px;font-size:9px;font-weight:900;color:#626775}.v221-mastery-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:9px}.v221-mastery-stats span{min-width:0;border-radius:9px;background:#fff;border:1px solid #e1e3e8;padding:6px 4px;text-align:center;font-size:8px;font-weight:850;color:#666;overflow-wrap:anywhere}.v221-mastery-stats b{display:block;color:#17171b;font-size:11px;margin-bottom:1px}
+.v221-skill-mastery.stage-1{box-shadow:0 0 12px #f8cf5580,0 3px 0 #d6a40c55}.v221-skill-mastery.stage-1:after{opacity:.7;animation:v221MasterySweep 3.2s ease-in-out infinite}
+.v221-skill-mastery.stage-2{border-color:#6bdff5;box-shadow:0 0 13px #79e8ff99,0 0 22px #8b5cf655}.v221-skill-mastery.stage-2:after{opacity:.9;animation:v221MasterySweep 2.3s ease-in-out infinite}
+.v221-skill-mastery.stage-3{border-color:#fff;background:linear-gradient(145deg,#fff,#fff7fc);box-shadow:0 0 10px #fff,0 0 18px #ff4ca099,0 0 28px #4cc9f088}.v221-skill-mastery.stage-3:before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from 0deg,#ff4ca0,#f8df6c,#4cc9f0,#8b5cf6,#ff4ca0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:v221MasterySpin 3s linear infinite;pointer-events:none}.v221-skill-mastery.stage-3:after{opacity:1;animation:v221MasterySweep 1.7s ease-in-out infinite}
+@keyframes v221MasterySweep{0%,18%{left:-35%}72%,100%{left:125%}}@keyframes v221MasterySpin{to{transform:rotate(360deg)}}
+@media(max-width:560px){.v221-mastery-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.v221-skill-mastery{padding:9px}.v221-mastery-title b{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.v221-skill-mastery:before,.v221-skill-mastery:after{animation:none!important}}
+</style>
+
 </head>
 
 <style id="v201CleanUiStyle">
@@ -1735,7 +1751,7 @@ body.competitive-battle #restart{display:none!important}
 
 <body>
 <!-- V107_ALL_FEATURES_READY -->
-<!-- BUILD: V220_MASTERY_DAILY_EFFECTS_MEDIA_LAYOUT -->
+<!-- BUILD: V221_RANKED_MASTERY_AND_SKILL_DETAIL -->
 <div class="app">
 
 <section id="setup" class="screen">
@@ -3684,6 +3700,7 @@ function renderSkillDetail(){
         <div class="skill-profile-meta">${info.summary} · 체력 ${info.hp} · 이동속도 ${info.speed}</div>
       </div>
     </div>
+    ${window.__GONG_V221_MASTERY_HTML__?.(skillSelected)||''}
     ${info.skills.map(s=>`
       <section class="skill-section ${s.type}">
         <div class="skill-kind">${s.kind}</div>
@@ -29340,7 +29357,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* ---------- V219 · mastery, daily competitive rewards, video, Instagram sharing ---------- */
   {
-    const BUILD='V220_MASTERY_DAILY_EFFECTS_MEDIA_LAYOUT';
+    const BUILD='V221_RANKED_MASTERY_AND_SKILL_DETAIL';
     const MASTERY_KEY='gonggame_v219_mastery_v1',DAILY_KEY='gonggame_v219_daily_v1',v219Memory=new Map();
     const v219Clone=v=>{try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v))}};
     const v219Store={get(key,fallback){try{const raw=localStorage.getItem(key);if(raw!=null)return JSON.parse(raw)}catch(_){}return v219Memory.has(key)?v219Clone(v219Memory.get(key)):fallback},set(key,value){v219Memory.set(key,v219Clone(value));try{localStorage.setItem(key,JSON.stringify(value))}catch(_){}return true}};
@@ -29360,20 +29377,36 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const count=Math.min(players.length,Math.max(minimum,Math.min(8,Math.ceil(players.length*.10))));
       return new Set(sorted.slice(0,count));
     }
+    function v221RankedXp({bossMode=false,playerCount=1,eligibleCount=1,rankIndex=0,win=false,contribution=0}={}){
+      playerCount=Math.max(1,Number(playerCount)||1);eligibleCount=Math.max(1,Number(eligibleCount)||1);rankIndex=Math.max(0,Number(rankIndex)||0);
+      if(bossMode){const ratio=eligibleCount<=1?1:1-rankIndex/(eligibleCount-1);return 18+Math.round(ratio*34)+(win?8:0)}
+      if(playerCount<=1)return 30;
+      if(rankIndex===playerCount-1)return 2;
+      const ratio=playerCount<=2?1:1-rankIndex/(playerCount-2),activity=Math.min(10,Math.round(Math.max(0,Number(contribution)||0)/900));
+      return 10+Math.round(ratio*38)+activity+(win?8:0)
+    }
     function v219SettleMastery(){
       if(!game||game.v219MasterySettled)return [];
       game.v219MasterySettled=true;
-      const gains=[],players=v219MainPlayers(),bossMode=currentConfig?.mode==='boss',bossContributors=bossMode?v220BossContributors(players):null;
-      game.v220BossMasteryContributors=bossMode?[...bossContributors].map(p=>p.id):[];
+      const gains=[],players=v219MainPlayers(),bossMode=currentConfig?.mode==='boss';
+      const allRanked=[...players].sort((a,b)=>v220ContributionScore(b)-v220ContributionScore(a));
+      const bossContributorSet=bossMode?v220BossContributors(players):null;
+      const eligible=bossMode?allRanked.filter(p=>bossContributorSet.has(p)):allRanked;
+      const eligibleRank=new Map(eligible.map((p,index)=>[p,index]));
+      game.v220BossMasteryContributors=bossMode?eligible.map(p=>p.id):[];
       for(const p of players){
         const e=v219MasteryEntry(p.id),win=v219IsWinner(p),damage=Math.max(0,Number(p.damageDealt)||0),healing=Math.max(0,Number(p.healingDone)||0),kills=Math.max(0,Number(p.kills)||0),before=v219LevelInfo(e.xp).level;
         e.games++;if(win)e.wins++;e.kills+=kills;e.damage+=damage;e.healing+=healing;e.bestDamage=Math.max(e.bestDamage,damage);e.lastPlayed=new Date().toISOString();
-        let gain=0;
-        if(!bossMode||bossContributors.has(p)){
-          if(win)gain=Math.max(18,Math.round(18+Math.min(90,damage/30)+Math.min(45,kills*10)+Math.min(28,healing/25)+20));
-          else gain=Math.max(1,Math.min(5,Math.round(1+Math.min(2,damage/1200)+Math.min(1,kills)+Math.min(1,healing/1000))));
+        let gain=0,placement=0,eligibleCount=eligible.length;
+        if(eligibleRank.has(p)){
+          const rankIndex=eligibleRank.get(p);placement=rankIndex+1;
+          gain=v221RankedXp({bossMode,playerCount:players.length,eligibleCount,rankIndex,win,contribution:v220ContributionScore(p)});
         }
-        if(gain>0){e.xp+=gain;const after=v219LevelInfo(e.xp).level;gains.push({id:p.id,name:p.name,gain,before,after,level:after,bossContributor:bossMode,won:win,contribution:v220ContributionScore(p)})}
+        if(gain>0){
+          e.xp+=gain;
+          const after=v219LevelInfo(e.xp).level;
+          gains.push({id:p.id,name:p.name,gain,before,after,level:after,bossContributor:bossMode,won:win,contribution:v220ContributionScore(p),placement,eligibleCount,totalPlayers:players.length,lastPlace:!bossMode&&placement===players.length});
+        }
       }
       game.v219MasteryGains=gains;v219Store.set(MASTERY_KEY,v219Mastery);return gains
     }
@@ -29396,10 +29429,15 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     function v220CheckDailyRollover(){if(v219Daily.date!==v219KstDay()){v219Daily=v219NewDaily();v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily()}}
     setInterval(v220CheckDailyRollover,60000);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)v220CheckDailyRollover()});
-    function v219EnsureMasteryModal(){let modal=document.getElementById('v219MasteryModal');if(modal)return modal;modal=document.createElement('div');modal.id='v219MasteryModal';modal.className='v219-mastery-modal hidden';modal.innerHTML=`<div class="v219-mastery-card" role="dialog" aria-modal="true"><div class="v219-mastery-head"><strong>🏅 캐릭터 숙련도</strong><button id="v219MasteryClose" type="button">×</button></div><div class="v219-mastery-tools"><input id="v219MasterySearch" type="search" placeholder="캐릭터 이름 검색"></div><div id="v219MasteryList" class="v219-mastery-list"></div></div>`;document.body.appendChild(modal);modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.add('hidden')});modal.querySelector('#v219MasteryClose').addEventListener('click',()=>modal.classList.add('hidden'));modal.querySelector('#v219MasterySearch').addEventListener('input',v219RenderMasteryList);return modal}
-    function v219RenderMasteryList(){const modal=v219EnsureMasteryModal(),q=(modal.querySelector('#v219MasterySearch')?.value||'').trim().toLowerCase(),list=modal.querySelector('#v219MasteryList'),ids=orderedCharacterIds().filter(id=>DEFS[id].name.toLowerCase().includes(q));list.innerHTML=ids.map(id=>{const d=DEFS[id],e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp);return `<div class="v219-mastery-row stage-${v220MasteryStage(id)}" style="--c:${d.color}"><img src="${d.img}" alt="${d.name}" style="object-position:${crop(id)}"><div><div class="v219-mastery-name">${d.name} · Lv.${lv.level}</div><div class="v219-mastery-meta">${e.games}전 ${e.wins}승 · ${Math.round(e.damage).toLocaleString()} 피해 · ${e.kills}킬</div><div class="v219-mastery-bar"><span style="width:${lv.percent}%"></span></div><div class="v219-mastery-meta">XP ${lv.current} / ${lv.next}</div></div></div>`}).join('')||'<div style="padding:24px;text-align:center;font-weight:900;color:#777">검색 결과가 없어.</div>';v219Store.set(MASTERY_KEY,v219Mastery)}
-    function v219OpenMastery(){const m=v219EnsureMasteryModal();v219RenderMasteryList();m.classList.remove('hidden')}
-    const v219SkillBtn=document.getElementById('openSkillsSetup');if(v219SkillBtn&&!document.getElementById('v219MasteryOpen')){const b=document.createElement('button');b.id='v219MasteryOpen';b.className='skill-help-btn v219-mastery-btn';b.type='button';b.textContent='🏅 캐릭터 숙련도';b.addEventListener('click',v219OpenMastery);v219SkillBtn.insertAdjacentElement('afterend',b)}
+    function v221MasteryEffectName(stage){return stage===3?'무지개 광휘':stage===2?'오로라 광택':stage===1?'금빛 반짝임':'기본 테두리'}
+    function v221MasteryHtml(id){
+      const d=DEFS[id];if(!d)return '';
+      const e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp),stage=v220MasteryStage(id),winRate=e.games?Math.round(e.wins/e.games*100):0;
+      return `<section class="v221-skill-mastery stage-${stage}" style="--c:${d.color}"><div class="v221-mastery-title"><span>🏅 캐릭터 숙련도</span><b>Lv.${lv.level}</b></div><div class="v221-mastery-progress"><span style="width:${lv.percent}%"></span></div><div class="v221-mastery-xp">XP ${lv.current.toLocaleString()} / ${lv.next.toLocaleString()} · ${v221MasteryEffectName(stage)}</div><div class="v221-mastery-stats"><span><b>${e.games}</b>경기</span><span><b>${e.wins}</b>승</span><span><b>${winRate}%</b>승률</span><span><b>${e.kills}</b>킬</span><span><b>${Math.round(e.damage).toLocaleString()}</b>피해</span><span><b>${Math.round(e.bestDamage).toLocaleString()}</b>최고 피해</span><span><b>${Math.round(e.healing).toLocaleString()}</b>회복</span></div></section>`
+    }
+    window.__GONG_V221_MASTERY_HTML__=v221MasteryHtml;
+    document.getElementById('v219MasteryOpen')?.remove();
+    function v219OpenMastery(id){openSkillModal(id&&DEFS[id]?id:orderedCharacterIds()[0])}
     let v219RecordSession=0,v219Video={session:0,recorder:null,stream:null,chunks:[],blob:null,url:null,mime:'',status:'idle',error:''};
     function v219SupportedMime(){return ['video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>window.MediaRecorder?.isTypeSupported?.(t))||''}
     function v219ClearVideo(){if(v219Video.url)URL.revokeObjectURL(v219Video.url);v219Video={session:++v219RecordSession,recorder:null,stream:null,chunks:[],blob:null,url:null,mime:'',status:'idle',error:''}}
@@ -29423,16 +29461,16 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       document.querySelectorAll('.v219-result-actions').forEach(wrap=>{const btn=wrap.querySelector('.v219-video-save'),note=wrap.querySelector('.v219-media-note');if(!btn||!note)return;if(v219Video.status==='ready'){btn.disabled=false;btn.textContent='🎬 영상 저장하기';note.textContent='영상 녹화 완료 · 공유 버튼은 휴대폰의 공유 메뉴를 열어.'}else if(v219Video.status==='preparing'||v219Video.status==='recording'){btn.disabled=true;btn.textContent='🎬 영상 준비 중';note.textContent='경기 영상을 마무리하고 있어.'}else{btn.disabled=true;btn.textContent='🎬 영상 저장 미지원';note.textContent=v219Video.error||'이 브라우저에서는 영상 녹화를 지원하지 않아. 인스타 결과 카드는 공유할 수 있어.'}})
     }
     function v219SettleAll(){if(!game)return;v219SettleMastery();v219SettleDaily();v219StopRecording()}
-    function v219AppendResultExtras(){if(!game)return;v219SettleAll();const winner=resultBody.querySelector('.result-winner');if(winner&&!resultBody.querySelector('.v219-result-actions'))winner.insertAdjacentElement('afterend',v219ActionBlock());const gains=game.v219MasteryGains||[];if(gains.length&&!resultBody.querySelector('.v219-mastery-gains')){const box=document.createElement('div');box.className='v219-mastery-gains';box.innerHTML=`<h3>${currentConfig?.mode==='boss'?'👑 보스전 최고 공헌자 숙련도':'🏅 이번 경기 숙련도'}</h3><div class="v219-mastery-gain-list">${gains.slice().sort((a,b)=>b.gain-a.gain).slice(0,8).map(g=>`<div class="v219-mastery-gain"><b>${g.name}</b><span class="level">Lv.${g.level}${g.after>g.before?' ↑':''}</span><span class="xp">+${g.gain} XP</span></div>`).join('')}</div>`;resultBody.querySelector('.v219-result-actions')?.insertAdjacentElement('afterend',box)}v219UpdateMediaButtons()}
+    function v219AppendResultExtras(){if(!game)return;v219SettleAll();const winner=resultBody.querySelector('.result-winner');if(winner&&!resultBody.querySelector('.v219-result-actions'))winner.insertAdjacentElement('afterend',v219ActionBlock());const gains=game.v219MasteryGains||[];if(gains.length&&!resultBody.querySelector('.v219-mastery-gains')){const box=document.createElement('div');box.className='v219-mastery-gains';box.innerHTML=`<h3>${currentConfig?.mode==='boss'?'👑 보스전 최고 공헌자 숙련도':'🏅 이번 경기 숙련도'}</h3><div class="v219-mastery-gain-list">${gains.slice().sort((a,b)=>(a.placement||999)-(b.placement||999)).slice(0,10).map(g=>`<div class="v219-mastery-gain"><b>${g.name}${g.placement?` · ${g.placement}위`:''}${g.lastPlace?' · 꼴등':''}</b><span class="level">Lv.${g.level}${g.after>g.before?' ↑':''}</span><span class="xp">+${g.gain} XP</span></div>`).join('')}</div>`;resultBody.querySelector('.v219-result-actions')?.insertAdjacentElement('afterend',box)}v219UpdateMediaButtons()}
     const v219PreviousReset=resetBattle;resetBattle=function(){const result=v219PreviousReset.apply(this,arguments);requestAnimationFrame(()=>{if(game&&!battle.classList.contains('hidden'))v219StartRecording()});return result};
     const v219PreviousCheck=checkEnd;checkEnd=function(){const before=!!game?.over,result=v219PreviousCheck.apply(this,arguments);if(!before&&game?.over)v219SettleAll();return result};
     const v219PreviousRender=renderResultModal;renderResultModal=function(){v219SettleAll();v219PreviousRender.apply(this,arguments);v219AppendResultExtras()};
     const v219ResultObserver=new MutationObserver(()=>{if(!resultModal.classList.contains('hidden')){v219StopRecording();setTimeout(v219AppendResultExtras,0)}});v219ResultObserver.observe(resultModal,{attributes:true,attributeFilter:['class']});
     const v219TournamentModal=document.getElementById('tournamentModal');if(v219TournamentModal){const observer=new MutationObserver(()=>{const body=document.getElementById('tournamentModalBody'),title=document.getElementById('tournamentModalTitle')?.textContent||'';if(v219TournamentModal.classList.contains('hidden')||!body||body.querySelector('.v219-result-actions')||!/결과|종료|우승|승리/.test(title))return;v219SettleAll();body.appendChild(v219ActionBlock());v219UpdateMediaButtons()});observer.observe(v219TournamentModal,{attributes:true,subtree:true,childList:true,attributeFilter:['class']})}
     v219RenderDaily();
-    const v220Api={build:BUILD,mastery:()=>v219Clone(v219Mastery),daily:()=>v219Clone(v219Daily),openMastery:v219OpenMastery,levelInfo:v219LevelInfo,masteryStage:v220MasteryStage,recording:()=>({status:v219Video.status,size:v219Video.blob?.size||0,mime:v219Video.mime}),stopRecording:v219StopRecording,shareStory:v219ShareStory,awardDaily:v219AwardDaily,refreshDaily:v220CheckDailyRollover,setMasteryXp(id,xp){v219MasteryEntry(id).xp=Math.max(0,Number(xp)||0);v219Store.set(MASTERY_KEY,v219Mastery);return v220MasteryStage(id)},completeDailyForTest(){v219Daily.claimed={battles:true,damage:true,competitive:true,all:true};v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();return document.getElementById('v219DailyPanel')?.hidden===true},rollDailyForTest(){v219Daily.date='2000-01-01';v220CheckDailyRollover();return document.getElementById('v219DailyPanel')?.hidden===false}};window.__GONG_V219__=v220Api;window.__GONG_V220__=v220Api;window.__GONG_V220_MASTERY_STAGE__=v220MasteryStage;
+    const v220Api={build:BUILD,mastery:()=>v219Clone(v219Mastery),daily:()=>v219Clone(v219Daily),openMastery:v219OpenMastery,masteryHtml:v221MasteryHtml,levelInfo:v219LevelInfo,masteryStage:v220MasteryStage,previewRankedXp:v221RankedXp,recording:()=>({status:v219Video.status,size:v219Video.blob?.size||0,mime:v219Video.mime}),stopRecording:v219StopRecording,shareStory:v219ShareStory,awardDaily:v219AwardDaily,refreshDaily:v220CheckDailyRollover,setMasteryXp(id,xp){v219MasteryEntry(id).xp=Math.max(0,Number(xp)||0);v219Store.set(MASTERY_KEY,v219Mastery);return v220MasteryStage(id)},completeDailyForTest(){v219Daily.claimed={battles:true,damage:true,competitive:true,all:true};v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();return document.getElementById('v219DailyPanel')?.hidden===true},rollDailyForTest(){v219Daily.date='2000-01-01';v220CheckDailyRollover();return document.getElementById('v219DailyPanel')?.hidden===false}};window.__GONG_V219__=v220Api;window.__GONG_V220__=v220Api;window.__GONG_V221__=v220Api;window.__GONG_V220_MASTERY_STAGE__=v220MasteryStage;
     window.__GONG_LATEST_BUILD__=BUILD;
-    console.info('[V220] 일일 임무 올클리어 숨김 · 패배 XP 축소 · 보스 최고 공헌자 XP · 3단계 숙련도 광휘 · 미디어 버튼 배치 개선');
+    console.info('[V221] 꼴등 최소 XP · 공헌도 순위별 차등 XP · 보스 공헌자 차등 XP · 숙련도 스킬 설명 통합');
   }
 
 
@@ -29755,6 +29793,6 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 .v219-result-actions{position:relative!important;inset:auto!important;float:none!important;clear:both;width:100%;max-width:100%;box-sizing:border-box;display:block;margin:0 0 12px;padding:10px;border:2px solid #d7dbe4;border-radius:15px;background:#f8f9fc;overflow:hidden;isolation:isolate}.v219-media-title{margin:0 0 8px;font-size:12px;font-weight:1000;color:#303744;text-align:left}.v219-media-buttons{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;width:100%}.v219-result-actions button{position:static!important;inset:auto!important;float:none!important;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:48px;border:2px solid #111;border-radius:13px;padding:10px 8px;font-size:13px;line-height:1.25;font-weight:1000;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.v219-video-save{background:#111;color:#fff}.v219-story-share{background:linear-gradient(135deg,#ff4ca0,#7c3aed);color:#fff}.v219-result-actions button:disabled{opacity:.48;cursor:not-allowed}.v219-media-note{width:100%;box-sizing:border-box;margin-top:7px;text-align:center;font-size:9px;font-weight:850;color:#687080;line-height:1.4;overflow-wrap:anywhere}.v219-mastery-gains{border:2px solid #d8c36d;border-radius:14px;background:#fff9d5;padding:10px;margin:0 0 10px}.v219-mastery-gains h3{margin:0 0 7px;font-size:14px}.v219-mastery-gain-list{display:grid;gap:5px}.v219-mastery-gain{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;border-radius:9px;background:#fff;padding:6px 8px;font-size:10px;font-weight:900}.v219-mastery-gain b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.v219-mastery-gain .level{color:#6d28d9}.v219-mastery-gain .xp{color:#16834f}.v219-daily-panel{border:3px solid #111;border-radius:18px;background:linear-gradient(145deg,#fff9d5,#f3efff);padding:12px;margin:12px 0;box-shadow:0 5px 0 rgba(17,17,17,.1)}.v219-daily-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:9px}.v219-daily-head strong{font-size:17px}.v219-daily-head span{font-size:10px;font-weight:900;color:#5f6570;text-align:right}.v219-daily-list{display:grid;gap:7px}.v219-daily-task{border:2px solid #d6d2df;border-radius:12px;background:#fff;padding:8px}.v219-daily-task.done{border-color:#22a06b;background:#effdf5}.v219-daily-task-top{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:1000}.v219-daily-task-top span:last-child{white-space:nowrap;color:#6d28d9}.v219-daily-progress{height:8px;border-radius:999px;background:#e6e8ed;overflow:hidden;margin-top:6px}.v219-daily-progress span{display:block;height:100%;background:linear-gradient(90deg,#7c3aed,#f59e0b);border-radius:999px}.v219-daily-foot{margin-top:8px;font-size:9px;font-weight:850;color:#5e6572;line-height:1.4;text-align:center}.v219-mastery-btn{border:2px solid #6d28d9!important;background:#f3efff!important;color:#421c85!important}.v219-mastery-modal{position:fixed;inset:0;z-index:180;background:#000b;display:grid;place-items:center;padding:12px}.v219-mastery-modal.hidden{display:none!important}.v219-mastery-card{width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;border:3px solid #111;border-radius:18px;background:#fff;overflow:hidden}.v219-mastery-head{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#111;color:#fff;padding:12px 14px}.v219-mastery-head strong{font-size:18px}.v219-mastery-head button{width:34px;height:34px;border:0;border-radius:9px;background:#fff;font-size:18px;font-weight:1000}.v219-mastery-tools{padding:10px;border-bottom:1px solid #ddd}.v219-mastery-tools input{width:100%;border:2px solid #cdd2da;border-radius:11px;padding:10px;font-size:16px}.v219-mastery-list{padding:10px;overflow:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.v219-mastery-row{display:grid;grid-template-columns:46px minmax(0,1fr);gap:9px;align-items:center;border:2px solid var(--c,#999);border-radius:13px;padding:7px;background:#fff}.v219-mastery-row img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--c,#999)}.v219-mastery-row.stage-1 img{box-shadow:0 0 10px #f8cf55}.v219-mastery-row.stage-2 img{box-shadow:0 0 13px #79e8ff,0 0 20px #8b5cf688}.v219-mastery-row.stage-3 img{box-shadow:0 0 10px #fff,0 0 18px #ff4ca0,0 0 26px #4cc9f0}.v219-mastery-name{font-size:12px;font-weight:1000}.v219-mastery-meta{font-size:9px;font-weight:850;color:#666;margin-top:2px}.v219-mastery-bar{height:7px;border-radius:99px;background:#e9e9ed;overflow:hidden;margin-top:5px}.v219-mastery-bar span{display:block;height:100%;background:var(--c,#7c3aed)}.v219-toast{position:fixed;left:50%;bottom:22px;z-index:220;transform:translateX(-50%);max-width:min(90vw,520px);border:2px solid #fff;border-radius:999px;background:#111;color:#fff;padding:9px 14px;font-size:11px;font-weight:1000;box-shadow:0 8px 30px #0008;opacity:0;pointer-events:none;transition:opacity .18s}.v219-toast.show{opacity:1}@media(max-width:560px){.v219-media-buttons{grid-template-columns:1fr}.v219-mastery-list{grid-template-columns:1fr}.v219-daily-head{display:block}.v219-daily-head span{display:block;text-align:left;margin-top:3px}}
 </style>
 
-<script id="v220BuildMarker">(()=>{const BUILD='V220_MASTERY_DAILY_EFFECTS_MEDIA_LAYOUT';window.__GONG_V219_BUILD__=BUILD;window.__GONG_V220_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V220] 최신 빌드 활성화');})();</script>
+<script id="v221BuildMarker">(()=>{const BUILD='V221_RANKED_MASTERY_AND_SKILL_DETAIL';window.__GONG_V219_BUILD__=BUILD;window.__GONG_V220_BUILD__=BUILD;window.__GONG_V221_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V221] 최신 빌드 활성화');})();</script>
 </body>
 </html>
