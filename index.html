@@ -1853,6 +1853,7 @@ body.competitive-battle #restart{display:none!important}
       <button class="mode-btn" data-mode="boss">👑 보스전</button>
       <button id="tournamentModeBtn" class="mode-hub-btn mode-tournament-btn" type="button">🏆 토너먼트</button>
       <button id="draftModeBtn" class="mode-hub-btn mode-draft-btn" type="button">🏅 경쟁전</button>
+      <button id="trainingModeBtn" class="mode-hub-btn mode-training-btn" type="button">🌱 육성모드</button>
     </div>
     <div id="teamOptions" class="team-options hidden">
       <label for="teamCount">팀 개수</label>
@@ -30888,6 +30889,115 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   console.info('[V247] V246 확장 기능 롤백 · 메인 버튼 제거 · 프로필 재실행형 튜토리얼만 유지');
 })();
 
+(()=>{
+  'use strict';
+  const BUILD='V248_CONTINUOUS_TRAINING_MODE';
+  const WIN_XP=30;
+  const STORAGE_KEY='gonggame_v248_training_settings';
+  const $t=id=>document.getElementById(id);
+  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const clone=value=>{try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value))}};
+  const saved=(()=>{try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch(_){return {}}})();
+  const session={active:false,selected:saved.selected||'',opponent:'',lastOpponent:'',round:0,wins:0,losses:0,draws:0,xp:0,nextTimer:0,processedGame:null,startedAt:0};
+  let query='';
+
+  function masteryApi(){return window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V220__||window.__GONG_V219__}
+  function publicState(){return {active:session.active,selected:session.selected,opponent:session.opponent,lastOpponent:session.lastOpponent,round:session.round,wins:session.wins,losses:session.losses,draws:session.draws,xp:session.xp,nextPending:!!session.nextTimer,processed:!!session.processedGame,startedAt:session.startedAt}}
+  function roster(){return orderedCharacterIds().filter(id=>DEFS[id]&&!BOSS_IDS.has(id))}
+  function masteryInfo(id){const api=masteryApi(),all=api?.mastery?.()||{},xp=Math.max(0,Number(all?.characters?.[id]?.xp??all?.[id]?.xp)||0),level=api?.levelInfo?.(xp)?.level||1;return {xp,level,maxXp:Number(api?.maxXp)||Infinity}}
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({selected:session.selected}))}catch(_){}}
+  function randomOpponent(){const list=roster().filter(id=>id!==session.selected&&id!==session.lastOpponent);const fallback=roster().filter(id=>id!==session.selected);const source=list.length?list:fallback;if(!source.length)return '';return source[Math.floor(Math.random()*source.length)]}
+
+  function ensureScreen(){
+    let screen=$t('trainingScreen');
+    if(screen)return screen;
+    screen=document.createElement('section');
+    screen.id='trainingScreen';screen.className='screen v248-training-screen hidden';screen.setAttribute('aria-hidden','true');
+    screen.innerHTML=`<div class="v248-training-shell"><header class="v248-training-head"><div><h2>🌱 육성모드</h2><p>선택 캐릭터로 랜덤 상대와 1대1을 계속 진행해. 승리할 때마다 숙련도 +${WIN_XP} XP.</p></div><button type="button" class="v248-training-back">← 메인</button></header><section class="v248-training-panel"><div class="v248-training-guide"><span>① 육성할 캐릭터 선택</span><span>② 시작 후 자동 연속 전투</span><span>③ 승리마다 +${WIN_XP} XP</span></div><div id="v248TrainingSelected" class="v248-training-selected"></div><div class="v248-training-tools"><input id="v248TrainingSearch" class="v248-training-search" type="search" placeholder="캐릭터 이름 검색" autocomplete="off"><span id="v248TrainingCount" class="v248-training-count"></span></div><div id="v248TrainingRoster" class="v248-training-roster"></div></section></div>`;
+    $t('draftScreen')?.insertAdjacentElement('afterend',screen);
+    screen.querySelector('.v248-training-back')?.addEventListener('click',()=>exitToMain());
+    $t('v248TrainingSearch')?.addEventListener('input',event=>{query=String(event.target.value||'').trim().toLowerCase();renderRoster()});
+    return screen;
+  }
+
+  function ensureHud(){
+    let hud=$t('v248TrainingHud');if(hud)return hud;
+    hud=document.createElement('section');hud.id='v248TrainingHud';hud.className='v248-training-hud';
+    hud.innerHTML=`<div class="v248-training-versus"><div id="v248TrainingUser" class="v248-training-fighter"></div><div class="v248-training-vs">VS</div><div id="v248TrainingEnemy" class="v248-training-fighter enemy"></div></div><div class="v248-training-session"><span>전투<b id="v248TrainingRounds">0</b></span><span>승리<b id="v248TrainingWins">0</b></span><span>패배<b id="v248TrainingLosses">0</b></span><span>승률<b id="v248TrainingRate">0%</b></span><span>획득 XP<b id="v248TrainingXp">0</b></span></div><div class="v248-training-controls"><button type="button" id="v248TrainingPause" class="v248-training-pause">⏸ 일시정지</button><button type="button" id="v248TrainingChange" class="v248-training-change">🔄 캐릭터 변경</button><button type="button" id="v248TrainingStop" class="v248-training-stop">⏹ 육성 종료</button></div>`;
+    $t('battle')?.querySelector('.battle-head')?.insertAdjacentElement('afterend',hud);
+    $t('v248TrainingPause')?.addEventListener('click',()=>{if(!session.active)return;paused=!paused;last=0;$t('pause').textContent=paused?'계속하기':'일시정지';updateHud()});
+    $t('v248TrainingChange')?.addEventListener('click',()=>changeCharacter());
+    $t('v248TrainingStop')?.addEventListener('click',()=>exitToMain());
+    const banner=document.createElement('div');banner.id='v248TrainingBanner';banner.className='v248-training-banner';document.body.appendChild(banner);
+    return hud;
+  }
+
+  function fighterHtml(id,enemy=false){const d=DEFS[id]||{},info=masteryInfo(id);return `${enemy?`<div><b>${esc(d.name||id)}</b><span>랜덤 연습 상대</span></div>`:''}<img src="${esc(d.img||'')}" alt="" style="--c:${esc(d.color||'#777')};object-position:${esc(typeof crop==='function'?crop(id):'50% 50%')}">${enemy?'':`<div><b>${esc(d.name||id)}</b><span>숙련도 Lv.${info.level}</span></div>`}`}
+  function updateHud(){
+    const hud=ensureHud();hud.classList.toggle('show',session.active);
+    if(!session.active)return;
+    $t('v248TrainingUser').innerHTML=fighterHtml(session.selected,false);$t('v248TrainingEnemy').innerHTML=fighterHtml(session.opponent,true);
+    $t('v248TrainingRounds').textContent=String(session.round);$t('v248TrainingWins').textContent=String(session.wins);$t('v248TrainingLosses').textContent=String(session.losses);$t('v248TrainingXp').textContent=`+${session.xp}`;
+    const decided=session.wins+session.losses;$t('v248TrainingRate').textContent=decided?`${Math.round(session.wins/decided*100)}%`:'0%';
+    $t('v248TrainingPause').textContent=paused?'▶ 계속하기':'⏸ 일시정지';
+  }
+  function showBanner(kind,title,detail){const box=$t('v248TrainingBanner');if(!box)return;box.className=`v248-training-banner ${kind||''}`;box.innerHTML=`<b>${esc(title)}</b><span>${esc(detail)}</span>`;requestAnimationFrame(()=>box.classList.add('show'));setTimeout(()=>box.classList.remove('show'),650)}
+
+  function renderSelected(){
+    const host=$t('v248TrainingSelected');if(!host)return;
+    const id=session.selected,d=DEFS[id],info=id?masteryInfo(id):{xp:0,level:1};
+    if(!d){host.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:12px;font-size:11px;font-weight:1000;color:#69716b">아래에서 육성할 캐릭터를 선택해.</div>`;return}
+    host.style.setProperty('--c',d.color||'#178f4a');host.innerHTML=`<img src="${esc(d.img||'')}" alt="" style="object-position:${esc(typeof crop==='function'?crop(id):'50% 50%')}"><div><strong>${esc(d.name)}</strong><small>랜덤한 일반 캐릭터와 1대1을 쉬지 않고 반복해.</small></div><div class="v248-training-selected-xp"><b>Lv.${info.level}</b>${info.xp.toLocaleString()} XP</div><button type="button" class="v248-training-start">육성 시작 🔥</button>`;
+    host.querySelector('.v248-training-start')?.addEventListener('click',startSession);
+  }
+  function renderRoster(){
+    const host=$t('v248TrainingRoster');if(!host)return;const ids=roster().filter(id=>!query||String(DEFS[id]?.name||id).toLowerCase().includes(query));
+    $t('v248TrainingCount').textContent=`${ids.length}명`;
+    host.innerHTML=ids.length?ids.map(id=>{const d=DEFS[id],info=masteryInfo(id);return `<button type="button" class="v248-training-char ${id===session.selected?'selected':''}" data-v248-training-char="${esc(id)}" style="--c:${esc(d.color||'#777')}"><img src="${esc(d.img||'')}" alt="" style="object-position:${esc(typeof crop==='function'?crop(id):'50% 50%')}"><span><b>${esc(d.name)}</b><span>Lv.${info.level} · ${info.xp.toLocaleString()} XP</span></span></button>`}).join(''):'<div class="v248-training-empty">검색 결과가 없어.</div>';
+    host.querySelectorAll('[data-v248-training-char]').forEach(button=>button.addEventListener('click',()=>{session.selected=button.dataset.v248TrainingChar;persist();renderSelected();renderRoster()}));
+  }
+  function renderSetup(){ensureScreen();ensureHud();if(!DEFS[session.selected])session.selected=roster()[0]||'';renderSelected();renderRoster()}
+  function showTrainingSetup(){
+    stopBattleRuntime();ensureScreen();renderSetup();
+    $t('setup')?.classList.add('hidden');$t('draftScreen')?.classList.add('hidden');$t('tournamentScreen')?.classList.add('hidden');$t('battle')?.classList.add('hidden');
+    $t('trainingScreen')?.classList.remove('hidden');$t('trainingScreen')?.setAttribute('aria-hidden','false');document.body.classList.remove('v248-training-battle');window.scrollTo(0,0);
+  }
+  function stopBattleRuntime(){clearTimeout(session.nextTimer);session.nextTimer=0;session.active=false;session.processedGame=null;paused=true;last=0;battleGeneration++;if(game&&!game.over)game.over=true;closeResultModal();openResultsBtn?.classList.add('hidden');ensureHud().classList.remove('show');$t('v248TrainingBanner')?.classList.remove('show')}
+  function startSession(){if(!session.selected||!DEFS[session.selected])return;session.active=true;session.round=0;session.wins=0;session.losses=0;session.draws=0;session.xp=0;session.lastOpponent='';session.startedAt=Date.now();persist();launchRound()}
+  function launchRound(){
+    if(!session.active)return;clearTimeout(session.nextTimer);session.opponent=randomOpponent();if(!session.opponent){exitToMain();return}session.lastOpponent=session.opponent;session.round++;session.processedGame=null;
+    currentConfig={mode:'showdown',participants:[session.selected,session.opponent],teams:{[session.selected]:'training-user',[session.opponent]:'training-ai'},zoneNames:{'training-user':'육성 캐릭터','training-ai':'랜덤 상대'},training:{version:1,selected:session.selected,opponent:session.opponent,round:session.round}};
+    mode='showdown';paused=false;last=0;document.body.classList.remove('boss-battle','draft-battle','competitive-battle','friendly-battle','tournament-battle');document.body.classList.add('v248-training-battle');
+    $t('setup')?.classList.add('hidden');$t('draftScreen')?.classList.add('hidden');$t('tournamentScreen')?.classList.add('hidden');$t('trainingScreen')?.classList.add('hidden');$t('battle')?.classList.remove('hidden');closeResultModal();openResultsBtn?.classList.add('hidden');resize();resetBattle();
+    if(game){game.v248Training={selected:session.selected,opponent:session.opponent,round:session.round};game.v219MasterySettled=true;game.v219DailySettled=true;game.v228OnlineSubmitted=true}
+    if($t('battleTitle'))$t('battleTitle').textContent=`🌱 육성모드 · ${DEFS[session.selected].name}`;if($t('modeBadge'))$t('modeBadge').textContent=`연속 1대1 · ${session.round}전`;$t('pause').textContent='일시정지';updateHud();window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function awardWinXp(){const api=masteryApi(),info=masteryInfo(session.selected),after=Math.min(info.maxXp,info.xp+WIN_XP);api?.setMasteryXp?.(session.selected,after);const gain=Math.max(0,after-info.xp);session.xp+=gain;if(session.wins%5===0)window.__GONG_V237__?.syncProgress?.({force:true});return gain}
+  function outcomeFor(finishedGame){
+    const user=finishedGame?.players?.find(p=>p.id===session.selected&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo),enemy=finishedGame?.players?.find(p=>p.id===session.opponent&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo);
+    if(user?.alive&&!enemy?.alive)return 'win';if(enemy?.alive&&!user?.alive)return 'loss';const title=String(finishedGame?.resultTitle||'');if(title.includes(DEFS[session.selected]?.name||'__'))return 'win';if(title.includes(DEFS[session.opponent]?.name||'__'))return 'loss';return 'draw'}
+  function processEnd(finishedGame){
+    if(!session.active||!finishedGame?.v248Training||session.processedGame===finishedGame)return;session.processedGame=finishedGame;finishedGame.v219MasterySettled=true;finishedGame.v219DailySettled=true;finishedGame.v228OnlineSubmitted=true;closeResultModal();openResultsBtn?.classList.add('hidden');
+    const outcome=outcomeFor(finishedGame);if(outcome==='win'){session.wins++;const gain=awardWinXp();showBanner('','🎉 승리!',`${DEFS[session.selected].name} 숙련도 +${gain} XP · 다음 상대를 찾는 중`)}else if(outcome==='loss'){session.losses++;showBanner('loss','패배',`${DEFS[session.opponent]?.name||'상대'} 승리 · 다음 상대를 찾는 중`)}else{session.draws++;showBanner('draw','무승부','XP 지급 없음 · 다음 상대를 찾는 중')}
+    updateHud();session.nextTimer=setTimeout(()=>{if(session.active)launchRound()},800);
+  }
+  function changeCharacter(){if(!session.active){showTrainingSetup();return}window.__GONG_V237__?.syncProgress?.({force:true});showTrainingSetup()}
+  function exitToMain(){stopBattleRuntime();window.__GONG_V237__?.syncProgress?.({force:true});$t('trainingScreen')?.classList.add('hidden');$t('trainingScreen')?.setAttribute('aria-hidden','true');$t('battle')?.classList.add('hidden');$t('setup')?.classList.remove('hidden');document.body.classList.remove('v248-training-battle');mode='showdown';try{renderSetup()}catch(_){}window.scrollTo(0,0)}
+
+  const previousCheckEnd=checkEnd;
+  checkEnd=function(){if(session.active&&game?.v248Training){game.v219MasterySettled=true;game.v219DailySettled=true;game.v228OnlineSubmitted=true}const before=!!game?.over,finished=game,result=previousCheckEnd.apply(this,arguments);if(!before&&finished?.over&&finished?.v248Training)processEnd(finished);return result};
+  const previousOpenResultModal=openResultModal;
+  openResultModal=function(){if(session.active&&game?.v248Training){closeResultModal();openResultsBtn?.classList.add('hidden');return false}return previousOpenResultModal.apply(this,arguments)};
+  const previousRenderResultModal=renderResultModal;
+  renderResultModal=function(){if(session.active&&game?.v248Training)return false;return previousRenderResultModal.apply(this,arguments)};
+
+  function init(){ensureScreen();ensureHud();renderSetup();$t('trainingModeBtn')?.addEventListener('click',showTrainingSetup);window.addEventListener('beforeunload',()=>{if(session.active)window.__GONG_V237__?.syncProgress?.({force:true})})}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+
+  window.__GONG_V248__={build:BUILD,winXp:WIN_XP,open:showTrainingSetup,start:id=>{if(id&&DEFS[id]&&!BOSS_IDS.has(id))session.selected=id;showTrainingSetup();startSession()},stop:exitToMain,change:showTrainingSetup,state:()=>publicState(),roster:()=>roster(),finishForTest(outcome='win'){if(!session.active||!game?.v248Training)return null;const user=game.players.find(p=>p.id===session.selected),enemy=game.players.find(p=>p.id===session.opponent);if(user)user.alive=outcome==='win';if(enemy)enemy.alive=outcome==='loss';game.over=true;game.resultTitle=outcome==='win'?`🏆 ${DEFS[session.selected]?.name} 승리`:outcome==='loss'?`🏆 ${DEFS[session.opponent]?.name} 승리`:'무승부';processEnd(game);return publicState()},status:()=>({build:BUILD,button:!!$t('trainingModeBtn'),screen:!!$t('trainingScreen'),active:session.active,selected:session.selected,opponent:session.opponent,round:session.round,wins:session.wins,losses:session.losses,draws:session.draws,xp:session.xp})};
+  window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info(`[V248] 경쟁전 옆 육성모드 · 랜덤 1대1 연속 자동전투 · 승리 +${WIN_XP} XP · 캐릭터 변경/일시정지/종료`);
+})();
+
 })();
 </script>
 
@@ -32204,6 +32314,16 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 })();
 </script>
 <script id="v245FinalBuildScript">(()=>{const BUILD='V245_MOBILE_DETAIL_AND_TOURNAMENT_PREDICTION_ACCESS';window.__GONG_V245_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
+<style id="v248TrainingModeStyle">
+/* V248 · 경쟁전 옆 무한 1대1 육성모드 */
+.mode-training-btn{background:linear-gradient(135deg,#d9ffe7,#8de7aa)!important;color:#123e23!important;border-color:#16753b!important;box-shadow:0 4px 0 #0f5a2c!important}
+.v248-training-screen{padding:0 0 20px}.v248-training-shell{width:min(980px,100%);margin:0 auto}.v248-training-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;padding:14px;border:3px solid #111;border-radius:20px;background:linear-gradient(135deg,#143c27,#1f7a43 58%,#f5d767);color:#fff;box-shadow:0 7px 0 #0b2d1b}.v248-training-head h2{margin:0;font-size:24px}.v248-training-head p{margin:4px 0 0;font-size:9px;font-weight:900;line-height:1.5;color:#e4ffec}.v248-training-back{flex:0 0 auto;border:2px solid #fff;border-radius:11px;background:#fff;color:#173b25;min-height:42px;padding:8px 13px;font-size:11px;font-weight:1000;cursor:pointer}.v248-training-panel{border:2px solid #111;border-radius:18px;background:#fff;padding:13px;box-shadow:0 5px 0 #1112}.v248-training-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:12px}.v248-training-guide span{border:1px solid #b9d7c2;border-radius:11px;background:#effbf2;padding:8px;text-align:center;font-size:9px;font-weight:900;line-height:1.4;color:#31513a}.v248-training-selected{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;margin-bottom:10px;border:2px solid #1b7540;border-radius:16px;background:linear-gradient(135deg,#effff4,#fff9d9);padding:10px}.v248-training-selected img{width:64px;height:64px;border:3px solid var(--c,#178f4a);border-radius:50%;object-fit:cover;background:#111}.v248-training-selected strong{display:block;font-size:19px}.v248-training-selected small{display:block;margin-top:3px;font-size:9px;font-weight:900;color:#5c6d61;line-height:1.4}.v248-training-selected-xp{text-align:right;font-size:10px;font-weight:1000;color:#146433}.v248-training-selected-xp b{display:block;font-size:20px;color:#111}.v248-training-start{min-width:145px;min-height:52px;border:2px solid #111;border-radius:14px;background:linear-gradient(135deg,#1a743d,#48be72);color:#fff;font-size:14px;font-weight:1000;cursor:pointer;box-shadow:0 4px 0 #0e4e28}.v248-training-start:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}.v248-training-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 8px}.v248-training-search{flex:1;min-height:42px;border:2px solid #aaa;border-radius:11px;padding:8px 11px;font-size:11px;font-weight:850}.v248-training-count{font-size:9px;font-weight:1000;color:#59645c;white-space:nowrap}.v248-training-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:7px;max-height:52vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}.v248-training-char{display:grid;grid-template-columns:44px minmax(0,1fr);gap:7px;align-items:center;min-width:0;border:2px solid #d3d8d4;border-radius:13px;background:#fafcfb;padding:7px;text-align:left;cursor:pointer}.v248-training-char.selected{border:3px solid #178344;background:#e9fff0;box-shadow:0 3px 0 #17834455}.v248-training-char img{width:44px;height:44px;border:2px solid var(--c,#777);border-radius:50%;object-fit:cover;background:#111}.v248-training-char b{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.v248-training-char span{display:block;margin-top:2px;font-size:7px;font-weight:900;color:#6d756f}.v248-training-empty{grid-column:1/-1;padding:24px;text-align:center;font-size:11px;font-weight:1000;color:#777}
+body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-training-battle #autoBattleStop,body.v248-training-battle #openResults{display:none!important}.v248-training-hud{display:none;margin:0 0 10px;border:3px solid #17683a;border-radius:17px;background:linear-gradient(135deg,#effff4,#fff8d2);padding:10px;box-shadow:0 4px 0 #0e4d2a}.v248-training-hud.show{display:block}.v248-training-versus{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:7px;align-items:center}.v248-training-fighter{display:grid;grid-template-columns:42px minmax(0,1fr);gap:7px;align-items:center;min-width:0}.v248-training-fighter.enemy{grid-template-columns:minmax(0,1fr) 42px;text-align:right}.v248-training-fighter img{width:42px;height:42px;border:2px solid var(--c,#777);border-radius:50%;object-fit:cover;background:#111}.v248-training-fighter b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.v248-training-fighter span{display:block;margin-top:2px;font-size:8px;font-weight:900;color:#5f6b63}.v248-training-vs{font-size:16px;font-weight:1000;color:#134e2c}.v248-training-session{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:8px}.v248-training-session span{border:1px solid #b5d4be;border-radius:9px;background:#fff;padding:5px 3px;text-align:center;font-size:7px;font-weight:900;color:#68716b}.v248-training-session b{display:block;margin-top:1px;font-size:11px;color:#17211a}.v248-training-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}.v248-training-controls button{min-height:42px;border:2px solid #111;border-radius:11px;font-size:10px;font-weight:1000;cursor:pointer}.v248-training-pause{background:#fff}.v248-training-change{background:#fff0b8}.v248-training-stop{background:#b91c1c;color:#fff}.v248-training-banner{position:fixed;left:50%;top:max(74px,env(safe-area-inset-top));z-index:690;transform:translate(-50%,-16px);width:min(90vw,470px);border:3px solid #fff;border-radius:16px;background:#113d23;color:#fff;padding:11px 14px;text-align:center;box-shadow:0 15px 45px #0008;opacity:0;pointer-events:none;transition:.18s}.v248-training-banner.show{opacity:1;transform:translate(-50%,0)}.v248-training-banner.loss{background:#702020}.v248-training-banner.draw{background:#555}.v248-training-banner b{display:block;font-size:15px}.v248-training-banner span{display:block;margin-top:3px;font-size:9px;font-weight:900;color:#e8f8ec}
+@media(max-width:600px){.v248-training-head{padding:11px}.v248-training-head h2{font-size:20px}.v248-training-guide{grid-template-columns:1fr}.v248-training-selected{grid-template-columns:52px minmax(0,1fr);padding:8px}.v248-training-selected img{width:52px;height:52px}.v248-training-selected-xp{grid-column:1/-1;text-align:left;display:flex;align-items:center;justify-content:space-between}.v248-training-selected-xp b{font-size:16px}.v248-training-start{grid-column:1/-1;width:100%}.v248-training-roster{grid-template-columns:repeat(2,minmax(0,1fr));max-height:50vh}.v248-training-char{grid-template-columns:38px minmax(0,1fr);padding:6px}.v248-training-char img{width:38px;height:38px}.v248-training-session{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.v248-training-session span{padding:4px 1px}.v248-training-controls button{font-size:9px}.v248-training-fighter{grid-template-columns:36px minmax(0,1fr)}.v248-training-fighter.enemy{grid-template-columns:minmax(0,1fr) 36px}.v248-training-fighter img{width:36px;height:36px}}
+</style>
+<script id="v248FinalBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v247FinalBuildScript">(()=>{const BUILD='V247_TUTORIAL_ONLY_ROLLBACK';window.__GONG_V247_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v248LatestBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 </body>
 </html>
