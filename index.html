@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V243_COMPETITIVE_TEAM_PERFORMANCE_SCORE_NO_ZERO -->
+<!-- BUILD: V245_MOBILE_DETAIL_AND_TOURNAMENT_PREDICTION_ACCESS -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -31752,5 +31752,231 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 })();
 </script>
 <script id="v244FinalBuildScript">(()=>{const BUILD='V244_TOURNAMENT_PREDICTION_XP_COUPONS_ITEM_UI';window.__GONG_V244_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
+<style id="v245MobileDetailTournamentAccessStyle">
+/* V245 · 캐릭터 상세 카드 폭 붕괴 복구 · 토너먼트 예측 조작부 접근성 개선 */
+.skill-profile.v239-item-profile{
+  display:grid!important;
+  grid-template-columns:58px minmax(0,1fr)!important;
+  grid-template-areas:
+    "portrait identity"
+    "item item";
+  align-items:center!important;
+  gap:9px 11px!important;
+  min-width:0;
+  overflow:hidden;
+}
+.skill-profile.v239-item-profile>img{
+  grid-area:portrait;
+  min-width:0;
+}
+.skill-profile.v239-item-profile>div{
+  grid-area:identity;
+  min-width:0;
+}
+.skill-profile.v239-item-profile .skill-profile-name{
+  min-width:0;
+  word-break:keep-all;
+  overflow-wrap:normal;
+}
+.skill-profile.v239-item-profile .skill-profile-meta{
+  min-width:0;
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+}
+.skill-profile.v239-item-profile .v239-item-open{
+  grid-area:item;
+  display:grid!important;
+  grid-template-columns:auto auto auto;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:43px!important;
+  margin:0!important;
+  padding:8px 11px!important;
+  border:2px solid #c99200!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#fffdf6,#ffe69a)!important;
+  color:#3b2700!important;
+  box-shadow:0 3px 0 #795600,0 6px 13px #8c650020!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow:hidden;
+}
+.skill-profile.v239-item-profile .v239-item-open:before{display:none!important}
+.skill-profile.v239-item-profile .v239-item-open:active{
+  transform:translateY(2px);
+  box-shadow:0 1px 0 #795600,0 3px 8px #8c650018!important;
+}
+.skill-profile.v239-item-profile .v244-item-icon{font-size:15px}
+.skill-profile.v239-item-profile .v244-item-label{
+  min-width:0;
+  font-size:12px!important;
+  white-space:nowrap!important;
+}
+.skill-profile.v239-item-profile .v244-item-total{
+  min-width:25px;
+  padding:4px 7px;
+  border-color:#111;
+  background:#111;
+  color:#fff;
+  white-space:nowrap!important;
+}
+
+#tournamentScreen .tournament-next-card.v245-prediction-actions-top{
+  position:static!important;
+  inset:auto!important;
+  margin:0 0 10px!important;
+  box-shadow:0 5px 16px #0002!important;
+}
+#tournamentScreen .tournament-next-card.v245-prediction-actions-top .tournament-next-actions .auto{
+  border:2px solid #b98100;
+  background:linear-gradient(180deg,#fff3ad,#ffd24f);
+  box-shadow:0 3px 0 #9b6c00;
+  min-height:46px;
+}
+#tournamentScreen .tournament-next-card.v245-prediction-actions-top .tournament-next-actions .go{
+  min-height:46px;
+}
+
+.tournament-modal.v245-rank-prediction-open{
+  padding:
+    max(8px,env(safe-area-inset-top))
+    max(8px,env(safe-area-inset-right))
+    max(8px,env(safe-area-inset-bottom))
+    max(8px,env(safe-area-inset-left));
+}
+.tournament-modal.v245-rank-prediction-open .tournament-modal-card{
+  width:min(100%,650px);
+  height:min(92dvh,780px);
+  max-height:min(92dvh,780px);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.tournament-modal.v245-rank-prediction-open .tournament-modal-head{
+  flex:0 0 auto;
+}
+.tournament-modal.v245-rank-prediction-open .tournament-modal-body{
+  flex:1 1 auto;
+  min-height:0;
+  max-height:none!important;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:hidden!important;
+  padding:10px 10px max(10px,env(safe-area-inset-bottom));
+}
+.tournament-modal.v245-rank-prediction-open .v244-prediction-guide,
+.tournament-modal.v245-rank-prediction-open .t-rank-picks,
+.tournament-modal.v245-rank-prediction-open .t-rank-confirm,
+.tournament-modal.v245-rank-prediction-open .t-modal-skip{
+  flex:0 0 auto;
+  margin-top:0;
+  margin-bottom:0;
+}
+.tournament-modal.v245-rank-prediction-open .tournament-picker{
+  flex:1 1 auto;
+  min-height:110px;
+  max-height:none!important;
+  margin-top:0!important;
+  padding:2px 2px 8px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scroll-padding-bottom:12px;
+}
+.tournament-modal.v245-rank-prediction-open .t-rank-confirm{
+  min-height:50px;
+  border:2px solid #f1c643;
+  background:linear-gradient(135deg,#17120a,#5f3d00);
+  color:#fff8dc;
+  box-shadow:0 3px 0 #9b6c00;
+  font-size:14px;
+  white-space:nowrap;
+}
+.tournament-modal.v245-rank-prediction-open .t-rank-confirm:disabled{
+  box-shadow:none;
+}
+.tournament-modal.v245-rank-prediction-open .t-modal-skip{
+  min-height:42px;
+}
+
+@media(max-width:640px){
+  .skill-profile.v239-item-profile{
+    grid-template-columns:48px minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+  .skill-profile.v239-item-profile .v239-item-open{min-height:42px!important}
+  #tournamentScreen .tournament-next-card.v245-prediction-actions-top{
+    padding:8px!important;
+  }
+  #tournamentScreen .tournament-next-card.v245-prediction-actions-top .tournament-next-title{
+    font-size:9px;
+  }
+  #tournamentScreen .tournament-next-card.v245-prediction-actions-top .tournament-next-match{
+    margin:2px 0 7px;
+    font-size:15px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .tournament-modal.v245-rank-prediction-open .tournament-modal-title{font-size:16px}
+  .tournament-modal.v245-rank-prediction-open .tournament-modal-body{padding:8px 8px max(8px,env(safe-area-inset-bottom));gap:6px}
+  .tournament-modal.v245-rank-prediction-open .v244-prediction-guide{padding:7px;margin:0}
+  .tournament-modal.v245-rank-prediction-open .t-rank-slot{min-height:54px;padding:7px 4px}
+  .tournament-modal.v245-rank-prediction-open .t-rank-confirm{min-height:48px;font-size:13px}
+  .tournament-modal.v245-rank-prediction-open .t-modal-skip{min-height:40px;padding:8px}
+}
+</style>
+
+<script id="v245MobileDetailTournamentAccessScript">
+(()=>{
+  const BUILD='V245_MOBILE_DETAIL_AND_TOURNAMENT_PREDICTION_ACCESS';
+  const tournamentScreen=document.getElementById('tournamentScreen');
+  const championSummary=document.getElementById('tournamentChampionSummary');
+  const nextCard=document.getElementById('tournamentNextCard');
+  const tournamentModal=document.getElementById('tournamentModal');
+  const tournamentModalBody=document.getElementById('tournamentModalBody');
+
+  function movePredictionActionsToTop(){
+    if(!tournamentScreen||!championSummary||!nextCard)return false;
+    championSummary.insertAdjacentElement('afterend',nextCard);
+    nextCard.classList.add('v245-prediction-actions-top');
+    return championSummary.nextElementSibling===nextCard;
+  }
+
+  function markPredictionModal(){
+    if(!tournamentModal||!tournamentModalBody)return false;
+    const isPrediction=!tournamentModal.classList.contains('hidden')&&!!tournamentModalBody.querySelector('[data-rank-confirm],[data-rank-close]');
+    tournamentModal.classList.toggle('v245-rank-prediction-open',isPrediction);
+    return isPrediction;
+  }
+
+  movePredictionActionsToTop();
+  if(tournamentModal){
+    new MutationObserver(()=>queueMicrotask(markPredictionModal)).observe(tournamentModal,{attributes:true,childList:true,subtree:true,attributeFilter:['class']});
+  }
+
+  const api={
+    build:BUILD,
+    movePredictionActionsToTop,
+    markPredictionModal,
+    status:()=>({
+      predictionActionsAtTop:championSummary?.nextElementSibling===nextCard,
+      predictionModalFixed:tournamentModal?.classList.contains('v245-rank-prediction-open')||false,
+      itemProfileGrid:document.querySelector('.skill-profile.v239-item-profile')?.classList.contains('v239-item-profile')||false
+    })
+  };
+  window.__GONG_V245__=api;
+  window.__GONG_V245_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V245] 모바일 캐릭터 상세 카드 폭 복구 · 아이템 버튼 별도 줄 · 토너먼트 예측 버튼 상단 이동 및 확정 버튼 상시 노출');
+})();
+</script>
+<script id="v245FinalBuildScript">(()=>{const BUILD='V245_MOBILE_DETAIL_AND_TOURNAMENT_PREDICTION_ACCESS';window.__GONG_V245_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 </body>
 </html>
