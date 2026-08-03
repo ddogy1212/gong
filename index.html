@@ -1848,6 +1848,7 @@ body.competitive-battle #restart{display:none!important}
     <div class="mode-row" id="modeHub" aria-label="전투 방식 선택">
       <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투</button>
       <button id="randomModeStart" class="mode-hub-btn mode-random-btn" type="button">🎲 랜덤모드</button>
+      <button id="friendlyModeBtn" class="mode-hub-btn mode-friendly-btn" type="button">🤝 친선전</button>
       <button class="mode-btn active" data-mode="showdown">⚔️ 쇼다운</button>
       <button class="mode-btn" data-mode="team">🤝 팀전</button>
       <button class="mode-btn" data-mode="boss">👑 보스전</button>
@@ -32322,8 +32323,88 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-training-battle #autoBattleStop,body.v248-training-battle #openResults{display:none!important}.v248-training-hud{display:none;margin:0 0 10px;border:3px solid #17683a;border-radius:17px;background:linear-gradient(135deg,#effff4,#fff8d2);padding:10px;box-shadow:0 4px 0 #0e4d2a}.v248-training-hud.show{display:block}.v248-training-versus{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:7px;align-items:center}.v248-training-fighter{display:grid;grid-template-columns:42px minmax(0,1fr);gap:7px;align-items:center;min-width:0}.v248-training-fighter.enemy{grid-template-columns:minmax(0,1fr) 42px;text-align:right}.v248-training-fighter img{width:42px;height:42px;border:2px solid var(--c,#777);border-radius:50%;object-fit:cover;background:#111}.v248-training-fighter b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.v248-training-fighter span{display:block;margin-top:2px;font-size:8px;font-weight:900;color:#5f6b63}.v248-training-vs{font-size:16px;font-weight:1000;color:#134e2c}.v248-training-session{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:8px}.v248-training-session span{border:1px solid #b5d4be;border-radius:9px;background:#fff;padding:5px 3px;text-align:center;font-size:7px;font-weight:900;color:#68716b}.v248-training-session b{display:block;margin-top:1px;font-size:11px;color:#17211a}.v248-training-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}.v248-training-controls button{min-height:42px;border:2px solid #111;border-radius:11px;font-size:10px;font-weight:1000;cursor:pointer}.v248-training-pause{background:#fff}.v248-training-change{background:#fff0b8}.v248-training-stop{background:#b91c1c;color:#fff}.v248-training-banner{position:fixed;left:50%;top:max(74px,env(safe-area-inset-top));z-index:690;transform:translate(-50%,-16px);width:min(90vw,470px);border:3px solid #fff;border-radius:16px;background:#113d23;color:#fff;padding:11px 14px;text-align:center;box-shadow:0 15px 45px #0008;opacity:0;pointer-events:none;transition:.18s}.v248-training-banner.show{opacity:1;transform:translate(-50%,0)}.v248-training-banner.loss{background:#702020}.v248-training-banner.draw{background:#555}.v248-training-banner b{display:block;font-size:15px}.v248-training-banner span{display:block;margin-top:3px;font-size:9px;font-weight:900;color:#e8f8ec}
 @media(max-width:600px){.v248-training-head{padding:11px}.v248-training-head h2{font-size:20px}.v248-training-guide{grid-template-columns:1fr}.v248-training-selected{grid-template-columns:52px minmax(0,1fr);padding:8px}.v248-training-selected img{width:52px;height:52px}.v248-training-selected-xp{grid-column:1/-1;text-align:left;display:flex;align-items:center;justify-content:space-between}.v248-training-selected-xp b{font-size:16px}.v248-training-start{grid-column:1/-1;width:100%}.v248-training-roster{grid-template-columns:repeat(2,minmax(0,1fr));max-height:50vh}.v248-training-char{grid-template-columns:38px minmax(0,1fr);padding:6px}.v248-training-char img{width:38px;height:38px}.v248-training-session{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.v248-training-session span{padding:4px 1px}.v248-training-controls button{font-size:9px}.v248-training-fighter{grid-template-columns:36px minmax(0,1fr)}.v248-training-fighter.enemy{grid-template-columns:minmax(0,1fr) 36px}.v248-training-fighter img{width:36px;height:36px}}
 </style>
+
+
+<style id="v249FriendlyHubStyle">
+/* V249 · 친선전을 메인 모드 허브의 랜덤모드 오른쪽 칸으로 이동 */
+.mode-friendly-btn{
+  border-color:#0f766e!important;
+  background:linear-gradient(145deg,#e4fffa,#9ee9dc)!important;
+  color:#123e38!important;
+  box-shadow:0 4px 0 #087268!important;
+}
+.mode-friendly-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #087268!important}
+@media(max-width:559px){
+  #randomModeStart,#friendlyModeBtn{order:6}
+  #draftModeBtn{order:7;grid-column:1/-1}
+}
+/* 경쟁전 화면 안에 있던 친선전 카드는 메인 친선전 버튼으로 들어왔을 때만 표시한다. */
+#draftScreen:not(.v249-friendly-entry):not(.draft-in-progress) #v231Friendly{display:none!important}
+#draftScreen.v249-friendly-entry .draft-topbar{grid-template-columns:auto minmax(0,1fr)}
+#draftScreen.v249-friendly-entry .draft-reset,
+#draftScreen.v249-friendly-entry #draftSetupCard,
+#draftScreen.v249-friendly-entry #competitiveRankPanel,
+#draftScreen.v249-friendly-entry #v231Leaderboard,
+#draftScreen.v249-friendly-entry #v219DailyPanel,
+#draftScreen.v249-friendly-entry #v227CompetitiveSeasonRewardMeta{display:none!important}
+#draftScreen.v249-friendly-entry #v231Friendly{display:block!important;margin-top:0}
+#draftScreen.v249-friendly-entry .draft-shell{background:linear-gradient(145deg,#f6fffd,#f8f5ff)}
+</style>
+<script id="v249FriendlyHubScript">
+(()=>{
+  const BUILD='V249_FRIENDLY_MODE_HUB_SLOT';
+  const friendlyBtn=document.getElementById('friendlyModeBtn');
+  const draftBtn=document.getElementById('draftModeBtn');
+  const draftScreen=document.getElementById('draftScreen');
+  const backBtn=document.getElementById('draftBackBtn');
+  const title=draftScreen?.querySelector('.draft-topbar h2');
+  const description=draftScreen?.querySelector('.draft-topbar p');
+  const competitiveTitle='🏅 경쟁전';
+  const competitiveDescription='무작위로 뽑힌 24명 안에서 밴과 선택을 진행해.';
+
+  function restoreCompetitiveCopy(){
+    draftScreen?.classList.remove('v249-friendly-entry');
+    if(title)title.textContent=competitiveTitle;
+    if(description)description.textContent=competitiveDescription;
+  }
+  function openFriendly(){
+    if(!draftBtn||!draftScreen)return;
+    draftBtn.click();
+    draftScreen.classList.add('v249-friendly-entry');
+    if(title)title.textContent='🤝 친선전';
+    if(description)description.textContent='방을 만들거나 6자리 코드로 참가해 친구와 실시간 밴·픽 전투를 진행해.';
+    requestAnimationFrame(()=>{
+      window.scrollTo(0,0);
+      const panel=document.getElementById('v231Friendly');
+      panel?.classList.add('v249-friendly-focus');
+      setTimeout(()=>panel?.classList.remove('v249-friendly-focus'),700);
+    });
+  }
+
+  friendlyBtn?.addEventListener('click',openFriendly);
+  draftBtn?.addEventListener('click',restoreCompetitiveCopy);
+  backBtn?.addEventListener('click',restoreCompetitiveCopy);
+
+  window.__GONG_V249__={
+    build:BUILD,
+    openFriendly,
+    restoreCompetitiveCopy,
+    status:()=>({
+      button:!!friendlyBtn,
+      randomNeighbor:document.getElementById('randomModeStart')?.nextElementSibling?.id||'',
+      friendlyEntry:!!draftScreen?.classList.contains('v249-friendly-entry'),
+      friendlyPanelVisible:!!document.getElementById('v231Friendly')&&getComputedStyle(document.getElementById('v231Friendly')).display!=='none'
+    })
+  };
+  window.__GONG_V249_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V249] 친선전 메인 버튼을 랜덤모드 오른쪽에 배치 · 경쟁전 내부 친선전 카드 분리');
+})();
+</script>
+
 <script id="v248FinalBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v247FinalBuildScript">(()=>{const BUILD='V247_TUTORIAL_ONLY_ROLLBACK';window.__GONG_V247_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v248LatestBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v249LatestBuildScript">(()=>{const BUILD='V249_FRIENDLY_MODE_HUB_SLOT';window.__GONG_V249_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 </body>
 </html>
