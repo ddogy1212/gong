@@ -1,0 +1,28 @@
+{
+  "id": "./",
+  "name": "수원외고 공게임",
+  "short_name": "공게임",
+  "description": "수원외고 캐릭터가 공이 되어 자동으로 전투하는 웹게임",
+  "lang": "ko-KR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f2f2f3",
+  "theme_color": "#241040",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "icons/gonggame-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/gonggame-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
