@@ -29954,8 +29954,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       messagingSenderId:'301115328104',
       appId:'1:301115328104:web:f748d4e7fe2dfd24fd9ddd'
     };
-    const MODE_LABELS={all:'전체',showdown:'쇼다운',team:'팀전',competitive:'경쟁전',tournament:'토너먼트',boss:'보스전',random:'랜덤모드',auto:'자동전투'};
-    const MODE_KEYS=['showdown','team','competitive','tournament','boss','random','auto'];
+    const MODE_LABELS={all:'전체',showdown:'쇼다운',training:'육성모드',team:'팀전',competitive:'경쟁전',tournament:'토너먼트',boss:'보스전',random:'랜덤모드',auto:'자동전투'};
+    const MODE_KEYS=['showdown','training','team','competitive','tournament','boss','random','auto'];
     const QUEUE_KEY='gonggame_v228_online_result_queue_v1';
     const SESSION_KEY='gonggame_v228_presence_connection';
     const nf=new Intl.NumberFormat('ko-KR');
@@ -30066,6 +30066,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       }finally{state.linkBusy=false}
     }
     function modeKey(){
+      if(game?.v248Training||currentConfig?.training||document.body.classList.contains('v248-training-battle'))return 'training';
       if(game?._tournamentMatchKey||document.body.classList.contains('tournament-battle'))return 'tournament';
       if(game?.v212Draft?.friendly||currentConfig?.draft?.friendly||document.body.classList.contains('friendly-battle'))return 'team';
       if(game?.v212Draft||currentConfig?.draft?.competitive||document.body.classList.contains('competitive-battle'))return 'competitive';
@@ -30970,7 +30971,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     currentConfig={mode:'showdown',participants:[session.selected,session.opponent],teams:{[session.selected]:'training-user',[session.opponent]:'training-ai'},zoneNames:{'training-user':'육성 캐릭터','training-ai':'랜덤 상대'},training:{version:1,selected:session.selected,opponent:session.opponent,round:session.round}};
     mode='showdown';paused=false;last=0;document.body.classList.remove('boss-battle','draft-battle','competitive-battle','friendly-battle','tournament-battle');document.body.classList.add('v248-training-battle');
     $t('setup')?.classList.add('hidden');$t('draftScreen')?.classList.add('hidden');$t('tournamentScreen')?.classList.add('hidden');$t('trainingScreen')?.classList.add('hidden');$t('battle')?.classList.remove('hidden');closeResultModal();openResultsBtn?.classList.add('hidden');resize();resetBattle();
-    if(game){game.v248Training={selected:session.selected,opponent:session.opponent,round:session.round};game.v219MasterySettled=true;game.v219DailySettled=true;game.v228OnlineSubmitted=true}
+    if(game){game.v248Training={selected:session.selected,opponent:session.opponent,round:session.round};game.v219MasterySettled=true;game.v219DailySettled=true;game.v228OnlineSubmitted=false}
     if($t('battleTitle'))$t('battleTitle').textContent=`🌱 육성모드 · ${DEFS[session.selected].name}`;if($t('modeBadge'))$t('modeBadge').textContent=`연속 1대1 · ${session.round}전`;$t('pause').textContent='일시정지';updateHud();window.scrollTo({top:0,behavior:'smooth'});
   }
   function awardWinXp(){const api=masteryApi(),info=masteryInfo(session.selected),after=Math.min(info.maxXp,info.xp+WIN_XP);api?.setMasteryXp?.(session.selected,after);const gain=Math.max(0,after-info.xp);session.xp+=gain;if(session.wins%5===0)window.__GONG_V237__?.syncProgress?.({force:true});return gain}
@@ -30978,15 +30979,15 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const user=finishedGame?.players?.find(p=>p.id===session.selected&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo),enemy=finishedGame?.players?.find(p=>p.id===session.opponent&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo);
     if(user?.alive&&!enemy?.alive)return 'win';if(enemy?.alive&&!user?.alive)return 'loss';const title=String(finishedGame?.resultTitle||'');if(title.includes(DEFS[session.selected]?.name||'__'))return 'win';if(title.includes(DEFS[session.opponent]?.name||'__'))return 'loss';return 'draw'}
   function processEnd(finishedGame){
-    if(!session.active||!finishedGame?.v248Training||session.processedGame===finishedGame)return;session.processedGame=finishedGame;finishedGame.v219MasterySettled=true;finishedGame.v219DailySettled=true;finishedGame.v228OnlineSubmitted=true;closeResultModal();openResultsBtn?.classList.add('hidden');
+    if(!session.active||!finishedGame?.v248Training||session.processedGame===finishedGame)return;session.processedGame=finishedGame;finishedGame.v219MasterySettled=true;finishedGame.v219DailySettled=true;finishedGame.v228OnlineSubmitted=false;closeResultModal();openResultsBtn?.classList.add('hidden');
     const outcome=outcomeFor(finishedGame);if(outcome==='win'){session.wins++;const gain=awardWinXp();showBanner('','🎉 승리!',`${DEFS[session.selected].name} 숙련도 +${gain} XP · 다음 상대를 찾는 중`)}else if(outcome==='loss'){session.losses++;showBanner('loss','패배',`${DEFS[session.opponent]?.name||'상대'} 승리 · 다음 상대를 찾는 중`)}else{session.draws++;showBanner('draw','무승부','XP 지급 없음 · 다음 상대를 찾는 중')}
-    updateHud();session.nextTimer=setTimeout(()=>{if(session.active)launchRound()},800);
+    updateHud();window.__GONG_V228__?.submitCurrentBattle?.();session.nextTimer=setTimeout(()=>{if(session.active)launchRound()},800);
   }
   function changeCharacter(){if(!session.active){showTrainingSetup();return}window.__GONG_V237__?.syncProgress?.({force:true});showTrainingSetup()}
   function exitToMain(){stopBattleRuntime();window.__GONG_V237__?.syncProgress?.({force:true});$t('trainingScreen')?.classList.add('hidden');$t('trainingScreen')?.setAttribute('aria-hidden','true');$t('battle')?.classList.add('hidden');$t('setup')?.classList.remove('hidden');document.body.classList.remove('v248-training-battle');mode='showdown';try{renderSetup()}catch(_){}window.scrollTo(0,0)}
 
   const previousCheckEnd=checkEnd;
-  checkEnd=function(){if(session.active&&game?.v248Training){game.v219MasterySettled=true;game.v219DailySettled=true;game.v228OnlineSubmitted=true}const before=!!game?.over,finished=game,result=previousCheckEnd.apply(this,arguments);if(!before&&finished?.over&&finished?.v248Training)processEnd(finished);return result};
+  checkEnd=function(){if(session.active&&game?.v248Training){game.v219MasterySettled=true;game.v219DailySettled=true}const before=!!game?.over,finished=game,result=previousCheckEnd.apply(this,arguments);if(!before&&finished?.over&&finished?.v248Training)processEnd(finished);return result};
   const previousOpenResultModal=openResultModal;
   openResultModal=function(){if(session.active&&game?.v248Training){closeResultModal();openResultsBtn?.classList.add('hidden');return false}return previousOpenResultModal.apply(this,arguments)};
   const previousRenderResultModal=renderResultModal;
@@ -32406,5 +32407,6 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 <script id="v247FinalBuildScript">(()=>{const BUILD='V247_TUTORIAL_ONLY_ROLLBACK';window.__GONG_V247_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v248LatestBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v249LatestBuildScript">(()=>{const BUILD='V249_FRIENDLY_MODE_HUB_SLOT';window.__GONG_V249_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v250LatestBuildScript">(()=>{const BUILD='V250_TRAINING_COMMUNITY_STATS';window.__GONG_V250__={build:BUILD,status:()=>({build:BUILD,trainingTab:!!document.querySelector('.v228-community-tab[data-mode=\"training\"]'),mode:window.__GONG_V228__?.modeKey?.()||''})};window.__GONG_V250_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V250] 육성모드 전투를 전체 이용자 통계에 별도 모드로 반영');})();</script>
 </body>
 </html>
