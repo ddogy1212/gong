@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- BUILD: V247_TUTORIAL_ONLY_ROLLBACK -->
+<!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -18,7 +18,15 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="수원외고 공게임 | 수외 캐릭터 배틀 웹게임">
 <meta name="twitter:description" content="수원외고·수외 캐릭터들이 대결하는 무료 웹게임입니다.">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.webmanifest?v=251">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/gonggame-192.png?v=251">
+<link rel="apple-touch-icon" href="icons/gonggame-192.png?v=251">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="공게임">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -30869,8 +30877,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   });
 
   function removeV246Pwa(){
-    if('serviceWorker' in navigator)navigator.serviceWorker.getRegistrations?.().then(regs=>regs.forEach(reg=>reg.unregister())).catch(()=>{});
-    if('caches' in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>/gonggame|v246/i.test(key)).map(key=>caches.delete(key)))).catch(()=>{});
+    if('caches' in window)caches.keys().then(keys=>Promise.all(keys.filter(key=>/v246/i.test(key)).map(key=>caches.delete(key)))).catch(()=>{});
   }
 
   function init(){
@@ -32408,5 +32415,184 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 <script id="v248LatestBuildScript">(()=>{const BUILD='V248_CONTINUOUS_TRAINING_MODE';window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v249LatestBuildScript">(()=>{const BUILD='V249_FRIENDLY_MODE_HUB_SLOT';window.__GONG_V249_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v250LatestBuildScript">(()=>{const BUILD='V250_TRAINING_COMMUNITY_STATS';window.__GONG_V250__={build:BUILD,status:()=>({build:BUILD,trainingTab:!!document.querySelector('.v228-community-tab[data-mode=\"training\"]'),mode:window.__GONG_V228__?.modeKey?.()||''})};window.__GONG_V250_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V250] 육성모드 전투를 전체 이용자 통계에 별도 모드로 반영');})();</script>
+
+<style id="v251AppWakeStyle">
+/* V251 · 앱 설치 진입 + 자동 육성 중 화면 꺼짐 방지 */
+.v251-app-install-card{margin:18px 0 0;border:3px solid #111;border-radius:22px;background:linear-gradient(145deg,#10182f 0%,#39206f 48%,#11643d 100%);padding:13px;color:#fff;box-shadow:0 7px 0 #111;overflow:hidden;position:relative}
+.v251-app-install-card::after{content:"";position:absolute;right:-45px;top:-58px;width:160px;height:160px;border-radius:50%;background:#ffd94a33;filter:blur(2px);pointer-events:none}
+.v251-app-install-inner{position:relative;z-index:1;display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:11px;align-items:center}
+.v251-app-install-icon{width:72px;height:72px;border-radius:18px;object-fit:cover;border:3px solid #fff;background:#111;box-shadow:0 5px 16px #0007}
+.v251-app-install-copy strong{display:block;font-size:17px;line-height:1.15}.v251-app-install-copy span{display:block;margin-top:5px;font-size:9px;font-weight:900;line-height:1.45;color:#e8e9ff}
+.v251-app-install-btn{min-width:155px;min-height:50px;border:2px solid #fff;border-radius:14px;background:linear-gradient(135deg,#ffe45d,#ffb623);color:#17120a;font-size:13px;font-weight:1000;cursor:pointer;box-shadow:0 4px 0 #9d6500}
+.v251-app-install-btn:disabled{background:#e5e7eb;color:#4b5563;border-color:#cbd5e1;box-shadow:none;cursor:default}
+.v251-app-install-note{position:relative;z-index:1;margin-top:8px;text-align:center;font-size:8px;font-weight:850;color:#d8e6df}
+.v251-install-help{position:fixed;inset:0;z-index:990;background:#000a;display:flex;align-items:center;justify-content:center;padding:15px}.v251-install-help.hidden{display:none!important}.v251-install-help-card{width:min(92vw,430px);border:3px solid #111;border-radius:20px;background:#fff;padding:17px;box-shadow:0 20px 70px #0008}.v251-install-help-card h3{margin:0;font-size:19px}.v251-install-help-card p{margin:8px 0 12px;font-size:11px;font-weight:850;line-height:1.55;color:#50555d}.v251-install-help-card button{width:100%;min-height:44px;border:2px solid #111;border-radius:12px;background:#111;color:#fff;font-weight:1000}
+.v251-wake-status{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px;border:1px solid #b7c7bc;border-radius:10px;background:#fff;padding:6px 8px;text-align:center;color:#5b665f;font-size:8px;font-weight:1000;line-height:1.3}
+.v251-wake-status .v251-wake-dot{width:9px;height:9px;border-radius:50%;background:#9ca3af;box-shadow:0 0 0 3px #9ca3af22;flex:0 0 auto}.v251-wake-status b{font-size:9px;color:#26322b}.v251-wake-status.active{border-color:#16924b;background:#edfff3;color:#176438}.v251-wake-status.active .v251-wake-dot{background:#13b95b;box-shadow:0 0 0 3px #13b95b2e,0 0 9px #13b95b}.v251-wake-status.retry{border-color:#d79a18;background:#fff9e8;color:#7f5a0d}.v251-wake-status.retry .v251-wake-dot{background:#f0ad24}.v251-wake-status.error,.v251-wake-status.unsupported{border-color:#d78d8d;background:#fff3f3;color:#8b3030}.v251-wake-status.error .v251-wake-dot,.v251-wake-status.unsupported .v251-wake-dot{background:#d04444}
+@media(max-width:600px){.v251-app-install-inner{grid-template-columns:64px minmax(0,1fr)}.v251-app-install-icon{width:64px;height:64px;border-radius:16px}.v251-app-install-btn{grid-column:1/-1;width:100%}.v251-app-install-copy strong{font-size:15px}}
+</style>
+<script id="v251AppWakeScript">
+(()=>{
+  'use strict';
+  const BUILD='V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK';
+  const $=id=>document.getElementById(id);
+  let deferredInstallPrompt=null;
+  let wakeSentinel=null;
+  let wakeWanted=false;
+  let wakeRetryTimer=0;
+  let wakeLastError='';
+  let wakeRequesting=false;
+  const wakeSupported=!!navigator.wakeLock?.request;
+
+  function isStandalone(){return window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true}
+  function trainingContext(){
+    const active=!!window.__GONG_V248__?.state?.().active;
+    const battle=document.body.classList.contains('v248-training-battle');
+    const screen=$('trainingScreen');
+    const selecting=!!screen&&!screen.classList.contains('hidden');
+    return active||battle||selecting;
+  }
+  function wakeState(){return {supported:wakeSupported,wanted:wakeWanted,active:!!wakeSentinel&&!wakeSentinel.released,requesting:wakeRequesting,lastError:wakeLastError,visibility:document.visibilityState,trainingContext:trainingContext()}}
+  function ensureWakeStatus(){
+    let node=$('v251WakeStatus');
+    if(node)return node;
+    const hud=$('v248TrainingHud');
+    if(!hud)return null;
+    node=document.createElement('div');
+    node.id='v251WakeStatus';
+    node.className='v251-wake-status';
+    node.setAttribute('aria-live','polite');
+    node.innerHTML='<span class="v251-wake-dot"></span><b>화면 꺼짐 방지 준비</b><span>육성을 시작하면 자동 적용</span>';
+    const controls=hud.querySelector('.v248-training-controls');
+    if(controls)controls.insertAdjacentElement('beforebegin',node);else hud.appendChild(node);
+    return node;
+  }
+  function renderWakeStatus(kind='idle',title='화면 꺼짐 방지 준비',detail='육성을 시작하면 자동 적용'){
+    const node=ensureWakeStatus();if(!node)return;
+    node.className=`v251-wake-status ${kind}`.trim();
+    node.innerHTML=`<span class="v251-wake-dot"></span><b>${title}</b><span>${detail}</span>`;
+  }
+  function clearWakeRetry(){clearTimeout(wakeRetryTimer);wakeRetryTimer=0}
+  function scheduleWakeRetry(delay=2500){
+    clearWakeRetry();
+    if(!wakeWanted||document.visibilityState!=='visible'||!trainingContext())return;
+    wakeRetryTimer=setTimeout(()=>requestWakeLock('retry'),delay);
+  }
+  async function requestWakeLock(reason='manual'){
+    if(!wakeWanted||!trainingContext())return false;
+    if(document.visibilityState!=='visible'){renderWakeStatus('retry','화면 유지 대기 중','앱으로 돌아오면 자동 재연결');return false}
+    if(!wakeSupported){renderWakeStatus('unsupported','기기에서 지원되지 않음','최신 Chrome 또는 설치 앱으로 실행해');return false}
+    if(wakeSentinel&&!wakeSentinel.released){renderWakeStatus('active','🔆 화면 켜짐 유지 중','육성 종료 전까지 자동 꺼짐 방지');return true}
+    if(wakeRequesting)return false;
+    wakeRequesting=true;wakeLastError='';clearWakeRetry();renderWakeStatus('retry','화면 유지 연결 중','잠시만 기다려');
+    try{
+      const sentinel=await navigator.wakeLock.request('screen');
+      wakeSentinel=sentinel;wakeRequesting=false;
+      sentinel.addEventListener?.('release',()=>{
+        if(wakeSentinel===sentinel)wakeSentinel=null;
+        if(wakeWanted&&trainingContext()){
+          renderWakeStatus('retry','화면 유지 재연결 중','시스템 해제 감지 · 자동 복구');
+          if(document.visibilityState==='visible')scheduleWakeRetry(700);
+        }else renderWakeStatus();
+      },{once:true});
+      renderWakeStatus('active','🔆 화면 켜짐 유지 중','육성 종료 전까지 자동 꺼짐 방지');
+      return true;
+    }catch(error){
+      wakeRequesting=false;wakeSentinel=null;wakeLastError=String(error?.name||error?.message||error||'wake-lock-failed');
+      renderWakeStatus('error','화면 유지 연결 실패','화면을 한 번 누르면 자동 재시도');
+      scheduleWakeRetry(reason==='retry'?5000:2500);
+      return false;
+    }
+  }
+  async function releaseWakeLock(reason='training-stop'){
+    wakeWanted=false;wakeRequesting=false;clearWakeRetry();
+    const sentinel=wakeSentinel;wakeSentinel=null;
+    if(sentinel&&!sentinel.released){try{await sentinel.release()}catch(_){}}
+    renderWakeStatus('','화면 꺼짐 방지 종료','다음 육성 시작 때 다시 자동 적용');
+    return reason;
+  }
+  function beginWakeLock(){wakeWanted=true;requestWakeLock('training-start')}
+  function reconcileWakeLock(){
+    if(wakeWanted&&!trainingContext()){releaseWakeLock('left-training');return}
+    if(wakeWanted&&document.visibilityState==='visible')requestWakeLock('reconcile');
+  }
+
+  function ensureInstallCard(){
+    let card=$('v251AppInstallCard');if(card)return card;
+    const setup=$('setup');if(!setup)return null;
+    card=document.createElement('section');card.id='v251AppInstallCard';card.className='v251-app-install-card';
+    card.innerHTML=`<div class="v251-app-install-inner"><img class="v251-app-install-icon" src="icons/gonggame-192.png" alt="공게임 앱 아이콘"><div class="v251-app-install-copy"><strong>공게임을 앱으로 플레이</strong><span>더 빠른 실행 · 전체 화면 · 자동 육성 화면 유지 최적화</span></div><button id="v251InstallButton" class="v251-app-install-btn" type="button">📲 앱으로 플레이하기</button></div><div id="v251InstallNote" class="v251-app-install-note">설치해도 계정과 숙련도 기록은 그대로 이어져.</div>`;
+    const footer=document.querySelector('.support-footer');
+    if(footer)footer.insertAdjacentElement('afterend',card);else setup.appendChild(card);
+    const syncVisibility=()=>card.classList.toggle('hidden',setup.classList.contains('hidden'));
+    syncVisibility();new MutationObserver(syncVisibility).observe(setup,{attributes:true,attributeFilter:['class']});
+    $('v251InstallButton')?.addEventListener('click',installApp);
+    updateInstallCard();
+    return card;
+  }
+  function updateInstallCard(){
+    const btn=$('v251InstallButton'),note=$('v251InstallNote');if(!btn)return;
+    if(isStandalone()){btn.textContent='✅ 앱으로 실행 중';btn.disabled=true;if(note)note.textContent='현재 설치된 공게임 앱에서 실행 중이야.'}
+    else{btn.textContent='📲 앱으로 플레이하기';btn.disabled=false;if(note)note.textContent=deferredInstallPrompt?'버튼을 누르면 바로 설치할 수 있어.':'설치 메뉴가 준비되지 않으면 안내를 보여줄게.'}
+  }
+  function ensureInstallHelp(){
+    let modal=$('v251InstallHelp');if(modal)return modal;
+    modal=document.createElement('div');modal.id='v251InstallHelp';modal.className='v251-install-help hidden';
+    modal.innerHTML='<div class="v251-install-help-card"><h3>📲 공게임 앱 설치</h3><p>브라우저 오른쪽 위 <b>⋮ 메뉴</b>를 누르고 <b>앱 설치</b> 또는 <b>홈 화면에 추가</b>를 선택해. 설치 뒤에는 홈 화면의 새 공게임 아이콘으로 실행하면 돼.</p><button type="button">확인</button></div>';
+    modal.querySelector('button')?.addEventListener('click',()=>modal.classList.add('hidden'));
+    modal.addEventListener('click',event=>{if(event.target===modal)modal.classList.add('hidden')});
+    document.body.appendChild(modal);return modal;
+  }
+  async function installApp(){
+    if(isStandalone()){updateInstallCard();return}
+    if(deferredInstallPrompt){
+      const prompt=deferredInstallPrompt;deferredInstallPrompt=null;
+      try{await prompt.prompt();await prompt.userChoice}catch(_){}
+      updateInstallCard();return;
+    }
+    ensureInstallHelp().classList.remove('hidden');
+  }
+  function registerPwa(){
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=251',{scope:'./'}).catch(error=>console.warn('[V251] service worker registration failed',error));
+  }
+  function wrapTrainingApi(){
+    const api=window.__GONG_V248__;if(!api||api.__v251WakeWrapped)return false;
+    const start=api.start?.bind(api),stop=api.stop?.bind(api),open=api.open?.bind(api);
+    if(start)api.start=(...args)=>{wakeWanted=true;const result=start(...args);queueMicrotask(()=>requestWakeLock('api-start'));return result};
+    if(stop)api.stop=(...args)=>{releaseWakeLock('api-stop');return stop(...args)};
+    if(open)api.open=(...args)=>open(...args);
+    api.__v251WakeWrapped=true;return true;
+  }
+  function init(){
+    ensureInstallCard();ensureInstallHelp();ensureWakeStatus();registerPwa();wrapTrainingApi();
+    document.addEventListener('click',event=>{
+      const target=event.target instanceof Element?event.target:null;if(!target)return;
+      if(target.closest('.v248-training-start')){wakeWanted=true;queueMicrotask(()=>requestWakeLock('button-start'))}
+      else if(target.closest('#v248TrainingStop,.v248-training-back'))releaseWakeLock('button-stop');
+      else if(wakeWanted&&target.closest('#v248TrainingPause,#v248TrainingChange,#v251WakeStatus'))requestWakeLock('interaction');
+    });
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(reconcileWakeLock,120)});
+    window.addEventListener('focus',()=>setTimeout(reconcileWakeLock,120));
+    window.addEventListener('pageshow',()=>setTimeout(reconcileWakeLock,120));
+    window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;updateInstallCard()});
+    window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;updateInstallCard()});
+    setInterval(()=>{wrapTrainingApi();if(wakeWanted)reconcileWakeLock()},4000);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+
+  window.__GONG_V251__={
+    build:BUILD,
+    requestWakeLock:()=>{wakeWanted=true;return requestWakeLock('manual-api')},
+    releaseWakeLock:()=>releaseWakeLock('manual-api'),
+    wakeState,
+    installApp,
+    status:()=>({build:BUILD,installCard:!!$('v251AppInstallCard'),standalone:isStandalone(),serviceWorker:'serviceWorker' in navigator,wake:wakeState()})
+  };
+  window.__GONG_V251_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V251] 기본화면 최하단 앱 설치 버튼 · 신규 공게임 아이콘 · 자동 육성 중 Screen Wake Lock 및 복귀 자동 재연결');
+})();
+</script>
+<script id="v251LatestBuildScript">(()=>{const BUILD='V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK';window.__GONG_V251_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
 </body>
 </html>
