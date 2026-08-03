@@ -1871,7 +1871,7 @@ body.competitive-battle #restart{display:none!important}
       <div class="tournament-step">
         <div class="tournament-step-title">1. 참가 규모</div>
         <div class="tournament-choice-grid" id="tournamentSizeChoices">
-          <button class="t-choice" data-t-size="4">4인</button><button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button><button class="t-choice" data-t-size="64">64인</button><button id="tournamentTeamModeChoice" class="t-choice t-team-tournament-choice" type="button">🤝 팀전<small>16강 고정</small></button>
+          <button class="t-choice active" data-t-size="8">8인</button><button class="t-choice" data-t-size="16">16인</button><button class="t-choice" data-t-size="32">32인</button><button class="t-choice" data-t-size="64">64인</button><button id="tournamentTeamModeChoice" class="t-choice t-team-tournament-choice" type="button">🤝 팀전<small>16강 고정</small></button>
         </div>
         <div id="tournamentTeamSizeWrap" class="tournament-team-size-wrap hidden">
           <div class="t-team-mode-head"><strong>🤝 16강 팀전 토너먼트</strong><span id="tournamentTeamCountInfo">16팀 × 2명 · 총 32명</span></div>
@@ -21076,7 +21076,7 @@ function frame(ts){
   function completeTournament(champion){
     state.completed=true;state.champion=champion;state.active=true;recordChampion(champion);
     const ranking=Object.entries(state.aggregate).sort((a,b)=>(b[1].wins*100+b[1].kills*30+b[1].damage/10+b[1].healing/20+b[1].bestHp*30)-(a[1].wins*100+a[1].kills*30+a[1].damage/10+a[1].healing/20+a[1].bestHp*30));
-    state.mvp=ranking[0][0];state.awards=awardData();selectedView='final';
+    state.mvp=ranking[0][0];state.awards=awardData();selectedView='final';window.__GONG_V244__?.settleTournamentRewards?.(state);
   }
   function awardSlides(){
     const aw=state.awards||awardData(),slides=[];
@@ -31323,5 +31323,434 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
 </script>
 <script id="v242FinalBuildScript">(()=>{const BUILD='V242_FRIENDLY_EXPLICIT_ENTRY_NO_MASTER_BANNER';window.__GONG_V242_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v243FinalBuildScript">(()=>{const BUILD='V243_COMPETITIVE_TEAM_PERFORMANCE_SCORE_NO_ZERO',competitive=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;window.__GONG_V243__={build:BUILD,competitive,scoreBounds:competitive?.scoreBounds||{winMin:16,winMax:40,lossMin:20,lossMax:45}};window.__GONG_V243_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V243] 경쟁전 팀 활약도 점수 승리 +16~+40 · 패배 -20~-45 · 0점 정산 제거');})();</script>
+
+<style id="v244TournamentPredictionCouponStyle">
+/* V244 · 토너먼트 예측 XP 쿠폰 · 아이템 버튼 전면 정리 */
+.skill-profile.v239-item-profile{
+  grid-template-columns:58px minmax(0,1fr) minmax(158px,max-content)!important;
+  column-gap:12px!important;
+}
+.v239-item-open{
+  position:relative;
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-width:158px;
+  max-width:198px;
+  min-height:50px;
+  padding:8px 11px!important;
+  overflow:hidden;
+  border:2px solid #f7c84c!important;
+  border-radius:15px!important;
+  background:
+    linear-gradient(120deg,rgba(255,255,255,.18),transparent 36%),
+    linear-gradient(135deg,#17120b,#5f3c00 58%,#9a6500)!important;
+  color:#fff9dc!important;
+  box-shadow:0 4px 0 #17120b,0 8px 18px #6b47002b!important;
+  font-size:12px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  text-align:center;
+}
+.v239-item-open:before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  pointer-events:none;
+  border:1px solid rgba(255,237,169,.3);
+  border-radius:11px;
+}
+.v239-item-open:hover{filter:brightness(1.08)}
+.v239-item-open:active{transform:translateY(2px);box-shadow:0 2px 0 #17120b,0 4px 10px #6b470026!important}
+.v239-item-open span{display:inline!important;margin:0!important;white-space:nowrap!important}
+.v244-item-icon{position:relative;z-index:1;font-size:17px}
+.v244-item-label{position:relative;z-index:1;font-size:12px!important;font-weight:1000;letter-spacing:-.15px}
+.v244-item-total{
+  position:relative;z-index:1;
+  min-width:23px;
+  border:1px solid #ffe39a;
+  border-radius:999px;
+  background:#fff4c9;
+  color:#3a2600;
+  padding:4px 6px;
+  font-size:9px!important;
+  font-weight:1000;
+}
+.v239-item-card{max-height:92vh;overflow:auto!important}
+.v239-item-content{padding-bottom:2px}
+.v244-item-summary{
+  margin:0 14px 10px;
+  border:1px solid #e5d59e;
+  border-radius:11px;
+  background:#fffdf4;
+  padding:8px 10px;
+  color:#65501b;
+  font-size:9px;
+  font-weight:900;
+  line-height:1.45;
+}
+.v239-item-row.v244-item-row{background:linear-gradient(145deg,#fffdf2,#fff4c9);border-color:#d3a82e}
+.v244-item-row[data-xp-tier="high"]{background:linear-gradient(145deg,#f6efff,#e8dcff);border-color:#8b5cf6}
+.v239-item-use{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+}
+.v244-empty-items{
+  margin:0 14px 14px;
+  border:2px dashed #ccb96e;
+  border-radius:14px;
+  background:#fffdf4;
+  padding:18px 12px;
+  color:#746329;
+  text-align:center;
+  font-size:11px;
+  font-weight:1000;
+  line-height:1.5;
+}
+.v244-setup-reward-guide,.v244-prediction-guide{
+  margin-top:9px;
+  border:2px solid #d1a32c;
+  border-radius:13px;
+  background:linear-gradient(145deg,#fffdf3,#ffefad);
+  padding:9px;
+  color:#4b3500;
+}
+.v244-setup-reward-guide strong,.v244-prediction-guide strong{display:block;font-size:11px;font-weight:1000}
+.v244-reward-guide-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin-top:7px;
+}
+.v244-reward-guide-cell{
+  min-width:0;
+  border:1px solid #d4bd69;
+  border-radius:9px;
+  background:#fff;
+  padding:7px 4px;
+  text-align:center;
+  font-size:8px;
+  font-weight:900;
+  color:#786322;
+}
+.v244-reward-guide-cell b{display:block;margin-bottom:2px;color:#17120a;font-size:12px;white-space:nowrap}
+.v244-tournament-reward-result{
+  margin:10px 0;
+  border:3px solid #d2a323;
+  border-radius:15px;
+  background:linear-gradient(145deg,#fffef5,#ffe999);
+  padding:10px;
+  box-shadow:0 5px 15px #8b65001f;
+}
+.v244-reward-result-title{font-size:14px;font-weight:1000;color:#4c3300;text-align:center}
+.v244-reward-result-sub{margin-top:3px;font-size:9px;font-weight:900;color:#755e1d;text-align:center}
+.v244-reward-result-list{display:grid;gap:5px;margin-top:8px}
+.v244-reward-result-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:7px;
+  align-items:center;
+  border:1px solid #d7c06e;
+  border-radius:9px;
+  background:#fff;
+  padding:7px 9px;
+  font-size:10px;
+  font-weight:1000;
+}
+.v244-reward-result-row.correct{border-color:#30a46c;background:#f1fff7;color:#12613b}
+.v244-reward-result-row.wrong{color:#756d58}
+.v244-reward-result-row b{white-space:nowrap}
+[data-hall-view="4"]{display:none!important}
+@media(max-width:560px){
+  .skill-profile.v239-item-profile{grid-template-columns:52px minmax(0,1fr)!important}
+  .skill-profile.v239-item-profile .v239-item-open{
+    grid-column:1/-1;
+    width:100%;
+    max-width:none;
+    min-height:46px;
+  }
+  .v244-reward-guide-grid{gap:4px}.v244-reward-guide-cell{padding:6px 3px}.v244-reward-guide-cell b{font-size:10px}
+}
+</style>
+
+<script id="v244TournamentPredictionCouponScript">
+(()=>{
+  const BUILD='V244_TOURNAMENT_PREDICTION_XP_COUPONS_ITEM_UI';
+  const ITEM_KEY=window.__GONG_V239__?.itemKey||'gonggame_v239_items_v1';
+  const BOSS_IDS=new Set(['james','yoogeon','youngsik','naeonseong']);
+  const SLOT_META=Object.freeze({
+    first:Object.freeze({label:'1위',actual:'champion'}),
+    second:Object.freeze({label:'2위',actual:'runnerUp'}),
+    third:Object.freeze({label:'3위',actual:'thirdPlace'})
+  });
+  const REWARD_TABLE=Object.freeze({
+    8:Object.freeze({first:100,second:100,third:100}),
+    16:Object.freeze({first:100,second:100,third:100}),
+    32:Object.freeze({first:3000,second:2000,third:1000}),
+    64:Object.freeze({first:7500,second:5000,third:2500})
+  });
+  const clone=value=>JSON.parse(JSON.stringify(value));
+  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const formatXp=value=>Math.max(0,Math.floor(Number(value)||0)).toLocaleString('ko-KR');
+  const definitions=()=>window.__GONG_V134_DEBUG__?.defs||{};
+  const masteryApi=()=>window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V219__;
+
+  function freshInventory(){return {version:2,earned:{},spent:{}}}
+  function couponXp(row){
+    const direct=Math.floor(Number(row?.xp)||0);
+    if(direct>0)return direct;
+    return row?.type==='masteryXp100'?100:0;
+  }
+  function isCoupon(row){return couponXp(row)>0&&['masteryXp100','masteryXpCoupon','tournamentPredictionXp'].includes(String(row?.type||''))}
+  function readInventory(){
+    let raw=null;
+    try{raw=JSON.parse(localStorage.getItem(ITEM_KEY)||'null')}catch(_){}
+    if(!raw||typeof raw!=='object'||Array.isArray(raw))raw=freshInventory();
+    if(!raw.earned||typeof raw.earned!=='object'||Array.isArray(raw.earned))raw.earned={};
+    if(!raw.spent||typeof raw.spent!=='object'||Array.isArray(raw.spent))raw.spent={};
+    raw.version=Math.max(2,Number(raw.version)||0);
+    for(const row of Object.values(raw.earned))if(row&&row.type==='masteryXp100'&&!Number(row.xp))row.xp=100;
+    return raw;
+  }
+  function availableReceipts(inventory=readInventory(),xp=null){
+    const wanted=xp==null?null:Math.max(1,Math.floor(Number(xp)||0));
+    return Object.keys(inventory.earned).filter(id=>{
+      const row=inventory.earned[id];
+      return isCoupon(row)&&!inventory.spent[id]&&(wanted==null||couponXp(row)===wanted);
+    }).sort((a,b)=>String(inventory.earned[a]?.awardedAt||'').localeCompare(String(inventory.earned[b]?.awardedAt||''))||String(a).localeCompare(String(b)));
+  }
+  function couponGroups(inventory=readInventory()){
+    const byXp=new Map();
+    for(const id of availableReceipts(inventory)){
+      const xp=couponXp(inventory.earned[id]);
+      if(!byXp.has(xp))byXp.set(xp,[]);
+      byXp.get(xp).push(id);
+    }
+    return [...byXp.entries()].map(([xp,ids])=>({xp,ids,count:ids.length})).sort((a,b)=>b.xp-a.xp);
+  }
+  function totalCouponCount(inventory=readInventory()){return availableReceipts(inventory).length}
+  function saveInventory(inventory,reason='change'){
+    inventory.version=Math.max(2,Number(inventory.version)||0);
+    try{localStorage.setItem(ITEM_KEY,JSON.stringify(inventory))}catch(_){}
+    window.dispatchEvent(new CustomEvent('gong-v239-item-progress-change',{detail:{reason,count:totalCouponCount(inventory),version:2}}));
+    updateItemButtons();
+    return inventory;
+  }
+
+  let toastTimer=0;
+  function notify(message){
+    let toast=document.getElementById('v239Toast');
+    if(!toast){toast=document.createElement('div');toast.id='v239Toast';toast.className='v239-toast';document.body.appendChild(toast)}
+    toast.textContent=String(message||'');
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove('show'),2500);
+  }
+  function activeCharacterId(){return document.querySelector('#skillTabs [data-skill-tab].active')?.dataset?.skillTab||''}
+  function closeItemModal(){
+    const modal=document.getElementById('v239ItemModal');
+    if(!modal)return;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden','true');
+  }
+  function ensureItemModal(){
+    let modal=document.getElementById('v239ItemModal');
+    if(!modal){
+      modal=document.createElement('div');
+      modal.id='v239ItemModal';
+      modal.className='v239-item-modal hidden';
+      modal.setAttribute('aria-hidden','true');
+      modal.innerHTML='<section class="v239-item-card" role="dialog" aria-modal="true" aria-labelledby="v239ItemTitle"><header class="v239-item-head"><strong id="v239ItemTitle">🎟️ 아이템 사용</strong><button type="button" class="v239-item-close" aria-label="아이템 창 닫기">×</button></header><div class="v239-item-content"></div></section>';
+      document.body.appendChild(modal);
+    }
+    if(!modal.dataset.v244Bound){
+      modal.dataset.v244Bound='true';
+      modal.querySelector('.v239-item-close')?.addEventListener('click',closeItemModal);
+      modal.addEventListener('click',event=>{if(event.target===modal)closeItemModal()});
+    }
+    return modal;
+  }
+  function useCoupon(characterId,xp){
+    const id=String(characterId||''),d=definitions()[id],api=masteryApi(),amount=Math.max(1,Math.floor(Number(xp)||0));
+    if(!d||BOSS_IDS.has(id)||!api?.mastery||!api?.setMasteryXp)return false;
+    const inventory=readInventory(),receiptId=availableReceipts(inventory,amount)[0];
+    if(!receiptId){notify('사용할 수 있는 XP +'+formatXp(amount)+' 쿠폰이 없어.');renderItemModal(id);return false}
+    const mastery=api.mastery(),beforeXp=Math.max(0,Number(mastery?.characters?.[id]?.xp)||0);
+    try{
+      api.setMasteryXp(id,beforeXp+amount);
+      inventory.spent[receiptId]={receiptId,type:'masteryXpCouponUse',characterId:id,xp:amount,usedAt:new Date().toISOString()};
+      saveInventory(inventory,'coupon-used');
+    }catch(_){return false}
+    const safeId=window.CSS?.escape?CSS.escape(id):id.replace(/["\\]/g,'\\$&');
+    document.querySelector('#skillTabs [data-skill-tab="'+safeId+'"]')?.click();
+    setTimeout(()=>renderItemModal(id),0);
+    notify(d.name+' 숙련도 +'+formatXp(amount)+' XP · 쿠폰 사용 완료');
+    return true;
+  }
+  function itemDescription(xp){
+    if(xp===100)return '친선 경쟁전 승리 또는 8강·16강 순위 예측 적중으로 받을 수 있어.';
+    return '토너먼트 최종 순위 예측을 정확히 맞혀 받은 숙련도 XP 쿠폰이야.';
+  }
+  function renderItemModal(characterId){
+    const modal=ensureItemModal(),id=String(characterId||modal.dataset.characterId||''),d=definitions()[id];
+    if(!d||BOSS_IDS.has(id)){closeItemModal();return false}
+    modal.dataset.characterId=id;
+    const inventory=readInventory(),groups=couponGroups(inventory),api=masteryApi(),mastery=api?.mastery?.(),xp=Math.max(0,Number(mastery?.characters?.[id]?.xp)||0);
+    const rows=groups.length?groups.map(group=>{
+      const high=group.xp>100?' data-xp-tier="high"':'';
+      return '<div class="v239-item-row v244-item-row"'+high+'><div class="v239-item-row-top"><span class="v239-item-name">🎟️ XP +'+formatXp(group.xp)+' 추가 쿠폰</span><span class="v239-item-count">'+group.count+'개</span></div><div class="v239-item-desc">'+itemDescription(group.xp)+'</div><button type="button" class="v239-item-use" data-v244-use-xp="'+group.xp+'">+'+formatXp(group.xp)+' XP 적용</button></div>';
+    }).join(''):'<div class="v244-empty-items">현재 사용할 수 있는 XP 쿠폰이 없어.<br>친선 경쟁전 승리 또는 토너먼트 순위 예측으로 획득할 수 있어.</div>';
+    modal.querySelector('.v239-item-content').innerHTML='<div class="v239-item-character" style="--c:'+esc(d.color||'#777')+'"><img src="'+esc(d.img||'')+'" alt="'+esc(d.name)+'" style="object-position:50% 50%"><div><b>'+esc(d.name)+'</b><span>현재 누적 숙련도 '+formatXp(xp)+' XP</span></div></div><div class="v244-item-summary">보유 쿠폰 '+totalCouponCount(inventory)+'개 · 원하는 XP 쿠폰을 골라 이 캐릭터에게 적용해.</div>'+rows;
+    modal.querySelectorAll('[data-v244-use-xp]').forEach(button=>button.addEventListener('click',()=>useCoupon(id,Number(button.dataset.v244UseXp))));
+    return true;
+  }
+  function openItemModal(characterId){
+    const id=String(characterId||activeCharacterId()),d=definitions()[id];
+    if(!d||BOSS_IDS.has(id))return false;
+    const modal=ensureItemModal();
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden','false');
+    renderItemModal(id);
+    return true;
+  }
+  function updateItemButtons(){
+    const count=totalCouponCount();
+    document.querySelectorAll('.v239-item-open').forEach(button=>{
+      if(button.dataset.v244ItemCount===String(count)&&button.querySelector('.v244-item-label'))return;
+      button.dataset.v244ItemButton='true';
+      button.dataset.v244ItemCount=String(count);
+      button.setAttribute('aria-label','아이템 사용 · 보유 쿠폰 '+count+'개');
+      button.innerHTML='<span class="v244-item-icon" aria-hidden="true">🎟️</span><span class="v244-item-label">아이템 사용</span><span class="v244-item-total">'+count+'</span>';
+    });
+  }
+
+  function rewardTable(size){return REWARD_TABLE[Math.floor(Number(size)||0)]||null}
+  function makeRewardId(){
+    let random='';
+    try{random=crypto.randomUUID()}catch(_){random=Math.random().toString(36).slice(2)+Date.now().toString(36)}
+    return 'v244-'+Date.now().toString(36)+'-'+random;
+  }
+  function ensureTournamentRewardId(state){
+    if(!state.v244PredictionRewardId)state.v244PredictionRewardId=makeRewardId();
+    return state.v244PredictionRewardId;
+  }
+  function settleTournamentRewards(state){
+    if(!state||!state.completed)return null;
+    if(state.v244TournamentReward)return state.v244TournamentReward;
+    const size=Math.floor(Number(state.size)||0),table=rewardTable(size),predictions=state.rankPredictions||{};
+    const hasPrediction=!!(predictions.first||predictions.second||predictions.third);
+    const inventory=readInventory(),rewardId=ensureTournamentRewardId(state),rows=[];
+    let awardedCount=0,totalRewardXp=0;
+    for(const slot of Object.keys(SLOT_META)){
+      const meta=SLOT_META[slot],amount=Math.max(0,Number(table?.[slot])||0),predictedId=predictions[slot]||null,actualId=state[meta.actual]||null,correct=!!amount&&!!predictedId&&predictedId===actualId;
+      const receiptId='tournament:'+rewardId+':'+slot;
+      let newlyAwarded=false;
+      if(correct&&!inventory.earned[receiptId]){
+        inventory.earned[receiptId]={id:receiptId,type:amount===100?'masteryXp100':'masteryXpCoupon',xp:amount,source:'tournament-prediction',tournamentRewardId:rewardId,tournamentSize:size,tournamentFormat:state.format||'solo',rank:slot,predictedId,actualId,awardedAt:new Date().toISOString()};
+        awardedCount++;totalRewardXp+=amount;newlyAwarded=true;
+      }
+      rows.push({slot,label:meta.label,xp:amount,predictedId,actualId,correct,newlyAwarded,receiptId});
+    }
+    if(awardedCount)saveInventory(inventory,'tournament-prediction');
+    state.v244TournamentReward={version:1,rewardId,size,hasPrediction,eligible:!!table,rows,awardedCount,totalRewardXp,coupons:totalCouponCount(inventory),settledAt:new Date().toISOString()};
+    return state.v244TournamentReward;
+  }
+  function rewardGuideHtml(size,titlePrefix=''){
+    const table=rewardTable(size);
+    if(!table)return '';
+    const title=(titlePrefix?esc(titlePrefix)+' · ':'')+size+'강 예측 적중 쿠폰';
+    return '<strong>🎟️ '+title+'</strong><div class="v244-reward-guide-grid">'+Object.keys(SLOT_META).map(slot=>'<div class="v244-reward-guide-cell">'+SLOT_META[slot].label+'<b>+'+formatXp(table[slot])+' XP</b></div>').join('')+'</div>';
+  }
+  function tournamentRewardHtml(state){
+    const result=settleTournamentRewards(state);
+    if(!result||!result.hasPrediction||!result.eligible)return '';
+    const correctCount=result.rows.filter(row=>row.correct).length;
+    const rows=result.rows.map(row=>'<div class="v244-reward-result-row '+(row.correct?'correct':'wrong')+'"><span>'+(row.correct?'✅ ':'— ')+row.label+' 예측 '+(row.correct?'적중':'실패')+'</span><b>'+(row.correct?'+'+formatXp(row.xp)+' XP 쿠폰':'보상 없음')+'</b></div>').join('');
+    return '<section class="v244-tournament-reward-result"><div class="v244-reward-result-title">🎟️ 순위 예측 보상 · '+correctCount+'/3 적중</div><div class="v244-reward-result-sub">'+(result.awardedCount?result.awardedCount+'개 쿠폰 지급 완료':'이미 지급된 토너먼트 보상 확인 완료')+' · 보유 쿠폰 '+result.coupons+'개</div><div class="v244-reward-result-list">'+rows+'</div></section>';
+  }
+  function tournamentState(){return window.__GONG_V173_TEST__?.state||window.__GONG_V174_TOURNAMENT_TEST__?.state||null}
+  function selectedSetupSize(){
+    if(document.getElementById('tournamentTeamModeChoice')?.classList.contains('active'))return 16;
+    return Number(document.querySelector('#tournamentSizeChoices [data-t-size].active')?.dataset?.tSize)||8;
+  }
+  function installSetupGuide(){
+    document.querySelector('#tournamentSizeChoices [data-t-size="4"]')?.remove();
+    const checkbox=document.getElementById('tournamentPredictionEnabled'),label=checkbox?.closest('label');
+    if(!label)return;
+    let guide=document.getElementById('v244SetupRewardGuide');
+    if(!guide){guide=document.createElement('div');guide.id='v244SetupRewardGuide';guide.className='v244-setup-reward-guide';label.insertAdjacentElement('afterend',guide)}
+    const size=selectedSetupSize(),team=document.getElementById('tournamentTeamModeChoice')?.classList.contains('active');
+    guide.innerHTML=rewardGuideHtml(size,team?'16강 팀전':'');
+  }
+  let modalDecorationScheduled=false;
+  function decorateTournamentModal(){
+    modalDecorationScheduled=false;
+    const modal=document.getElementById('tournamentModal');
+    if(!modal||modal.classList.contains('hidden'))return;
+    const title=document.getElementById('tournamentModalTitle')?.textContent||'',body=document.getElementById('tournamentModalBody'),state=tournamentState();
+    if(!body)return;
+    if(title.includes('최종 순위')&&!body.querySelector('.v244-prediction-guide')){
+      const guide=document.createElement('div');
+      guide.className='v244-prediction-guide';
+      guide.innerHTML=rewardGuideHtml(Number(state?.size)||selectedSetupSize(),state?.format==='team'?'16강 팀전':'');
+      body.prepend(guide);
+    }
+    if(title.includes('토너먼트 종료')&&state?.completed&&!body.querySelector('.v244-tournament-reward-result')){
+      const holder=document.createElement('div');
+      holder.innerHTML=tournamentRewardHtml(state);
+      const section=holder.firstElementChild;
+      if(section)(body.querySelector('.t-result-hero')||body.firstElementChild)?.insertAdjacentElement('afterend',section);
+    }
+  }
+  function scheduleModalDecoration(){
+    if(modalDecorationScheduled)return;
+    modalDecorationScheduled=true;
+    setTimeout(decorateTournamentModal,0);
+  }
+
+  document.addEventListener('click',event=>{
+    const button=event.target?.closest?.('.v239-item-open');
+    if(!button)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    openItemModal(activeCharacterId());
+  },true);
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('v239ItemModal')?.classList.contains('hidden')){event.stopImmediatePropagation();closeItemModal()}},true);
+  document.getElementById('tournamentSizeChoices')?.addEventListener('click',()=>setTimeout(installSetupGuide,0));
+  document.getElementById('tournamentTeamModeChoice')?.addEventListener('click',()=>setTimeout(installSetupGuide,0));
+  const skillBody=document.getElementById('skillBody');
+  if(skillBody)new MutationObserver(()=>queueMicrotask(updateItemButtons)).observe(skillBody,{childList:true,subtree:true});
+  const tournamentModal=document.getElementById('tournamentModal');
+  if(tournamentModal)new MutationObserver(scheduleModalDecoration).observe(tournamentModal,{attributes:true,childList:true,subtree:true,attributeFilter:['class']});
+  window.addEventListener('gong-v239-item-progress-change',()=>{updateItemButtons();const modal=document.getElementById('v239ItemModal');if(modal&&!modal.classList.contains('hidden'))renderItemModal(modal.dataset.characterId)});
+
+  const legacyItems=window.__GONG_V239__;
+  if(legacyItems)Object.assign(legacyItems,{inventory:()=>clone(readInventory()),availableCoupons:()=>availableReceipts(),couponCount:totalCouponCount,couponGroups:()=>clone(couponGroups()),useCoupon,openItemModal,closeItemModal});
+  const api={
+    build:BUILD,itemKey:ITEM_KEY,rewardTable,inventory:()=>clone(readInventory()),availableCoupons:()=>availableReceipts(),couponGroups:()=>clone(couponGroups()),couponCount:totalCouponCount,
+    useCoupon,openItemModal,closeItemModal,renderItemModal,settleTournamentRewards,tournamentRewardHtml,
+    settleForTest(size=32,correctSlots=['first','second','third'],rewardId='test-'+Date.now()){
+      const actual={first:'A',second:'B',third:'C'},predictions={first:'X',second:'Y',third:'Z'};
+      for(const slot of correctSlots)predictions[slot]=actual[slot];
+      const state={completed:true,size,format:'solo',rankPredictions:predictions,champion:actual.first,runnerUp:actual.second,thirdPlace:actual.third,v244PredictionRewardId:rewardId};
+      return {state,result:settleTournamentRewards(state)};
+    },
+    resetItemsForTest(){const value=freshInventory();try{localStorage.setItem(ITEM_KEY,JSON.stringify(value))}catch(_){}updateItemButtons();return clone(value)}
+  };
+  window.__GONG_V244__=api;
+  window.__GONG_V244_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  try{const upgraded=readInventory();localStorage.setItem(ITEM_KEY,JSON.stringify(upgraded))}catch(_){}
+  installSetupGuide();
+  updateItemButtons();
+  scheduleModalDecoration();
+  console.info('[V244] 토너먼트 8·16·32·64강 순위 예측 XP 쿠폰 · 4인 삭제 · 아이템 버튼 줄바꿈 방지');
+})();
+</script>
+<script id="v244FinalBuildScript">(()=>{const BUILD='V244_TOURNAMENT_PREDICTION_XP_COUPONS_ITEM_UI';window.__GONG_V244_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 </body>
 </html>
