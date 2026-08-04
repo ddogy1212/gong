@@ -32618,7 +32618,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=252',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=253',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -32659,6 +32659,341 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 })();
 </script>
 <script id="v252LatestBuildScript">(()=>{const BUILD='V252_ONE_CLICK_APP_INSTALL_AND_TRAINING_WAKE_LOCK';window.__GONG_V252_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
+<style id="v253CharacterKillBannerStyle">
+/* V253 · 상단 기본 킬 배너 이펙트 강화 + 캐릭터 연관 아이콘 */
+.center-kill.v253-character-kill{
+  --v253-accent:#f59e0b;
+  --v253-accent2:#7c3aed;
+  position:absolute!important;
+  left:50%!important;
+  top:19%!important;
+  width:min(82%,360px)!important;
+  min-height:66px!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr)!important;
+  align-items:center!important;
+  gap:9px!important;
+  padding:8px 12px 8px 8px!important;
+  overflow:visible!important;
+  border:2px solid var(--v253-accent)!important;
+  border-left-width:5px!important;
+  border-radius:13px!important;
+  background:
+    linear-gradient(102deg,color-mix(in srgb,var(--v253-accent) 18%,#101116) 0%,#101116 36%,#17131e 100%) padding-box!important;
+  color:#fff!important;
+  text-align:left!important;
+  white-space:normal!important;
+  text-shadow:none!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.24) inset,
+    0 9px 22px rgba(0,0,0,.42),
+    0 0 19px color-mix(in srgb,var(--v253-accent) 55%,transparent)!important;
+  isolation:isolate;
+}
+.center-kill.v253-character-kill:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:-5px;
+  border:2px solid color-mix(in srgb,var(--v253-accent) 75%,#fff);
+  border-radius:17px;
+  opacity:0;
+  pointer-events:none;
+}
+.center-kill.v253-character-kill:after{
+  content:"";
+  position:absolute;
+  z-index:3;
+  top:-45%;
+  bottom:-45%;
+  left:-34%;
+  width:24%;
+  transform:skewX(-19deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.82),transparent);
+  opacity:0;
+  pointer-events:none;
+}
+.center-kill.show.v253-character-kill{
+  animation:v253KillBannerImpact 1.68s cubic-bezier(.16,.84,.22,1) both!important;
+}
+.center-kill.show.v253-character-kill:before{
+  animation:v253KillBannerRing .64s .04s ease-out both!important;
+}
+.center-kill.show.v253-character-kill:after{
+  animation:v253KillBannerSweep .72s .10s ease-out both!important;
+}
+.v253-kill-icon{
+  position:relative;
+  align-self:start;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  margin-top:1px;
+  overflow:hidden;
+  border:2px solid color-mix(in srgb,var(--v253-accent) 82%,#fff);
+  border-radius:11px;
+  background:
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.48),transparent 27%),
+    linear-gradient(145deg,color-mix(in srgb,var(--v253-accent) 74%,#fff),color-mix(in srgb,var(--v253-accent2) 62%,#101116));
+  box-shadow:0 0 0 1px rgba(255,255,255,.22) inset,0 0 15px color-mix(in srgb,var(--v253-accent) 55%,transparent);
+  font-size:25px;
+  line-height:1;
+}
+.v253-kill-icon:after{
+  content:"";
+  position:absolute;
+  inset:auto -7px -7px auto;
+  width:20px;
+  height:20px;
+  border:2px solid rgba(255,255,255,.45);
+  border-radius:50%;
+  opacity:.7;
+}
+.v253-kill-icon img{width:100%;height:100%;object-fit:cover;display:block}
+.v253-kill-icon svg{width:39px;height:39px;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.v253-kill-copy{min-width:0;display:block}
+.v253-kill-topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  margin-bottom:3px;
+  color:#d8dce8;
+  font-size:6px;
+  font-weight:1000;
+  letter-spacing:1.15px;
+  line-height:1;
+}
+.v253-kill-topline b{
+  flex:0 0 auto;
+  padding:2px 5px;
+  border:1px solid color-mix(in srgb,var(--v253-accent) 70%,#fff);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--v253-accent) 17%,transparent);
+  color:#fff;
+  font-size:6px;
+  letter-spacing:.35px;
+}
+.v253-kill-duel{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  line-height:1.05;
+}
+.v253-kill-killer{
+  min-width:0;
+  overflow:hidden;
+  color:color-mix(in srgb,var(--v253-accent) 70%,#fff);
+  font-size:13px;
+  font-weight:1000;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.v253-kill-arrow{flex:0 0 auto;color:#fff;font-size:10px;font-style:normal;filter:drop-shadow(0 0 4px var(--v253-accent))}
+.v253-kill-victim{
+  min-width:0;
+  overflow:hidden;
+  color:#ff708a;
+  font-size:10px;
+  font-weight:1000;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.v253-kill-skill{
+  display:block;
+  min-width:0;
+  margin-top:4px;
+  padding-top:3px;
+  overflow:hidden;
+  border-top:1px solid color-mix(in srgb,var(--v253-accent2) 40%,transparent);
+  color:#e9eaf1;
+  font-size:7px;
+  font-weight:900;
+  line-height:1.15;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.v253-kill-skill b{color:#fff}
+.v253-kill-sparks{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+.v253-kill-sparks i{
+  position:absolute;
+  left:8%;
+  top:52%;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--v253-accent);
+  box-shadow:0 0 7px var(--v253-accent);
+  opacity:0;
+}
+.center-kill.show.v253-character-kill .v253-kill-sparks i{animation:v253KillSpark .62s var(--delay,0s) ease-out both}
+.v253-kill-sparks i:nth-child(1){--x:-32px;--y:-25px;--delay:.02s}
+.v253-kill-sparks i:nth-child(2){--x:-19px;--y:27px;--delay:.04s}
+.v253-kill-sparks i:nth-child(3){--x:18px;--y:-32px;--delay:.06s}
+.v253-kill-sparks i:nth-child(4){--x:43px;--y:-16px;--delay:.08s}
+.v253-kill-sparks i:nth-child(5){--x:48px;--y:22px;--delay:.10s}
+.v253-kill-sparks i:nth-child(6){--x:13px;--y:33px;--delay:.12s}
+.v253-kill-sparks i:nth-child(7){--x:70px;--y:-4px;--delay:.14s}
+.v253-kill-sparks i:nth-child(8){--x:78px;--y:27px;--delay:.16s}
+
+/* 아래 킬로그의 기존 디자인은 유지하고 아이콘만 캐릭터 전용으로 교체 */
+.v241-kill-sigil .v253-feed-icon,.v224-kill-icon .v253-feed-icon{display:grid;width:100%;height:100%;place-items:center}
+.v241-kill-sigil .v253-feed-icon svg,.v224-kill-icon .v253-feed-icon svg{width:28px;height:28px;display:block}
+.v241-kill-sigil .v253-feed-icon img,.v224-kill-icon .v253-feed-icon img{width:100%;height:100%;object-fit:cover;border-radius:7px;display:block}
+.v241-kill-sigil .v253-feed-symbol,.v224-kill-icon .v253-feed-symbol{font-size:18px;line-height:1}
+
+@keyframes v253KillBannerImpact{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotateX(10deg);filter:brightness(2.1) blur(1px)}
+  12%{opacity:1;transform:translate(-50%,-50%) scale(1.045) rotateX(0);filter:brightness(1.35)}
+  20%{transform:translate(calc(-50% - 2px),-50%) scale(.995)}
+  25%{transform:translate(calc(-50% + 2px),-50%) scale(1)}
+  31%,72%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:none}
+  100%{opacity:0;transform:translate(-50%,-62%) scale(1.035);filter:blur(.6px)}
+}
+@keyframes v253KillBannerRing{0%{opacity:.95;transform:scale(.92)}100%{opacity:0;transform:scale(1.16)}}
+@keyframes v253KillBannerSweep{0%{left:-34%;opacity:0}20%{opacity:.9}100%{left:126%;opacity:0}}
+@keyframes v253KillSpark{0%{opacity:0;transform:translate(0,0) scale(.4)}22%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(0)}}
+@media(max-width:560px){
+  .center-kill.v253-character-kill{width:min(84%,315px)!important;min-height:59px!important;grid-template-columns:41px minmax(0,1fr)!important;gap:7px!important;padding:7px 9px 7px 7px!important;border-radius:12px!important}
+  .v253-kill-icon{width:38px;height:38px;border-radius:10px;font-size:22px}.v253-kill-icon svg{width:34px;height:34px}
+  .v253-kill-killer{font-size:11px}.v253-kill-victim{font-size:9px}.v253-kill-arrow{font-size:8px}.v253-kill-skill{font-size:6.5px}.v253-kill-topline,.v253-kill-topline b{font-size:5.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .center-kill.show.v253-character-kill{animation:v253KillBannerReduced 1.55s ease both!important}
+  .center-kill.show.v253-character-kill:before,.center-kill.show.v253-character-kill:after,.center-kill.show.v253-character-kill .v253-kill-sparks i{animation:none!important}
+}
+@keyframes v253KillBannerReduced{0%,100%{opacity:0}12%,78%{opacity:1}}
+</style>
+
+<script id="v253CharacterKillBannerScript">
+(()=>{
+  const BUILD='V253_CHARACTER_ICON_BASE_KILL_BANNER_FX';
+  const TIER_CLASSES=['v241-tier-awakened','v241-tier-radiant','v241-tier-mythic','v241-tier-max'];
+  const stats={rendered:0,feedIcons:0,lastKiller:'',lastIcon:'',errors:0};
+  let renderToken=0;
+  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const escAttr=value=>esc(value).replace(/`/g,'&#96;');
+
+  /* 캐릭터 설정에서 바로 알아볼 수 있는 상징. 누락 캐릭터는 실제 캐릭터 사진으로 자동 대체한다. */
+  const ICONS={
+    moon:['💩','먹기·싸기'],woo:['📚','공부'],ansua:['🎵','음표'],yoo:['💥','초고속 폭딜'],na:['🕳️','블랙홀'],kim:['🤬','험한입'],ira:['😇','천사'],dong:['🏀','덩크슛'],yesung:['✊','노크'],seo:['🧺','수건'],min:['💘','선상고백'],geun:['😡','분노'],jiwon:['📞','전화하기'],doyun:['💣','지뢰'],sungmin:['∑','수학'],junghoon:['☣️','냄새 장판'],mingyu:['🍜','라면'],jaewook:['🎟️','쿠지'],yoon:['🚰','세면대'],gyumin:['💋','입술'],jongyeop:['🧳','캐리어'],hyeon:['🥕','당근'],jiyeon:['✝️','십자가'],yoona:['💄','화장'],chaewon:['🐹','햄스터'],juyeong:['🐸','맹꽁이'],yoomin:['💊','약'],songhyeon:['👼','수호천사'],gow:['👄','재잘대기'],nakyung:['💃','춤'],nahyun:['🍆','잔반폭격'],jungsua:['🕸️','스파이더맨'],jungdayeon:['💋','입술박치기'],jungyoona:['🔥','횃불'],yoonho:['🥋','유도'],sia:['🌱','콩나물'],limseoyoon:['🦛','물뚱뚱이'],hyobin:['🤧','재채기'],woojiyeon:['🔤','영어'],nayoon:['👗','옷'],jihyun:['🇬🇧','명예영국인'],rua:['🐹','기니피그'],subin:['🐦','비둘기'],yewon:['🪞','거울'],chaeun:['🐷','돼지'],dawon:['✦','별자리'],yeeun:['🚰','물뜨기'],eunchae:['🎤','디스랩'],hyeeum:['💞','하트'],haewon:['🎸','기타'],shion:['🍄','버섯'],seoyoung:['🈶','일본어'],yangchaewon:['🍵','녹차'],sunha:['📣','치어리딩'],hyukju:['🚗','드라이브'],yugun:['🍜','짜장면'],gahyeon:['✒️','시쓰기'],kimgaeun:['🦆','오리'],ochaeun:['🎙️','보컬'],seominji:['💬','잼얘'],doyejin:['💜','아미새'],kimsihu:['⚾','야구'],kimeunwoo:['⚽','축구'],yoonseoyoung:['🟢','슬라임'],kimgyuwon:['🧸','리락쿠마'],yuhawon:['❗','신남'],choiyujin:['📖','독서'],shin_jimin:['👓','뿔테안경'],park_hanul:['🌶️','마라탕'],jo_sohyun:['🥁','드럼'],uiyong:['🥣','먹기'],leesangeun:['⚡','벼락'],kimseonghun:['🪞','거울'],parkgarim:['🐞','레이디버그'],leeeunchae:['🦵','다리걸기'],nahyeongju:['⭐','아스트'],leegeonwoo:['🍔','빅맥'],yuinsung:['🎤','블랙넛'],julia:['💜','JULIA'],james:['🥩','형편없는 식사'],yoogeon:['📄','자퇴 통지'],youngsik:['🎸','기타'],naeonseong:['📝','시험']
+  };
+  const KEYWORDS=[
+    [/미쿠|쵸텐|노래|음악|보컬|기타|드럼|디스랩|랩/,'🎵','음악'],[/피카츄|번개|벼락|전기/,'⚡','전기'],[/불|화염|횃불|폭발/,'🔥','화염'],[/별|천문|아스트|별자리/,'✦','별'],[/개구리|맹꽁이/,'🐸','개구리'],[/햄스터|기니피그/,'🐹','소동물'],[/전화|휴대폰/,'📞','전화'],[/입술|키스|하트|연애/,'💋','하트'],[/책|독서|문학|시쓰기/,'📖','책'],[/수학|공식|숫자/,'∑','수학'],[/축구/,'⚽','축구'],[/야구/,'⚾','야구'],[/버섯/,'🍄','버섯'],[/거울|화장/,'🪞','거울'],[/먹기|음식|라면|마라탕|빅맥/,'🍜','음식'],[/회복|천사|수호/,'✚','회복'],[/지뢰|폭탄/,'💣','폭발물'],[/소환/,'◆','소환']
+  ];
+
+  function mikuIcon(){
+    return {kind:'svg',label:'미쿠 테마',html:`<svg class="v253-icon-svg" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="v253MikuG" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ffff5"/><stop offset="1" stop-color="#22b8b0"/></linearGradient></defs><path fill="#12363c" d="M16 13c2-5 14-5 16 0l-2 16H18z"/><circle cx="24" cy="21" r="9" fill="#f6d5c4"/><path d="M16 17c1-8 15-10 17-1-5-3-11-3-17 1z" fill="url(#v253MikuG)"/><path d="M13 15C5 17 4 33 9 40c5-4 9-15 10-23zM35 15c8 2 9 18 4 25-5-4-9-15-10-23z" fill="url(#v253MikuG)"/><circle cx="21" cy="22" r="1.2" fill="#268d8c"/><circle cx="27" cy="22" r="1.2" fill="#268d8c"/><path d="M21 27c2 1 4 1 6 0" fill="none" stroke="#a75f68" stroke-width="1.1" stroke-linecap="round"/><path d="M34 6v13c0 4-7 5-7 1 0-3 4-4 6-3V9l8-2v9c0 4-7 5-7 1" fill="#fff" opacity=".95"/></svg>`};
+  }
+  function electricMouseIcon(){
+    return {kind:'svg',label:'피카츄 테마',html:`<svg class="v253-icon-svg" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 16 8 3l10 9M35 16 40 3 30 12" fill="#ffd83d" stroke="#3d3420" stroke-width="2.2" stroke-linejoin="round"/><path d="M12 15c5-6 19-6 24 0 5 6 4 20-1 25H13c-5-5-6-19-1-25z" fill="#ffd83d" stroke="#3d3420" stroke-width="2"/><circle cx="18" cy="24" r="2.2" fill="#222"/><circle cx="30" cy="24" r="2.2" fill="#222"/><circle cx="14" cy="30" r="3" fill="#ff5b58"/><circle cx="34" cy="30" r="3" fill="#ff5b58"/><path d="M21 31c2 2 4 2 6 0" fill="none" stroke="#3d3420" stroke-width="1.5" stroke-linecap="round"/><path d="m38 22 7-5-3 8 4 1-8 9 2-8-4-1z" fill="#fff47a" stroke="#8b6a00" stroke-width="1.2" stroke-linejoin="round"/></svg>`};
+  }
+  function symbolIcon(symbol,label){return {kind:'symbol',symbol,label,html:`<span aria-hidden="true">${esc(symbol)}</span>`}}
+  function portraitIcon(def){return def?.img?{kind:'portrait',label:`${def.name||'캐릭터'} 사진`,html:`<img src="${escAttr(def.img)}" alt="">`}:symbolIcon('✦','캐릭터')}
+  function resolveRoot(killer){try{return typeof v194RootActor==='function'?(v194RootActor(killer)||killer):killer}catch(_){return killer}}
+  function masteryLevel(id){try{const info=(window.__GONG_V226__||window.__GONG_V224__||window.__GONG_V221__||window.__GONG_V219__)?.masteryLevelForId?.(id);return Math.max(1,Number(info?.level||info)||1)}catch(_){return 1}}
+  function iconFor(root){
+    const id=root?.id||'';
+    if(id==='oseoyoon')return mikuIcon();
+    if(id==='duo')return electricMouseIcon();
+    const mapped=ICONS[id];if(mapped)return symbolIcon(mapped[0],mapped[1]);
+    const def=definitions()[id]||{};
+    const raw=`${def.name||root?.name||''} ${def.role||''} ${def.skills||''}`;
+    for(const [rx,symbol,label] of KEYWORDS)if(rx.test(raw))return symbolIcon(symbol,label);
+    return portraitIcon(def);
+  }
+  function colorsFor(root){
+    const def=definitions()[root?.id]||{};
+    if(root?.id==='oseoyoon')return {accent:'#39d8cd',accent2:'#ff5ca8'};
+    if(root?.id==='duo')return {accent:'#ffd83d',accent2:'#3b82f6'};
+    const accent=def.color||root?.color||'#f59e0b';
+    return {accent,accent2:/#(?:f|e|d)[0-9a-f]{5}/i.test(accent)?'#7c3aed':'#ff5f93'};
+  }
+  function iconMarkup(icon,feed=false){
+    if(icon.kind==='symbol')return `<span class="${feed?'v253-feed-symbol':''}" title="${escAttr(icon.label)}">${esc(icon.symbol)}</span>`;
+    return `<span class="${feed?'v253-feed-icon':''}" title="${escAttr(icon.label)}">${icon.html}</span>`;
+  }
+  function decorateFeed(item,icon){
+    if(!item)return false;
+    const v241=item.querySelector('.v241-kill-sigil');
+    const v224=item.querySelector('.v224-kill-icon');
+    if(v241){v241.innerHTML=iconMarkup(icon,true);v241.setAttribute('aria-label',icon.label);stats.feedIcons++;return true}
+    if(v224){v224.innerHTML=iconMarkup(icon,true);v224.setAttribute('aria-label',icon.label);stats.feedIcons++;return true}
+    return false;
+  }
+  function decorateCenter(payload){
+    if(payload.token!==renderToken)return false;
+    const center=document.getElementById('centerKill');if(!center)return false;
+    const {root,victim,skill,level,icon,colors}=payload;
+    center.classList.remove('v224-mastery-center','v241-mastery-center',...TIER_CLASSES,'v253-character-kill','show');
+    center.style.removeProperty('--v224-accent');center.style.removeProperty('--v224-accent2');
+    center.style.setProperty('--v253-accent',colors.accent);center.style.setProperty('--v253-accent2',colors.accent2);
+    center.classList.add('v253-character-kill');
+    center.dataset.v253KillerId=root?.id||'';center.dataset.v253Icon=icon.label;center.dataset.v253Token=String(payload.token);
+    center.setAttribute('aria-label',`${root?.name||'캐릭터'}가 ${victim?.name||'상대'}를 처치`);
+    center.innerHTML=`<span class="v253-kill-icon" aria-label="${escAttr(icon.label)}">${icon.html}</span><span class="v253-kill-copy"><span class="v253-kill-topline"><span>ELIMINATION</span>${level>=5?`<b>LV.${level}</b>`:''}</span><span class="v253-kill-duel"><b class="v253-kill-killer">${esc(root?.name||'캐릭터')}</b><i class="v253-kill-arrow">➜</i><b class="v253-kill-victim">${esc(victim?.name||'상대')}</b></span><span class="v253-kill-skill">처치 기술 · <b>${esc(skill||'기본 충돌')}</b></span></span><span class="v253-kill-sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span>`;
+    void center.offsetWidth;center.classList.add('show');
+    stats.rendered++;stats.lastKiller=root?.id||'';stats.lastIcon=icon.label;return true;
+  }
+
+  const definitions=()=>window.__GONG_V134_DEBUG__?.defs||{};
+  function idForName(name){
+    const clean=String(name||'').replace(/\s*☠.*$/,'').trim();
+    const aliases={미쿠:'oseoyoon',쵸텐:'oseoyoon',양말이:'oseoyoon',한교동:'jo_sohyun',반준서:'yuinsung','압축장':'arena'};
+    if(aliases[clean])return aliases[clean];
+    for(const [id,def] of Object.entries(definitions()))if(def?.name===clean)return id;
+    return '';
+  }
+  function parseKillItem(item){
+    if(!item)return null;
+    const specialName=item.querySelector('.v241-kill-name,.v224-kill-name')?.textContent?.trim();
+    const baseName=item.querySelector(':scope > span:first-child')?.textContent?.replace(/\s*☠.*$/,'').trim();
+    const killerName=specialName||baseName||'캐릭터';
+    const id=item.dataset.v224MasteryId||idForName(killerName);
+    const def=definitions()[id]||{};
+    const victimName=item.querySelector('.v241-kill-victim,.v224-kill-victim,.victim')?.textContent?.trim()||'상대';
+    const skill=item.querySelector('.v241-kill-skill b,.skill')?.textContent?.trim()||'기본 충돌';
+    const root={...def,id:id||def.id||'',name:def.name||killerName,color:def.color||item.style.getPropertyValue('--killer')||'#f59e0b'};
+    const level=Math.max(1,Number(item.dataset.v224MasteryLevel)||masteryLevel(root.id));
+    return {root,victim:{name:victimName},skill,level};
+  }
+  let observerTimer=0,serialCounter=0;
+  function decorateLatestKill(){
+    const item=document.getElementById('killfeed')?.firstElementChild;if(!item||item.classList.contains('kill-empty')||item.dataset.v253Preview==='1')return false;
+    let serial=item.dataset.v253Serial;if(!serial){serial=String(++serialCounter);item.dataset.v253Serial=serial}
+    const parsed=parseKillItem(item);if(!parsed)return false;
+    const icon=iconFor(parsed.root),colors=colorsFor(parsed.root);
+    if(item.dataset.v253IconApplied!==icon.label){decorateFeed(item,icon);item.dataset.v253IconApplied=icon.label}
+    const center=document.getElementById('centerKill');
+    if(center?.dataset.v253SourceSerial!==serial){
+      const token=++renderToken;decorateCenter({...parsed,icon,colors,token,item});center.dataset.v253SourceSerial=serial;
+    }
+    return true;
+  }
+  function scheduleDecoration(){clearTimeout(observerTimer);observerTimer=setTimeout(()=>{try{decorateLatestKill()}catch(error){stats.errors++;console.warn('[V253 킬 배너]',error)}},0)}
+  const killfeedNode=document.getElementById('killfeed');
+  if(killfeedNode)new MutationObserver(scheduleDecoration).observe(killfeedNode,{childList:true,subtree:true});
+
+  function preview({killerId='oseoyoon',victimId='duo',skill='마이멜로디',level=20}={}){
+    const def=definitions()[killerId]||{id:killerId,name:killerId,color:'#39d8cd'},victimDef=definitions()[victimId]||{id:victimId,name:victimId};
+    const root={...def,id:killerId},victim={...victimDef,id:victimId},icon=iconFor(root),colors=colorsFor(root),token=++renderToken;
+    const item=document.createElement('div');item.className='kill-item v224-mastery-kill v241-mastery-kill';item.dataset.v253Preview='1';item.innerHTML='<span class="v241-kill-sigil"></span><span>테스트</span>';document.getElementById('killfeed')?.prepend(item);
+    decorateFeed(item,icon);decorateCenter({root,victim,skill,level,icon,colors,token,item});return {killerId,icon:icon.label,center:document.getElementById('centerKill'),item};
+  }
+  function verify(){
+    const miku=iconFor({id:'oseoyoon'}),duo=iconFor({id:'duo'}),fallback=iconFor({id:'__missing__'});
+    return {build:BUILD,miku:miku.label,duo:duo.label,fallback:fallback.label,stats:{...stats},centerClass:document.getElementById('centerKill')?.className||''};
+  }
+  window.__GONG_V253__={build:BUILD,iconFor:id=>iconFor({id}),preview,verify,stats:()=>({...stats})};
+  window.__GONG_V253_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V253] 하단 킬로그 디자인 유지 · 상단 기본 킬 배너 이펙트 강화 · 캐릭터 연관 아이콘 적용');
+})();
+</script>
+<script id="v253LatestBuildScript">(()=>{const BUILD='V253_CHARACTER_ICON_BASE_KILL_BANNER_FX';window.__GONG_V253_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 </body>
 </html>
