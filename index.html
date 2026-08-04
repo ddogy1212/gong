@@ -31017,6 +31017,321 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   window.__GONG_V248_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info(`[V248] 경쟁전 옆 육성모드 · 랜덤 1대1 연속 자동전투 · 승리 +${WIN_XP} XP · 캐릭터 변경/일시정지/종료`);
 })();
 
+/* =========================================================
+   V259 · 이은호 · 윤주형
+   - 20기 신규 캐릭터 2명
+   - 북극곰의 저주 / 누적 속도 성장 / 간식 독
+   - 순정순애남 / 클립보드 / 해외밈수입
+   ========================================================= */
+(()=>{
+  'use strict';
+  const BUILD='V259_EUNHO_JUHYEONG_CHARACTERS';
+  const EUNHO='leeeunho';
+  const JUHYEONG='yoonjuhyeong';
+  const CLIPBOARD_SLOW_SCALE=.5; // 사용자 지정 비율이 없어 50% 감속으로 설정
+  const MAX_STACK_SPEED_MULT=1e6;
+
+  DEFS[EUNHO]={
+    id:EUNHO,name:'이은호',generation:20,color:'#1976d2',hp:200,speed:200,
+    img:'characters/lee_eunho.jpeg',
+    role:'충돌 저주·피격 누적 가속·간식 지속 피해형',
+    skills:'북극곰 · 비상한두뇌+노력 · 간식기부천사'
+  };
+  DEFS[JUHYEONG]={
+    id:JUHYEONG,name:'윤주형',generation:20,color:'#283593',hp:220,speed:190,
+    img:'characters/yoon_juhyeong.jpg',
+    role:'충돌 취약·강제 넉백·클립보드 연사·지연 감속형',
+    skills:'순정순애남 · 성실한기자 · 해외밈수입'
+  };
+
+  SKILL_INFO[EUNHO]={
+    summary:'충돌 저주·피격 누적 가속·간식 지속 피해형',hp:'200',speed:'200',
+    skills:[
+      {kind:'패시브',type:'passive',name:'북극곰',desc:'부딪힌 적에게 3초 동안 북극곰의 저주를 부착한다.',points:['저주 지속시간: 3초','저주 중 받는 모든 피해 1.5배인 취약 효과','저주 중 이동속도 20% 증가','1초마다 0.4 피해, 총 3회','같은 적과 다시 충돌하면 지속시간과 피해 횟수 갱신']},
+      {kind:'피격 성장',type:'special',name:'비상한두뇌+노력',desc:'실제 피해를 받을 때마다 자신의 기본 이동속도가 1.2배씩 영구 누적된다.',points:['실제 HP가 감소한 공격 1회마다 1중첩','중첩은 경기 종료까지 유지','피해를 무효화하면 중첩되지 않음']},
+      {kind:'벽 충돌 설치',type:'attack',name:'간식기부천사',desc:'벽에 3번 부딪힐 때마다 경기장 무작위 위치에 간식을 소환한다.',points:['간식은 적이 닿을 때까지 유지','간식에 닿은 적은 10초 동안 중독','중독 피해: 1초마다 2, 총 10회','간식은 적 한 명이 먹으면 사라짐']}
+    ]
+  };
+  SKILL_INFO[JUHYEONG]={
+    summary:'충돌 취약·강제 넉백·클립보드 연사·지연 감속형',hp:'220',speed:'190',
+    skills:[
+      {kind:'충돌 공격',type:'attack',name:'순정순애남',desc:'부딪힌 적에게 취약을 부여하고 2 피해를 준 뒤 멀리 튕겨낸다.',points:['취약 지속시간: 3초','취약 중 받는 모든 피해 1.5배','충돌 피해: 2','강한 넉백 적용']},
+      {kind:'벽 충돌 투사체',type:'attack',name:'성실한기자',desc:'벽에 4번 부딪힐 때마다 가장 가까운 적을 향해 클립보드 3개를 던진다.',points:['클립보드 1개당 피해: 12','세 개는 약간 퍼진 각도로 발사','적중한 적은 3초 동안 이동속도 50% 감소']},
+      {kind:'충돌 누적',type:'attack',name:'해외밈수입',desc:'같은 적과 3번 부딪힐 때마다 그 적의 위치에 “섬으로 보내버린다~”를 띄우고 날려 보낸다.',points:['발동 즉시 적을 매우 멀리 튕겨냄','10초 동안 1초마다 1 피해, 총 10회','발동 2초 후 2초 동안 이동속도 60% 감소','대상별 충돌 횟수로 따로 계산']}
+    ]
+  };
+
+  const _v259Crop=crop;
+  crop=function(id){
+    if(id===EUNHO)return '50% 42%';
+    if(id===JUHYEONG)return '50% 39%';
+    return _v259Crop(id);
+  };
+
+  function v259Key(p){return String(p?.data?.v151Uid||p?.data?.v174Uid||p?.id||'target')}
+  function v259EnemyList(owner){return (game?.players||[]).filter(q=>q&&q.alive&&!q.hidden&&q!==owner&&isEnemy(owner,q))}
+  function v259Nearest(owner){return v259EnemyList(owner).sort((a,b)=>Math.hypot(a.x-owner.x,a.y-owner.y)-Math.hypot(b.x-owner.x,b.y-owner.y))[0]||null}
+  function v259ApplyVulnerable(target,seconds,source,label){
+    if(typeof v151ApplyVulnerable==='function')v151ApplyVulnerable(target,seconds,source,label);
+    else{
+      target.data=target.data||{};
+      target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,seconds);
+      target.data.v151VulnerableSource=source;
+    }
+  }
+  function v259SetDot(target,prefix,seconds,ticks,source){
+    target.data=target.data||{};
+    target.data[`${prefix}Timer`]=Math.max(target.data[`${prefix}Timer`]||0,seconds);
+    target.data[`${prefix}Ticks`]=Math.max(target.data[`${prefix}Ticks`]||0,ticks);
+    target.data[`${prefix}Next`]=Math.min(Math.max(.02,target.data[`${prefix}Next`]||1),1);
+    target.data[`${prefix}Owner`]=source;
+  }
+  function v259Knock(owner,target,power=720,duration=.58){
+    if(!owner||!target?.alive)return;
+    let dx=target.x-owner.x,dy=target.y-owner.y,d=Math.hypot(dx,dy);
+    if(d<1){const a=rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);d=1}
+    const nx=dx/d,ny=dy/d;
+    target.x=clamp(target.x+nx*8,target.r,W-target.r);
+    target.y=clamp(target.y+ny*8,target.r,H-target.r);
+    target.vx=nx*power;target.vy=ny*power;
+    target.knockbackTimer=Math.max(target.knockbackTimer||0,duration);
+    target.knockbackRestore=normalSpeed(target);
+  }
+  function v259InitPlayer(p){
+    if(!p?.data)p.data={};
+    p.data.v259PolarCurseTimer=0;p.data.v259PolarCurseTicks=0;p.data.v259PolarCurseNext=1;p.data.v259PolarCurseOwner=null;
+    p.data.v259SnackPoisonTimer=0;p.data.v259SnackPoisonTicks=0;p.data.v259SnackPoisonNext=1;p.data.v259SnackPoisonOwner=null;
+    p.data.v259MemeDotTimer=0;p.data.v259MemeDotTicks=0;p.data.v259MemeDotNext=1;p.data.v259MemeDotOwner=null;
+    p.data.v259ClipboardSlowTimer=0;p.data.v259MemeSlowDelay=0;p.data.v259MemeSlowTimer=0;
+    if(p.id===EUNHO){p.data.v259SnackWalls=0;p.data.v259EffortStacks=0;p.data.v259EunhoContactCd={};p.data.speedMult=p.data.speedMult||1}
+    if(p.id===JUHYEONG){p.data.v259ClipboardWalls=0;p.data.v259PureContactCd={};p.data.v259MemeContacts={};p.data.v259MemeContactCd={}}
+  }
+
+  const _v259ResetBattle=resetBattle;
+  resetBattle=function(){
+    const result=_v259ResetBattle.apply(this,arguments);
+    if(game){game.v259Snacks=[];game.v259Clipboards=[];(game.players||[]).forEach(v259InitPlayer)}
+    return result;
+  };
+
+  const _v259EffectiveScale=effectiveScale;
+  effectiveScale=function(p){
+    let value=_v259EffectiveScale(p);
+    if((p?.data?.v259PolarCurseTimer||0)>0)value*=1.2;
+    if((p?.data?.v259ClipboardSlowTimer||0)>0)value*=CLIPBOARD_SLOW_SCALE;
+    if((p?.data?.v259MemeSlowTimer||0)>0)value*=.4;
+    return Math.max(.02,Math.min(1000,value));
+  };
+
+  const _v259Damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    const dealt=_v259Damage(target,amount,source,skill,opts);
+    if(dealt>0&&target?.id===EUNHO&&target.alive){
+      target.data.v259EffortStacks=(target.data.v259EffortStacks||0)+1;
+      target.data.speedMult=Math.min(MAX_STACK_SPEED_MULT,(target.data.speedMult||1)*1.2);
+      normalizeSpeed(target,normalSpeed(target)*effectiveScale(target));
+      spawnAttackFx(target.x,target.y,target.color,'비상한두뇌+노력',1.18);
+      floater(target.x,target.y-target.r-20,`🧠 속도 ×${target.data.speedMult.toFixed(2)}`,target.color,13,.72);
+    }
+    return dealt;
+  };
+
+  function v259EunhoContact(owner,target){
+    if(!owner?.alive||!target?.alive||!isEnemy(owner,target))return false;
+    const key=v259Key(target),until=owner.data.v259EunhoContactCd[key]||0;
+    if(until>(game?.t||0))return false;
+    owner.data.v259EunhoContactCd[key]=(game?.t||0)+.48;
+    v259ApplyVulnerable(target,3,owner,'북극곰의 저주');
+    v259SetDot(target,'v259PolarCurse',3,3,owner);
+    normalizeSpeed(target,normalSpeed(target)*effectiveScale(target));
+    spawnAttackFx(target.x,target.y,'#d8f5ff','북극곰의 저주',1.35);
+    floater(target.x,target.y-target.r-19,'🐻‍❄️ 저주 3초 · 속도 +20%','#2686c5',14,.9);
+    return true;
+  }
+  function v259JuhyeongContact(owner,target){
+    if(!owner?.alive||!target?.alive||!isEnemy(owner,target))return false;
+    const key=v259Key(target),now=game?.t||0;
+    if((owner.data.v259PureContactCd[key]||0)>now)return false;
+    owner.data.v259PureContactCd[key]=now+.52;
+    v259ApplyVulnerable(target,3,owner,'순정순애남 취약');
+    damage(target,2,owner,'순정순애남',{contact:true,v200FixedDamage:true});
+    if(target.alive)v259Knock(owner,target,760,.62);
+    owner.data.v259MemeContacts[key]=(owner.data.v259MemeContacts[key]||0)+1;
+    floater(target.x,target.y-target.r-18,`💙 순애 ${owner.data.v259MemeContacts[key]}/3`,'#3654c6',13,.7);
+    if(owner.data.v259MemeContacts[key]>=3&&target.alive){
+      owner.data.v259MemeContacts[key]=0;
+      v259SetDot(target,'v259MemeDot',10,10,owner);
+      target.data.v259MemeSlowDelay=2;target.data.v259MemeSlowTimer=0;
+      v259Knock(owner,target,1080,.82);
+      spawnAttackFx(target.x,target.y,'#5b45d8','해외밈수입',1.8);
+      floater(target.x,target.y-target.r-45,'섬으로 보내버린다~','#4228bd',20,1.55);
+      log(`<b>윤주형</b>: ${target.name}에게 해외밈수입 발동 · 10초 지속 피해 · 2초 뒤 감속.`);
+    }
+    return true;
+  }
+
+  const _v259Collide=collide;
+  collide=function(a,b){
+    const touching=!!(a?.alive&&b?.alive&&!a.hidden&&!b.hidden&&Math.hypot(b.x-a.x,b.y-a.y)<a.r+b.r);
+    const result=_v259Collide.apply(this,arguments);
+    if(touching&&!game?.over){
+      if(a?.id===EUNHO)v259EunhoContact(a,b);
+      if(b?.id===EUNHO)v259EunhoContact(b,a);
+      if(a?.id===JUHYEONG)v259JuhyeongContact(a,b);
+      if(b?.id===JUHYEONG)v259JuhyeongContact(b,a);
+    }
+    return result;
+  };
+
+  function v259SpawnSnack(owner){
+    if(!game||!owner?.alive)return null;
+    const snack={owner,x:rand(34,Math.max(35,W-34)),y:rand(34,Math.max(35,H-34)),r:17,pulse:rand(0,Math.PI*2),dead:false};
+    game.v259Snacks.push(snack);
+    spawnAttackFx(snack.x,snack.y,'#5aa7d7','간식기부천사',1.25);
+    floater(snack.x,snack.y-22,'🍪 간식 소환','#2679b4',13,.8);
+    return snack;
+  }
+  function v259FireClipboards(owner){
+    const target=v259Nearest(owner);if(!target)return 0;
+    const base=Math.atan2(target.y-owner.y,target.x-owner.x);
+    [-.14,0,.14].forEach(offset=>{
+      const a=base+offset;
+      game.v259Clipboards.push({owner,x:owner.x,y:owner.y,vx:Math.cos(a)*470,vy:Math.sin(a)*470,r:11,life:3.1,rot:0,dead:false});
+    });
+    spawnAttackFx(owner.x,owner.y,owner.color,'성실한기자',1.28);
+    floater(owner.x,owner.y-owner.r-18,'📋 클립보드 ×3',owner.color,14,.8);
+    return 3;
+  }
+
+  const _v259OnWallHit=onWallHit;
+  onWallHit=function(p){
+    const result=_v259OnWallHit.apply(this,arguments);
+    if(!p?.alive||game?.over)return result;
+    if(p.id===EUNHO){
+      p.data.v259SnackWalls=(p.data.v259SnackWalls||0)+1;
+      floater(p.x,p.y-p.r-12,`🍪 간식 ${p.data.v259SnackWalls}/3`,p.color,12,.5);
+      if(p.data.v259SnackWalls>=3){p.data.v259SnackWalls=0;v259SpawnSnack(p)}
+    }
+    if(p.id===JUHYEONG){
+      p.data.v259ClipboardWalls=(p.data.v259ClipboardWalls||0)+1;
+      floater(p.x,p.y-p.r-12,`📋 기자 ${p.data.v259ClipboardWalls}/4`,p.color,12,.5);
+      if(p.data.v259ClipboardWalls>=4){p.data.v259ClipboardWalls=0;v259FireClipboards(p)}
+    }
+    return result;
+  };
+
+  function v259TickDot(p,prefix,dt,damagePerTick,label){
+    const timerKey=`${prefix}Timer`,ticksKey=`${prefix}Ticks`,nextKey=`${prefix}Next`,ownerKey=`${prefix}Owner`;
+    if(!(p.data[timerKey]>0)||!(p.data[ticksKey]>0))return;
+    p.data[timerKey]=Math.max(0,p.data[timerKey]-dt);p.data[nextKey]=(p.data[nextKey]||1)-dt;
+    while(p.data[nextKey]<=0&&p.data[ticksKey]>0&&p.alive){
+      p.data[nextKey]+=1;p.data[ticksKey]--;
+      const owner=p.data[ownerKey];
+      if(owner)damage(p,damagePerTick,owner,label,{allowDeadSource:true,selfDamage:true,v200FixedDamage:true,suppressSpite:true});
+    }
+    if(p.data[timerKey]<=0||p.data[ticksKey]<=0){p.data[timerKey]=0;p.data[ticksKey]=0;p.data[nextKey]=1}
+  }
+  function v259UpdateProjectiles(dt){
+    for(const shot of game.v259Clipboards||[]){
+      if(shot.dead)continue;shot.life-=dt;shot.rot+=dt*8;shot.x+=shot.vx*dt;shot.y+=shot.vy*dt;
+      if(shot.life<=0||shot.x<-30||shot.x>W+30||shot.y<-30||shot.y>H+30){shot.dead=true;continue}
+      for(const target of v259EnemyList(shot.owner)){
+        if(Math.hypot(target.x-shot.x,target.y-shot.y)>target.r+shot.r)continue;
+        damage(target,12,shot.owner,'성실한기자 · 클립보드',{allowDeadSource:true,v200FixedDamage:true});
+        if(target.alive){target.data.v259ClipboardSlowTimer=Math.max(target.data.v259ClipboardSlowTimer||0,3);normalizeSpeed(target,normalSpeed(target)*effectiveScale(target));floater(target.x,target.y-target.r-18,'📋 3초 감속','#314fb6',13,.72)}
+        shot.dead=true;break;
+      }
+    }
+    game.v259Clipboards=(game.v259Clipboards||[]).filter(s=>!s.dead);
+    for(const snack of game.v259Snacks||[]){
+      if(snack.dead)continue;
+      for(const target of v259EnemyList(snack.owner)){
+        if(Math.hypot(target.x-snack.x,target.y-snack.y)>target.r+snack.r)continue;
+        snack.dead=true;v259SetDot(target,'v259SnackPoison',10,10,snack.owner);
+        spawnAttackFx(snack.x,snack.y,'#d8892e','간식 중독',1.3);floater(target.x,target.y-target.r-20,'🍪 10초 중독','#b96b16',14,.85);break;
+      }
+    }
+    game.v259Snacks=(game.v259Snacks||[]).filter(s=>!s.dead);
+  }
+  function v259Update(dt){
+    if(!game||game.over)return;
+    v259UpdateProjectiles(dt);
+    for(const p of game.players||[]){
+      if(!p?.data)continue;
+      const clipBefore=p.data.v259ClipboardSlowTimer||0,memeBefore=p.data.v259MemeSlowTimer||0,curseBefore=p.data.v259PolarCurseTimer||0;
+      v259TickDot(p,'v259PolarCurse',dt,.4,'북극곰의 저주');
+      v259TickDot(p,'v259SnackPoison',dt,2,'간식기부천사 · 간식 중독');
+      v259TickDot(p,'v259MemeDot',dt,1,'해외밈수입');
+      p.data.v259ClipboardSlowTimer=Math.max(0,(p.data.v259ClipboardSlowTimer||0)-dt);
+      p.data.v259PolarCurseTimer=Math.max(0,p.data.v259PolarCurseTimer||0);
+      if((p.data.v259MemeSlowDelay||0)>0){
+        p.data.v259MemeSlowDelay=Math.max(0,p.data.v259MemeSlowDelay-dt);
+        if(p.data.v259MemeSlowDelay<=0){p.data.v259MemeSlowTimer=Math.max(p.data.v259MemeSlowTimer||0,2);normalizeSpeed(p,normalSpeed(p)*effectiveScale(p));floater(p.x,p.y-p.r-22,'🏝 2초간 속도 -60%','#5036c8',14,.8)}
+      }else p.data.v259MemeSlowTimer=Math.max(0,(p.data.v259MemeSlowTimer||0)-dt);
+      if((clipBefore>0&&p.data.v259ClipboardSlowTimer<=0)||(memeBefore>0&&p.data.v259MemeSlowTimer<=0)||(curseBefore>0&&p.data.v259PolarCurseTimer<=0)){
+        if(p.alive&&!hasSpecialMovement(p))normalizeSpeed(p,normalSpeed(p)*effectiveScale(p));
+      }
+    }
+  }
+  const _v259Tick=tick;
+  tick=function(dt){const result=_v259Tick.apply(this,arguments);v259Update(Math.max(0,Number(dt)||0));return result};
+
+  function v259Draw(){
+    if(!game)return;
+    for(const snack of game.v259Snacks||[]){
+      const pulse=1+Math.sin((game.t||0)*7+snack.pulse)*.08;ctx.save();ctx.translate(snack.x,snack.y);ctx.scale(pulse,pulse);ctx.shadowColor='#f3a23a';ctx.shadowBlur=16;ctx.fillStyle='#fff6df';ctx.strokeStyle='#ca7a1c';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,snack.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.font='24px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🍪',0,1);ctx.restore();
+    }
+    for(const shot of game.v259Clipboards||[]){ctx.save();ctx.translate(shot.x,shot.y);ctx.rotate(Math.atan2(shot.vy,shot.vx)+shot.rot);ctx.shadowColor='#314fb6';ctx.shadowBlur=10;ctx.font='25px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('📋',0,0);ctx.restore()}
+    for(const p of game.players||[]){
+      if(!p.alive||p.hidden||!p.data)continue;
+      if((p.data.v259PolarCurseTimer||0)>0){ctx.save();ctx.globalAlpha=.9;ctx.strokeStyle='#65c7ee';ctx.lineWidth=5;ctx.setLineDash([7,5]);ctx.lineDashOffset=-(game.t||0)*14;ctx.shadowColor='#9be3ff';ctx.shadowBlur=13;ctx.beginPath();ctx.arc(p.x,p.y,p.r+13,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.shadowBlur=0;ctx.font='18px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.fillText('🐻‍❄️',p.x,p.y-p.r-18);ctx.restore()}
+      if((p.data.v259SnackPoisonTimer||0)>0){ctx.save();ctx.strokeStyle='#d8892e';ctx.lineWidth=4;ctx.globalAlpha=.7+.2*Math.sin((game.t||0)*12);ctx.beginPath();ctx.arc(p.x,p.y,p.r+18,0,Math.PI*2);ctx.stroke();ctx.font='16px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.fillText('🍪☠️',p.x,p.y+p.r+22);ctx.restore()}
+      if((p.data.v259MemeDotTimer||0)>0||(p.data.v259MemeSlowDelay||0)>0||(p.data.v259MemeSlowTimer||0)>0){ctx.save();ctx.strokeStyle='#5b45d8';ctx.lineWidth=4;ctx.globalAlpha=.75;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(p.x,p.y,p.r+22,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.font='16px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.fillText('🏝',p.x+p.r+13,p.y-p.r-7);ctx.restore()}
+    }
+  }
+  const _v259Draw=draw;
+  draw=function(){const result=_v259Draw.apply(this,arguments);v259Draw();return result};
+
+  const _v259StatusText=statusText;
+  statusText=function(p){
+    const base=_v259StatusText(p),extra=[];
+    if(p?.id===EUNHO){extra.push(`🐻‍❄️ 저주 접촉`);extra.push(`🧠 가속 ${p.data.v259EffortStacks||0}회 · ×${(p.data.speedMult||1).toFixed(2)}`);extra.push(`🍪 벽 ${p.data.v259SnackWalls||0}/3 · 설치 ${(game?.v259Snacks||[]).filter(x=>x.owner===p).length}`)}
+    if(p?.id===JUHYEONG){const maxContact=Math.max(0,...Object.values(p.data.v259MemeContacts||{}));extra.push(`💙 순애 충돌 ${maxContact}/3`);extra.push(`📋 벽 ${p.data.v259ClipboardWalls||0}/4 · 투사체 ${(game?.v259Clipboards||[]).filter(x=>x.owner===p).length}`)}
+    if((p?.data?.v259PolarCurseTimer||0)>0)extra.push(`🐻‍❄️ 저주 ${p.data.v259PolarCurseTimer.toFixed(1)}s · 속도 +20%`);
+    if((p?.data?.v259SnackPoisonTimer||0)>0)extra.push(`🍪 중독 ${p.data.v259SnackPoisonTimer.toFixed(1)}s`);
+    if((p?.data?.v259ClipboardSlowTimer||0)>0)extra.push(`📋 감속 ${p.data.v259ClipboardSlowTimer.toFixed(1)}s`);
+    if((p?.data?.v259MemeSlowDelay||0)>0)extra.push(`🏝 감속 대기 ${p.data.v259MemeSlowDelay.toFixed(1)}s`);
+    if((p?.data?.v259MemeSlowTimer||0)>0)extra.push(`🏝 속도 -60% ${p.data.v259MemeSlowTimer.toFixed(1)}s`);
+    if((p?.data?.v259MemeDotTimer||0)>0)extra.push(`해외밈 ${p.data.v259MemeDotTimer.toFixed(1)}s`);
+    if(!extra.length)return base;
+    return (!base||base==='정상')?extra.join(' · '):`${base} · ${extra.join(' · ')}`;
+  };
+
+  function v259RefreshRoster(){try{orderedCharacterIds();renderSetup();renderSkillModal()}catch(error){console.warn('[V259 로스터 갱신]',error)}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',v259RefreshRoster,{once:true});else v259RefreshRoster();
+
+  function v259Start(ids=[EUNHO,JUHYEONG]){
+    currentConfig={mode:'showdown',participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:Object.fromEntries(ids.map(id=>[id,DEFS[id]?.name||id]))};
+    mode='showdown';resetBattle();paused=true;return game.players;
+  }
+  window.__GONG_V259__={
+    build:BUILD,ids:[EUNHO,JUHYEONG],clipboardSlowScale:CLIPBOARD_SLOW_SCALE,
+    start:v259Start,
+    player:id=>game?.players?.find(p=>p.id===id)||null,
+    collide(ownerId,targetId){const owner=this.player(ownerId),target=this.player(targetId);if(!owner||!target)return false;target.x=clamp(owner.x+owner.r+target.r-1,target.r,W-target.r);target.y=owner.y;collide(owner,target);return true},
+    wallHit(id,times=1){const p=this.player(id);if(!p)return null;for(let i=0;i<times;i++)onWallHit(p);return p.data},
+    hit(id,amount=10,sourceId){const target=this.player(id),source=this.player(sourceId)||game?.arenaSource;if(!target||!source)return 0;return damage(target,amount,source,'V259 테스트',{v200FixedDamage:true,allowDeadSource:true})},
+    step(seconds=.1){const dt=Math.max(0,Number(seconds)||0),before=game?.t||0;tick(dt);if(game)game.t=Math.max(game.t||0,before+dt);draw();return this.snapshot()},
+    move(id,x,y){const p=this.player(id);if(!p)return false;p.x=clamp(Number(x)||p.x,p.r,W-p.r);p.y=clamp(Number(y)||p.y,p.r,H-p.r);return true},
+    snacks:()=>Array.from(game?.v259Snacks||[],s=>({x:s.x,y:s.y,r:s.r,owner:s.owner?.id||''})),
+    clipboards:()=>Array.from(game?.v259Clipboards||[],s=>({x:s.x,y:s.y,r:s.r,vx:s.vx,vy:s.vy,owner:s.owner?.id||''})),
+    snapshot(){return {build:BUILD,latest:window.__GONG_LATEST_BUILD__,time:game?.t||0,roster:orderedCharacterIds().filter(id=>id===EUNHO||id===JUHYEONG),players:(game?.players||[]).filter(p=>p.id===EUNHO||p.id===JUHYEONG).map(p=>({id:p.id,hp:p.hp,speed:normalSpeed(p)*effectiveScale(p),data:{...p.data}})),snacks:game?.v259Snacks?.length||0,clipboards:game?.v259Clipboards?.length||0}}
+  };
+  window.__GONG_V259_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V259] 이은호 · 윤주형 추가 완료');
+})();
+
+
 })();
 </script>
 
@@ -32890,7 +33205,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 
   /* 캐릭터 설정에서 바로 알아볼 수 있는 상징. 누락 캐릭터는 실제 캐릭터 사진으로 자동 대체한다. */
   const ICONS={
-    moon:['💩','먹기·싸기'],woo:['📚','공부'],ansua:['🎵','음표'],yoo:['💥','초고속 폭딜'],na:['🕳️','블랙홀'],kim:['🤬','험한입'],ira:['😇','천사'],dong:['🏀','덩크슛'],yesung:['✊','노크'],seo:['🧺','수건'],min:['💘','선상고백'],geun:['😡','분노'],jiwon:['📞','전화하기'],doyun:['💣','지뢰'],sungmin:['∑','수학'],junghoon:['☣️','냄새 장판'],mingyu:['🍜','라면'],jaewook:['🎟️','쿠지'],yoon:['🚰','세면대'],gyumin:['💋','입술'],jongyeop:['🧳','캐리어'],hyeon:['🥕','당근'],jiyeon:['✝️','십자가'],yoona:['💄','화장'],chaewon:['🐹','햄스터'],juyeong:['🐸','맹꽁이'],yoomin:['💊','약'],songhyeon:['👼','수호천사'],gow:['👄','재잘대기'],nakyung:['💃','춤'],nahyun:['🍆','잔반폭격'],jungsua:['🕸️','스파이더맨'],jungdayeon:['💋','입술박치기'],jungyoona:['🔥','횃불'],yoonho:['🥋','유도'],sia:['🌱','콩나물'],limseoyoon:['🦛','물뚱뚱이'],hyobin:['🤧','재채기'],woojiyeon:['🔤','영어'],nayoon:['👗','옷'],jihyun:['🇬🇧','명예영국인'],rua:['🐹','기니피그'],subin:['🐦','비둘기'],yewon:['🪞','거울'],chaeun:['🐷','돼지'],dawon:['✦','별자리'],yeeun:['🚰','물뜨기'],eunchae:['🎤','디스랩'],hyeeum:['💞','하트'],haewon:['🎸','기타'],shion:['🍄','버섯'],seoyoung:['🈶','일본어'],yangchaewon:['🍵','녹차'],sunha:['📣','치어리딩'],hyukju:['🚗','드라이브'],yugun:['🍜','짜장면'],gahyeon:['✒️','시쓰기'],kimgaeun:['🦆','오리'],ochaeun:['🎙️','보컬'],seominji:['💬','잼얘'],doyejin:['💜','아미새'],kimsihu:['⚾','야구'],kimeunwoo:['⚽','축구'],yoonseoyoung:['🟢','슬라임'],kimgyuwon:['🧸','리락쿠마'],yuhawon:['❗','신남'],choiyujin:['📖','독서'],shin_jimin:['👓','뿔테안경'],park_hanul:['🌶️','마라탕'],jo_sohyun:['🥁','드럼'],uiyong:['🥣','먹기'],leesangeun:['⚡','벼락'],kimseonghun:['🪞','거울'],parkgarim:['🐞','레이디버그'],leeeunchae:['🦵','다리걸기'],nahyeongju:['⭐','아스트'],leegeonwoo:['🍔','빅맥'],yuinsung:['🎤','블랙넛'],julia:['💜','JULIA'],james:['🥩','형편없는 식사'],yoogeon:['📄','자퇴 통지'],youngsik:['🎸','기타'],naeonseong:['📝','시험']
+    moon:['💩','먹기·싸기'],woo:['📚','공부'],ansua:['🎵','음표'],yoo:['💥','초고속 폭딜'],na:['🕳️','블랙홀'],kim:['🤬','험한입'],ira:['😇','천사'],dong:['🏀','덩크슛'],yesung:['✊','노크'],seo:['🧺','수건'],min:['💘','선상고백'],geun:['😡','분노'],jiwon:['📞','전화하기'],doyun:['💣','지뢰'],sungmin:['∑','수학'],junghoon:['☣️','냄새 장판'],mingyu:['🍜','라면'],jaewook:['🎟️','쿠지'],yoon:['🚰','세면대'],gyumin:['💋','입술'],jongyeop:['🧳','캐리어'],hyeon:['🥕','당근'],jiyeon:['✝️','십자가'],yoona:['💄','화장'],chaewon:['🐹','햄스터'],juyeong:['🐸','맹꽁이'],yoomin:['💊','약'],songhyeon:['👼','수호천사'],gow:['👄','재잘대기'],nakyung:['💃','춤'],nahyun:['🍆','잔반폭격'],jungsua:['🕸️','스파이더맨'],jungdayeon:['💋','입술박치기'],jungyoona:['🔥','횃불'],yoonho:['🥋','유도'],sia:['🌱','콩나물'],limseoyoon:['🦛','물뚱뚱이'],hyobin:['🤧','재채기'],woojiyeon:['🔤','영어'],nayoon:['👗','옷'],jihyun:['🇬🇧','명예영국인'],rua:['🐹','기니피그'],subin:['🐦','비둘기'],yewon:['🪞','거울'],chaeun:['🐷','돼지'],dawon:['✦','별자리'],yeeun:['🚰','물뜨기'],eunchae:['🎤','디스랩'],hyeeum:['💞','하트'],haewon:['🎸','기타'],shion:['🍄','버섯'],seoyoung:['🈶','일본어'],yangchaewon:['🍵','녹차'],sunha:['📣','치어리딩'],hyukju:['🚗','드라이브'],yugun:['🍜','짜장면'],gahyeon:['✒️','시쓰기'],kimgaeun:['🦆','오리'],ochaeun:['🎙️','보컬'],seominji:['💬','잼얘'],doyejin:['💜','아미새'],kimsihu:['⚾','야구'],kimeunwoo:['⚽','축구'],yoonseoyoung:['🟢','슬라임'],kimgyuwon:['🧸','리락쿠마'],yuhawon:['❗','신남'],choiyujin:['📖','독서'],shin_jimin:['👓','뿔테안경'],park_hanul:['🌶️','마라탕'],jo_sohyun:['🥁','드럼'],uiyong:['🥣','먹기'],leesangeun:['⚡','벼락'],kimseonghun:['🪞','거울'],parkgarim:['🐞','레이디버그'],leeeunchae:['🦵','다리걸기'],nahyeongju:['⭐','아스트'],leegeonwoo:['🍔','빅맥'],yuinsung:['🎤','블랙넛'],leeeunho:['🐻‍❄️','북극곰'],yoonjuhyeong:['📰','성실한기자'],julia:['💜','JULIA'],james:['🥩','형편없는 식사'],yoogeon:['📄','자퇴 통지'],youngsik:['🎸','기타'],naeonseong:['📝','시험']
   };
   const KEYWORDS=[
     [/미쿠|쵸텐|노래|음악|보컬|기타|드럼|디스랩|랩/,'🎵','음악'],[/피카츄|번개|벼락|전기/,'⚡','전기'],[/불|화염|횃불|폭발/,'🔥','화염'],[/별|천문|아스트|별자리/,'✦','별'],[/개구리|맹꽁이/,'🐸','개구리'],[/햄스터|기니피그/,'🐹','소동물'],[/전화|휴대폰/,'📞','전화'],[/입술|키스|하트|연애/,'💋','하트'],[/책|독서|문학|시쓰기/,'📖','책'],[/수학|공식|숫자/,'∑','수학'],[/축구/,'⚽','축구'],[/야구/,'⚾','야구'],[/버섯/,'🍄','버섯'],[/거울|화장/,'🪞','거울'],[/먹기|음식|라면|마라탕|빅맥/,'🍜','음식'],[/회복|천사|수호/,'✚','회복'],[/지뢰|폭탄/,'💣','폭발물'],[/소환/,'◆','소환']
@@ -33323,6 +33638,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 })();
 </script>
 <script id="v258LatestBuildScript">(()=>{const BUILD='V258_TRAINING_INCLUDED_IN_ALL_STATS';window.__GONG_V258_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v259LatestBuildScript">(()=>{const BUILD='V259_EUNHO_JUHYEONG_CHARACTERS';window.__GONG_V259_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 </body>
 </html>
