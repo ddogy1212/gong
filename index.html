@@ -29512,7 +29512,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const start=v224MasteryThreshold(level),end=v224MasteryThreshold(level+1),span=Math.max(1,end-start),current=totalXp-start;
       return {level,current,next:span,percent:Math.min(100,current/span*100),max:false,totalXp,threshold:start,nextThreshold:end}
     }
-    const v224MasteryLevelCache=new Map();function v224MasteryLevelForId(id){const xp=Math.max(0,Number(v219MasteryEntry(id).xp)||0),cached=v224MasteryLevelCache.get(id);if(cached&&cached.xp===xp)return cached.info;const info=v219LevelInfo(xp);v224MasteryLevelCache.set(id,{xp,info});return info}function v220MasteryStage(id){const level=v224MasteryLevelForId(id).level;return level>=20?3:level>=15?2:level>=5?1:0}
+    const v224MasteryLevelCache=new Map();function v224MasteryLevelForId(id){const xp=Math.max(0,Number(v219MasteryEntry(id).xp)||0),cached=v224MasteryLevelCache.get(id);if(cached&&cached.xp===xp)return cached.info;const info=v219LevelInfo(xp);v224MasteryLevelCache.set(id,{xp,info});return info}function v220MasteryStage(id){const level=v224MasteryLevelForId(id).level;return level>=30?3:level>=15?2:level>=5?1:0}
     function v219WinningTeams(){return [...new Set((game?.players||[]).filter(p=>p.alive&&!p.hidden).map(p=>p.team))]}
     function v219IsWinner(p){if(currentConfig?.mode==='boss'){const boss=(game?.players||[]).find(x=>x.isBoss);return !boss?.alive}if(currentConfig?.mode==='showdown')return !!p.alive&&!p.hidden;const teams=v219WinningTeams();return teams.length===1&&p.team===teams[0]}
     function v220ContributionScore(p){return Math.max(0,Number(p?.damageDealt)||0)+Math.max(0,Number(p?.healingDone)||0)*.65+Math.max(0,Number(p?.kills)||0)*150+(p?.alive&&!p?.hidden?80:0)}
@@ -29603,7 +29603,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       setTimeout(()=>{if(v226PendingReward())v226OpenMasteryReward(true)},160);
       return true
     }
-    function v221MasteryEffectName(stage,level=1){return level>=30?'마스터리 3 MAX · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=20?'마스터리 3 · 신화 킬 배너 · 사진 광택 · 테두리 반짝임':level>=15?'마스터리 2 · 광휘 킬 배너 · 사진 반짝임':level>=5?'마스터리 1 · 캐릭터 전용 킬 배너':'Lv.5에서 마스터리 1 · 전용 킬 배너 해금'}
+    function v221MasteryEffectName(stage,level=1){return level>=30?'마스터리 3 · MAX · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=15?'마스터리 2 · 광휘 킬 배너 · 사진 반짝임':level>=5?'마스터리 1 · 캐릭터 전용 킬 배너':'Lv.5에서 마스터리 1 · 전용 킬 배너 해금'}
     function v221MasteryHtml(id){
       const d=DEFS[id];if(!d)return '';
       const e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp),stage=v220MasteryStage(id),winRate=e.games?Math.round(e.wins/e.games*100):0;
@@ -29697,7 +29697,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       ctx.save();
       try{
         const x=p.x-p.r*.72,y=p.y-p.r*.70,w=crowded?25:29,h=crowded?11:13;
-        ctx.globalAlpha=.92;ctx.fillStyle=lv>=30?'#2a103d':lv>=20?'#24143d':lv>=15?'#173b49':lv>=5?'#4f3805':'#20242b';ctx.strokeStyle=lv>=30?'#fff3a6':lv>=20?'#79e8ff':lv>=15?'#fff':'#d7dbe4';ctx.lineWidth=1.5;
+        ctx.globalAlpha=.92;ctx.fillStyle=lv>=30?'#2a103d':lv>=15?'#173b49':lv>=5?'#4f3805':'#20242b';ctx.strokeStyle=lv>=30?'#fff3a6':lv>=15?'#fff':'#d7dbe4';ctx.lineWidth=1.5;
         ctx.beginPath();ctx.roundRect(x-w/2,y-h/2,w,h,h/2);ctx.fill();ctx.stroke();
         ctx.fillStyle='#fff';ctx.font=`1000 ${crowded||mobile?7:8}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(`Lv.${lv}`,x,y+.2);
       }finally{ctx.restore()}
@@ -29742,7 +29742,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function setAllForTest(level=30){const xp=level>=30?MAX_XP:api()?.masteryThreshold?.(level)||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
   window.__GONG_V224__={build:BUILD,maxLevel:MAX_LEVEL,maxXp:MAX_XP,levelInfo:xp=>api()?.levelInfo?.(xp),threshold:lv=>api()?.masteryThreshold?.(lv),stats:()=>({...stats}),debugPlayers:()=>((game?.players||[]).map(p=>({id:p.id,alive:p.alive,hidden:p.hidden,level:levelInfo(p.id).level,trail:p.data?.v224MasteryTrail?.length||0,x:p.x,y:p.y}))),theme:id=>themeFor({id}),setAllForTest,testKillLog(){const list=(game?.players||[]).filter(eligible);if(list.length<2)return null;showKill(list[0],list[1],'숙련도 테스트');const item=killfeed?.firstElementChild;return {className:item?.className||'',text:item?.textContent||'',specialKills:stats.specialKills}}};
   window.__GONG_V224_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V224] 숙련도 최대 Lv.30 · Lv.5 킬로그 · Lv.15 사진 광택 · Lv.20 테두리 · Lv.30 트레일');
+  console.info('[V224] 숙련도 최대 Lv.30 · Lv.5 마스터리 1 · Lv.15 마스터리 2 · Lv.30 마스터리 3 및 트레일');
 
   }
 
@@ -31631,7 +31631,7 @@ body.draft-battle #modeBadge{background:#ede9fe;color:#4c1d95;border-color:#7c3a
   }
   const centerElement=()=>document.getElementById('centerKill');
   const killfeedElement=()=>document.getElementById('killfeed');
-  function tierFor(level){return level>=30?{key:'max',label:'ASCENDED'}:level>=20?{key:'mythic',label:'MYTHIC'}:level>=15?{key:'radiant',label:'RADIANT'}:{key:'awakened',label:'AWAKENED'}}
+  function tierFor(level){return level>=30?{key:'max',label:'MASTERY III'}:level>=15?{key:'radiant',label:'MASTERY II'}:{key:'awakened',label:'MASTERY I'}}
   function setTier(element,tier){if(!element)return;element.classList.remove(...TIER_CLASSES);element.classList.add(`v241-tier-${tier.key}`)}
   function renderKillItem(item,root,victim,skill,level,icon){
     if(!item)return false;
@@ -32940,7 +32940,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     center.classList.add('v253-character-kill');
     center.dataset.v253KillerId=root?.id||'';center.dataset.v253Icon=icon.label;center.dataset.v253Token=String(payload.token);
     center.setAttribute('aria-label',`${root?.name||'캐릭터'}가 ${victim?.name||'상대'}를 처치`);
-    center.innerHTML=`<span class="v253-kill-icon" aria-label="${escAttr(icon.label)}">${icon.html}</span><span class="v253-kill-copy"><span class="v253-kill-topline"><span>ELIMINATION</span>${level>=5?`<b>마스터리 ${level>=20?3:level>=15?2:1} · LV.${level}</b>`:''}</span><span class="v253-kill-duel"><b class="v253-kill-killer">${esc(root?.name||'캐릭터')}</b><i class="v253-kill-arrow">➜</i><b class="v253-kill-victim">${esc(victim?.name||'상대')}</b></span><span class="v253-kill-skill">처치 기술 · <b>${esc(skill||'기본 충돌')}</b></span></span><span class="v253-kill-sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span>`;
+    center.innerHTML=`<span class="v253-kill-icon" aria-label="${escAttr(icon.label)}">${icon.html}</span><span class="v253-kill-copy"><span class="v253-kill-topline"><span>ELIMINATION</span>${level>=5?`<b>마스터리 ${level>=30?3:level>=15?2:1} · LV.${level}</b>`:''}</span><span class="v253-kill-duel"><b class="v253-kill-killer">${esc(root?.name||'캐릭터')}</b><i class="v253-kill-arrow">➜</i><b class="v253-kill-victim">${esc(victim?.name||'상대')}</b></span><span class="v253-kill-skill">처치 기술 · <b>${esc(skill||'기본 충돌')}</b></span></span><span class="v253-kill-sparks" aria-hidden="true">${'<i></i>'.repeat(8)}</span>`;
     void center.offsetWidth;center.classList.add('show');
     stats.rendered++;stats.lastKiller=root?.id||'';stats.lastIcon=icon.label;return true;
   }
@@ -33035,7 +33035,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function clone(v){try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v))}}
   function hashText(text){let hash=2166136261;for(let i=0;i<text.length;i++){hash^=text.charCodeAt(i);hash=Math.imul(hash,16777619)}return (hash>>>0).toString(36)}
   function levelInfo(xp){const api=masteryApi();try{return api?.levelInfo?.(Math.max(0,Number(xp)||0))||{level:1,totalXp:Math.max(0,Number(xp)||0)}}catch(_){return {level:1,totalXp:Math.max(0,Number(xp)||0)}}}
-  function masteryTier(level){level=Math.max(1,Number(level)||1);return level>=20?3:level>=15?2:level>=5?1:0}
+  function masteryTier(level){level=Math.max(1,Number(level)||1);return level>=30?3:level>=15?2:level>=5?1:0}
   function localMasteryRaw(){try{const snapshot=masteryApi()?.mastery?.();if(snapshot?.characters&&typeof snapshot.characters==='object')return snapshot.characters}catch(_){}try{const parsed=JSON.parse(localStorage.getItem(MASTERY_KEY)||'{}');return parsed?.characters&&typeof parsed.characters==='object'?parsed.characters:{}}catch(_){return {}}}
   function masteryRows(raw=localMasteryRaw()){
     const defs=definitions(),rows=[];
@@ -33049,7 +33049,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function masteryCardsHtml(rows,{limit=0}={}){
     const list=limit>0?rows.slice(0,limit):rows;
     if(!list.length)return '<div class="v254-mastery-empty">아직 마스터리 1을 달성한 캐릭터가 없어.<br>숙련도 Lv.5부터 전용 킬 배너와 함께 표시돼.</div>';
-    return list.map(row=>`<div class="v254-mastery-row" style="--c:${esc(row.color)}"><img src="${esc(row.img)}" alt="${esc(row.name)}" loading="lazy" decoding="async"><span class="v254-mastery-copy"><b>${esc(row.name)}</b><small>Lv.${row.level} · ${Number(row.xp).toLocaleString('ko-KR')} XP</small></span><span class="v254-mastery-badge m${row.tier}">마스터리 ${row.tier}<small>${row.tier===1?'전용 킬 배너':row.tier===2?'광휘 효과':'신화 효과'}</small></span></div>`).join('');
+    return list.map(row=>`<div class="v254-mastery-row" style="--c:${esc(row.color)}"><img src="${esc(row.img)}" alt="${esc(row.name)}" loading="lazy" decoding="async"><span class="v254-mastery-copy"><b>${esc(row.name)}</b><small>Lv.${row.level} · ${Number(row.xp).toLocaleString('ko-KR')} XP</small></span><span class="v254-mastery-badge m${row.tier}">마스터리 ${row.tier}<small>${row.tier===1?'전용 킬 배너':row.tier===2?'광휘 효과':'최종 연출'}</small></span></div>`).join('');
   }
   function ensureOwnShowcase(){
     const modal=document.getElementById('v232ProfileModal'),hero=modal?.querySelector('.v232-profile-hero');if(!hero)return null;
@@ -33110,10 +33110,10 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)update()});setInterval(()=>{wrapMasterySetter();const signature=hashText(JSON.stringify(localMasteryRaw()));if(install._masteryHash!==signature){install._masteryHash=signature;update()}else syncPublicProfile()},6000);
     setTimeout(()=>syncPublicProfile({force:true}),700);
   }
-  function verify(){const rows=masteryRows();return {build:BUILD,mastery1:masteryTier(5),mastery2:masteryTier(15),mastery3:masteryTier(20),underLevel5:masteryTier(4),ownRows:rows.length,ownSorted:rows.every((row,index)=>index===0||rows[index-1].xp>=row.xp),rankRows:[...document.querySelectorAll('.v231-rank-row[data-v254-profile-uid]')].length,publicRoot:PUBLIC_ROOT,lastError:state.lastError}}
+  function verify(){const rows=masteryRows();return {build:BUILD,mastery1:masteryTier(5),mastery2:masteryTier(15),mastery3:masteryTier(30),underLevel5:masteryTier(4),ownRows:rows.length,ownSorted:rows.every((row,index)=>index===0||rows[index-1].xp>=row.xp),rankRows:[...document.querySelectorAll('.v231-rank-row[data-v254-profile-uid]')].length,publicRoot:PUBLIC_ROOT,lastError:state.lastError}}
   window.__GONG_V254__={build:BUILD,masteryTier,masteryRows:()=>clone(masteryRows()),renderOwnShowcase,syncPublicProfile,openRankProfile,verify,status:()=>clone(state)};
   window.__GONG_V254_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;install();
-  console.info('[V254] Lv.5 마스터리 1 · Lv.15 마스터리 2 · Lv.20 마스터리 3 · 랭킹 상대 프로필');
+  console.info('[V254] Lv.5 마스터리 1 · Lv.15 마스터리 2 · Lv.30 마스터리 3 · 랭킹 상대 프로필');
 })();
 </script>
 <script id="v254LatestBuildScript">(()=>{const BUILD='V254_MASTERY_TIERS_PUBLIC_PROFILES';window.__GONG_V254_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
@@ -33182,13 +33182,13 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function updateBatteryUi(){const el=document.getElementById('v255Battery'),b=state.battery;if(!el)return;if(!b){el.textContent='30FPS · 효과 축소';el.classList.remove('low');return}const pct=Math.round(b.level*100);el.textContent=`${b.charging?'충전 중 · ':''}${pct}% · ${window.__GONG_V255_ECO_ACTIVE__?'30FPS':'일반'}`;el.classList.toggle('low',!b.charging&&pct<=20)}
 
   function topMastery(){const rows=window.__GONG_V254__?.masteryRows?.()||[];return rows.sort((a,b)=>b.tier-a.tier||b.xp-a.xp)[0]||null}
-  function decorateProfile(){const modal=document.getElementById('v232ProfileModal'),card=modal?.querySelector('.v232-profile-card'),name=modal?.querySelector('.v232-profile-name');if(!card||!name)return false;const top=topMastery(),tier=Number(top?.tier)||0,level=Number(top?.level)||0;card.classList.remove('v255-profile-m2','v255-profile-m3','v255-profile-max');if(tier>=3)card.classList.add('v255-profile-m3');else if(tier>=2)card.classList.add('v255-profile-m2');if(level>=30)card.classList.add('v255-profile-max');let plate=modal.querySelector('#v255MasteryPlate');if(tier<2){plate?.remove();return true}if(!plate){plate=document.createElement('div');plate.id='v255MasteryPlate';plate.className='v255-mastery-plate';name.insertAdjacentElement('afterend',plate)}plate.className=`v255-mastery-plate ${level>=30?'max':tier>=3?'m3':'m2'}`;plate.textContent=`${level>=30?'MASTER MAX':`MASTERY ${tier}`} · ${top.name}`;return true}
-  function eligibleMastery3(p){return isMain(p)&&levelFor(p.id)>=20}
+  function decorateProfile(){const modal=document.getElementById('v232ProfileModal'),card=modal?.querySelector('.v232-profile-card'),name=modal?.querySelector('.v232-profile-name');if(!card||!name)return false;const top=topMastery(),tier=Number(top?.tier)||0,level=Number(top?.level)||0;card.classList.remove('v255-profile-m2','v255-profile-m3','v255-profile-max');if(tier>=3)card.classList.add('v255-profile-m3');else if(tier>=2)card.classList.add('v255-profile-m2');if(level>=30)card.classList.add('v255-profile-max');let plate=modal.querySelector('#v255MasteryPlate');if(tier<2){plate?.remove();return true}if(!plate){plate=document.createElement('div');plate.id='v255MasteryPlate';plate.className='v255-mastery-plate';name.insertAdjacentElement('afterend',plate)}plate.className=`v255-mastery-plate ${level>=30?'max':tier>=3?'m3':'m2'}`;plate.textContent=`${level>=30?'MASTERY 3 · MAX':`MASTERY ${tier}`} · ${top.name}`;return true}
+  function eligibleMastery3(p){return isMain(p)&&levelFor(p.id)>=30}
   let entryFx=null;
   function prepareEntryFx(players=[]){if(window.__GONG_V255_ECO_ACTIVE__)return;const rows=(players||[]).filter(eligibleMastery3);if(!rows.length){entryFx=null;return}entryFx={started:performance.now(),ids:rows.map(p=>p.id)};document.querySelector('.v255-entry-banner')?.remove();const el=document.createElement('div');el.className='v255-entry-banner';el.textContent=`✦ MASTERY III 등장 · ${rows.slice(0,3).map(p=>p.name).join(' · ')}`;document.body.appendChild(el);setTimeout(()=>el.remove(),1800)}
-  function updateTrails(dt,players=[]){for(const p of players||[]){p.data||(p.data={});const lv=levelFor(p.id),allowed=!window.__GONG_V255_ECO_ACTIVE__&&isMain(p)&&lv>=20&&lv<30;if(!allowed){if(p.data.v255MasteryTrail)p.data.v255MasteryTrail.length=0;continue}const trail=p.data.v255MasteryTrail||(p.data.v255MasteryTrail=[]);for(const point of trail)point.life-=dt;while(trail.length&&trail[0].life<=0)trail.shift();p.data.v255TrailTimer=(p.data.v255TrailTimer||0)+dt;if(p.data.v255TrailTimer>=.11){p.data.v255TrailTimer=0;trail.push({x:p.x,y:p.y,life:.5});if(trail.length>7)trail.shift()}}}
+  function updateTrails(dt,players=[]){for(const p of players||[]){if(p?.data?.v255MasteryTrail)p.data.v255MasteryTrail.length=0}}
   function drawMasteryFx(context,players=[]){if(window.__GONG_V255_ECO_ACTIVE__||!context)return;context.save();try{context.lineCap='round';for(const p of players||[]){const trail=p.data?.v255MasteryTrail;if(!Array.isArray(trail)||trail.length<2)continue;const color=defs()[p.id]?.color||'#68dcff';for(let i=1;i<trail.length;i++){const a=trail[i-1],b=trail[i],alpha=Math.max(0,Math.min(.34,b.life/.5*.34));context.globalAlpha=alpha;context.strokeStyle=i%2?'#fff':color;context.lineWidth=Math.max(2,p.r*.11);context.beginPath();context.moveTo(a.x,a.y);context.lineTo(b.x,b.y);context.stroke()}}const age=entryFx?performance.now()-entryFx.started:9999;if(entryFx&&age<1500){const progress=age/1500;for(const p of (players||[]).filter(row=>entryFx.ids.includes(row.id))){context.globalAlpha=Math.max(0,1-progress);context.strokeStyle=defs()[p.id]?.color||'#fff';context.lineWidth=4;context.beginPath();context.arc(p.x,p.y,p.r+12+progress*35,0,Math.PI*2);context.stroke()}}}finally{context.restore();context.globalAlpha=1}}
-  function showVictoryFx(finished){if(window.__GONG_V255_ECO_ACTIVE__)return;const winners=(finished?.players||[]).filter(p=>eligibleMastery3(p)&&p.alive&&!p.hidden);if(!winners.length)return;const p=winners.sort((a,b)=>levelFor(b.id)-levelFor(a.id))[0],lv=levelFor(p.id);document.querySelector('.v255-victory-fx')?.remove();const el=document.createElement('div');el.className='v255-victory-fx';el.innerHTML=`<small>${lv>=30?'MASTER MAX':'MASTERY III'} VICTORY</small><b>${esc(p.name)}</b><span>${lv>=30?'승천한 마스터리의 완전한 승리':'신화 등급 승리 연출'}</span>`;document.body.appendChild(el);setTimeout(()=>el.remove(),2400)}
+  function showVictoryFx(finished){if(window.__GONG_V255_ECO_ACTIVE__)return;const winners=(finished?.players||[]).filter(p=>eligibleMastery3(p)&&p.alive&&!p.hidden);if(!winners.length)return;const p=winners.sort((a,b)=>levelFor(b.id)-levelFor(a.id))[0],lv=levelFor(p.id);document.querySelector('.v255-victory-fx')?.remove();const el=document.createElement('div');el.className='v255-victory-fx';el.innerHTML=`<small>MASTERY III · MAX VICTORY</small><b>${esc(p.name)}</b><span>Lv.30 최종 마스터리 승리 연출</span>`;document.body.appendChild(el);setTimeout(()=>el.remove(),2400)}
 
   function readExtraLocal(){const out={};for(const [field,key] of Object.entries(EXTRA_KEYS))out[field]=localGet(key);return out}
   function mergeRecentRaw(a,b){const aa=parse(a,{}),bb=parse(b,{}),rows=[...(aa.matches||[]),...(bb.matches||[])],map=new Map();for(const row of rows){if(!row?.id)continue;const prev=map.get(row.id);if(!prev||Number(row.at)>Number(prev.at))map.set(row.id,row)}return JSON.stringify({version:1,updatedAt:Date.now(),matches:[...map.values()].sort((x,y)=>Number(y.at)-Number(x.at)).slice(0,20)})}
@@ -33215,6 +33215,9 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 </script>
 <script id="v255LatestBuildScript">(()=>{const BUILD='V255_CLOUD_RECENT_MASTERY_REWARDS_ECO_TRAINING_STATS';window.__GONG_V255_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
+
+
+<script id="v256LatestBuildScript">(()=>{const BUILD='V256_MASTERY3_LEVEL30';window.__GONG_V256__={build:BUILD,thresholds:{mastery1Level:5,mastery2Level:15,mastery3Level:30,mastery3Xp:176155},verify(){const api=window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V219__;return {build:BUILD,level20Stage:api?.masteryStage?.('__v256_test_missing__')??null,mastery1Xp:api?.masteryThreshold?.(5),mastery2Xp:api?.masteryThreshold?.(15),mastery3Xp:api?.masteryThreshold?.(30),tier20:window.__GONG_V254__?.masteryTier?.(20),tier29:window.__GONG_V254__?.masteryTier?.(29),tier30:window.__GONG_V254__?.masteryTier?.(30)}}};window.__GONG_V256_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V256] 마스터리 3 해금 지점을 Lv.30 · 176,155 XP로 변경');})();</script>
 
 </body>
 </html>
