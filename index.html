@@ -34287,5 +34287,48 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 })();
 </script>
 
+<style id="v267Style">
+/* V267 · 전투 방식 버튼 두께 복원 */
+#modeHub{gap:12px!important}
+#modeHub .mode-btn{
+  min-height:84px!important;
+  padding:16px 10px!important;
+  border-radius:22px!important;
+  box-shadow:0 5px 0 rgba(0,0,0,.18)!important;
+}
+#modeHub .mode-btn.active{box-shadow:0 5px 0 rgba(0,0,0,.28)!important}
+#draftModeBtn{min-height:78px!important}
+@media(max-width:470px){
+  #modeHub{gap:10px!important}
+  #modeHub .mode-btn{min-height:80px!important;padding:14px 8px!important;font-size:14px!important}
+  #draftModeBtn{min-height:74px!important}
+}
+@media(min-width:560px){
+  #modeHub .mode-btn{min-height:88px!important}
+  #draftModeBtn{min-height:82px!important}
+}
+</style>
+<script id="v267LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V267_MODE_BUTTONS_RESTORED_THICK';
+  window.__GONG_V267__={
+    build:BUILD,
+    verify(){
+      const buttons=[...document.querySelectorAll('#modeHub > button')].filter(b=>getComputedStyle(b).display!=='none');
+      return {
+        build:BUILD,
+        visibleCount:buttons.length,
+        heights:buttons.map(b=>Math.round(b.getBoundingClientRect().height)),
+        minHeightApplied:buttons.every(b=>b.getBoundingClientRect().height>=74)
+      };
+    }
+  };
+  window.__GONG_V267_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V267] 전투 방식 버튼 높이 복원 · 뚱뚱한 모드 카드 레이아웃');
+})();
+</script>
+
 </body>
 </html>
