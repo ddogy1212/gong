@@ -34330,5 +34330,59 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 })();
 </script>
 
+<style id="v268Style">
+/* V268 · 예전 카드형 전투 방식 버튼 디자인 복원 */
+#modeHub{gap:8px!important}
+#modeHub .mode-btn,#modeHub .mode-hub-btn{
+  min-height:72px!important;
+  padding:10px 7px!important;
+  border-radius:14px!important;
+  font-size:14px!important;
+  line-height:1.15!important;
+  gap:5px!important;
+}
+/* V267에서 모든 버튼에 강제로 넣었던 공통 그림자 제거 */
+#modeHub .mode-btn{box-shadow:none!important}
+#modeHub .mode-btn[data-mode="showdown"]{box-shadow:0 4px 0 #343434!important}
+#modeHub .mode-btn[data-mode="team"]{box-shadow:0 3px 0 #c7c7c7!important}
+#autoBattleStart{box-shadow:0 3px 0 #d5a13d!important}
+#randomModeStart{box-shadow:0 3px 0 #9f7bd0!important}
+#tournamentModeBtn{box-shadow:0 3px 0 #c49100!important}
+#trainingModeBtn{box-shadow:0 4px 0 #0f5a2c!important}
+#draftModeBtn{min-height:68px!important;box-shadow:0 3px 0 #8b5cf6!important}
+#modeHub .mode-btn:active,#modeHub .mode-hub-btn:active{transform:translateY(2px)}
+@media(max-width:470px){
+  #modeHub{gap:8px!important}
+  #modeHub .mode-btn,#modeHub .mode-hub-btn{min-height:68px!important;padding:9px 5px!important;font-size:13px!important;border-radius:14px!important}
+  #draftModeBtn{min-height:66px!important}
+}
+@media(min-width:560px){
+  #modeHub .mode-btn,#modeHub .mode-hub-btn{min-height:72px!important}
+  #draftModeBtn{min-height:68px!important}
+}
+</style>
+<script id="v268LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V268_RESTORE_CLASSIC_MODE_CARDS';
+  window.__GONG_V268__={
+    build:BUILD,
+    verify(){
+      const buttons=[...document.querySelectorAll('#modeHub > button')].filter(b=>getComputedStyle(b).display!=='none');
+      return {
+        build:BUILD,
+        visibleCount:buttons.length,
+        heights:buttons.map(b=>Math.round(b.getBoundingClientRect().height)),
+        radii:buttons.map(b=>getComputedStyle(b).borderRadius),
+        classicCardShape:buttons.every(b=>parseFloat(getComputedStyle(b).borderRadius)<=14)
+      };
+    }
+  };
+  window.__GONG_V268_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V268] 전투 방식 버튼 예전 카드형 디자인 복원');
+})();
+</script>
+
 </body>
 </html>
