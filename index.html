@@ -1978,11 +1978,11 @@ body.competitive-battle #restart{display:none!important}
           </optgroup>
         </select></label>
       </div>
+      <button id="start" class="start-btn v263-start-under-search">배정한 캐릭터로 전투 시작 🔥</button>
       <div id="poolCards" class="pool-cards"></div>
     </div>
   </div>
 
-  <button id="start" class="start-btn">배정한 캐릭터로 전투 시작 🔥</button>
   <div class="help">개인전은 2명 이상 · 팀전은 생성한 모든 팀에 최소 1명씩 필요</div>
 </section>
 
@@ -2140,7 +2140,7 @@ body.competitive-battle #restart{display:none!important}
   <div class="controls">
     <button id="restart" class="ctrl dark">다시 경기</button>
     <button id="pause" class="ctrl light">일시정지</button>
-    <button id="back" class="ctrl red">편성 화면</button>
+    <button id="back" class="ctrl red">홈으로 가기</button>
     <button id="autoBattleStop" class="ctrl gong-auto-stop hidden" type="button">⏹ 자동 전투 그만하기</button>
   </div>
 </section>
@@ -33742,7 +33742,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function advance(){const now=nowKst(),row=read();if(row.completed){state.lastCheck=now.date;return row}if(row.lastCheckDate!==now.date){const prev=dayNumber(row.lastCheckDate),today=dayNumber(now.date),consecutive=prev&&today-prev===1;if(row.lastCheckDate&&today<=prev){state.lastCheck=now.date;return row}if(!consecutive){row.runId=randomId();row.streak=1;row.claimed={};row.startedAt=now.stamp}else row.streak=Math.min(MAX_DAY,row.streak+1);row.lastCheckDate=now.date;row.pendingDay=row.claimed[String(row.streak)]?0:row.streak;save(row,consecutive?'next-day':'streak-reset')}state.lastCheck=now.date;return row}
   function inventory(){let inv=parse(localStorage.getItem(ITEM_KEY)||'null',null);if(!inv||typeof inv!=='object'||Array.isArray(inv))inv={version:2,earned:{},spent:{}};if(!inv.earned||typeof inv.earned!=='object')inv.earned={};if(!inv.spent||typeof inv.spent!=='object')inv.spent={};inv.version=Math.max(2,Number(inv.version)||0);return inv}
   function saveInventory(inv){try{localStorage.setItem(ITEM_KEY,JSON.stringify(inv))}catch(_){}window.dispatchEvent(new CustomEvent('gong-v239-item-progress-change',{detail:{reason:'attendance-reward',count:window.__GONG_V244__?.couponCount?.()||0,version:2}}))}
-  function claim(){const row=advance(),day=Math.max(0,Number(row.pendingDay)||0);if(!day||row.claimed[String(day)]){render();return false}const meta=rewardMeta(day),receipt=`attendance:${row.runId}:day${day}`,inv=inventory();if(!inv.earned[receipt])inv.earned[receipt]={id:receipt,type:meta.xp===100?'masteryXp100':'masteryXpCoupon',xp:meta.xp,source:'continuous-attendance',campaign:row.campaign,runId:row.runId,day,awardedAt:new Date().toISOString()};saveInventory(inv);row.claimed[String(day)]={day,xp:meta.xp,claimedAt:Date.now(),receipt};row.pendingDay=0;if(day>=MAX_DAY){row.completed=true;row.titleUnlocked=true}save(row,'reward-claimed');state.claims++;render();return meta}
+  function claim(){const row=advance(),day=Math.max(0,Number(row.pendingDay)||0);if(!day||row.claimed[String(day)]){render();return false}const meta=rewardMeta(day),receipt=`attendance:${row.runId}:day${day}`,inv=inventory();if(!inv.earned[receipt])inv.earned[receipt]={id:receipt,type:meta.xp===100?'masteryXp100':'masteryXpCoupon',xp:meta.xp,source:'continuous-attendance',campaign:row.campaign,runId:row.runId,day,awardedAt:new Date().toISOString()};saveInventory(inv);row.claimed[String(day)]={day,xp:meta.xp,claimedAt:Date.now(),receipt};row.pendingDay=0;if(day>=MAX_DAY){row.completed=true;row.titleUnlocked=true}save(row,'reward-claimed');state.claims++;close();render();return meta}
   function gridHtml(row){return Array.from({length:MAX_DAY},(_,i)=>{const day=i+1,meta=rewardMeta(day),done=!!row.claimed[String(day)],current=day===row.streak&&!row.completed;return `<div class="v257-day${done?' done':''}${current?' current':''}${meta.milestone?' milestone':''}${meta.final?' final':''}"><b>DAY ${day}</b><span>+${meta.xp.toLocaleString('ko-KR')} XP</span></div>`}).join('')}
   function ensureModal(){let modal=document.getElementById('v257AttendanceModal');if(!modal){modal=document.createElement('div');modal.id='v257AttendanceModal';modal.className='v257-attendance-modal hidden';modal.setAttribute('aria-hidden','true');modal.innerHTML='<section class="v257-attendance-card" role="dialog" aria-modal="true" aria-labelledby="v257AttendanceTitle"><button class="v257-attendance-close" type="button" aria-label="출석 창 닫기">×</button><header class="v257-attendance-head"><small>CONTINUOUS LOGIN REWARD</small><strong id="v257AttendanceTitle">🔥 50일 연속 출석</strong><span>하루라도 놓치면 DAY 1부터 다시 시작해.</span></header><div class="v257-attendance-body"></div></section>';document.body.appendChild(modal);modal.querySelector('.v257-attendance-close')?.addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close()})}return modal}
   function render(){const modal=ensureModal(),body=modal.querySelector('.v257-attendance-body'),row=read(),day=Math.max(1,row.pendingDay||row.streak||1),meta=rewardMeta(day),claimed=!row.pendingDay&&(row.claimed[String(day)]||row.completed);body.innerHTML=`<div class="v257-today"><div class="v257-today-icon">${row.completed?'🏆':'🔥'}</div><div class="v257-today-copy"><b>${row.completed?'50일 연속 출석 완료!':`현재 연속 ${row.streak}일 · DAY ${day}`}</b><span>${row.completed?'최종 칭호와 모든 보상을 획득했어.':meta.title}</span><em>${row.pendingDay?'오늘 보상 수령 가능':claimed?'오늘 보상 수령 완료':'출석 진행 중'}</em></div></div><div class="v257-progress"><span style="width:${Math.max(0,Math.min(100,row.streak/MAX_DAY*100))}%"></span></div><div class="v257-attendance-grid">${gridHtml(row)}</div><div class="v257-actions"><button class="v257-claim" type="button" ${row.pendingDay?'':'disabled'}>${row.pendingDay?`DAY ${row.pendingDay} 보상 받기 · +${rewardXp(row.pendingDay).toLocaleString('ko-KR')} XP`:(row.completed?'50일 출석 완료':'오늘 보상 수령 완료')}</button><button class="v257-later" type="button">닫기</button></div><div class="v257-note">보상은 원하는 캐릭터에게 사용할 수 있는 숙련도 XP 쿠폰으로 지급돼. 50일째에는 10,000 XP 쿠폰과 ‘50일 출석왕’ 프로필 칭호를 함께 받아.</div>`;body.querySelector('.v257-claim')?.addEventListener('click',()=>claim());body.querySelector('.v257-later')?.addEventListener('click',close);renderProfile();return row}
@@ -34009,6 +34009,34 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   window.__GONG_V262_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V262] 검색창 오른쪽 캐릭터 분류 필터 적용');
+})();
+</script>
+
+<style id="v263Style">
+/* V263 · 검색/분류 바로 아래 플레이 버튼 */
+.v263-start-under-search{margin:0 0 12px;min-height:52px}
+@media(max-width:430px){.v263-start-under-search{margin-bottom:10px;min-height:50px;font-size:15px;padding:13px 10px}}
+</style>
+<script id="v263LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V263_PLAY_BUTTON_DAILY_REWARD_HOME';
+  window.__GONG_V263__={
+    build:BUILD,
+    verify(){
+      const start=document.getElementById('start'),tools=document.getElementById('v208RosterTools'),pool=document.getElementById('poolCards'),back=document.getElementById('back');
+      return {
+        build:BUILD,
+        startBelowSearch:!!start&&!!tools&&tools.nextElementSibling===start,
+        startAboveCards:!!start&&!!pool&&!!(start.compareDocumentPosition(pool)&Node.DOCUMENT_POSITION_FOLLOWING),
+        backLabel:String(back?.textContent||'').trim(),
+        attendanceModalAutoClose:true
+      };
+    }
+  };
+  window.__GONG_V263_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V263] 플레이 버튼 이동 · 일일보상 자동 닫기 · 홈으로 가기 버튼');
 })();
 </script>
 
