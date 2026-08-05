@@ -1958,8 +1958,25 @@ body.competitive-battle #restart{display:none!important}
     <div class="pool" data-zone="pool" style="--zone:#111">
       <div class="pool-head"><span class="pool-title">캐릭터 보관함</span><span class="pool-sub">캐릭터 선택</span></div>
       <div id="quickTargetBar" class="quick-target-bar" aria-label="캐릭터 빠른 배정 대상"></div>
-      <div id="v208RosterTools" class="v208-roster-tools v209-search-only">
+      <div id="v208RosterTools" class="v208-roster-tools v209-search-only v262-search-filter">
         <label class="v208-search"><span>캐릭터 이름 검색</span><input id="v208CharacterSearch" type="search" placeholder="캐릭터 이름 검색" autocomplete="off"></label>
+        <label class="v262-classify"><span>캐릭터 분류</span><select id="v262CharacterCategory" aria-label="캐릭터 분류">
+          <option value="all">전체 캐릭터</option>
+          <optgroup label="기수별">
+            <option value="gen20">20기</option>
+            <option value="gen21">21기</option>
+            <option value="genOther">기타 기수</option>
+          </optgroup>
+          <optgroup label="전투 역할별">
+            <option value="attack">공격형</option>
+            <option value="defense">방어·생존형</option>
+            <option value="support">회복·지원형</option>
+            <option value="control">제어·방해형</option>
+            <option value="growth">성장·각성형</option>
+            <option value="summon">소환·설치형</option>
+            <option value="special">변신·특수형</option>
+          </optgroup>
+        </select></label>
       </div>
       <div id="poolCards" class="pool-cards"></div>
     </div>
@@ -29090,13 +29107,33 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function updateBalanceStatus(){const el=$v('v208BalanceStatus');if(el)el.textContent=`승률 V197 + 실전 자동 보정 ${balance.matches}경기 · 재검증 대상 ${stale.size}명`}
   updateBalanceStatus();GongGameModules.registerSystem('balance-cache',balanceApi);
 
-  /* ---------- 5. character name search only ---------- */
+  /* ---------- 5. V262 character search + compact classification filter ---------- */
+  function v262CategoryMatch(id,category){
+    if(!category||category==='all')return true;
+    const d=DEFS[id]||{},generation=Number(d.generation)||0;
+    if(category==='gen20')return generation===20;
+    if(category==='gen21')return generation===21;
+    if(category==='genOther')return generation!==20&&generation!==21;
+    const text=`${d.role||''} ${d.skills||''}`.toLowerCase();
+    const patterns={
+      attack:/공격|폭딜|투사체|돌진|폭격|연사|근접|원거리|광역|범위|레이저|분열|충격|박치기|발사/,
+      defense:/방어|보호막|무효|회피|반사|피해 감소|피해감소|생존|무적|반감|흡수/,
+      support:/회복|지원|치유|아군|보조|수호|토닥|천사/,
+      control:/감속|정지|고정|포박|혼란|넉백|약화|방향 반전|속도 감소|표식/,
+      growth:/성장|영구|누적|각성|후반|강화|자해|공격력 증가|속도 증가/,
+      summon:/소환|설치|더미|지뢰|장판|오브젝트|분신|시체|라면|숫자|함정|버스|책|콩나물|하마|까치/,
+      special:/페이즈|변신|모드|2개의 소형 공|듀오|다중|부활|자동 변신|공유 hp|공유hp|소형 공/
+    };
+    return !!patterns[category]?.test(text);
+  }
   function applyNameSearch(){
     const q=($v('v208CharacterSearch')?.value||'').trim().toLowerCase();
+    const category=$v('v262CharacterCategory')?.value||'all';
     for(const card of poolCards.querySelectorAll(':scope > .char-card')){
       const id=card.dataset.char;
       const name=String(DEFS[id]?.name||'').toLowerCase();
-      card.classList.toggle('v208-filtered',!!q&&!name.includes(q));
+      const visible=(!q||name.includes(q))&&v262CategoryMatch(id,category);
+      card.classList.toggle('v208-filtered',!visible);
     }
   }
   const v209RenderSetup=renderSetup;
@@ -29104,8 +29141,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const v209MoveCard=moveCard;
   moveCard=function(id,zone){const result=v209MoveCard(id,zone);applyNameSearch();return result};
   $v('v208CharacterSearch')?.addEventListener('input',applyNameSearch);
+  $v('v262CharacterCategory')?.addEventListener('change',applyNameSearch);
   applyNameSearch();
-  GongGameModules.registerSystem('name-search',{apply:applyNameSearch});
+  GongGameModules.registerSystem('name-search',{apply:applyNameSearch,categoryMatch:v262CategoryMatch});
 
   /* Boss Rush removed in V209. Preserve ordinary battle-result learning and bug packets. */
   window.__GONG_V208_BOSS_RUSH__=null;
@@ -31646,6 +31684,12 @@ console.info('[V208] 최신 빌드 활성화');
 .v209-search-only{display:block!important;padding:10px!important;margin:10px 0 12px!important}
 .v209-search-only .v208-search{display:flex!important;width:100%!important}
 .v209-search-only input[type=search]{font-size:16px!important;min-height:46px!important}
+/* V262 · 검색창 오른쪽 캐릭터 분류 */
+.v209-search-only.v262-search-filter{display:grid!important;grid-template-columns:minmax(0,1.65fr) minmax(132px,.75fr)!important;gap:8px!important;align-items:end!important}
+.v209-search-only.v262-search-filter .v208-search,.v209-search-only.v262-search-filter .v262-classify{display:flex!important;width:100%!important;min-width:0!important;grid-column:auto!important}
+.v209-search-only.v262-search-filter input[type=search],.v209-search-only.v262-search-filter select{min-height:44px!important;font-size:15px!important}
+.v209-search-only.v262-search-filter select{padding:9px 30px 9px 9px!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+@media(max-width:430px){.v209-search-only.v262-search-filter{grid-template-columns:minmax(0,1fr) 122px!important;gap:6px!important;padding:8px!important}.v209-search-only.v262-search-filter label{font-size:10px!important}.v209-search-only.v262-search-filter input[type=search],.v209-search-only.v262-search-filter select{min-height:42px!important;font-size:13px!important;padding-left:8px!important}.v209-search-only.v262-search-filter select{padding-right:24px!important}}
 #v208BattleTools{position:static!important;inset:auto!important;z-index:auto!important;margin:18px 13px 10px!important}
 #v208BattleTools.hidden{display:none!important}
 @media(max-width:700px){#v208BattleTools{position:static!important;bottom:auto!important;z-index:auto!important}}
@@ -33936,6 +33980,37 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
 })();
 </script>
 <script id="v261LatestBuildScript">(()=>{const BUILD='V261_YESUNG_TOOTH_THROW_INLINE_TITLES';window.__GONG_V261_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+
+<script id="v262LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V262_CHARACTER_CLASSIFICATION_FILTER';
+  const select=document.getElementById('v262CharacterCategory');
+  const search=document.getElementById('v208CharacterSearch');
+  const apply=()=>window.GongGameModules?.systems?.get('name-search')?.apply?.();
+  window.__GONG_V262__={
+    build:BUILD,
+    apply,
+    category:()=>select?.value||'all',
+    setCategory(value='all'){if(!select)return false;select.value=[...select.options].some(option=>option.value===value)?value:'all';apply();return select.value},
+    visibleCount:()=>document.querySelectorAll('#poolCards > .char-card:not(.v208-filtered)').length,
+    verify(){
+      const tools=document.getElementById('v208RosterTools');
+      return {
+        build:BUILD,
+        search:!!search,
+        categorySelect:!!select,
+        sameRow:!!tools&&getComputedStyle(tools).display==='grid',
+        options:select?[...select.options].map(option=>option.value):[],
+        visible:this.visibleCount()
+      };
+    }
+  };
+  window.__GONG_V262_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V262] 검색창 오른쪽 캐릭터 분류 필터 적용');
+})();
+</script>
 
 </body>
 </html>
