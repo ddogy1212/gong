@@ -3952,11 +3952,60 @@ function renderResultModal(){
     </div>`;
 }
 
+function v264IsNormalShowdownResult(){
+  return !!(
+    currentConfig?.v264NormalShowdown&&
+    currentConfig?.mode==='showdown'&&
+    game?.over&&
+    !game?.v212Draft&&
+    !game?.v248Training&&
+    !currentConfig?.randomMode&&
+    !document.body.classList.contains('tournament-battle')&&
+    !document.body.classList.contains('competitive-battle')&&
+    !document.body.classList.contains('friendly-battle')&&
+    !document.body.classList.contains('v248-training-battle')
+  );
+}
+function v264ReturnNormalShowdownHome(){
+  if(!v264IsNormalShowdownResult())return false;
+  clearTimeout(v264NormalReturnTimer);
+  v264NormalReturnTimer=0;
+  closeResultModal();
+  openResultsBtn.classList.add('hidden');
+  $('back').click();
+  return true;
+}
+window.__GONG_V264_RUNTIME__={
+  isNormalShowdownResult:v264IsNormalShowdownResult,
+  returnNormalShowdownHome:v264ReturnNormalShowdownHome,
+  autoHomeScheduled:()=>!!v264NormalReturnTimer,
+  startNormalShowdownTest(){
+    currentConfig={mode:'showdown',participants:['moon','woo'],teams:{moon:'moon',woo:'woo'},zoneNames:{},v264NormalShowdown:true};
+    mode='showdown';paused=false;last=0;
+    setup.classList.add('hidden');battle.classList.remove('hidden');resize();resetBattle();
+    return !!game;
+  },
+  finishNormalShowdownTest(){
+    if(!game)return false;
+    const loser=game.players.find(p=>p.id==='woo')||game.players[1];
+    if(loser){loser.alive=false;loser.hp=0;loser.eliminationOrder=1;}
+    checkEnd();
+    return !!game.over;
+  },
+  status(){return {normal:v264IsNormalShowdownResult(),scheduled:!!v264NormalReturnTimer,setupHidden:setup.classList.contains('hidden'),battleHidden:battle.classList.contains('hidden'),resultHidden:resultModal.classList.contains('hidden')}}
+};
+
 function openResultModal(){
   if(!game)return;
   renderResultModal();
   resultModal.classList.remove('hidden');
   resultModal.setAttribute('aria-hidden','false');
+  if(v264IsNormalShowdownResult()){
+    resultBody.querySelector('.v264-showdown-return-note')?.remove();
+    resultBody.insertAdjacentHTML('afterbegin','<div class="v264-showdown-return-note">경기가 끝났어. 잠시 후 홈으로 자동 이동합니다.</div>');
+    clearTimeout(v264NormalReturnTimer);
+    v264NormalReturnTimer=setTimeout(v264ReturnNormalShowdownHome,1800);
+  }
 }
 function closeResultModal(){
   resultModal.classList.add('hidden');
@@ -3991,6 +4040,7 @@ let mode='showdown';
 let assignments={moon:'pool',woo:'pool',yoo:'pool',na:'pool',kim:'pool',ira:'pool',dong:'pool',yesung:'pool',seo:'pool',min:'pool',geun:'pool',jiwon:'pool',doyun:'pool',sungmin:'pool',junghoon:'pool',mingyu:'pool',jaewook:'pool',yoon:'pool',gyumin:'pool',hyeon:'pool',jiyeon:'pool',yoona:'pool',chaewon:'pool',juyeong:'pool',yoomin:'pool',songhyeon:'pool',gow:'pool',nayoon:'pool',jihyun:'pool',rua:'pool',subin:'pool',yewon:'pool',chaeun:'pool',dawon:'pool',duo:'pool',yeeun:'pool',eunchae:'pool',hyeeum:'pool',yangchaewon:'pool',ansua:'pool',haewon:'pool',jongyeop:'pool',shion:'pool',nakyung:'pool',nahyun:'pool',jungyoona:'pool',limseoyoon:'pool',hyobin:'pool',yoonho:'pool',sia:'pool',woojiyeon:'pool'};
 let activeZone='showdown';
 let currentConfig=null;
+let v264NormalReturnTimer=0;
 let battleGeneration=0;
 let game=null,paused=false,last=0,W=430,H=430,dpr=1,timeScale=1,arenaLogicalScale=1;
 
@@ -4413,11 +4463,13 @@ function v165FocusBattleScreen(){
 }
 
 $('start').addEventListener('click',()=>{
+  clearTimeout(v264NormalReturnTimer);
+  v264NormalReturnTimer=0;
   const zones=zoneList();
   if(mode==='showdown'){
     const ids=orderedCharacterIds().filter(id=>assignments[id]==='showdown');
     if(ids.length<2){alert('개인전 참가자 칸에 최소 2명을 넣어줘!');return}
-    currentConfig={mode,participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{}};
+    currentConfig={mode,participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{},v264NormalShowdown:true};
   }else if(mode==='boss'){
     const heroes=orderedCharacterIds().filter(id=>assignments[id]==='heroes');
     if(heroes.length<1){alert('보스전에 도전할 캐릭터를 최소 1명 넣어줘!');return}
@@ -4457,6 +4509,8 @@ $('start').addEventListener('click',()=>{
 });
 
 $('back').addEventListener('click',()=>{
+  clearTimeout(v264NormalReturnTimer);
+  v264NormalReturnTimer=0;
   paused=true;
   last=0;
   battleGeneration++;
@@ -30025,7 +30079,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       document.getElementById('v228OnlinePanel')?.remove();document.getElementById('v228BattleOnline')?.remove();
       if(!document.getElementById('v232OnlineCount')){
         const counter=document.createElement('div');counter.id='v232OnlineCount';counter.className='v232-online-count pending';counter.innerHTML='<span class="v228-live-dot"></span><span class="v228-live-count-text">현재 접속자 확인 중</span>';
-        const start=document.getElementById('start');if(start)start.insertAdjacentElement('afterend',counter);
+        const promo=document.querySelector('.promo-banner');if(promo)promo.insertAdjacentElement('beforebegin',counter);else{const start=document.getElementById('start');if(start)start.insertAdjacentElement('afterend',counter);}
       }
       renderStatus();
     }
@@ -30444,7 +30498,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
         .v232-titlebar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0}.v232-titlebar h1{min-width:0;margin:0}.v232-profile-button{flex:0 0 auto;max-width:190px;border:2px solid #111;border-radius:999px;background:#fff;padding:6px 10px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:1000;cursor:pointer;box-shadow:0 3px 0 #1112}.v232-profile-button .icon{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#111;color:#fff;font-size:12px}.v232-profile-button .label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.v232-online-count{display:flex;align-items:center;justify-content:center;gap:7px;margin:9px 0 0;border:1px solid #c8d1cb;border-radius:12px;background:#f5fbf7;padding:8px;font-size:10px;font-weight:1000;color:#254332}.v232-online-count .v228-live-dot{width:7px;height:7px}.v232-online-count.connected .v228-live-dot{background:#1bb968;box-shadow:0 0 0 3px #1bb96822}.v232-online-count.error .v228-live-dot{background:#e44a4a}.v232-profile-modal{position:fixed;inset:0;z-index:420;display:grid;place-items:center;padding:12px;background:#000b;backdrop-filter:blur(4px)}.v232-profile-modal.hidden{display:none!important}.v232-profile-card{width:min(520px,100%);max-height:92vh;overflow:auto;border:3px solid #111;border-radius:22px;background:#fff;box-shadow:0 24px 80px #0009}.v232-profile-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:linear-gradient(135deg,#111,#34205e);color:#fff}.v232-profile-head strong{font-size:19px}.v232-profile-close{width:34px;height:34px;border:0;border-radius:10px;background:#fff;color:#111;font-size:20px;font-weight:1000;cursor:pointer}.v232-profile-hero{display:grid;grid-template-columns:56px minmax(0,1fr);gap:11px;align-items:center;padding:14px}.v232-profile-avatar{display:grid;place-items:center;width:56px;height:56px;border:3px solid #111;border-radius:50%;background:linear-gradient(135deg,#ffe064,#a78bfa);font-size:23px;font-weight:1000}.v232-profile-name{font-size:20px;font-weight:1000;overflow-wrap:anywhere}.v232-profile-account{margin-top:3px;font-size:10px;font-weight:850;color:#686d77;line-height:1.4}.v232-profile-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:0 14px 12px}.v232-profile-stat{border:2px solid #e1e1e5;border-radius:12px;background:#fafafa;padding:9px;text-align:center;font-size:9px;font-weight:900;color:#6b6f78}.v232-profile-stat b{display:block;margin-bottom:2px;font-size:15px;color:#17171b}.v232-profile-editor{margin:0 14px 12px;border:2px solid #d6c9f2;border-radius:14px;background:#f8f4ff;padding:10px}.v232-profile-editor label{display:block;font-size:11px;font-weight:1000}.v232-profile-editor small{display:block;margin-top:3px;font-size:8px;font-weight:800;color:#707582}.v232-profile-nickname-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-top:8px}.v232-profile-nickname-row input{min-width:0;border:2px solid #8b5cf6;border-radius:10px;padding:10px;font-size:15px;font-weight:900}.v232-profile-nickname-row button,.v232-google-login{border:0;border-radius:10px;background:#111;color:#fff;padding:10px 12px;font-size:11px;font-weight:1000;cursor:pointer}.v232-google-login{display:block;width:calc(100% - 28px);margin:0 14px 12px;min-height:46px;background:#fff;color:#202124;border:2px solid #111}.v232-cloud-status{margin:0 14px 14px;border-radius:11px;background:#edf9f2;border:1px solid #b9dbc7;padding:8px 10px;font-size:9px;font-weight:850;color:#315a42;line-height:1.45}.v232-profile-message{min-height:18px;margin-top:6px;font-size:9px;font-weight:900;color:#7c2d12}.v232-profile-editor[hidden],.v232-google-login[hidden]{display:none!important}@media(max-width:480px){.v232-titlebar h1{font-size:21px}.v232-profile-button{max-width:130px;padding:5px 7px}.v232-profile-button .label{max-width:82px}.v232-profile-card{border-radius:17px}.v232-profile-stats{grid-template-columns:1fr 1fr}.v232-profile-nickname-row{grid-template-columns:1fr}.v232-profile-nickname-row button{min-height:43px}}
       `;document.head.appendChild(style)}
       const setup=$('setup'),heading=setup?.querySelector(':scope > h1');if(heading&&!$('v232Titlebar')){const bar=document.createElement('div');bar.id='v232Titlebar';bar.className='v232-titlebar';heading.insertAdjacentElement('beforebegin',bar);bar.appendChild(heading);const button=document.createElement('button');button.id='v232ProfileButton';button.type='button';button.className='v232-profile-button';button.innerHTML='<span class="icon">👤</span><span class="label">프로필</span>';bar.appendChild(button);button.addEventListener('click',()=>openProfile())}
-      if(!$('v232OnlineCount')){const counter=document.createElement('div');counter.id='v232OnlineCount';counter.className='v232-online-count pending';counter.innerHTML='<span class="v228-live-dot"></span><span class="v228-live-count-text">현재 접속자 확인 중</span>';$('start')?.insertAdjacentElement('afterend',counter)}
+      if(!$('v232OnlineCount')){const counter=document.createElement('div');counter.id='v232OnlineCount';counter.className='v232-online-count pending';counter.innerHTML='<span class="v228-live-dot"></span><span class="v228-live-count-text">현재 접속자 확인 중</span>';document.querySelector('.promo-banner')?.insertAdjacentElement('beforebegin',counter)}
       if(!$('v232ProfileModal')){const modal=document.createElement('div');modal.id='v232ProfileModal';modal.className='v232-profile-modal hidden';modal.setAttribute('aria-hidden','true');modal.innerHTML=`<section class="v232-profile-card" role="dialog" aria-modal="true" aria-labelledby="v232ProfileTitle"><header class="v232-profile-head"><strong id="v232ProfileTitle">내 프로필</strong><button type="button" class="v232-profile-close" aria-label="프로필 닫기">×</button></header><div class="v232-profile-hero"><div class="v232-profile-avatar">S</div><div><div class="v232-profile-name">프로필 불러오는 중</div><div class="v232-profile-account">계정 상태를 확인하고 있어.</div></div></div><div class="v232-profile-stats"><div class="v232-profile-stat"><b data-v232-tier>-</b>현재 티어</div><div class="v232-profile-stat"><b data-v232-points>-</b>경쟁전 점수</div><div class="v232-profile-stat"><b data-v232-record>-</b>경쟁전 기록</div><div class="v232-profile-stat"><b data-v232-mastery>-</b>누적 숙련도 XP</div></div><div class="v232-profile-editor" hidden><label for="v232NicknameInput">랭킹에 표시할 닉네임</label><small>1~12자 · 언제든 다시 바꿀 수 있어.</small><div class="v232-profile-nickname-row"><input id="v232NicknameInput" type="text" maxlength="12" autocomplete="off" placeholder="닉네임 입력"><button id="v232NicknameSave" type="button">저장</button></div><div class="v232-profile-message"></div></div><button id="v232GoogleLogin" class="v232-google-login" type="button">Google로 로그인하고 진척도 저장</button><div class="v232-cloud-status">브라우저에 진척도를 저장하고 있어.</div></section>`;document.body.appendChild(modal);modal.querySelector('.v232-profile-close')?.addEventListener('click',closeProfile);modal.addEventListener('click',event=>{if(event.target===modal)closeProfile()});$('v232GoogleLogin')?.addEventListener('click',async()=>{const btn=$('v232GoogleLogin'),message=modal.querySelector('.v232-profile-message');if(btn){btn.disabled=true;btn.textContent='Google 로그인 중...'}if(message)message.textContent='Google 계정 선택 창을 여는 중이야.';const ok=await window.__GONG_V230__?.linkGoogle?.();if(!ok)updateUi()});$('v232NicknameSave')?.addEventListener('click',()=>saveNickname($('v232NicknameInput')?.value));$('v232NicknameInput')?.addEventListener('keydown',event=>{if(event.key==='Enter')saveNickname(event.currentTarget.value)})}
       if(!$('v235Logout')){const logout=document.createElement('button');logout.id='v235Logout';logout.type='button';logout.textContent='로그아웃';logout.style.cssText='display:block;width:calc(100% - 28px);margin:0 14px 12px;min-height:44px;border:2px solid #b91c1c;border-radius:10px;background:#fff1f2;color:#991b1b;font-size:11px;font-weight:1000;cursor:pointer';$('v232ProfileModal')?.querySelector('.v232-cloud-status')?.insertAdjacentElement('beforebegin',logout);logout.addEventListener('click',async()=>{const message=$('v232ProfileModal')?.querySelector('.v232-profile-message');logout.disabled=true;logout.textContent='로그아웃 중...';if(message)message.textContent='계정 진척도를 저장한 뒤 로그아웃하고 있어.';const ok=await window.__GONG_V230__?.logout?.();if(!ok){logout.disabled=false;logout.textContent='로그아웃'}updateUi()})}
       updateUi();
@@ -34037,6 +34091,58 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   window.__GONG_V263_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V263] 플레이 버튼 이동 · 일일보상 자동 닫기 · 홈으로 가기 버튼');
+})();
+</script>
+
+
+<style id="v264Style">
+/* V264 · 일반 쇼다운 자동 홈 복귀 · 경쟁전은 일시정지만 · 접속 인원 광고 위 */
+body.competitive-battle #battle .controls > button:not(#pause){display:none!important}
+body.competitive-battle #battle .controls{grid-template-columns:minmax(0,1fr)!important}
+body.competitive-battle #battle .controls #pause{display:block!important;grid-column:1/-1;width:100%}
+#v232OnlineCount.v264-online-above-ad{margin:14px 0 8px}
+.v264-showdown-return-note{margin:0 0 10px;border:2px solid #111;border-radius:12px;background:#fff7cf;padding:9px 10px;text-align:center;font-size:11px;font-weight:1000;color:#4d3b00}
+</style>
+<script id="v264LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V264_SHOWDOWN_AUTO_HOME_COMPETITIVE_PAUSE_ONLY_ONLINE_ABOVE_AD';
+  function moveOnlineAboveAd(){
+    const counter=document.getElementById('v232OnlineCount');
+    const promo=document.querySelector('.promo-banner');
+    if(!counter||!promo)return false;
+    if(counter.nextElementSibling!==promo)promo.insertAdjacentElement('beforebegin',counter);
+    counter.classList.add('v264-online-above-ad');
+    return true;
+  }
+  const onlineObserver=new MutationObserver(()=>moveOnlineAboveAd());
+  onlineObserver.observe(document.body,{childList:true,subtree:true});
+  window.addEventListener('gong-v230-online-ready',moveOnlineAboveAd);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',moveOnlineAboveAd,{once:true});else moveOnlineAboveAd();
+  window.__GONG_V264__={
+    build:BUILD,
+    moveOnlineAboveAd,
+    returnNormalShowdownHome:()=>window.__GONG_V264_RUNTIME__?.returnNormalShowdownHome?.()||false,
+    verify(){
+      const controls=[...document.querySelectorAll('#battle .controls > button')];
+      const online=document.getElementById('v232OnlineCount');
+      const promo=document.querySelector('.promo-banner');
+      const start=document.getElementById('start');
+      const tools=document.getElementById('v208RosterTools');
+      return {
+        build:BUILD,
+        playOnlyBelowSearch:!!start&&!!tools&&tools.nextElementSibling===start,
+        onlineImmediatelyAboveAd:!!online&&!!promo&&online.nextElementSibling===promo,
+        competitivePauseOnlyRule:!!document.getElementById('v264Style'),
+        autoHomeRuntime:!!window.__GONG_V264_RUNTIME__,
+        autoHomeDelayMs:1800,
+        controlIds:controls.map(button=>button.id)
+      };
+    }
+  };
+  window.__GONG_V264_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V264] 일반 쇼다운 종료 후 자동 홈 · 경쟁전 일시정지만 · 접속 인원 광고 위');
 })();
 </script>
 
