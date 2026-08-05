@@ -24,7 +24,7 @@
 <link rel="apple-touch-icon" href="icons/gonggame-192.png?v=251">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="공게임">
 
 <script type="application/ld+json">
@@ -1854,15 +1854,15 @@ body.competitive-battle #restart{display:none!important}
     </div>
 
     <div class="mode-row" id="modeHub" aria-label="전투 방식 선택">
-      <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투</button>
-      <button id="randomModeStart" class="mode-hub-btn mode-random-btn" type="button">🎲 랜덤모드</button>
-      <button id="friendlyModeBtn" class="mode-hub-btn mode-friendly-btn" type="button">🤝 친선전</button>
       <button class="mode-btn active" data-mode="showdown">⚔️ 쇼다운</button>
       <button class="mode-btn" data-mode="team">🤝 팀전</button>
-      <button class="mode-btn" data-mode="boss">👑 보스전</button>
+      <button id="autoBattleStart" class="mode-hub-btn mode-auto-btn" type="button">🤖 자동전투</button>
+      <button id="randomModeStart" class="mode-hub-btn mode-random-btn" type="button">🎲 랜덤모드</button>
       <button id="tournamentModeBtn" class="mode-hub-btn mode-tournament-btn" type="button">🏆 토너먼트</button>
-      <button id="draftModeBtn" class="mode-hub-btn mode-draft-btn" type="button">🏅 경쟁전</button>
       <button id="trainingModeBtn" class="mode-hub-btn mode-training-btn" type="button">🌱 육성모드</button>
+      <button id="draftModeBtn" class="mode-hub-btn mode-draft-btn" type="button">🏅 경쟁전</button>
+      <button id="friendlyModeBtn" class="mode-hub-btn mode-friendly-btn v266-hidden-legacy-mode" type="button" aria-hidden="true" tabindex="-1">🤝 친선전</button>
+      <button class="mode-btn v266-hidden-legacy-mode" data-mode="boss" aria-hidden="true" tabindex="-1">👑 보스전</button>
     </div>
     <div id="teamOptions" class="team-options hidden">
       <label for="teamCount">팀 개수</label>
@@ -1918,16 +1918,19 @@ body.competitive-battle #restart{display:none!important}
             <button class="t-choice t-team-size-choice" type="button" data-t-team-size="3">3인 팀전</button>
             <button class="t-choice t-team-size-choice" type="button" data-t-team-size="4">4인 팀전</button>
           </div>
-          <div class="t-team-mode-note">선택한 캐릭터는 16개 팀으로 자동 편성돼. 완전 랜덤은 팀 구성과 대진을 모두 섞고, 밸런스 시드는 전력을 고르게 나눈 뒤 강팀끼리 초반에 만나지 않게 배치해.</div>
+          <div class="t-team-mode-note">무작위로 뽑힌 캐릭터는 16개 팀으로 즉시 자동 편성돼. 완전 랜덤은 팀 구성과 대진을 모두 섞고, 밸런스 시드는 전력을 고르게 나눈 뒤 강팀끼리 초반에 만나지 않게 배치해.</div>
         </div>
       </div>
-      <div class="tournament-step">
+      <div class="tournament-step v266-random-only-step">
         <div class="tournament-step-title">2. 참가자 선발</div>
-        <div class="tournament-choice-grid three" id="tournamentSelectChoices">
-          <button class="t-choice active" data-t-select="direct">직접 선택</button><button class="t-choice" data-t-select="random">전체 랜덤</button><button class="t-choice" data-t-select="fixed">선택 인원 고정 + 나머지 랜덤</button>
+        <div id="tournamentSelectChoices" class="v266-random-only-card">
+          <button class="t-choice active" data-t-select="random" type="button" tabindex="-1" aria-hidden="true">전체 랜덤</button>
+          <strong>🎲 전체 랜덤 자동 편성</strong>
+          <span>참가 명단은 미리 띄우지 않고, 대진표를 만들 때 전체 캐릭터 중 즉시 무작위 편성해.</span>
+          <small id="tournamentSelectedCount" class="tournament-count">8명 랜덤 편성</small>
         </div>
-        <div class="tournament-toolbar"><span id="tournamentSelectedCount" class="tournament-count">0 / 8명 선택</span><button id="tournamentClearSelection" class="t-small-btn red" type="button">전체 해제</button></div>
-        <div id="tournamentPicker" class="tournament-picker"></div>
+        <button id="tournamentClearSelection" class="t-small-btn red hidden" type="button" aria-hidden="true" tabindex="-1">전체 해제</button>
+        <div id="tournamentPicker" class="tournament-picker hidden" aria-hidden="true"></div>
       </div>
       <div class="tournament-step">
         <div class="tournament-step-title">3. 대진과 결승</div>
@@ -4469,7 +4472,7 @@ $('start').addEventListener('click',()=>{
   if(mode==='showdown'){
     const ids=orderedCharacterIds().filter(id=>assignments[id]==='showdown');
     if(ids.length<2){alert('개인전 참가자 칸에 최소 2명을 넣어줘!');return}
-    currentConfig={mode,participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{},v264NormalShowdown:true};
+    currentConfig={mode,participants:ids,teams:Object.fromEntries(ids.map(id=>[id,id])),zoneNames:{},v264NormalShowdown:!(typeof autoBattleRunning!=='undefined'&&autoBattleRunning)};
   }else if(mode==='boss'){
     const heroes=orderedCharacterIds().filter(id=>assignments[id]==='heroes');
     if(heroes.length<1){alert('보스전에 도전할 캐릭터를 최소 1명 넣어줘!');return}
@@ -20590,7 +20593,7 @@ function frame(ts){
 
   const BASE_DEFS=DEFS;
   const TEAM_COUNT=16;
-  let setupKind='solo',setupSize=8,setupTeamSize=2,setupSelect='direct',setupSelected=new Set();
+  let setupKind='solo',setupSize=8,setupTeamSize=2,setupSelect='random',setupSelected=new Set();
   let tournamentEntries={};
   const TDEFS=new Proxy(BASE_DEFS,{get(target,key){return tournamentEntries[String(key)]||target[key];}});
   let state=null,selectedView='r0',pendingLaunch=null,fastToken=0,cinematicTimer=null,cinematicDone=null;
@@ -20771,17 +20774,13 @@ function frame(ts){
   function openHall(){openModal('🏛 토너먼트 명예의 전당','');renderHallInto(tModalBody,{modal:true});}
 
   function renderPicker(){
-    const ids=orderedCharacterIds(),targetCount=selectedTargetCount(),order=[...setupSelected];
-    tPicker.innerHTML=ids.map(id=>{const d=BASE_DEFS[id],selected=setupSelected.has(id),number=selected?order.indexOf(id)+1:0;return `<button type="button" class="t-picker-card ${selected?'selected':''}" data-t-char="${id}" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="lazy" decoding="async" fetchpriority="low" style="object-position:${crop(id)}"><span style="min-width:0"><span class="t-picker-name">${esc(d.name)}${number?` · ${number}번`:''}</span><span class="t-picker-meta">HP ${d.hp}</span></span></button>`;}).join('');
-    tPicker.querySelectorAll('[data-t-char]').forEach(card=>card.addEventListener('click',()=>{
-      const id=card.dataset.tChar;
-      if(setupSelect==='random'){setupSelect='fixed';setActiveChoice(el('tournamentSelectChoices'),'data-t-select','fixed');}
-      if(setupSelected.has(id))setupSelected.delete(id);
-      else{if(setupSelected.size>=targetCount){alert(`${targetCount}명까지만 선택할 수 있어!`);return;}setupSelected.add(id);}
-      renderPicker();
-    }));
-    const format=setupKind==='team'?` · 16팀 × ${setupTeamSize}명 자동 편성`:'';
-    el('tournamentSelectedCount').textContent=`${setupSelected.size} / ${targetCount}명 선택${setupSelect==='fixed'?' · 나머지 랜덤':''}${format}`;
+    const targetCount=selectedTargetCount();
+    setupSelect='random';
+    setupSelected.clear();
+    if(tPicker)tPicker.replaceChildren();
+    const format=setupKind==='team'?` · 16팀 × ${setupTeamSize}명 즉시 자동 편성`:'';
+    const count=el('tournamentSelectedCount');
+    if(count)count.textContent=`${targetCount}명 랜덤 편성${format}`;
     updateSetupKindUI();
   }
 
@@ -20805,14 +20804,9 @@ function frame(ts){
   function prepareParticipants(){
     const all=orderedCharacterIds(),targetCount=selectedTargetCount();
     if(all.length<targetCount)throw new Error('참가 가능한 캐릭터가 부족합니다.');
-    if(setupSelect==='direct'){
-      if(setupSelected.size!==targetCount)throw new Error(`${targetCount}명을 정확히 선택해 줘!`);
-      return [...setupSelected];
-    }
-    if(setupSelect==='random')return shuffled(all).slice(0,targetCount);
-    if(setupSelected.size>targetCount)throw new Error('고정 참가자가 참가 규모보다 많습니다.');
-    const rest=shuffled(all.filter(id=>!setupSelected.has(id)));
-    return [...setupSelected,...rest.slice(0,targetCount-setupSelected.size)];
+    setupSelect='random';
+    setupSelected.clear();
+    return shuffled(all).slice(0,targetCount);
   }
   function buildTournamentTeams(ids,teamSize,bracketType){
     if(ids.length!==TEAM_COUNT*teamSize)throw new Error(`팀전은 ${TEAM_COUNT*teamSize}명이 필요합니다.`);
@@ -31124,7 +31118,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const MAX_STACK_SPEED_MULT=1e6;
 
   DEFS[EUNHO]={
-    id:EUNHO,name:'이은호',generation:20,color:'#1976d2',hp:200,speed:200,
+    id:EUNHO,name:'이은호',generation:20,color:'#1976d2',hp:300,speed:200,
     img:'characters/lee_eunho.jpeg',
     role:'충돌 저주·피격 누적 가속·간식 지속 피해형',
     skills:'북극곰 · 비상한두뇌+노력 · 간식기부천사'
@@ -31137,7 +31131,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   };
 
   SKILL_INFO[EUNHO]={
-    summary:'충돌 저주·피격 누적 가속·간식 지속 피해형',hp:'200',speed:'200',
+    summary:'충돌 저주·피격 누적 가속·간식 지속 피해형',hp:'300',speed:'200',
     skills:[
       {kind:'패시브',type:'passive',name:'북극곰',desc:'부딪힌 적에게 3초 동안 북극곰의 저주를 부착한다.',points:['저주 지속시간: 3초','저주 중 받는 모든 피해 1.5배인 취약 효과','저주 중 이동속도 20% 증가','1초마다 0.4 피해, 총 3회','같은 적과 다시 충돌하면 지속시간과 피해 횟수 갱신']},
       {kind:'피격 성장',type:'special',name:'비상한두뇌+노력',desc:'실제 피해를 받을 때마다 자신의 기본 이동속도가 1.2배씩 영구 누적된다.',points:['실제 HP가 감소한 공격 1회마다 1중첩','중첩은 경기 종료까지 유지','피해를 무효화하면 중첩되지 않음']},
@@ -31542,6 +31536,76 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   console.info('[V261] 강예성 이빨투척 전투 로직 적용');
 })();
 
+/* V266 runtime bridge: 코어 IIFE 내부 상태를 검증용으로만 안전하게 노출 */
+window.__GONG_V266_RUNTIME__={
+  verify(){
+    const picker=$('tournamentPicker');
+    const labels=[...document.querySelectorAll('#modeHub > button')]
+      .filter(button=>getComputedStyle(button).display!=='none')
+      .sort((a,b)=>(Number(getComputedStyle(a).order)||0)-(Number(getComputedStyle(b).order)||0))
+      .map(button=>button.textContent.replace(/[⚔️🤝🤖🎲🏆🌱🏅]/gu,'').trim());
+    return {
+      eunhoHp:DEFS?.leeeunho?.hp??null,
+      eunhoSkillHp:SKILL_INFO?.leeeunho?.hp??null,
+      labels,
+      tournamentPickerHidden:!!picker&&getComputedStyle(picker).display==='none',
+      tournamentPickerChildren:picker?.childElementCount??-1,
+      selectModes:[...document.querySelectorAll('[data-t-select]')].map(node=>node.dataset.tSelect),
+      autoBattleRunning:!!autoBattleRunning,
+      normalShowdownFlag:!!currentConfig?.v264NormalShowdown
+    };
+  },
+  state(){
+    return {
+      autoBattleRunning:!!autoBattleRunning,
+      normalShowdownFlag:!!currentConfig?.v264NormalShowdown,
+      mode:currentConfig?.mode||mode||'',
+      participants:[...(currentConfig?.participants||[])],
+      autoHomeScheduled:!!v264NormalReturnTimer,
+      setupVisible:!setup.classList.contains('hidden'),
+      battleVisible:!battle.classList.contains('hidden'),
+      resultVisible:!resultModal.classList.contains('hidden'),
+      gameOver:!!game?.over
+    };
+  },
+  startManualShowdown(ids=['moon','woo']){
+    if(autoBattleRunning)stopAutoBattle();
+    clearTimeout(v264NormalReturnTimer);v264NormalReturnTimer=0;
+    if(!battle.classList.contains('hidden'))$('back').click();
+    forceShowdownSetup();
+    Object.keys(assignments).forEach(id=>assignments[id]='pool');
+    ids.forEach(id=>{if(Object.prototype.hasOwnProperty.call(assignments,id))assignments[id]='showdown'});
+    renderSetup();$('start').click();
+    return this.state();
+  },
+  startAutoBattle(){
+    clearTimeout(v264NormalReturnTimer);v264NormalReturnTimer=0;
+    if(!battle.classList.contains('hidden'))$('back').click();
+    $('autoBattleStart').click();
+    return this.state();
+  },
+  finishCurrent(){
+    if(!game)return this.state();
+    const live=game.players.filter(player=>player.alive&&!player.hidden);
+    for(const player of live.slice(1)){player.alive=false;player.hp=0;player.eliminationOrder=player.eliminationOrder||1}
+    checkEnd();
+    return this.state();
+  },
+  stopAutoBattle(){if(autoBattleRunning)stopAutoBattle();return this.state()},
+  back(){closeResultModal();if(!battle.classList.contains('hidden'))$('back').click();return this.state()},
+  openTournament(){
+    closeResultModal();
+    if(!battle.classList.contains('hidden'))$('back').click();
+    $('tournamentModeBtn').click();
+    const picker=$('tournamentPicker'),options=$('tournamentOptions');
+    return {optionsVisible:!!options&&!options.classList.contains('hidden'),pickerDisplay:picker?getComputedStyle(picker).display:'missing',pickerChildren:picker?.childElementCount??-1,selectModes:[...document.querySelectorAll('[data-t-select]')].map(node=>node.dataset.tSelect)};
+  },
+  createTournament(){
+    $('tournamentCreate').click();
+    const state=window.__GONG_V173_TEST__?.state||null;
+    return {tournamentScreenVisible:!$('tournamentScreen').classList.contains('hidden'),state};
+  }
+};
 
 })();
 </script>
@@ -34143,6 +34207,83 @@ body.competitive-battle #battle .controls #pause{display:block!important;grid-co
   window.__GONG_V264_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V264] 일반 쇼다운 종료 후 자동 홈 · 경쟁전 일시정지만 · 접속 인원 광고 위');
+})();
+</script>
+
+
+
+<style id="v266Style">
+/* V266 · 토너먼트 전체 랜덤 · 모드 순서 · 자동전투 연속 유지 · iPhone 터치 안전영역 */
+:root{--v266-safe-top:env(safe-area-inset-top,0px);--v266-safe-right:env(safe-area-inset-right,0px);--v266-safe-bottom:env(safe-area-inset-bottom,0px);--v266-safe-left:env(safe-area-inset-left,0px)}
+html{width:100%;min-height:100%;scroll-padding-top:calc(var(--v266-safe-top) + 10px);-webkit-text-size-adjust:100%}
+body{width:100%;min-height:100dvh;min-height:-webkit-fill-available;overflow-x:hidden}
+.app{min-height:100dvh;min-height:-webkit-fill-available}
+.screen{padding-top:max(15px,calc(var(--v266-safe-top) + 10px));padding-right:max(13px,calc(var(--v266-safe-right) + 10px));padding-bottom:max(24px,calc(var(--v266-safe-bottom) + 18px));padding-left:max(13px,calc(var(--v266-safe-left) + 10px))}
+button,input,select,textarea,[role="button"]{touch-action:manipulation}
+button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
+#setup,#battle,#tournamentScreen{position:relative;isolation:isolate}
+#modeHub{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#modeHub .v266-hidden-legacy-mode{display:none!important}
+#modeHub .mode-btn[data-mode="showdown"]{order:1!important}
+#modeHub .mode-btn[data-mode="team"]{order:2!important}
+#autoBattleStart{order:3!important}
+#randomModeStart{order:4!important}
+#tournamentModeBtn{order:5!important}
+#trainingModeBtn{order:6!important}
+#draftModeBtn{order:7!important;grid-column:1/-1!important}
+.v266-random-only-card{display:grid;gap:6px;border:2px solid #111;border-radius:13px;background:linear-gradient(145deg,#fff8ce,#fff);padding:12px}
+.v266-random-only-card>[data-t-select]{display:none!important}
+.v266-random-only-card strong{font-size:14px;font-weight:1000;color:#3d2a00}
+.v266-random-only-card span{font-size:10px;font-weight:850;line-height:1.5;color:#665a3d}
+.v266-random-only-card small{display:inline-flex;width:max-content;max-width:100%;border-radius:999px;background:#111;color:#fff;padding:5px 9px;font-size:9px;font-weight:1000;white-space:normal}
+#tournamentPicker,#tournamentClearSelection{display:none!important}
+.tournament-round-tabs{top:var(--v266-safe-top)!important}
+@media(max-width:470px){
+  .screen{padding-top:max(11px,calc(var(--v266-safe-top) + 8px));padding-right:max(8px,calc(var(--v266-safe-right) + 8px));padding-bottom:max(18px,calc(var(--v266-safe-bottom) + 14px));padding-left:max(8px,calc(var(--v266-safe-left) + 8px))}
+  .v266-random-only-card{padding:10px}.v266-random-only-card strong{font-size:13px}
+}
+@supports(-webkit-touch-callout:none){
+  body{-webkit-overflow-scrolling:touch}
+  button,input,select,textarea{font-size:max(16px,1em)}
+  .mode-btn,.mode-hub-btn,.start-btn,.ctrl{font-size:inherit}
+}
+</style>
+<script id="v266LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V266_RANDOM_TOURNAMENT_MANUAL_HOME_EUNHO300_IOS_TOUCH';
+  const expected=['쇼다운','팀전','자동전투','랜덤모드','토너먼트','육성모드','경쟁전'];
+  function visibleModeLabels(){
+    return [...document.querySelectorAll('#modeHub > button')]
+      .filter(button=>getComputedStyle(button).display!=='none')
+      .sort((a,b)=>(Number(getComputedStyle(a).order)||0)-(Number(getComputedStyle(b).order)||0))
+      .map(button=>button.textContent.replace(/[⚔️🤝🤖🎲🏆🌱🏅]/gu,'').trim());
+  }
+  window.__GONG_V266__={
+    build:BUILD,
+    verify(){
+      const labels=visibleModeLabels();
+      const picker=document.getElementById('tournamentPicker');
+      const safeTop=getComputedStyle(document.documentElement).getPropertyValue('--v266-safe-top').trim();
+      const runtime=window.__GONG_V266_RUNTIME__?.verify?.()||{};
+      return {
+        build:BUILD,
+        visibleModeLabels:labels,
+        exactModeOrder:expected.every((label,index)=>labels[index]===label)&&labels.length===expected.length,
+        tournamentRandomOnly:document.querySelectorAll('[data-t-select]').length===1&&!!document.querySelector('[data-t-select="random"]'),
+        tournamentRosterHidden:!!picker&&getComputedStyle(picker).display==='none'&&picker.childElementCount===0,
+        eunhoHp:runtime.eunhoHp??null,
+        eunhoSkillHp:runtime.eunhoSkillHp??null,
+        autoBattleSkipsHomeFlag:true,
+        runtimeReady:!!window.__GONG_V266_RUNTIME__,
+        safeAreaTop:safeTop,
+        touchTargets:[...document.querySelectorAll('#modeHub>button')].filter(b=>getComputedStyle(b).display!=='none').map(b=>Math.round(b.getBoundingClientRect().height))
+      };
+    }
+  };
+  window.__GONG_V266_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V266] 토너먼트 전체 랜덤 · 모드 순서 고정 · 수동 쇼다운만 자동 홈 · 자동전투 연속 유지 · 이은호 HP 300 · iOS 터치 안전영역');
 })();
 </script>
 
