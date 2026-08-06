@@ -2371,7 +2371,7 @@ chaewon:{id:'chaewon',name:'이채원',color:'#d79b3f',hp:200,speed:150,img:IMAG
   jungyoona:{id:'jungyoona',name:'정윤아',generation:20,color:'#d04d7b',hp:210,speed:140,img:IMAGES.jungyoona,role:'21기 피격 회복·영구 횃불·무한 불직선·피격 이탈형',skills:'멋진선배 · 포럼 · 모의유엔 · 학탈'},
   yoonho:{id:'yoonho',name:'이윤호',generation:20,color:'#242832',hp:210,speed:350,img:IMAGES.yoonho,role:'벽 충돌 공격력 성장·고속 충돌·완전 회복·유도 반격형',skills:'힘 · 빨리빨리걸어 · 七顚八起 · 츤데레 · 유도'},
   sia:{id:'sia',name:'박시아',generation:20,color:'#4bb69b',hp:200,speed:200,img:IMAGES.sia,role:'윤현 연계 체력·영구 콩나물·유도 병아리 회복형',skills:'콩병시아 · 콩나물심기 · 병아리소환'},
-  limseoyoon:{id:'limseoyoon',name:'임서윤',generation:21,color:'#7c6fd1',hp:210,speed:180,img:IMAGES.limseoyoon,role:'윤현 멘티·하마 소환·시체 까치·피격 하트형',skills:'윤현 멘티 · 물뚱뚱이 · 까치 · 짱친 지정'},
+  limseoyoon:{id:'limseoyoon',name:'임서윤',generation:21,color:'#7c6fd1',hp:210,speed:180,img:IMAGES.limseoyoon,role:'윤현 멘티·하마 소환·피해 반사·시체 까치·피격 하트형',skills:'윤현 멘티 · 물뚱뚱이 · 리락쿠마헤어밴드 · 까치 · 짱친 지정'},
   hyobin:{id:'hyobin',name:'박효빈',generation:21,color:'#e08a78',hp:200,speed:120,img:IMAGES.hyobin,role:'벽 한자 연사·원뿔 재채기·확률 체력 부활형',skills:'중국어하기 · 재채기 · 페미니스트'},
   woojiyeon:{id:'woojiyeon',name:'우지연',generation:21,color:'#8b5cc7',hp:200,speed:180,img:IMAGES.woojiyeon,role:'언어 공격 무효·알파벳 난사·피해 전가형',skills:'외국인 · 공통영어괴물 · 드투'},
   nayoon:{id:'nayoon',name:'구나윤',generation:21,color:'#ee548c',hp:190,speed:400,img:IMAGES.nayoon,role:'고립 성장·파동·분노 각성형',skills:'입을 옷이 없어 · 우베 전파 · 미미미누출현 · 분조장'},
@@ -2382,7 +2382,7 @@ chaewon:{id:'chaewon',name:'이채원',color:'#d79b3f',hp:200,speed:150,img:IMAG
   chaeun:{id:'chaeun',name:'서채은',color:'#d94f77',hp:250,speed:120,img:IMAGES.chaeun,role:'주기 회복·접촉 고정 공격·후반 폭발형',skills:'돼지 · 이거너한테만말해주는건데 · 다이어트'},
   dawon:{id:'dawon',name:'임다원',color:'#6b4f8a',hp:220,speed:200,img:IMAGES.dawon,role:'속도 추월·별자리 순간이동·팩폭·영구 성장형',skills:'회피형 공포증 · 별자리분석하기 · 팩폭하기 · 울며화내기'},
   duo:{id:'duo',name:'권태연 & 이강은',generation:21,color:'#f59e0b',hp:230,speed:150,img:IMAGES.taeyeon,partnerImg:IMAGES.gangeun,role:'2개의 소형 공·랜덤 포켓몬 모드·생존자 전용 스킬형',skills:'루카리오 · 피카츄 · 리자몽 · 덕질하기 · 마인크래프트하기 · 동아리버저비터합격'},
-  yeeun:{id:'yeeun',name:'최예은',generation:21,color:'#a9444a',hp:190,speed:200,img:IMAGES.yeeun,role:'벽 시전 회복·피격 투사체·방어막 변신형',skills:'물뜨러가기 · 투덜거리기 · 괴롭힘당하기'},
+  yeeun:{id:'yeeun',name:'최예은',generation:21,color:'#a9444a',hp:190,speed:200,img:IMAGES.yeeun,role:'벽 시전 회복·피격 투사체·충돌 수면 알약·방어막 변신형',skills:'물뜨러가기 · 투덜거리기 · 괴롭힘당하기 · 멜라치오'},
   eunchae:{id:'eunchae',name:'장은채',generation:21,color:'#2d5d8a',hp:210,speed:240,img:IMAGES.eunchae,role:'문자 연사·무적 돌진 반격형',skills:'디스랩하기 · 러시아어하기 · 예끼!'},
   hyeeum:{id:'hyeeum',name:'박혜음',generation:21,color:'#d26a9a',hp:200,speed:400,img:IMAGES.hyeeum,role:'윤현 연계 회복·혼란 반사·소용돌이 추적형',skills:'딸 · 부성애자극 · 멘헤라발동'},
   haewon:{id:'haewon',name:'오해원',generation:21,color:'#4267a8',hp:250,speed:200,img:IMAGES.haewon,role:'피해 누적 회전 반격·맵 회복 오브젝트·특정 대상 특효형',skills:'기타휘두르기 · 다사랑먹기 · 유수영을이긴남자'},
@@ -2440,6 +2440,7 @@ const SKILL_INFO={
     skills:[
       {kind:'전장 조건 패시브',type:'passive',name:'윤현 멘티',desc:'전장에 윤현이 있으면 HP가 처음 100 미만이 되는 순간 HP를 80 회복한다.',points:['윤현은 적군이어도 조건 충족','한 경기 1회만 발동']},
       {kind:'소환 공격',type:'attack',name:'물뚱뚱이',desc:'5~7초마다 HP 170의 하마공을 소환해 가장 가까운 적에게 돌진시킨다.',points:['하마공 속도: 140','임서윤과 같은 크기의 공으로 표시','직접 충돌한 적에게 40 피해','폭발 펄스 범위 안 적에게 추가 20 피해','하마공이 폭발한 뒤부터 다음 5~7초 쿨타임 시작']},
+      {kind:'소환 연계 피해 반사',type:'defense',name:'리락쿠마헤어밴드',desc:'물뚱뚱이가 소환되어 있는 동안 임서윤이 실제로 받은 모든 피해를 피해를 준 상대에게 되돌려준다.',points:['물뚱뚱이가 살아 있는 동안만 활성','실제로 감소한 HP만큼 공격자에게 반사','김규원에게는 반사 피해 ×3','반사 피해는 다시 반사되지 않아 무한 반복 방지']},
       {kind:'시체 변환 스킬',type:'attack',name:'까치',desc:'캐릭터가 쓰러진 위치에 까치가 생긴다.',points:['임서윤이 닿으면 까치를 소모하고 HP 40 회복','적이 닿으면 즉시 15 피해','이후 0.5초마다 4 피해를 총 4회 추가','까치는 누군가 닿을 때까지 유지']},
       {kind:'피격 반격 스킬',type:'attack',name:'짱친 지정',desc:'실제 피해를 3번 받을 때마다 벽에 튕기는 하트 1개를 발사한다.',points:['내부 쿨타임: 3초','하트 피해: 20','적중한 적은 3초 동안 속도 20% 감소','하트 적중 시 임서윤 HP 10 회복']}
     ]
@@ -3549,7 +3550,8 @@ chaewon:{
     skills:[
       {kind:'벽 충돌 시전 회복',type:'defense',name:'물뜨러가기',desc:'벽에 닿을 때마다 3.4초 동안 물을 뜨러 가며 시전에 성공하면 체력을 회복한다.',points:['시전 시간: 3.4초','시전 중 제자리 고정','시전 중 실제 피해를 받으면 취소','성공 시 HP 10 회복']},
       {kind:'2회 피격 투사체',type:'attack',name:'투덜거리기',desc:'실제 공격을 2번 받을 때마다 적 방향으로 “에잇” 6개를 연속 발사한다.',points:['에잇 1개당 피해: 8','에잇 발사 간격: 0.4초','3번째 투덜거리기 발동 시 이동속도 ×2 영구 적용','공 크기는 다른 일반 캐릭터와 동일하게 유지','속도 변신은 한 경기 1회']},
-      {kind:'3회 피격 회복·방어막',type:'defense',name:'괴롭힘당하기',desc:'실제 공격을 3번 받을 때마다 회복하고 다음 공격을 막는 방어막을 얻는다.',points:['회복량: 10','회복 발동 후 3초 쿨다운','다음 공격 1회 완전 무효','방어막은 중첩되지 않음']}
+      {kind:'3회 피격 회복·방어막',type:'defense',name:'괴롭힘당하기',desc:'실제 공격을 3번 받을 때마다 회복하고 다음 공격을 막는 방어막을 얻는다.',points:['회복량: 10','회복 발동 후 3초 쿨다운','다음 공격 1회 완전 무효','방어막은 중첩되지 않음']},
+      {kind:'충돌 3회 수면 투사체',type:'attack',name:'멜라치오',desc:'적과 3번 부딪힐 때마다 가장 가까운 적 방향으로 알약 5개를 부채꼴로 던진다.',points:['알약 적중 시 3초 동안 잠듦','잠듦 동안 이동속도 0','0.5초마다 피해 2, 총 6회','김규원에게는 지속 피해 ×2','같은 잠듦 효과는 중첩되지 않고 3초로 갱신']}
     ]
   },
   eunchae:{
@@ -5303,7 +5305,7 @@ function statusText(p){
     if((p.data.dropoutTimer||0)>0)a.push(`🏃 학탈 ${p.data.dropoutTimer.toFixed(1)}s`);
   }
   if(p.id==='limseoyoon'){
-    const hippo=game.seoyoonHippos.some(h=>h.owner===p&&!h.dead);a.push(`🦛 하마 ${hippo?'활동 중':Math.max(0,p.cool.hippo||0).toFixed(1)+'s'}`);a.push(`💜 피격 ${(p.data.hitCount||0)}/3 · 하트쿨 ${Math.max(0,p.data.heartCooldown||0).toFixed(1)}s · 까치 ${game.seoyoonCrows.length}`);
+    const hippo=game.seoyoonHippos.some(h=>h.owner===p&&!h.dead);a.push(`🦛 하마 ${hippo?'활동 중':Math.max(0,p.cool.hippo||0).toFixed(1)+'s'}`);a.push(hippo?'🧸 리락쿠마헤어밴드 · 피해 반사 활성':'🧸 헤어밴드 대기');a.push(`💜 피격 ${(p.data.hitCount||0)}/3 · 하트쿨 ${Math.max(0,p.data.heartCooldown||0).toFixed(1)}s · 까치 ${game.seoyoonCrows.length}`);
   }
   if(p.id==='hyobin'){
     a.push(`🀄 중국어 벽 ${(p.data.wallHits||0)}/3`);a.push(p.data.sneezeCast>0?`🤧 재채기 시전 ${p.data.sneezeCast.toFixed(1)}s`:`🤧 재채기 ${Math.max(0,p.cool.sneeze||0).toFixed(1)}s`);a.push((p.data.feministRevives||0)>=1?'♀ 부활 사용 완료':'♀ 부활 사용 가능');
@@ -5500,6 +5502,7 @@ function statusText(p){
     a.push(`💧 물 ${p.data.waterCasting?p.data.waterTimer.toFixed(1)+'s':'대기'}`);
     a.push(`💢 투덜 ${p.data.grumbleHits}/2 · 발동 ${p.data.grumbleCount}회`);
     a.push(`🛡 괴롭힘 ${p.data.bullyHits}/3${p.data.shield?' · 방어막':''}`);
+    a.push(`💊 멜라치오 충돌 ${p.data.v269MelachioHits||0}/3`);
   }
   if(p.id==='eunchae'){
     a.push(`📝 디스 ${p.data.dissWalls}/3`);
@@ -6929,6 +6932,25 @@ function damage(target,amount,source,skill='공격',opts={}){
   }
 
   const actualDamage=Math.round((hpBefore-target.hp)*10)/10;
+
+  /* V269 임서윤 · 리락쿠마헤어밴드: 물뚱뚱이 활동 중 실제 받은 피해를 공격자에게 반사 */
+  if(
+    actualDamage>0&&
+    target.id==='limseoyoon'&&
+    source!==target&&
+    source?.id!=='arena'&&
+    !opts.selfDamage&&
+    !opts.v269RilakkumaReflect&&
+    game.seoyoonHippos?.some(hippo=>hippo.owner===target&&!hippo.dead&&(hippo.life??1)>0)
+  ){
+    const multiplier=source.id==='kimgyuwon'?3:1;
+    const reflected=Math.round(actualDamage*multiplier*10)/10;
+    if(reflected>0&&source.alive){
+      spawnAttackFx(source.x,source.y,'#7c6fd1','리락쿠마헤어밴드 · 반사',1.4);
+      floater(source.x,source.y-source.r-18,`🧸 반사 ${Number.isInteger(reflected)?reflected:reflected.toFixed(1)}${multiplier===3?' · 김규원 ×3':''}`,'#6758c1',14,.85);
+      damage(source,reflected,target,'리락쿠마헤어밴드 · 반사',{reflected:true,allowDeadSource:true,ignoreAttackPenalty:true,v200FixedDamage:true,v269RilakkumaReflect:true});
+    }
+  }
 
 
   if(actualDamage>0&&target.id==='youngsik'&&target.isBoss&&target.alive){
@@ -34381,6 +34403,235 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_V268_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V268] 전투 방식 버튼 예전 카드형 디자인 복원');
+})();
+</script>
+
+<script id="v269CharacterSkillsAndAutoWakeScript">
+(()=>{
+  'use strict';
+  const BUILD='V269_RILAKKUMA_HEADBAND_MELACHIO_AUTO_WAKE';
+  const uid=player=>player?.data?.v174Uid||player?.data?.v191Uid||player?.id||'unknown';
+
+  function ensurePlayerData(player){
+    if(!player)return;
+    player.data=player.data||{};
+    if(player.id==='yeeun'){
+      player.data.v269MelachioHits=Number(player.data.v269MelachioHits)||0;
+      player.data.v269MelachioContactCd=player.data.v269MelachioContactCd||{};
+    }
+  }
+  function ensureGameData(){
+    if(!game)return;
+    if(!Array.isArray(game.v269MelachioPills))game.v269MelachioPills=[];
+    for(const player of game.players||[])ensurePlayerData(player);
+  }
+  function hippoActive(owner){
+    return !!game?.seoyoonHippos?.some(hippo=>hippo.owner===owner&&!hippo.dead&&(hippo.life??1)>0);
+  }
+
+  function fireMelachio(owner){
+    if(!owner?.alive||owner.hidden||!game)return false;
+    ensureGameData();
+    const candidates=enemies(owner).filter(target=>target.alive&&!target.hidden);
+    const target=candidates.length?candidates.reduce((best,current)=>dist(owner,current)<dist(owner,best)?current:best):null;
+    if(!target)return false;
+    const base=Math.atan2(target.y-owner.y,target.x-owner.x);
+    for(let index=0;index<5;index++){
+      const angle=base+(index-2)*.115;
+      const speed=370;
+      game.v269MelachioPills.push({
+        owner,x:owner.x+Math.cos(angle)*(owner.r+10),y:owner.y+Math.sin(angle)*(owner.r+10),
+        vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:11,life:3.2,rot:angle,index
+      });
+    }
+    spawnAttackFx(owner.x,owner.y,'#db6680','멜라치오 · 알약 5개',1.5);
+    floater(owner.x,owner.y-owner.r-20,'💊 멜라치오!','#a9444a',17,.9);
+    return true;
+  }
+
+  function registerMelachioCollision(owner,target){
+    if(owner?.id!=='yeeun'||!owner.alive||owner.hidden||!target?.alive||target.hidden||!isEnemy(owner,target))return;
+    ensurePlayerData(owner);
+    const key=uid(target),now=Number(game?.t)||0;
+    if((owner.data.v269MelachioContactCd[key]||0)>now)return;
+    owner.data.v269MelachioContactCd[key]=now+.62;
+    owner.data.v269MelachioHits=(owner.data.v269MelachioHits||0)+1;
+    if(owner.data.v269MelachioHits>=3){
+      owner.data.v269MelachioHits=0;
+      fireMelachio(owner);
+    }else{
+      floater(owner.x,owner.y-owner.r-14,`💊 멜라치오 ${owner.data.v269MelachioHits}/3`,'#a9444a',12,.48);
+    }
+  }
+
+  function applyMelachioSleep(owner,target){
+    if(!owner||!target?.alive||target.hidden)return false;
+    target.data=target.data||{};
+    target.data.v269MelachioSleep={owner,timer:3,tick:.5,ticksLeft:6};
+    target.frozen=Math.max(target.frozen||0,3);
+    target.data.resumeAfterFreeze=true;
+    target.vx=0;target.vy=0;
+    spawnAttackFx(target.x,target.y,'#8f69bc','멜라치오 · 잠듦',1.35);
+    floater(target.x,target.y-target.r-18,'💤 잠듦 3초','#7650a5',15,.85);
+    return true;
+  }
+
+  function updateMelachioPills(dt){
+    ensureGameData();
+    for(const pill of game.v269MelachioPills){
+      if(pill.life<=0)continue;
+      if(!pill.owner){pill.life=0;continue;}
+      pill.x+=pill.vx*dt;pill.y+=pill.vy*dt;pill.life-=dt;pill.rot+=dt*5;
+      for(const target of game.players||[]){
+        if(!target.alive||target.hidden||target===pill.owner||!isEnemy(pill.owner,target))continue;
+        if(dist(pill,target)>=pill.r+target.r)continue;
+        pill.life=0;applyMelachioSleep(pill.owner,target);break;
+      }
+      if(pill.x<-40||pill.x>W+40||pill.y<-40||pill.y>H+40)pill.life=0;
+    }
+    game.v269MelachioPills=game.v269MelachioPills.filter(pill=>pill.life>0);
+  }
+
+  function updateMelachioSleep(dt){
+    for(const target of game?.players||[]){
+      const sleep=target.data?.v269MelachioSleep;
+      if(!sleep)continue;
+      if(!target.alive||target.hidden){delete target.data.v269MelachioSleep;continue;}
+      sleep.timer=Math.max(0,sleep.timer-dt);
+      sleep.tick-=dt;
+      target.frozen=Math.max(target.frozen||0,sleep.timer);
+      target.data.resumeAfterFreeze=true;
+      target.vx=0;target.vy=0;
+      while(sleep.tick<=1e-9&&sleep.ticksLeft>0&&target.alive){
+        sleep.tick+=.5;sleep.ticksLeft--;
+        const amount=target.id==='kimgyuwon'?4:2;
+        const dealt=damage(target,amount,sleep.owner,'멜라치오 · 수면 피해',{allowDeadSource:true,visualFx:false,v200FixedDamage:true,v269MelachioDot:true});
+        if(target.alive)floater(target.x,target.y-target.r-14,dealt>0?`💤 -${Number.isInteger(dealt)?dealt:dealt.toFixed(1)}${target.id==='kimgyuwon'?' · ×2':''}`:'💤 피해 무효','#7650a5',12,.5);
+      }
+      if(sleep.timer<=0||sleep.ticksLeft<=0||!target.alive){
+        delete target.data.v269MelachioSleep;
+        if(target.alive)floater(target.x,target.y-target.r-14,'✨ 잠에서 깨어남','#7650a5',12,.55);
+      }
+    }
+  }
+
+  const baseResetBattle=resetBattle;
+  resetBattle=function(...args){
+    const result=baseResetBattle(...args);
+    ensureGameData();
+    game.v269MelachioPills=[];
+    for(const player of game.players||[]){
+      if(player.id==='yeeun'){
+        player.data.v269MelachioHits=0;
+        player.data.v269MelachioContactCd={};
+      }
+      delete player.data.v269MelachioSleep;
+    }
+    return result;
+  };
+
+  const baseCollide=collide;
+  collide=function(a,b){
+    const touching=!!(a?.alive&&b?.alive&&!a.hidden&&!b.hidden&&dist(a,b)<a.r+b.r);
+    const result=baseCollide(a,b);
+    if(touching){registerMelachioCollision(a,b);registerMelachioCollision(b,a);}
+    return result;
+  };
+
+  const baseTick=tick;
+  tick=function(dt){
+    if(game&&!game.over){updateMelachioPills(dt);updateMelachioSleep(dt);}
+    return baseTick(dt);
+  };
+
+  const baseDraw=draw;
+  draw=function(){
+    const result=baseDraw();
+    if(game){
+      for(const pill of game.v269MelachioPills||[]){
+        ctx.save();ctx.translate(pill.x,pill.y);ctx.rotate(pill.rot||0);ctx.shadowColor='#ff8aa0';ctx.shadowBlur=13;ctx.font='23px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('💊',0,0);ctx.restore();
+      }
+      for(const player of game.players||[]){
+        if(!player.alive||player.hidden)continue;
+        if(player.data?.v269MelachioSleep){
+          ctx.save();ctx.globalAlpha=.95;ctx.font='20px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.fillText('💤',player.x,player.y-player.r-22-Math.sin(game.t*5)*3);ctx.strokeStyle='#8f69bc';ctx.lineWidth=4;ctx.setLineDash([5,4]);ctx.beginPath();ctx.arc(player.x,player.y,player.r+10,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
+        }
+        if(player.id==='limseoyoon'&&hippoActive(player)){
+          ctx.save();ctx.strokeStyle='#7c6fd1';ctx.lineWidth=5;ctx.shadowColor='#9b8ef0';ctx.shadowBlur=16;ctx.setLineDash([7,5]);ctx.beginPath();ctx.arc(player.x,player.y,player.r+11,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.shadowBlur=0;ctx.font='18px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.textAlign='center';ctx.fillText('🧸',player.x,player.y-player.r-21);ctx.restore();
+        }
+      }
+    }
+    return result;
+  };
+
+  // 자동전투 전용 Screen Wake Lock. 화면에는 상태 UI를 만들지 않는다.
+  let autoWakeSentinel=null,autoWakeRequesting=false,autoWakeRetry=0;
+  const autoWakeSupported=!!navigator.wakeLock?.request;
+  function clearAutoWakeRetry(){clearTimeout(autoWakeRetry);autoWakeRetry=0;}
+  async function requestAutoWake(){
+    if(!autoWakeSupported||!autoBattleRunning||document.visibilityState!=='visible')return false;
+    if(autoWakeSentinel&&!autoWakeSentinel.released)return true;
+    if(autoWakeRequesting)return false;
+    autoWakeRequesting=true;clearAutoWakeRetry();
+    try{
+      const sentinel=await navigator.wakeLock.request('screen');
+      autoWakeSentinel=sentinel;autoWakeRequesting=false;
+      sentinel.addEventListener?.('release',()=>{
+        if(autoWakeSentinel===sentinel)autoWakeSentinel=null;
+        if(autoBattleRunning&&document.visibilityState==='visible')autoWakeRetry=setTimeout(requestAutoWake,700);
+      },{once:true});
+      return true;
+    }catch(_){
+      autoWakeRequesting=false;autoWakeSentinel=null;
+      if(autoBattleRunning&&document.visibilityState==='visible')autoWakeRetry=setTimeout(requestAutoWake,3000);
+      return false;
+    }
+  }
+  async function releaseAutoWake(){
+    clearAutoWakeRetry();autoWakeRequesting=false;
+    const sentinel=autoWakeSentinel;autoWakeSentinel=null;
+    if(sentinel&&!sentinel.released){try{await sentinel.release();}catch(_){}}
+  }
+  function reconcileAutoWake(){
+    if(autoBattleRunning){requestAutoWake();}else releaseAutoWake();
+  }
+  document.getElementById('autoBattleStart')?.addEventListener('click',()=>requestAutoWake());
+  document.getElementById('autoBattleStop')?.addEventListener('click',()=>releaseAutoWake());
+  document.getElementById('back')?.addEventListener('click',()=>setTimeout(reconcileAutoWake,0));
+  document.addEventListener('pointerdown',()=>{if(autoBattleRunning)requestAutoWake();},{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(reconcileAutoWake,120);else releaseAutoWake();});
+  window.addEventListener('focus',()=>setTimeout(reconcileAutoWake,120));
+  window.addEventListener('pageshow',()=>setTimeout(reconcileAutoWake,120));
+  setInterval(reconcileAutoWake,2000);
+
+  window.__GONG_V269__={
+    build:BUILD,
+    verify(){
+      const seo=DEFS.limseoyoon,yeeun=DEFS.yeeun;
+      return {
+        build:BUILD,
+        seoyoonSkill:seo.skills.includes('리락쿠마헤어밴드'),
+        yeeunSkill:yeeun.skills.includes('멜라치오'),
+        reflectionHook:true,
+        melachioPills:true,
+        gyuwonReflectMultiplier:3,
+        gyuwonSleepMultiplier:2,
+        autoWakeSupported,
+        autoWakeActive:!!autoWakeSentinel&&!autoWakeSentinel.released,
+        autoBattleRunning:!!autoBattleRunning
+      };
+    },
+    fireMelachio(ownerId='yeeun'){
+      const owner=game?.players?.find(player=>player.id===ownerId);return fireMelachio(owner);
+    },
+    applySleep(targetId='kimgyuwon'){
+      const owner=game?.players?.find(player=>player.id==='yeeun'),target=game?.players?.find(player=>player.id===targetId);return applyMelachioSleep(owner,target);
+    },
+    wakeState:()=>({supported:autoWakeSupported,active:!!autoWakeSentinel&&!autoWakeSentinel.released,running:!!autoBattleRunning})
+  };
+  window.__GONG_V269_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V269] 임서윤 리락쿠마헤어밴드 · 최예은 멜라치오 · 자동전투 화면 꺼짐 방지');
 })();
 </script>
 
