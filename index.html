@@ -20793,7 +20793,7 @@ function frame(ts){
     updateSetupKindUI();renderPicker();renderHall();window.scrollTo({top:0,behavior:'smooth'});
   }
   function closeSetupMode(){document.body.classList.remove('tournament-setup');tOptions.classList.add('hidden');tBtn.classList.remove('active');}
-  tBtn.addEventListener('click',openSetup);
+  tBtn.addEventListener('click',()=>createQuickTournament());
   document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>{closeSetupMode();el('addAllShowdown').classList.toggle('hidden',mode!=='showdown');el('removeAllShowdown').classList.toggle('hidden',mode!=='showdown');}));
   el('tournamentSizeChoices').querySelectorAll('[data-t-size]').forEach(b=>b.addEventListener('click',()=>{setupKind='solo';setupSize=Number(b.dataset.tSize);while(setupSelected.size>selectedTargetCount())setupSelected.delete([...setupSelected].pop());renderPicker();}));
   el('tournamentTeamModeChoice').addEventListener('click',()=>{setupKind='team';while(setupSelected.size>selectedTargetCount())setupSelected.delete([...setupSelected].pop());renderPicker();});
@@ -20914,6 +20914,24 @@ function frame(ts){
       if(state.predictionsEnabled)showRankPrediction(true);
     }catch(error){alert(error.message||error);}
   }
+  function quickPresetFromState(source=state){
+    if(source?.format==='team')return {format:'team',teamSize:[2,3,4].includes(Number(source.teamSize))?Number(source.teamSize):2};
+    return {format:'solo',size:[8,16,32,64].includes(Number(source?.size))?Number(source.size):64};
+  }
+  function createQuickTournament(preset=null){
+    if(typeof stopAutoBattle==='function'&&autoBattleRunning)stopAutoBattle();
+    const chosen=preset||{format:'solo',size:64,teamSize:2};
+    setupKind=chosen.format==='team'?'team':'solo';
+    setupSize=[8,16,32,64].includes(Number(chosen.size))?Number(chosen.size):64;
+    setupTeamSize=[2,3,4].includes(Number(chosen.teamSize))?Number(chosen.teamSize):2;
+    setupSelect='random';setupSelected.clear();
+    el('tournamentBracketType').value='random';
+    el('tournamentFinalRule').value='1';
+    el('tournamentWatchMode').value='manual';
+    el('tournamentSpeed').value='2';
+    el('tournamentPredictionEnabled').checked=true;
+    createTournament();
+  }
   el('tournamentCreate').addEventListener('click',createTournament);
 
   function fighterHTML(id,m){
@@ -20997,8 +21015,9 @@ function frame(ts){
         render();
       }));
       const confirm=tModalBody.querySelector('[data-rank-confirm]');
-      if(confirm)confirm.addEventListener('click',()=>{state.rankPredictions={...picks};state.predictionLocked=true;closeModal();renderBracket();});
-      tModalBody.querySelector('[data-rank-skip]').addEventListener('click',()=>{state.rankPredictions={first:null,second:null,third:null};state.predictionLocked=true;closeModal();renderBracket();});
+      const launchFirstMatch=()=>setTimeout(()=>{const next=currentMatch();if(state?.active&&!state.completed&&next)prepareMatch(next);},0);
+      if(confirm)confirm.addEventListener('click',()=>{state.rankPredictions={...picks};state.predictionLocked=true;closeModal();renderBracket();launchFirstMatch();});
+      tModalBody.querySelector('[data-rank-skip]').addEventListener('click',()=>{state.rankPredictions={first:null,second:null,third:null};state.predictionLocked=true;closeModal();renderBracket();launchFirstMatch();});
     }
     render();
   }
@@ -21214,10 +21233,11 @@ function frame(ts){
   function exactPredictionCount(){const r=state.rankPredictions;return Number(r.first===state.champion)+Number(r.second===state.runnerUp)+Number(r.third===state.thirdPlace);}
   function showFinalResult(){
     const c=state.champion,d=TDEFS[c],agg=state.aggregate[c],r=state.rankPredictions,correct=exactPredictionCount();
-    openModal('🏆 토너먼트 종료',`<div class="t-result-hero" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="lazy" decoding="async" fetchpriority="low" style="object-position:${crop(c)}"><h3>${esc(d.name)} 최종 우승!</h3><div style="font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:7px;font-weight:1000;color:${r.first===c?'#18753c':'#755f18'}">${r.first?(r.first===c?'🔮 1위 예측 적중!':`1위 예측 ${esc(TDEFS[r.first].name)} · 실패`):'순위 예측 없음'}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${esc(TDEFS[state.runnerUp].name)}</b><span>2위</span></div><div class="t-result-stat"><b>${esc(TDEFS[state.thirdPlace].name)}</b><span>3위</span></div><div class="t-result-stat"><b>${correct}/3</b><span>순위 정확히 적중</span></div><div class="t-result-stat"><b>${esc(TDEFS[state.mvp].name)}</b><span>MVP</span></div></div>${r.first?`<div style="margin-top:10px;border:2px solid #d8c36d;border-radius:12px;padding:9px;font-size:11px;font-weight:1000">내 예측: 1위 ${esc(TDEFS[r.first].name)} · 2위 ${esc(TDEFS[r.second].name)} · 3위 ${esc(TDEFS[r.third].name)}<br>실제 결과: 1위 ${esc(TDEFS[state.champion].name)} · 2위 ${esc(TDEFS[state.runnerUp].name)} · 3위 ${esc(TDEFS[state.thirdPlace].name)}</div>`:''}<div class="t-result-buttons"><button class="gold" data-final-bracket>전체 결과</button><button class="gold" data-final-hall>명예의 전당</button><button class="primary" data-final-new>새 토너먼트</button></div>`,false);
+    openModal('🏆 토너먼트 종료',`<div class="t-result-hero" style="--c:${d.color}"><img src="${photoSrc(d)}" alt="${esc(d.name)}" loading="lazy" decoding="async" fetchpriority="low" style="object-position:${crop(c)}"><h3>${esc(d.name)} 최종 우승!</h3><div style="font-weight:1000">${agg.wins}승 · 총 피해 ${Math.round(agg.damage)} · 총 회복 ${Math.round(agg.healing)} · ${agg.kills}킬</div><div style="margin-top:7px;font-weight:1000;color:${r.first===c?'#18753c':'#755f18'}">${r.first?(r.first===c?'🔮 1위 예측 적중!':`1위 예측 ${esc(TDEFS[r.first].name)} · 실패`):'순위 예측 없음'}</div></div><div class="t-result-grid"><div class="t-result-stat"><b>${esc(TDEFS[state.runnerUp].name)}</b><span>2위</span></div><div class="t-result-stat"><b>${esc(TDEFS[state.thirdPlace].name)}</b><span>3위</span></div><div class="t-result-stat"><b>${correct}/3</b><span>순위 정확히 적중</span></div><div class="t-result-stat"><b>${esc(TDEFS[state.mvp].name)}</b><span>MVP</span></div></div>${r.first?`<div style="margin-top:10px;border:2px solid #d8c36d;border-radius:12px;padding:9px;font-size:11px;font-weight:1000">내 예측: 1위 ${esc(TDEFS[r.first].name)} · 2위 ${esc(TDEFS[r.second].name)} · 3위 ${esc(TDEFS[r.third].name)}<br>실제 결과: 1위 ${esc(TDEFS[state.champion].name)} · 2위 ${esc(TDEFS[state.runnerUp].name)} · 3위 ${esc(TDEFS[state.thirdPlace].name)}</div>`:''}<div class="t-result-buttons"><button class="gold" data-final-bracket>전체 결과</button><button class="gold" data-final-hall>명예의 전당</button><button class="primary" data-final-new>새 토너먼트</button><button class="home" data-final-home>메인화면으로 돌아가기</button></div>`,false);
     tModalBody.querySelector('[data-final-bracket]').addEventListener('click',()=>{closeModal();setScreens('tournament');renderBracket();});
     tModalBody.querySelector('[data-final-hall]').addEventListener('click',openHall);
-    tModalBody.querySelector('[data-final-new]').addEventListener('click',()=>{closeModal();state=null;tournamentEntries={};setScreens('setup');openSetup();});
+    tModalBody.querySelector('[data-final-new]').addEventListener('click',()=>{const preset=quickPresetFromState(state);closeModal();state=null;tournamentEntries={};createQuickTournament(preset);});
+    tModalBody.querySelector('[data-final-home]').addEventListener('click',()=>{closeModal();state=null;tournamentEntries={};setScreens('setup');document.body.classList.remove('tournament-setup');tOptions.classList.add('hidden');tBtn.classList.remove('active');document.querySelector('.mode-btn[data-mode="showdown"]')?.click();window.scrollTo({top:0,behavior:'smooth'});});
   }
 
   const originalOpenResultModal=openResultModal;
@@ -34421,6 +34441,42 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   };
   window.__GONG_V270_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V270] 경쟁전 패배 점수 보존 · 클라우드 병합을 경기 최신성 기준으로 수정');
+})();
+</script>
+
+<style id="v271Style">
+/* V271 · 토너먼트 즉시 랜덤→예측→전투 흐름 */
+#tournamentOptions{display:none!important}
+#tournamentSetupBack{display:none!important}
+.t-result-buttons .home{background:#fff;color:#111;border:2px solid #111}
+.t-result-buttons button:last-child:nth-child(3){grid-column:auto}
+@media(max-width:470px){
+  .t-result-buttons{grid-template-columns:1fr 1fr}
+  .t-result-buttons button{min-height:48px;font-size:12px}
+}
+</style>
+<script id="v271LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V271_TOURNAMENT_INSTANT_RANDOM_PREDICT_PLAY';
+  window.__GONG_V271__={
+    build:BUILD,
+    verify(){
+      const api=window.__GONG_V173_TEST__;
+      return {
+        build:BUILD,
+        setupHidden:getComputedStyle(document.getElementById('tournamentOptions')).display==='none',
+        setupBackHidden:getComputedStyle(document.getElementById('tournamentSetupBack')).display==='none',
+        finalHomeButtonSupported:true,
+        tournamentApiReady:!!api,
+        predictionAutoLaunchPatched:true,
+        defaultQuickSize:64
+      };
+    }
+  };
+  window.__GONG_V271_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V271] 토너먼트 즉시 랜덤 편성 · 예측 확정 후 첫 경기 자동 시작 · 새 토너먼트 즉시 예측 · 메인화면 버튼');
 })();
 </script>
 
