@@ -1968,7 +1968,6 @@ body.competitive-battle #restart{display:none!important}
           <optgroup label="기수별">
             <option value="gen20">20기</option>
             <option value="gen21">21기</option>
-            <option value="genOther">기타 기수</option>
           </optgroup>
           <optgroup label="전투 역할별">
             <option value="attack">공격형</option>
@@ -29176,12 +29175,17 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   updateBalanceStatus();GongGameModules.registerSystem('balance-cache',balanceApi);
 
   /* ---------- 5. V262 character search + compact classification filter ---------- */
+  const V272_GEN20_IDS=new Set([
+    'yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','jaewook'
+  ]);
+  for(const [id,d] of Object.entries(DEFS)){
+    if(!BOSS_IDS.has(id))d.generation=V272_GEN20_IDS.has(id)?20:21;
+  }
   function v262CategoryMatch(id,category){
     if(!category||category==='all')return true;
-    const d=DEFS[id]||{},generation=Number(d.generation)||0;
-    if(category==='gen20')return generation===20;
-    if(category==='gen21')return generation===21;
-    if(category==='genOther')return generation!==20&&generation!==21;
+    const d=DEFS[id]||{};
+    if(category==='gen20')return V272_GEN20_IDS.has(id);
+    if(category==='gen21')return !!DEFS[id]&&!BOSS_IDS.has(id)&&!V272_GEN20_IDS.has(id);
     const text=`${d.role||''} ${d.skills||''}`.toLowerCase();
     const patterns={
       attack:/공격|폭딜|투사체|돌진|폭격|연사|근접|원거리|광역|범위|레이저|분열|충격|박치기|발사/,
@@ -34477,6 +34481,37 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_V271_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V271] 토너먼트 즉시 랜덤 편성 · 예측 확정 후 첫 경기 자동 시작 · 새 토너먼트 즉시 예측 · 메인화면 버튼');
+})();
+</script>
+
+<script id="v272LatestBuildScript">
+(()=>{
+  'use strict';
+  const BUILD='V272_GENERATION_CLASSIFICATION_FIX';
+  const GEN20=new Set(['yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','jaewook']);
+  window.__GONG_V272__={
+    build:BUILD,
+    generationOf(id){if(GEN20.has(id))return 20;return (typeof DEFS!=='undefined'&&DEFS[id]&&!(typeof BOSS_IDS!=='undefined'&&BOSS_IDS.has(id)))?21:null},
+    verify(){
+      const select=document.getElementById('v262CharacterCategory');
+      const options=select?[...select.options].map(option=>option.value):[];
+      const defs=(typeof DEFS!=='undefined'?DEFS:{});
+      const normalIds=Object.keys(defs).filter(id=>!(typeof BOSS_IDS!=='undefined'&&BOSS_IDS.has(id)));
+      return {
+        build:BUILD,
+        options,
+        noOtherGeneration:!options.includes('genOther'),
+        yesung20:GEN20.has('yesung'),
+        jaewook20:GEN20.has('jaewook'),
+        hyukju21:!GEN20.has('hyukju'),
+        gen20Count:normalIds.filter(id=>GEN20.has(id)).length,
+        gen21Count:normalIds.filter(id=>!GEN20.has(id)).length
+      };
+    }
+  };
+  window.__GONG_V272_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V272] 기수 분류 수정 · 강예성~홍재욱 20기 · 고혁주 이후 전체 21기 · 기타 기수 삭제');
 })();
 </script>
 
