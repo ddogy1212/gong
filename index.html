@@ -34784,7 +34784,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=291',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=292',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36903,5 +36903,124 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
 })();
 </script>
 
+
+
+<style id="v292TutorialModeGuideStyle">
+/* V292 · 목적형 모드 가이드 + 상황별 첫 진입 도움말 */
+.v292-home-guide{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0 10px;border:2px solid #27202f;border-radius:15px;background:linear-gradient(135deg,#f7f2ff,#fff7d8);padding:9px 11px;box-shadow:0 3px 0 #2b1f3d20}
+.v292-home-guide-copy{min-width:0}.v292-home-guide-copy b{display:block;font-size:11px;font-weight:1000;color:#2f1d4d}.v292-home-guide-copy span{display:block;margin-top:2px;font-size:8px;font-weight:900;color:#74687d;line-height:1.35}.v292-home-guide-btn{flex:0 0 auto;border:2px solid #17131b;border-radius:10px;background:#251737;color:#fff;padding:8px 10px;font-size:9px;font-weight:1000;cursor:pointer;box-shadow:0 2px 0 #0004}
+.v292-guide-wrap{margin:13px 0 15px;border:2px solid #d8caef;border-radius:17px;background:linear-gradient(145deg,#fbf9ff,#fffdf4);padding:11px}.v292-guide-title{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.v292-guide-title strong{font-size:14px;font-weight:1000;color:#2d174f}.v292-guide-title span{font-size:7px;font-weight:1000;color:#6d28d9;background:#eee5ff;border-radius:999px;padding:4px 7px;white-space:nowrap}.v292-guide-intro{margin:4px 0 10px!important;font-size:9px!important;color:#6f6577!important}
+.v292-goal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.v292-goal{border:1.5px solid #d7cfe1;border-radius:12px;background:#fff;padding:9px}.v292-goal.recommended{border:2px solid #6d28d9;background:#f8f3ff}.v292-goal h3{margin:0 0 5px;font-size:10px;font-weight:1000;color:#241d29}.v292-goal p{margin:0 0 7px!important;font-size:7.5px!important;line-height:1.4!important;color:#756c7b!important}.v292-goal-modes{display:flex;flex-wrap:wrap;gap:5px}.v292-mode-chip{border:1.5px solid #28202e;border-radius:9px;background:#f8f7fa;color:#211b25;padding:5px 7px;font-size:7.5px;font-weight:1000;cursor:pointer}.v292-mode-chip.primary{background:#2e1b48;color:#fff;border-color:#2e1b48}.v292-mode-chip:active{transform:translateY(1px)}
+.v292-all-modes{margin-top:9px;border-top:1px solid #e4ddeb;padding-top:9px}.v292-all-modes summary{cursor:pointer;font-size:9px;font-weight:1000;color:#4e386a}.v292-mode-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px}.v292-mode-row{border:1px solid #ded8e5;border-radius:9px;background:#fff;padding:7px}.v292-mode-row b{display:block;font-size:8px;font-weight:1000}.v292-mode-row span{display:block;margin-top:3px;font-size:6.6px;font-weight:850;color:#786f7d;line-height:1.35}.v292-mode-row em{display:inline-block;margin-top:4px;border-radius:999px;background:#efe8ff;color:#5d2c91;padding:2px 5px;font-size:5.8px;font-style:normal;font-weight:1000}
+.v292-tutorial-divider{display:flex;align-items:center;gap:7px;margin:13px 0 7px;color:#7a7080;font-size:7px;font-weight:1000}.v292-tutorial-divider::before,.v292-tutorial-divider::after{content:"";height:1px;background:#ddd4e5;flex:1}
+.v292-context-tip{position:fixed;left:50%;top:max(74px,calc(env(safe-area-inset-top,0px) + 60px));transform:translateX(-50%) translateY(-8px);z-index:805;width:min(430px,calc(100% - 24px));border:2px solid #19151d;border-radius:13px;background:#fff;color:#211a25;padding:9px 11px;box-shadow:0 12px 36px #0004;opacity:0;pointer-events:none;transition:.18s ease}.v292-context-tip.show{opacity:1;transform:translateX(-50%) translateY(0)}.v292-context-tip b{display:block;font-size:10px;font-weight:1000}.v292-context-tip span{display:block;margin-top:2px;font-size:7.5px;font-weight:900;color:#716879;line-height:1.4}.v292-mode-pulse{animation:v292ModePulse .72s ease 3;position:relative;z-index:2}@keyframes v292ModePulse{0%,100%{box-shadow:0 3px 0 #0002}50%{box-shadow:0 0 0 5px #8b5cf655,0 5px 0 #0002;transform:translateY(-2px)}}
+@media(max-width:520px){.v292-home-guide{padding:8px 9px}.v292-home-guide-copy b{font-size:10px}.v292-home-guide-copy span{font-size:7px}.v292-goal-grid{grid-template-columns:1fr}.v292-mode-list{grid-template-columns:repeat(2,minmax(0,1fr))}.v292-guide-wrap{padding:9px}.v292-guide-title strong{font-size:12px}}
+</style>
+<script id="v292TutorialModeGuideScript">
+(()=>{
+  'use strict';
+  const BUILD='V292_PURPOSE_FIRST_MODE_GUIDE_CONTEXT_TUTORIAL';
+  const GUIDE_KEY='gonggame_v292_mode_guide_seen_v1';
+  const TIP_KEY='gonggame_v292_mode_tip_seen_v1';
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const MODES={
+    showdown:{icon:'⚔️',name:'쇼다운',tag:'처음 추천',desc:'내가 캐릭터를 직접 배정해 싸우는 기본 개인전. 공게임을 처음 익힐 때 가장 좋아.',target:'.mode-btn[data-mode="showdown"]'},
+    team:{icon:'🤝',name:'팀전',tag:'직접 팀 구성',desc:'여러 팀에 캐릭터를 나눠 넣고 팀 대 팀으로 싸워. 같은 팀끼리는 공격하지 않아.',target:'.mode-btn[data-mode="team"]'},
+    auto:{icon:'🤖',name:'자동전투',tag:'편하게 관전',desc:'참가 캐릭터와 인원을 게임이 자동으로 뽑고, 결과 뒤 다음 경기까지 자동으로 이어가.',target:'#autoBattleStart',instant:true},
+    random:{icon:'🎲',name:'랜덤모드',tag:'변칙 룰',desc:'랜덤 참가자에 회복불가·랜덤HP 같은 특수 규칙까지 매 경기 바뀌는 혼돈 모드.',target:'#randomModeStart',instant:true},
+    tournament:{icon:'🏆',name:'토너먼트',tag:'대회 관전',desc:'8·16·32·64인 또는 팀 토너먼트를 열고 우승자를 가려. 시작 전 최종 순위 예측도 가능해.',target:'#tournamentModeBtn'},
+    training:{icon:'🌱',name:'육성모드',tag:'숙련도 성장',desc:'한 캐릭터를 정해 랜덤 상대와 1대1을 계속해. 승리할 때마다 숙련도 +30 XP.',target:'#trainingModeBtn'},
+    competitive:{icon:'🏅',name:'경쟁전',tag:'티어·점수',desc:'24명 후보에서 밴·픽하고 승패와 활약으로 시즌 경쟁전 점수가 오르내리는 진지한 모드.',target:'#draftModeBtn'},
+    friendly:{icon:'🤝',name:'친선전',tag:'친구와 대결',desc:'친구와 6자리 방 코드로 실시간 밴·픽을 해. 결과는 경쟁전 티어 점수에 반영되지 않아.',target:'#friendlyModeBtn'},
+    boss:{icon:'👑',name:'보스전',tag:'강적 공략',desc:'도전자 캐릭터들을 직접 골라 특별한 스킬을 가진 강력한 보스 하나를 함께 공략해.',target:'.mode-btn[data-mode="boss"]'}
+  };
+  const GOALS=[
+    {title:'🔥 처음이거나 내가 직접 골라 싸울래',copy:'기본 전투부터 익히고, 익숙해지면 팀을 직접 짜 봐.',modes:['showdown','team'],recommended:true},
+    {title:'🏅 실력으로 경쟁하거나 친구랑 붙을래',copy:'점수까지 걸고 싶으면 경쟁전, 부담 없이 친구랑이면 친선전.',modes:['competitive','friendly']},
+    {title:'🌱 좋아하는 캐릭터를 키울래',copy:'한 캐릭터 숙련도를 집중해서 올리고 싶을 때.',modes:['training']},
+    {title:'🎥 직접 고르기보다 큰 싸움을 구경할래',copy:'대회는 토너먼트, 계속 관전은 자동전투, 변칙 룰은 랜덤모드.',modes:['tournament','auto','random']},
+    {title:'👑 강한 적 하나를 다 같이 잡을래',copy:'특별한 패턴과 스킬을 가진 보스를 공략할 때.',modes:['boss']}
+  ];
+  let tipTimer=0;
+  const readTips=()=>{try{return JSON.parse(localStorage.getItem(TIP_KEY)||'{}')||{}}catch(_){return {}}};
+  const writeTips=v=>{try{localStorage.setItem(TIP_KEY,JSON.stringify(v))}catch(_){}};
+  const guideSeen=()=>{try{return localStorage.getItem(GUIDE_KEY)==='1'}catch(_){return false}};
+  const markGuideSeen=()=>{try{localStorage.setItem(GUIDE_KEY,'1')}catch(_){}};
+
+  function guideHtml(){
+    const chips=ids=>ids.map((id,i)=>{const m=MODES[id];return `<button type="button" class="v292-mode-chip ${i===0?'primary':''}" data-v292-mode="${id}">${m.icon} ${esc(m.name)}</button>`}).join('');
+    return `<section id="v292ModeGuideSection" class="v292-guide-wrap"><div class="v292-guide-title"><strong>🧭 뭘 하고 싶은지부터 골라봐</strong><span>모드 추천</span></div><p class="v292-guide-intro">모드 이름을 외울 필요 없어. 하고 싶은 플레이를 고르면 맞는 모드를 바로 알려줄게.</p><div class="v292-goal-grid">${GOALS.map(g=>`<article class="v292-goal ${g.recommended?'recommended':''}"><h3>${esc(g.title)}</h3><p>${esc(g.copy)}</p><div class="v292-goal-modes">${chips(g.modes)}</div></article>`).join('')}</div><details class="v292-all-modes"><summary>📚 9개 모드 전체 용도 한눈에 보기</summary><div class="v292-mode-list">${Object.entries(MODES).map(([id,m])=>`<div class="v292-mode-row"><b>${m.icon} ${esc(m.name)}</b><span>${esc(m.desc)}</span><em>${esc(m.tag)}</em></div>`).join('')}</div></details></section><div class="v292-tutorial-divider">아래는 30초 전투 연습 · 원하면 건너뛰어도 돼</div>`;
+  }
+
+  function upgradeTutorial(){
+    const overlay=$('v247Tutorial'),card=overlay?.querySelector('.v247-tutorial-card');if(!card)return false;
+    if(!card.querySelector('#v292ModeGuideSection')){
+      const intro=card.querySelector('p');if(intro)intro.insertAdjacentHTML('afterend',guideHtml());else card.insertAdjacentHTML('afterbegin',guideHtml());
+      card.querySelectorAll('[data-v292-mode]').forEach(btn=>btn.addEventListener('click',()=>goToMode(btn.dataset.v292Mode)));
+      const title=card.querySelector('#v247TutorialTitle');if(title)title.textContent='공게임 입문 · 모드 가이드 🎮';
+      if(intro)intro.textContent='공게임은 공들이 자동으로 싸우는 게임이야. 먼저 어떤 모드를 언제 쓰는지 보고, 원하면 아래에서 짧은 1대1 연습까지 해보자.';
+      const start=card.querySelector('.v247-tutorial-start');if(start)start.textContent='30초 전투 연습 시작 🔥';
+      const skip=card.querySelector('.v247-tutorial-skip');if(skip)skip.textContent='가이드 확인 완료 · 닫기';
+    }
+    return true;
+  }
+
+  function installHomeGuide(){
+    if($('v292HomeModeGuide'))return true;const hub=$('modeHub');if(!hub)return false;
+    const box=document.createElement('section');box.id='v292HomeModeGuide';box.className='v292-home-guide';box.innerHTML='<div class="v292-home-guide-copy"><b>🧭 어떤 모드를 해야 할지 모르겠어?</b><span>목적만 고르면 쇼다운·경쟁전·육성·토너먼트 등 맞는 모드를 바로 추천해 줘.</span></div><button type="button" class="v292-home-guide-btn">? 모드 가이드</button>';
+    hub.insertAdjacentElement('beforebegin',box);box.querySelector('button')?.addEventListener('click',openGuide);return true;
+  }
+
+  function ensureTip(){let tip=$('v292ContextTip');if(tip)return tip;tip=document.createElement('div');tip.id='v292ContextTip';tip.className='v292-context-tip';document.body.appendChild(tip);return tip}
+  function showTip(id,force=false){
+    const m=MODES[id];if(!m)return;const seen=readTips();if(seen[id]&&!force)return;seen[id]=true;writeTips(seen);const tip=ensureTip();tip.innerHTML=`<b>${m.icon} ${esc(m.name)} · ${esc(m.tag)}</b><span>${esc(m.desc)}</span>`;clearTimeout(tipTimer);requestAnimationFrame(()=>tip.classList.add('show'));tipTimer=setTimeout(()=>tip.classList.remove('show'),3600);
+  }
+  function detectModeFromButton(btn){
+    if(!btn)return null;const dm=btn.dataset?.mode;if(dm&&MODES[dm])return dm;
+    return {autoBattleStart:'auto',randomModeStart:'random',tournamentModeBtn:'tournament',trainingModeBtn:'training',draftModeBtn:'competitive',friendlyModeBtn:'friendly'}[btn.id]||null;
+  }
+  function pulseTarget(id){const m=MODES[id],el=m&&document.querySelector(m.target);if(!el)return;el.classList.remove('v292-mode-pulse');void el.offsetWidth;el.classList.add('v292-mode-pulse');setTimeout(()=>el.classList.remove('v292-mode-pulse'),2400)}
+  function goToMode(id){
+    const m=MODES[id];if(!m)return;markGuideSeen();$('v247Tutorial')?.classList.add('hidden');const target=document.querySelector(m.target);if(!target)return;
+    if(id==='showdown'||id==='team'||id==='boss')target.click();
+    else if(!m.instant)target.click();
+    setTimeout(()=>{if(m.instant){target.scrollIntoView({behavior:'smooth',block:'center'});pulseTarget(id);showTip(id,true)}else showTip(id,true)},100);
+  }
+  function openGuide(){
+    markGuideSeen();if(window.__GONG_V247__?.openTutorial)window.__GONG_V247__.openTutorial(true);else $('v247Tutorial')?.classList.remove('hidden');
+    setTimeout(()=>{upgradeTutorial();const section=$('v292ModeGuideSection');section?.scrollIntoView({behavior:'smooth',block:'start'})},20);
+  }
+  function installContextTips(){
+    $('modeHub')?.addEventListener('click',event=>{const btn=event.target.closest('button');const id=detectModeFromButton(btn);if(id)setTimeout(()=>showTip(id),100)},true);
+  }
+  function updateProfileTutorialLabel(){const btn=$('v247ProfileTutorial');if(!btn)return false;const b=btn.querySelector('b'),s=btn.querySelector('span'),bt='🎓 튜토리얼 · 모드 가이드',st='어떤 모드를 언제 쓰는지 다시 보기 · 30초 전투 연습도 가능';if(b&&b.textContent!==bt)b.textContent=bt;if(s&&s.textContent!==st)s.textContent=st;return true}
+  function init(){
+    const upgrade=()=>{upgradeTutorial();updateProfileTutorialLabel();installHomeGuide()};upgrade();
+    const observer=new MutationObserver(upgrade);observer.observe(document.body,{childList:true,subtree:true});setTimeout(()=>observer.disconnect(),20000);
+    installContextTips();
+    // 한정 이벤트 광고와 튜토리얼이 동시에 겹치지 않도록, 이벤트 팝업을 먼저 보게 한다.
+    let pendingGuide=!guideSeen();
+    const modalVisible=el=>!!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';
+    const syncOverlayPriority=()=>{
+      const event=$('v289EventModal'),tutorial=$('v247Tutorial');
+      if(modalVisible(event)){if(tutorial&&!tutorial.classList.contains('hidden'))tutorial.classList.add('hidden');return}
+      if(pendingGuide&&!modalVisible($('battle'))){pendingGuide=false;setTimeout(openGuide,120)}
+    };
+    const installPriorityWatch=()=>{
+      const event=$('v289EventModal'),tutorial=$('v247Tutorial');
+      [event,tutorial].filter(Boolean).forEach(el=>{if(el.dataset.v292PriorityWatch)return;el.dataset.v292PriorityWatch='1';new MutationObserver(syncOverlayPriority).observe(el,{attributes:true,attributeFilter:['class','aria-hidden']})});
+      syncOverlayPriority();
+    };
+    setTimeout(installPriorityWatch,450);setTimeout(installPriorityWatch,900);setTimeout(installPriorityWatch,1500);
+    // 이벤트 팝업이 없는 날에는 목적형 가이드를 한 번만 자동 표시한다.
+    if(!guideSeen())setTimeout(()=>{pendingGuide=true;installPriorityWatch()},1250);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.__GONG_V292__={build:BUILD,openGuide,upgradeTutorial,showTip,goToMode,modes:MODES,goals:GOALS,verify(){return {build:BUILD,homeGuide:!!$('v292HomeModeGuide'),tutorialGuide:!!$('v292ModeGuideSection'),modeCount:Object.keys(MODES).length,goalCount:GOALS.length,profileLabel:$('v247ProfileTutorial')?.textContent||'',latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V292_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V292] 목적별 모드 추천 튜토리얼 · 9개 모드 전체 가이드 · 홈 재실행 버튼 · 첫 진입 상황별 팁');
+})();
+</script>
 </body>
 </html>
