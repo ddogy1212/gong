@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "source": "functions_v283"
+  },
+  "database": {
+    "rules": "FIREBASE_REALTIME_DATABASE_RULES_V283.json"
+  }
+}

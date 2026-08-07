@@ -19,6 +19,7 @@
 <meta name="twitter:title" content="수원외고 공게임 | 수외 캐릭터 배틀 웹게임">
 <meta name="twitter:description" content="수원외고·수외 캐릭터들이 대결하는 무료 웹게임입니다.">
 <meta name="theme-color" content="#111827">
+<script src="./push-config.js?v=283"></script>
 <link rel="manifest" href="manifest.webmanifest?v=251">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/gonggame-192.png?v=251">
 <link rel="apple-touch-icon" href="icons/gonggame-192.png?v=251">
@@ -1862,7 +1863,7 @@ body.competitive-battle #restart{display:none!important}
       <button id="trainingModeBtn" class="mode-hub-btn mode-training-btn" type="button">🌱 육성모드</button>
       <button id="draftModeBtn" class="mode-hub-btn mode-draft-btn" type="button">🏅 경쟁전</button>
       <button id="friendlyModeBtn" class="mode-hub-btn mode-friendly-btn v266-hidden-legacy-mode" type="button" aria-hidden="true" tabindex="-1">🤝 친선전</button>
-      <button class="mode-btn v266-hidden-legacy-mode" data-mode="boss" aria-hidden="true" tabindex="-1">👑 보스전</button>
+      <button class="mode-btn v283-boss-mode-btn" data-mode="boss" type="button">👑 보스전</button>
     </div>
     <div id="teamOptions" class="team-options hidden">
       <label for="teamCount">팀 개수</label>
@@ -21140,7 +21141,7 @@ function frame(ts){
       if(!out){stalled++;finishOrContinue();return;}
       stalled=0;renderBracket();
       const winnerName=TDEFS[out.record.winner]?.name||out.record.winner,loserName=TDEFS[out.record.loser]?.name||out.record.loser;
-      el('tournamentFastMatch').textContent=`🏆 ${winnerName} 승리`;
+      el('tournamentFastMatch').textContent=`${TDEFS[m.a]?.name||m.a} VS ${TDEFS[m.b]?.name||m.b}\n${winnerName} 승리`;
       el('tournamentFastProgress').textContent=`${state.completedGames}/${state.totalGames}경기 완료 · ${loserName} 탈락`;
       if(out.predictionEliminated){
         setTimeout(()=>{
@@ -21173,7 +21174,7 @@ function frame(ts){
       const out=v279ResolveFastMatch(m,targetGame);if(!out){fastOverlay.classList.add('hidden');return;}
       renderBracket();
       const winnerName=TDEFS[out.record.winner]?.name||out.record.winner,loserName=TDEFS[out.record.loser]?.name||out.record.loser;
-      el('tournamentFastMatch').textContent=`🏆 ${winnerName} 승리`;
+      el('tournamentFastMatch').textContent=`${TDEFS[m.a]?.name||m.a} VS ${TDEFS[m.b]?.name||m.b}\n${winnerName} 승리`;
       el('tournamentFastProgress').textContent=`${winnerName} 승리 · ${loserName} 탈락`;
       const continueFlow=()=>{
         fastOverlay.classList.add('hidden');
@@ -34248,7 +34249,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=279',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=283',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -35870,5 +35871,215 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   console.info('[V281] 이서현 폭우 15/우박 9 · 수동행동 없는 쿠폰 재발급 차단 · 빠른경기 승자 표시 · 예측 탈락 이벤트 복구');
 })();
 </script>
+
+<style id="v282NotificationStyle">
+#v282NotificationCard{margin-top:10px;border:2px solid #27355b;border-radius:16px;background:linear-gradient(145deg,#f7f8ff,#eef5ff);padding:11px;color:#111;box-shadow:0 8px 24px #20305012}
+#v282NotificationCard.hidden{display:none!important}.v282-notify-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px}.v282-notify-head strong{display:block;font-size:14px;font-weight:1000}.v282-notify-head small{display:block;margin-top:3px;font-size:8px;line-height:1.45;color:#667085;font-weight:850}.v282-notify-badge{flex:0 0 auto;border:1px solid #9aa8cc;border-radius:999px;background:#fff;padding:4px 7px;font-size:8px;font-weight:1000;color:#39466d}.v282-notify-badge.on{border-color:#16834b;background:#eafff2;color:#12633a}.v282-notify-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin-top:9px}.v282-notify-actions button{min-height:40px;border:2px solid #111;border-radius:11px;background:#111;color:#fff;padding:8px 10px;font-size:10px;font-weight:1000;cursor:pointer}.v282-notify-actions button.secondary{background:#fff;color:#111}.v282-notify-actions button:disabled{opacity:.5;cursor:default}.v282-notify-meta{margin-top:8px;border-top:1px dashed #bcc6de;padding-top:7px;font-size:8px;line-height:1.5;color:#5a6478;font-weight:850}.v282-notify-status{margin-top:5px;font-size:8px;font-weight:1000;color:#263e76}.t-fast-match{white-space:pre-line}
+@media(max-width:480px){.v282-notify-actions{grid-template-columns:1fr}.v282-notify-actions button{width:100%}}
+</style>
+<script id="v282NotificationAndTournamentResultPatch">
+(()=>{
+  'use strict';
+  const BUILD='V282_SMART_PUSH_MATCHUP_RESULT';
+  const STORE_KEY='gonggame_v282_notifications_v1';
+  const DEVICE_KEY='gonggame_v282_push_device_v1';
+  const PUSH_ROOT='pushSubscriptions/v1';
+  const FIREBASE_CONFIG={apiKey:'AIzaSyCcCFaMN7WMfwgkLu2d1ksxQ9LYfcL1VKw',authDomain:'salw-gong-game.firebaseapp.com',databaseURL:'https://salw-gong-game-default-rtdb.asia-southeast1.firebasedatabase.app',projectId:'salw-gong-game',storageBucket:'salw-gong-game.firebasestorage.app',messagingSenderId:'301115328104',appId:'1:301115328104:web:f748d4e7fe2dfd24fd9ddd'};
+  const DEFAULTS={enabled:false,optInAt:0,lastSentAt:0,lastTemplate:'',lastDay:'',sentToday:0,lastActiveAt:Date.now(),activityHours:{},serverPush:false,tokenSavedAt:0,nextAt:0};
+  const ROUTINE_TEMPLATES=[
+    {id:'competitive-rank',kind:'competitive',title:'🔥 경쟁전 한 판?',body:'지금 한 경기로 시즌 점수와 랭킹을 올려봐. 공게임 경쟁전이 기다리고 있어!'},
+    {id:'competitive-climb',kind:'competitive',title:'🏆 랭킹이 움직이는 중',body:'오늘 경쟁전 기록 아직 더 올릴 수 있어. 한 판만 더 가볼래?'},
+    {id:'competitive-season',kind:'competitive',title:'⚔️ 시즌 점수 챙길 시간',body:'승리하면 점수가 크게 오른다. 경쟁전에서 오늘의 최고 티어를 노려봐!'},
+    {id:'tournament',kind:'tournament',title:'🎯 토너먼트 예측 도전',body:'대진을 돌리고 1·2·3위를 맞혀봐. 빠른경기로 결과도 금방 확인할 수 있어!'},
+    {id:'mastery',kind:'mastery',title:'🌱 숙련도 올릴 캐릭터 있지?',body:'육성모드에서 한 판 더 돌리고 좋아하는 캐릭터 숙련도를 올려봐.'},
+    {id:'showdown',kind:'showdown',title:'💥 오늘의 공게임 매치',body:'랜덤 조합으로 한 판 돌려봐. 예상 못 한 상성이 터질지도 몰라!'},
+    {id:'comeback',kind:'comeback',title:'👀 공게임 경기장 비었는데?',body:'짧게 한 판만 보고 가도 돼. 오늘은 누가 이길지 확인해봐!'}
+  ];
+  const RELEASE_TEMPLATE={id:'release',kind:'update',title:'🆕 공게임 업데이트!',body:'토너먼트 빠른경기 결과 표시와 게임 알림 기능이 새로 개선됐어.'};
+  let timer=null,lastTracked=0;
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function read(){try{return {...DEFAULTS,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch(_){return {...DEFAULTS}}}
+  function write(v){try{localStorage.setItem(STORE_KEY,JSON.stringify(v))}catch(_){}return v}
+  function patch(fields){const v=read();Object.assign(v,fields);return write(v)}
+  function isStandalone(){return matchMedia('(display-mode:standalone)').matches||navigator.standalone===true||new URLSearchParams(location.search).get('source')==='pwa'}
+  function permission(){return !('Notification' in window)?'unsupported':Notification.permission}
+  function kstParts(date=new Date()){
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(date).reduce((a,x)=>(a[x.type]=x.value,a),{});
+    return {day:`${parts.year}-${parts.month}-${parts.day}`,weekday:parts.weekday,hour:Number(parts.hour)%24,minute:Number(parts.minute)};
+  }
+  function allowedHour(hour){return hour>=7.5&&hour<22.5}
+  function scheduleSlots(date=new Date()){
+    const p=kstParts(date),weekend=p.weekday==='Sat'||p.weekday==='Sun';
+    const defaults=weekend?[[13,20],[20,40]]:[[17,40],[21,10]];
+    const state=read(),hist=state.activityHours||{},samples=Object.values(hist).reduce((a,b)=>a+(Number(b)||0),0);
+    if(samples<8)return defaults;
+    const candidates=Object.entries(hist).map(([h,n])=>[Number(h),Number(n)||0]).filter(([h])=>allowedHour(h)&&(!weekend?h>=16:true)).sort((a,b)=>b[1]-a[1]||a[0]-b[0]);
+    if(!candidates.length)return defaults;
+    const chosen=[];for(const [h] of candidates){if(chosen.every(([x])=>Math.abs(x-h)>=3))chosen.push([h,weekend?20:10]);if(chosen.length===2)break}
+    return chosen.length===2?chosen:defaults;
+  }
+  function nextSlot(after=Date.now()){
+    const base=new Date(after+60000);
+    for(let offset=0;offset<8;offset++){
+      const d=new Date(base.getTime()+offset*86400000),parts=kstParts(d),slots=scheduleSlots(d);
+      for(const [hour,minute] of slots){
+        const targetKst=`${parts.day}T${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:00+09:00`,ts=Date.parse(targetKst);
+        if(ts>after+60000)return ts;
+      }
+    }
+    return after+6*3600000;
+  }
+  function resetDaily(state){const day=kstParts().day;if(state.lastDay!==day){state.lastDay=day;state.sentToday=0}return state}
+  function trackActivity(force=false){const now=Date.now();if(!force&&now-lastTracked<15*60000)return;lastTracked=now;const state=resetDaily(read()),h=String(kstParts().hour);state.lastActiveAt=now;state.activityHours=state.activityHours||{};state.activityHours[h]=(Number(state.activityHours[h])||0)+1;write(state);syncSubscriber({lastActiveAt:now}).catch(()=>{});renderCard()}
+  function chooseTemplate(state){
+    const pool=[ROUTINE_TEMPLATES[0],ROUTINE_TEMPLATES[1],ROUTINE_TEMPLATES[2],ROUTINE_TEMPLATES[0],ROUTINE_TEMPLATES[3],ROUTINE_TEMPLATES[4],ROUTINE_TEMPLATES[5],ROUTINE_TEMPLATES[6]];
+    let pick=pool[Math.floor(Math.random()*pool.length)];for(let i=0;i<5&&pick.id===state.lastTemplate;i++)pick=pool[Math.floor(Math.random()*pool.length)];return pick;
+  }
+  async function swReady(){if(!('serviceWorker' in navigator)||location.protocol==='file:')return null;try{await navigator.serviceWorker.register('./service-worker.js?v=283',{scope:'./'});return await navigator.serviceWorker.ready}catch(error){console.warn('[V282 알림 SW]',error);return null}}
+  async function showNotification(template,{force=false,count=true}={}){
+    let state=resetDaily(read());const now=Date.now();
+    if(!force){if(!state.enabled||permission()!=='granted'||state.sentToday>=2||now-state.lastSentAt<5*3600000||now-state.lastActiveAt<25*60000)return false;const p=kstParts();if(!allowedHour(p.hour+p.minute/60))return false;}
+    const reg=await swReady();if(!reg)return false;
+    try{await reg.showNotification(template.title,{body:template.body,icon:'./icons/gonggame-192.png',badge:'./icons/gonggame-192.png',tag:`gonggame-${template.kind}`,renotify:false,requireInteraction:false,data:{url:`./?notification=${encodeURIComponent(template.kind)}&v=283`,kind:template.kind,build:BUILD},actions:[{action:'play',title:template.kind==='competitive'?'경쟁전 하러가기':'게임 열기'}]});if(count){state=resetDaily(read());state.lastSentAt=now;state.sentToday=(Number(state.sentToday)||0)+1;state.lastTemplate=template.id;state.nextAt=nextSlot(now);write(state);syncSubscriber({lastSentAt:now,lastTemplate:template.id,sentToday:state.sentToday,nextAt:state.nextAt}).catch(()=>{})}renderCard();return true}catch(error){console.warn('[V282 알림 표시]',error);return false}
+  }
+  function arm(){clearTimeout(timer);const state=resetDaily(read());write(state);if(!state.enabled||permission()!=='granted')return;const when=Math.max(Date.now()+10000,Number(state.nextAt)||nextSlot(Date.now()));if(when!==state.nextAt)patch({nextAt:when});timer=setTimeout(async()=>{const current=resetDaily(read()),tpl=chooseTemplate(current);await showNotification(tpl);patch({nextAt:nextSlot(Date.now())});arm()},Math.min(when-Date.now(),2147483000));renderCard()}
+  async function enable(){if(!('Notification' in window)){patch({enabled:false});renderCard('이 브라우저는 알림을 지원하지 않아.');return false}let result=Notification.permission;if(result==='default')result=await Notification.requestPermission();if(result!=='granted'){patch({enabled:false});renderCard(result==='denied'?'알림이 차단돼 있어. 브라우저 사이트 설정에서 허용할 수 있어.':'알림 권한이 필요해.');return false}const next=nextSlot(Date.now());patch({enabled:true,optInAt:read().optInAt||Date.now(),nextAt:next});await swReady();await registerFcmIfConfigured();await syncSubscriber({enabled:true,nextAt:next,timezone:'Asia/Seoul',build:BUILD});arm();renderCard('알림 ON · 경쟁전 비중을 높여 하루 최대 2회만 보낼게.');return true}
+  async function disable(){patch({enabled:false});clearTimeout(timer);timer=null;await syncSubscriber({enabled:false});renderCard('알림을 껐어.');return true}
+  async function test(){if(permission()!=='granted'){const ok=await enable();if(!ok)return false}return showNotification(ROUTINE_TEMPLATES[0],{force:true,count:false})}
+  function deviceId(){let id='';try{id=localStorage.getItem(DEVICE_KEY)||''}catch(_){}if(!id){try{id=crypto.randomUUID().replace(/-/g,'')}catch(_){id=`d${Date.now().toString(36)}${Math.random().toString(36).slice(2,12)}`}try{localStorage.setItem(DEVICE_KEY,id)}catch(_){}}return id.slice(0,64)}
+  async function syncSubscriber(extra={}){const backend=window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.();if(!backend?.user?.uid)return false;const state=resetDaily(read()),ref=backend.dbmod.ref(backend.db,`${PUSH_ROOT}/${backend.user.uid}/${deviceId()}`),row={uid:backend.user.uid,deviceId:deviceId(),enabled:!!state.enabled,standalone:isStandalone(),permission:permission(),timezone:'Asia/Seoul',build:BUILD,nextAt:Number(state.nextAt)||nextSlot(Date.now()),lastActiveAt:Number(state.lastActiveAt)||Date.now(),lastSentAt:Number(state.lastSentAt)||0,sentToday:Number(state.sentToday)||0,lastDay:String(state.lastDay||kstParts().day),lastTemplate:String(state.lastTemplate||''),updatedAt:backend.dbmod.serverTimestamp(),version:1,...extra};try{await backend.dbmod.update(ref,row);return true}catch(error){return false}}
+  async function registerFcmIfConfigured(){
+    const vapid=String(window.GONG_PUSH_VAPID_KEY||'').trim();if(!vapid||/PASTE_|YOUR_/i.test(vapid))return {ready:false,reason:'vapid-not-configured'};if(!('serviceWorker' in navigator))return {ready:false,reason:'service-worker-unsupported'};
+    try{
+      const [appmod,msgmod]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js')]);
+      if(!msgmod.isSupported||!(await msgmod.isSupported()))return {ready:false,reason:'messaging-unsupported'};
+      const app=appmod.getApps().find(a=>a.name==='gonggame-push')||appmod.initializeApp(FIREBASE_CONFIG,'gonggame-push'),messaging=msgmod.getMessaging(app),reg=await swReady(),token=await msgmod.getToken(messaging,{vapidKey:vapid,serviceWorkerRegistration:reg});if(!token)return {ready:false,reason:'empty-token'};
+      const backend=window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.();if(backend?.user?.uid){await backend.dbmod.update(backend.dbmod.ref(backend.db,`${PUSH_ROOT}/${backend.user.uid}/${deviceId()}`),{uid:backend.user.uid,deviceId:deviceId(),token,enabled:true,standalone:isStandalone(),permission:'granted',timezone:'Asia/Seoul',build:BUILD,nextAt:Number(read().nextAt)||nextSlot(Date.now()),lastActiveAt:Date.now(),updatedAt:backend.dbmod.serverTimestamp(),version:1});patch({serverPush:true,tokenSavedAt:Date.now()})}
+      msgmod.onMessage(messaging,payload=>{const n=payload?.notification||{},d=payload?.data||{};if(document.hidden&&n.title)showNotification({id:`fcm-${Date.now()}`,kind:d.kind||'update',title:n.title,body:n.body||''},{force:true,count:false})});
+      renderCard();return {ready:true};
+    }catch(error){console.warn('[V282 FCM]',error);return {ready:false,reason:String(error?.code||error?.message||error)}}
+  }
+  function nextText(){const s=read(),ts=Number(s.nextAt)||0;if(!s.enabled||!ts)return '알림 꺼짐';return new Date(ts).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',weekday:'short',hour:'2-digit',minute:'2-digit'})}
+  function ensureCard(){
+    let card=$('v282NotificationCard');if(card)return card;const setup=$('setup');if(!setup)return null;
+    card=document.createElement('section');card.id='v282NotificationCard';card.innerHTML=`<div class="v282-notify-head"><div><strong>🔔 공게임 알림</strong><small>경쟁전·토너먼트·숙련도 소식을 방해가 적은 시간에 알려줘.</small></div><span class="v282-notify-badge">OFF</span></div><div class="v282-notify-actions"><button type="button" data-v282-enable>알림 켜기</button><button type="button" class="secondary" data-v282-test>테스트</button></div><div class="v282-notify-meta">기본 추천: 평일 17:40·21:10 / 주말 13:20·20:40 · 활동 패턴이 쌓이면 자동 조정 · 하루 최대 2회 · 22:30~07:30 금지</div><div class="v282-notify-status"></div>`;
+    const anchor=$('v251AppInstallCard');if(anchor)anchor.insertAdjacentElement('afterend',card);else setup.appendChild(card);
+    card.querySelector('[data-v282-enable]')?.addEventListener('click',()=>read().enabled?disable():enable());card.querySelector('[data-v282-test]')?.addEventListener('click',test);
+    const syncVisibility=()=>card.classList.toggle('hidden',setup.classList.contains('hidden'));syncVisibility();new MutationObserver(syncVisibility).observe(setup,{attributes:true,attributeFilter:['class']});return card
+  }
+  function renderCard(message=''){const card=ensureCard();if(!card)return;const s=read(),on=s.enabled&&permission()==='granted',badge=card.querySelector('.v282-notify-badge'),main=card.querySelector('[data-v282-enable]'),testBtn=card.querySelector('[data-v282-test]'),status=card.querySelector('.v282-notify-status');badge.textContent=on?(s.serverPush?'ON · PUSH':'ON'):'OFF';badge.classList.toggle('on',on);main.textContent=on?'알림 끄기':'🔔 알림 켜기';testBtn.disabled=permission()==='denied';status.textContent=message||(on?`다음 추천 ${nextText()} · ${s.serverPush?'완전 종료 푸시 연결됨':'웹/PWA 예약 알림 사용 중'}`:permission()==='denied'?'브라우저에서 알림이 차단돼 있어.':'버튼을 눌러야 알림 권한을 요청해.')}
+  function notifyReleaseOnce(){const key=`gonggame_v282_release_notice_${BUILD}`;try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1')}catch(_){}const s=read();if(s.enabled&&permission()==='granted'&&Date.now()-s.lastActiveAt>30*60000)showNotification(RELEASE_TEMPLATE).catch(()=>{})}
+  function routeNotification(){const kind=new URLSearchParams(location.search).get('notification');if(!kind)return;if(kind==='competitive'){setTimeout(()=>$('draftModeBtn')?.click(),700)}else if(kind==='tournament'){setTimeout(()=>$('tournamentModeBtn')?.click(),700)}else if(kind==='mastery'){setTimeout(()=>$('trainingModeBtn')?.click(),700)}}
+  function init(){ensureCard();renderCard();trackActivity(true);routeNotification();if('serviceWorker' in navigator)navigator.serviceWorker.addEventListener('message',event=>{const d=event.data||{};if(d.type==='gong-v282-notification-click'){try{history.replaceState(null,'',d.url)}catch(_){}const kind=d.kind||new URL(d.url,location.href).searchParams.get('notification');if(kind==='competitive')setTimeout(()=>$('draftModeBtn')?.click(),120);else if(kind==='tournament')setTimeout(()=>$('tournamentModeBtn')?.click(),120);else if(kind==='mastery')setTimeout(()=>$('trainingModeBtn')?.click(),120)}});if(read().enabled&&permission()==='granted'){swReady();syncSubscriber();registerFcmIfConfigured();arm();setTimeout(notifyReleaseOnce,3000)}document.addEventListener('visibilitychange',()=>{if(!document.hidden)trackActivity(true)});window.addEventListener('focus',()=>trackActivity());document.addEventListener('pointerdown',()=>trackActivity(),{passive:true});window.addEventListener('gong-v230-online-ready',()=>{syncSubscriber();if(read().enabled)registerFcmIfConfigured()});window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>{syncSubscriber();if(read().enabled)registerFcmIfConfigured()},500));setInterval(()=>{if(!document.hidden)trackActivity();if(read().enabled)syncSubscriber()},15*60000)}
+  window.__GONG_V282__={build:BUILD,templates:ROUTINE_TEMPLATES.map(x=>({...x})),enable,disable,test,showNotification,registerFcmIfConfigured,scheduleSlots,nextSlot,state:()=>({...read()}),verify(){const fast=document.getElementById('tournamentFastMatch');return {build:BUILD,permission:permission(),notificationSupported:'Notification' in window,serviceWorkerSupported:'serviceWorker' in navigator,routineTemplates:ROUTINE_TEMPLATES.length,competitiveTemplates:ROUTINE_TEMPLATES.filter(x=>x.kind==='competitive').length,dailyCap:2,quietHours:'22:30-07:30',defaultWeekday:['17:40','21:10'],defaultWeekend:['13:20','20:40'],serverPushConfigured:!!String(window.GONG_PUSH_VAPID_KEY||'').trim()&&!/PASTE_|YOUR_/i.test(String(window.GONG_PUSH_VAPID_KEY||'')),fastMatchText:fast?.textContent||'',latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V282_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  console.info('[V282] 스마트 알림 7종 · 경쟁전 우선 · 일 2회/야간 금지 · FCM 준비 · 빠른경기 대진+승자 2줄 표시');
+})();
+</script>
+
+
+<style id="v283BossModeRestoreStyle">
+/* V283 · 사라졌던 보스전 복구 · 기존 카드형 모드 허브와 자연스럽게 결합 */
+#modeHub .v283-boss-mode-btn{
+  display:flex!important;
+  order:7!important;
+  grid-column:1/-1!important;
+  min-height:64px!important;
+  border:2px solid #3d2a12!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,#fff5cf 0%,#f3c45b 42%,#3b2515 100%)!important;
+  color:#1d1308!important;
+  box-shadow:0 4px 0 #6c4319!important;
+  position:relative;
+  overflow:hidden;
+}
+#modeHub .v283-boss-mode-btn::after{
+  content:'제임스 · 유건우 · 김영식 · 줄리아';
+  display:block;
+  margin-top:3px;
+  font-size:8px;
+  line-height:1.25;
+  font-weight:950;
+  color:#4c341d;
+  opacity:.9;
+}
+#modeHub .v283-boss-mode-btn.active{
+  border-color:#111!important;
+  background:linear-gradient(145deg,#1b1510 0%,#4a2a15 58%,#9b6b1a 100%)!important;
+  color:#fff!important;
+  box-shadow:0 4px 0 #111!important;
+}
+#modeHub .v283-boss-mode-btn.active::after{color:#ffeeb7!important;opacity:1}
+#modeHub .v283-boss-mode-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #6c4319!important}
+#draftModeBtn{order:8!important;grid-column:1/-1!important}
+@media(max-width:470px){
+  #modeHub .v283-boss-mode-btn{min-height:62px!important;padding:9px 6px!important}
+  #modeHub .v283-boss-mode-btn::after{font-size:7px}
+}
+</style>
+<script id="v283BossModeRestorePatch">
+(()=>{
+  'use strict';
+  const BUILD='V283_SMART_PUSH_FAST_MATCHUP_BOSS_RESTORED';
+  const bossButton=document.querySelector('#modeHub .mode-btn[data-mode="boss"]');
+  const hub=document.getElementById('modeHub');
+  function restoreBossMode(){
+    if(!bossButton)return false;
+    bossButton.classList.remove('v266-hidden-legacy-mode');
+    bossButton.classList.add('v283-boss-mode-btn');
+    bossButton.removeAttribute('aria-hidden');
+    bossButton.removeAttribute('tabindex');
+    bossButton.disabled=false;
+    return true;
+  }
+  function visibleLabels(){
+    if(!hub)return [];
+    return [...hub.querySelectorAll(':scope > button')]
+      .filter(button=>getComputedStyle(button).display!=='none')
+      .sort((a,b)=>(Number(getComputedStyle(a).order)||0)-(Number(getComputedStyle(b).order)||0))
+      .map(button=>button.textContent.replace(/\s+/g,' ').trim());
+  }
+  function verifyBossFlow(){
+    const bossWrap=document.getElementById('bossSelectWrap');
+    const bossCards=[...document.querySelectorAll('#bossSelectWrap .boss-card[data-boss]')];
+    return {
+      buttonVisible:!!bossButton&&getComputedStyle(bossButton).display!=='none',
+      fullWidth:!!bossButton&&getComputedStyle(bossButton).gridColumnStart==='1',
+      bossSelectorExists:!!bossWrap,
+      bossCards:bossCards.map(card=>card.dataset.boss),
+      bossCardCount:bossCards.length,
+      startButtonExists:!!document.getElementById('start'),
+      bossHudExists:!!document.getElementById('bossHud')||!!document.querySelector('.boss-hud')
+    };
+  }
+  restoreBossMode();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',restoreBossMode,{once:true});
+  window.__GONG_V283__={
+    build:BUILD,
+    restoreBossMode,
+    verify(){
+      const boss=verifyBossFlow();
+      const push=window.__GONG_V282__?.verify?.()||{};
+      return {
+        build:BUILD,
+        visibleModes:visibleLabels(),
+        boss,
+        bossRestored:boss.buttonVisible&&boss.bossSelectorExists&&boss.bossCardCount>=4&&boss.startButtonExists,
+        notificationTemplates:push.routineTemplates??null,
+        competitiveNotificationTemplates:push.competitiveTemplates??null,
+        notificationDailyCap:push.dailyCap??null,
+        fastMatchText:(push.fastMatchText??document.getElementById('tournamentFastMatch')?.textContent??''),
+        latest:window.__GONG_LATEST_BUILD__
+      };
+    }
+  };
+  window.__GONG_V283_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V283] 보스전 메인 허브 복구 · 가로 프리미엄 카드 배치 · V282 스마트 알림/빠른경기 대진+승자 유지');
+})();
+</script>
+
 </body>
 </html>
