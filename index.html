@@ -6513,6 +6513,13 @@ function updateJunghoon(junghoon,dt){
 function damage(target,amount,source,skill='공격',opts={}){
   if(game.over||!target?.alive||(target.hidden&&!opts.allowHidden)||!source||(!source.alive&&!opts.allowDeadSource)||(!isEnemy(source,target)&&!opts.allowFriendly))return 0;
 
+  // V293 · 오서윤 패시브 「악마의계약」: 오서윤 진영이 정다연에게 가하는 모든 피해 ×2.666.
+  // 쵸텐/양말이/미쿠처럼 오서윤 proxy owner를 가진 공격도 동일하게 처리한다.
+  const v293SeoRootId = source?.id==='oseoyoon' || source?.rootOwner?.id==='oseoyoon' || source?.owner?.id==='oseoyoon' ||
+    source?.data?.v185SeoProxyOwner?.id==='oseoyoon' || source?.owner?.data?.v185SeoProxyOwner?.id==='oseoyoon';
+  if(target.id==='jungdayeon' && v293SeoRootId && source!==target && !opts.selfDamage){
+    amount=Math.round(Number(amount||0)*2.666*1000)/1000;
+  }
 
 
   if(target.id==='youngsik'&&target.isBoss&&!opts.trueDamage&&!opts.selfDamage&&Math.random()<.03){
@@ -26500,7 +26507,7 @@ DEFS.uiyong={
 };
 DEFS.oseoyoon={
   id:'oseoyoon',name:'오서윤',generation:20,color:'#4ea2a0',hp:220,speed:220,img:IMAGES.oseoyoon,
-  role:'투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',skills:'양말상점 · 마이멜로디 · 쵸텐 · 미쿠'
+  role:'정다연 특효·투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',skills:'악마의계약 · 양말상점 · 마이멜로디 · 쵸텐 · 미쿠'
 };
 
 SKILL_INFO.uiyong={summary:'디버프 면역·벽 성장·충돌 회복 실드형',hp:'200',speed:'240',skills:[
@@ -26508,7 +26515,8 @@ SKILL_INFO.uiyong={summary:'디버프 면역·벽 성장·충돌 회복 실드�
   {kind:'벽 충돌 성장',type:'special',name:'리바운드',desc:'벽에 한 번 튕길 때마다 몸집과 공격력이 커진다.',points:['벽 충돌 1회마다 반지름 6% 증가','기본 공격력 4 · 벽 충돌마다 1.3배 증가','최대 공격력 22 · 성장은 전투가 끝날 때까지 유지']},
   {kind:'충돌 반격',type:'attack',name:'2반에서살아남기',desc:'적과 부딪힐 때마다 회복하고 실드를 얻으며 반격한다.',points:['충돌 시 HP 5 회복','2초 동안 받는 피해 50% 감소','충돌한 적에게 현재 공격력만큼 피해 (기본 4 · 최대 22)','짧은 내부 재사용 대기시간으로 과도한 중복 발동 방지']}
 ]};
-SKILL_INFO.oseoyoon={summary:'투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',hp:'220',speed:'220',skills:[
+SKILL_INFO.oseoyoon={summary:'정다연 특효·투사체 피격 소환·벽 회복·적 전향·사후 미쿠형',hp:'220',speed:'220',skills:[
+  {kind:'패시브',type:'attack',name:'악마의계약',desc:'정다연에게 가하는 모든 데미지가 2.666배가 된다.',points:['오서윤 본체가 정다연에게 가하는 피해 ×2.666','양말이·쵸텐·미쿠 등 오서윤 진영 피해도 정다연에게 ×2.666','정다연 외 대상에게 주는 피해량은 그대로']},
   {kind:'패시브 소환',type:'attack',name:'양말상점',desc:'상대 투사체에 맞을 때마다 양말이를 소환한다.',points:['양말이: 체력 30 · 이동속도 290','양말이는 적과 닿으면 폭발하며 피해 12','오서윤·쵸텐·미쿠에게는 폭발하지 않고 피해도 주지 않음','양말이 피해는 오서윤 누적 피해량에 합산']},
   {kind:'벽 충돌 회복',type:'defense',name:'마이멜로디',desc:'벽에 3번 부딪힐 때마다 아몬드 파운드케이크를 먹고 회복한다.',points:['0.5초 시전 후 HP 5 회복','시전 중에는 제자리에서 짧게 멈춘다']},
   {kind:'처치 전향',type:'special',name:'쵸텐',desc:'적을 처치하면 그 적을 아군 쵸텐으로 되살린다.',points:['1대1 상황에서는 발동하지 않음','되살아난 적은 이름이 쵸텐으로 바뀌고 4번 사진을 사용','쵸텐은 오서윤·미쿠·양말이와 같은 아군으로 처리','동시에 살아 있을 수 있는 쵸텐은 최대 3명','쵸텐이 사라지면 다음 처치 때 다시 보충 가능','쵸텐이 넣은 피해와 킬은 오서윤 기록으로 합산']},
@@ -26989,10 +26997,10 @@ v185UpdateUnits=function(dt){
    ========================================================= */
 DEFS.oseoyoon.hp=250;
 DEFS.oseoyoon.role='투사체 피격 소환·벽 회복·일본어 탄막·적 전향·사후 미쿠형';
-DEFS.oseoyoon.skills='양말상점 · 마이멜로디 · 일본일프리토킹 · 쵸텐 · 미쿠';
+DEFS.oseoyoon.skills='악마의계약 · 양말상점 · 마이멜로디 · 일본일프리토킹 · 쵸텐 · 미쿠';
 if(SKILL_INFO.oseoyoon){
   SKILL_INFO.oseoyoon.hp='250';
-  SKILL_INFO.oseoyoon.summary='투사체 피격 소환·벽 회복·일본어 탄막·적 전향·사후 미쿠형';
+  SKILL_INFO.oseoyoon.summary='정다연 특효·투사체 피격 소환·벽 회복·일본어 탄막·적 전향·사후 미쿠형';
   if(!SKILL_INFO.oseoyoon.skills.some(s=>s.name==='일본일프리토킹')){
     SKILL_INFO.oseoyoon.skills.splice(2,0,{
       kind:'벽 충돌 탄막',type:'attack',name:'일본일프리토킹',
@@ -27194,9 +27202,9 @@ const V190_BUILD='V197_EXACT10_TOURNAMENT_SIMULATION';
 window.__GONG_V190_BUILD__=V190_BUILD;
 
 DEFS.oseoyoon.role='투사체 피격 소환·일본어 탄막·쵸텐·미쿠 2페이즈형';
-DEFS.oseoyoon.skills='양말상점 · 마이멜로디 · 일본일프리토킹 · 쵸텐 · 미쿠 2페이즈';
+DEFS.oseoyoon.skills='악마의계약 · 양말상점 · 마이멜로디 · 일본일프리토킹 · 쵸텐 · 미쿠 2페이즈';
 if(SKILL_INFO.oseoyoon){
-  SKILL_INFO.oseoyoon.summary='투사체 피격 소환·일본어 탄막·쵸텐·미쿠 2페이즈형';
+  SKILL_INFO.oseoyoon.summary='정다연 특효·투사체 피격 소환·일본어 탄막·쵸텐·미쿠 2페이즈형';
   const mikuInfo=SKILL_INFO.oseoyoon.skills.find(s=>s.name==='미쿠');
   if(mikuInfo){
     mikuInfo.name='미쿠 2페이즈';
@@ -34784,7 +34792,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=292',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=293',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36867,7 +36875,9 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
   const visible=el=>!!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden';
   function activeMode(){return document.querySelector('#modeHub .mode-btn.active[data-mode]')?.dataset?.mode||''}
   function specialScreenVisible(){
+    const blockingOverlays=['v232ProfileModal','v260Modal','skillModal','v247Tutorial','v289EventModal','resultModal'];
     return ['battle','draftScreen','tournamentScreen','trainingScreen'].some(id=>visible(document.getElementById(id)))
+      ||blockingOverlays.some(id=>visible(document.getElementById(id)))
       ||document.body.classList.contains('competitive-battle')
       ||document.body.classList.contains('friendly-battle')
       ||document.body.classList.contains('tournament-battle')
@@ -36892,7 +36902,7 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
       if(event.target.closest(blockedButtons))hardHide();
       setTimeout(guardFloat,0);setTimeout(guardFloat,80);
     },true);
-    const watch=()=>['setup','battle','draftScreen','tournamentScreen','trainingScreen','modeHub'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v291FloatWatch){el.dataset.v291FloatWatch='1';new MutationObserver(()=>queueMicrotask(guardFloat)).observe(el,{attributes:true,childList:id==='modeHub',subtree:id==='modeHub',attributeFilter:['class','aria-hidden']})}});
+    const watch=()=>['setup','battle','draftScreen','tournamentScreen','trainingScreen','modeHub','v232ProfileModal','v260Modal','skillModal','v247Tutorial','v289EventModal','resultModal'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v291FloatWatch){el.dataset.v291FloatWatch='1';new MutationObserver(()=>queueMicrotask(guardFloat)).observe(el,{attributes:true,childList:id==='modeHub',subtree:id==='modeHub',attributeFilter:['class','aria-hidden']})}});
     window.addEventListener('scroll',guardFloat,{passive:true});window.addEventListener('resize',guardFloat,{passive:true});
     watch();setInterval(guardFloat,180);setTimeout(guardFloat,0);setTimeout(guardFloat,250);
   }
@@ -36929,8 +36939,8 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
     team:{icon:'🤝',name:'팀전',tag:'직접 팀 구성',desc:'여러 팀에 캐릭터를 나눠 넣고 팀 대 팀으로 싸워. 같은 팀끼리는 공격하지 않아.',target:'.mode-btn[data-mode="team"]'},
     auto:{icon:'🤖',name:'자동전투',tag:'편하게 관전',desc:'참가 캐릭터와 인원을 게임이 자동으로 뽑고, 결과 뒤 다음 경기까지 자동으로 이어가.',target:'#autoBattleStart',instant:true},
     random:{icon:'🎲',name:'랜덤모드',tag:'변칙 룰',desc:'랜덤 참가자에 회복불가·랜덤HP 같은 특수 규칙까지 매 경기 바뀌는 혼돈 모드.',target:'#randomModeStart',instant:true},
-    tournament:{icon:'🏆',name:'토너먼트',tag:'대회 관전',desc:'8·16·32·64인 또는 팀 토너먼트를 열고 우승자를 가려. 시작 전 최종 순위 예측도 가능해.',target:'#tournamentModeBtn'},
-    training:{icon:'🌱',name:'육성모드',tag:'숙련도 성장',desc:'한 캐릭터를 정해 랜덤 상대와 1대1을 계속해. 승리할 때마다 숙련도 +30 XP.',target:'#trainingModeBtn'},
+    tournament:{icon:'🏆',name:'토너먼트',tag:'XP 쿠폰 파밍',desc:'8·16·32·64인 또는 팀 토너먼트를 열고 우승자를 가려. 최종 순위 예측을 맞히면 XP 쿠폰을 많이 얻을 수 있어서 원하는 캐릭터 육성에 특히 좋아.',target:'#tournamentModeBtn'},
+    training:{icon:'🌱',name:'육성모드',tag:'켜두기 성장',desc:'한 캐릭터를 정해 랜덤 상대와 1대1을 자동으로 계속해. 다른 일을 하는 동안 켜두면 승리할 때마다 +30 XP가 쭉쭉 쌓여서 숙련도 파밍에 좋아.',target:'#trainingModeBtn'},
     competitive:{icon:'🏅',name:'경쟁전',tag:'티어·점수',desc:'24명 후보에서 밴·픽하고 승패와 활약으로 시즌 경쟁전 점수가 오르내리는 진지한 모드.',target:'#draftModeBtn'},
     friendly:{icon:'🤝',name:'친선전',tag:'친구와 대결',desc:'친구와 6자리 방 코드로 실시간 밴·픽을 해. 결과는 경쟁전 티어 점수에 반영되지 않아.',target:'#friendlyModeBtn'},
     boss:{icon:'👑',name:'보스전',tag:'강적 공략',desc:'도전자 캐릭터들을 직접 골라 특별한 스킬을 가진 강력한 보스 하나를 함께 공략해.',target:'.mode-btn[data-mode="boss"]'}
@@ -36938,8 +36948,8 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
   const GOALS=[
     {title:'🔥 처음이거나 내가 직접 골라 싸울래',copy:'기본 전투부터 익히고, 익숙해지면 팀을 직접 짜 봐.',modes:['showdown','team'],recommended:true},
     {title:'🏅 실력으로 경쟁하거나 친구랑 붙을래',copy:'점수까지 걸고 싶으면 경쟁전, 부담 없이 친구랑이면 친선전.',modes:['competitive','friendly']},
-    {title:'🌱 좋아하는 캐릭터를 키울래',copy:'한 캐릭터 숙련도를 집중해서 올리고 싶을 때.',modes:['training']},
-    {title:'🎥 직접 고르기보다 큰 싸움을 구경할래',copy:'대회는 토너먼트, 계속 관전은 자동전투, 변칙 룰은 랜덤모드.',modes:['tournament','auto','random']},
+    {title:'🌱 좋아하는 캐릭터를 키울래',copy:'육성모드를 켜두고 다른 일을 해도 자동 연속 전투로 승리 XP가 쭉쭉 쌓여.',modes:['training']},
+    {title:'🎥 직접 고르기보다 큰 싸움을 구경할래',copy:'토너먼트는 순위 예측으로 XP 쿠폰도 많이 노릴 수 있고, 계속 관전은 자동전투, 변칙 룰은 랜덤모드.',modes:['tournament','auto','random']},
     {title:'👑 강한 적 하나를 다 같이 잡을래',copy:'특별한 패턴과 스킬을 가진 보스를 공략할 때.',modes:['boss']}
   ];
   let tipTimer=0;
@@ -37022,5 +37032,63 @@ body.v291-block-floating-play #v289FloatingPlay{display:none!important;opacity:0
   console.info('[V292] 목적별 모드 추천 튜토리얼 · 9개 모드 전체 가이드 · 홈 재실행 버튼 · 첫 진입 상황별 팁');
 })();
 </script>
+\n<style id="v293ContractGuideFloatStyle">
+/* V293 · any profile/achievement/character/tutorial overlay always wins over the floating play helper. */
+body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!important;pointer-events:none!important}
+.v292-mode-row[data-v293-hot-tip="1"]{border-color:#f0b72a;background:linear-gradient(145deg,#fff9dc,#fff);box-shadow:inset 3px 0 #f0b72a}
+.v293-mode-tip{display:block;margin-top:4px;border-radius:8px;background:#17121c;color:#fff;padding:5px 7px;font-size:7px;font-weight:1000;line-height:1.35}
+</style>
+<script id="v293ContractGuideFloatScript">
+(()=>{
+  'use strict';
+  const BUILD='V293_DEMON_CONTRACT_MODE_FARM_TIPS_FLOAT_MODAL_GUARD';
+  const BLOCKING=['v232ProfileModal','v260Modal','skillModal','v247Tutorial','v289EventModal','resultModal'];
+  const visible=el=>!!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none'&&getComputedStyle(el).visibility!=='hidden';
+  function seoRoot(source){return !!(source?.id==='oseoyoon'||source?.rootOwner?.id==='oseoyoon'||source?.owner?.id==='oseoyoon'||source?.data?.v185SeoProxyOwner?.id==='oseoyoon'||source?.owner?.data?.v185SeoProxyOwner?.id==='oseoyoon')}
+  function patchSeoMetadata(){
+    try{
+      for(const defs of [typeof DEFS!=='undefined'?DEFS:null,typeof BASE_DEFS!=='undefined'?BASE_DEFS:null]){
+        const d=defs?.oseoyoon;if(!d)continue;
+        d.role='정다연 특효·투사체 피격 소환·벽 회복·일본어 탄막·쵸텐·미쿠 2페이즈형';
+        const names=String(d.skills||'').split(' · ').filter(Boolean);if(!names.includes('악마의계약'))names.unshift('악마의계약');d.skills=names.join(' · ');
+      }
+      const info=typeof SKILL_INFO!=='undefined'?SKILL_INFO.oseoyoon:null;
+      if(info){
+        info.summary='정다연 특효·투사체 피격 소환·일본어 탄막·쵸텐·미쿠 2페이즈형';
+        if(!info.skills.some(s=>s.name==='악마의계약'))info.skills.unshift({kind:'패시브',type:'attack',name:'악마의계약',desc:'정다연에게 가하는 모든 피해가 2.666배가 된다.',points:['오서윤 본체가 정다연에게 가하는 피해 ×2.666','오서윤 소유의 양말이·쵸텐·미쿠가 정다연에게 주는 피해도 ×2.666','다른 캐릭터에게 주는 피해량은 변하지 않음']});
+      }
+    }catch(error){console.warn('[V293] 오서윤 설명 동기화 실패',error)}
+  }
+  function overlayOpen(){return BLOCKING.some(id=>visible(document.getElementById(id)))}
+  function syncFloatOverlayGuard(){
+    const open=overlayOpen();document.body.classList.toggle('v293-ui-overlay-open',open);
+    if(open)try{window.__GONG_V291__?.hardHide?.()}catch(_){}
+    else try{window.__GONG_V291__?.guardFloat?.()}catch(_){}
+    return open;
+  }
+  function decorateGuide(){
+    const modes=window.__GONG_V292__?.modes;
+    if(modes?.tournament){modes.tournament.tag='XP 쿠폰 파밍';modes.tournament.desc='8·16·32·64인 또는 팀 토너먼트를 열고 우승자를 가려. 최종 순위 예측을 맞히면 XP 쿠폰을 많이 얻을 수 있어서 원하는 캐릭터 육성에 특히 좋아.'}
+    if(modes?.training){modes.training.tag='켜두기 성장';modes.training.desc='한 캐릭터를 정해 랜덤 상대와 1대1을 자동으로 계속해. 다른 일을 하는 동안 켜두면 승리할 때마다 +30 XP가 쭉쭉 쌓여서 숙련도 파밍에 좋아.'}
+    document.querySelectorAll('.v292-mode-row').forEach(row=>{
+      const title=row.querySelector('b')?.textContent||'';
+      if(title.includes('토너먼트')){row.dataset.v293HotTip='1';const span=row.querySelector('span');if(span&&modes?.tournament?.desc&&span.textContent!==modes.tournament.desc)span.textContent=modes.tournament.desc;if(!row.querySelector('.v293-mode-tip'))row.insertAdjacentHTML('beforeend','<small class="v293-mode-tip">🎟️ 순위 예측 보상으로 XP 쿠폰을 많이 모을 수 있어!</small>')}
+      if(title.includes('육성모드')){row.dataset.v293HotTip='1';const span=row.querySelector('span');if(span&&modes?.training?.desc&&span.textContent!==modes.training.desc)span.textContent=modes.training.desc;if(!row.querySelector('.v293-mode-tip'))row.insertAdjacentHTML('beforeend','<small class="v293-mode-tip">📱 다른 일을 하면서 켜두기 추천 · 자동 연속 전투로 XP가 계속 쌓여!</small>')}
+    });
+  }
+  function install(){
+    patchSeoMetadata();decorateGuide();syncFloatOverlayGuard();
+    const watch=()=>BLOCKING.forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.v293FloatWatch){el.dataset.v293FloatWatch='1';new MutationObserver(()=>queueMicrotask(syncFloatOverlayGuard)).observe(el,{attributes:true,attributeFilter:['class','aria-hidden']})}});
+    watch();new MutationObserver(()=>{watch();decorateGuide();syncFloatOverlayGuard()}).observe(document.body,{childList:true,subtree:true});
+    document.addEventListener('click',()=>setTimeout(syncFloatOverlayGuard,0),true);
+    setInterval(syncFloatOverlayGuard,220);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.__GONG_V293__={build:BUILD,seoRoot,patchSeoMetadata,overlayOpen,syncFloatOverlayGuard,decorateGuide,verify(){return {build:BUILD,demonContract:true,demonContractText:'정다연에게 가하는 모든 데미지가 2.666배가 된다.',seoSkills:'악마의계약',overlayOpen:overlayOpen(),floatBlocked:document.body.classList.contains('v293-ui-overlay-open'),tournamentTip:window.__GONG_V292__?.modes?.tournament?.desc||'',trainingTip:window.__GONG_V292__?.modes?.training?.desc||'',latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V293_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V293] 오서윤 악마의계약 ×2.666 · 토너먼트 XP쿠폰/육성 켜두기 팁 · 프로필/업적/캐릭터/가이드 중 보조 시작 버튼 완전 숨김');
+})();
+</script>
+
 </body>
 </html>
