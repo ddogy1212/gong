@@ -2378,7 +2378,7 @@ chaewon:{id:'chaewon',name:'이채원',color:'#d79b3f',hp:200,speed:150,img:IMAG
   rua:{id:'rua',name:'정루아',color:'#dc586f',hp:200,speed:130,img:IMAGES.rua,role:'영구 상담 피해·벽 충돌 연사·확률 근접형',skills:'외모정병 · 기니피그 앞니 · 철벽녀'},
   subin:{id:'subin',name:'조수빈',color:'#4b5563',hp:200,speed:200,img:IMAGES.subin,role:'저체력 폭격·충전 방어·고위력 반사형',skills:'비둘기 소환술 · 하드코어 청취자 · 외국밈 투척'},
   yewon:{id:'yewon',name:'김예원',generation:21,color:'#506d78',hp:200,speed:200,img:IMAGES.yewon,role:'멘티 회복·거울 지원·근거리 감속형',skills:'윤현멘티 · 거울보기 · 거울 던지기 · 국어못하기'},
-  chaeun:{id:'chaeun',name:'서채은',color:'#d94f77',hp:250,speed:120,img:IMAGES.chaeun,role:'주기 회복·접촉 고정 공격·후반 폭발형',skills:'돼지 · 이거너한테만말해주는건데 · 다이어트'},
+  chaeun:{id:'chaeun',name:'서채은',color:'#d94f77',hp:270,speed:120,img:IMAGES.chaeun,role:'주기 회복·접촉 고정 공격·후반 폭발형',skills:'돼지 · 이거너한테만말해주는건데 · 다이어트'},
   dawon:{id:'dawon',name:'임다원',color:'#6b4f8a',hp:220,speed:200,img:IMAGES.dawon,role:'속도 추월·별자리 순간이동·팩폭·영구 성장형',skills:'회피형 공포증 · 별자리분석하기 · 팩폭하기 · 울며화내기'},
   duo:{id:'duo',name:'권태연 & 이강은',generation:21,color:'#f59e0b',hp:230,speed:150,img:IMAGES.taeyeon,partnerImg:IMAGES.gangeun,role:'2개의 소형 공·랜덤 포켓몬 모드·생존자 전용 스킬형',skills:'루카리오 · 피카츄 · 리자몽 · 덕질하기 · 마인크래프트하기 · 동아리버저비터합격'},
   yeeun:{id:'yeeun',name:'최예은',generation:21,color:'#a9444a',hp:190,speed:200,img:IMAGES.yeeun,role:'벽 시전 회복·피격 투사체·방어막 변신형',skills:'물뜨러가기 · 투덜거리기 · 괴롭힘당하기'},
@@ -3512,7 +3512,7 @@ chaewon:{
     ]
   },
   chaeun:{
-    summary:'주기 회복·접촉 고정 공격·후반 폭발형',hp:'250',speed:'120',
+    summary:'주기 회복·접촉 고정 공격·후반 폭발형',hp:'270',speed:'120',
     skills:[
       {kind:'4초 자동 회복',type:'passive',name:'돼지',desc:'4초마다 음식을 꺼내 먹고 체력을 회복한다.',points:['발동 주기: 4초','회복량: 5','최대 체력을 넘어서 회복하지 않음']},
       {kind:'충돌 시전·피해 감소',type:'attack',name:'이거너한테만말해주는건데',desc:'충돌한 적 한 명을 붙잡고 5초 동안 비밀 이야기를 들려준다.',points:['지속 시간: 5초','대상은 초당 5 피해','대상 이동속도 80% 감소','시전 중 서채은이 받는 모든 공격 피해를 원래 피해의 1/3로 감소','시전 중 방해 효과는 계속 무효','한 번에 한 대상에게만 사용']},
@@ -3784,7 +3784,7 @@ function renderSkillDetail(){
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
       <div>
         <div class="skill-profile-name">${d.name}</div>
-        <div class="skill-profile-meta">${info.summary} · 체력 ${info.hp} · 이동속도 ${info.speed}</div>
+        <div class="skill-profile-meta">체력 ${info.hp} · 속도 ${info.speed}</div>
       </div>
     </div>
     ${window.__GONG_V221_MASTERY_HTML__?.(skillSelected)||''}
@@ -4169,7 +4169,6 @@ function cardHTML(id){
     <div style="min-width:0;flex:1">
       <div class="char-name">${d.name}</div>
       <div class="char-meta">체력 ${d.hp} · 속도 ${d.speed}</div>
-      <div class="char-mini">${d.role} · ${d.skills}</div>
     </div>
     <button class="card-skill-info" data-info-id="${id}" title="스킬 설명" style="border:0;background:#eee;border-radius:8px;width:28px;height:28px;font-weight:900;cursor:pointer">?</button>
   </div>`;
@@ -31798,7 +31797,7 @@ window.__GONG_V266_RUNTIME__={
   Object.assign(DEFS.dong,{role:'벽 성장·잡기·회피·넉백 투사체형',skills:'스피드 · 덩크슛 · 회피 · 케찹뿌리기'});
   DEFS.subinnew={id:'subinnew',name:'조수빈',generation:20,color:'#b03b6b',hp:200,speed:200,img:V273_IMG_SUBIN,role:'투사체 반감·누적 성장·피격 음파형',skills:'참새 · 표독해지기 · 고음지르기'};
   DEFS.kimjio={id:'kimjio',name:'김지오',generation:21,color:'#1976d2',hp:210,speed:220,img:V273_IMG_JIO,role:'파란 테두리 대응 방어·연속 음표·밤비 설치형',skills:'푸르지오 · 러시아어로 노래부르기 · 밤비'};
-  DEFS.kimminseo={id:'kimminseo',name:'김민서',generation:20,color:'#39465a',hp:210,speed:210,img:V273_IMG_MINSEO,role:'3초 붙잡기 콤보·광역 채찍·취약·무력화형',skills:'원투잽훅 · 채찍질'};
+  DEFS.kimminseo={id:'kimminseo',name:'김민서',generation:20,color:'#39465a',hp:210,speed:210,img:V273_IMG_MINSEO,role:'3초 붙잡기 콤보·광역 채찍·취약·무력화형',skills:'원투잽훅 · DNA에 각인된 채찍질'};
 
   SKILL_INFO.doyun={
     ...(SKILL_INFO.doyun||{}),hp:'240',speed:String(DEFS.doyun.speed),summary:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',
@@ -31841,7 +31840,7 @@ window.__GONG_V266_RUNTIME__={
   SKILL_INFO.kimminseo={
     summary:'3초 붙잡기 콤보·광역 채찍·취약·무력화형',hp:'210',speed:'210',skills:[
       {kind:'접촉 붙잡기 콤보',type:'attack',name:'원투잽훅',desc:'적이 닿으면 3초 동안 자신에게 붙잡고 원 → 투 → 잽 → 훅 순서로 공격한다.',points:['접촉한 적은 3초 동안 김민서에게 붙잡힘','붙잡힌 동안 해당 적의 김민서 대상 접촉 판정은 최초 1회만 처리','원: 10 피해','투: 5 피해','잽: 50% 확률로 적에게 20 피해 / 50% 확률로 김민서 자신에게 15 피해','훅: 직접 피해 없이 매우 강한 넉백 + 6초 취약','각 단계 시전 시 김민서 근처에 원·투·잽·훅 텍스트 표시']},
-      {kind:'벽 충돌 광역 공격',type:'attack',name:'채찍질',desc:'벽에 5번 부딪힐 때마다 필드의 모든 적을 채찍질한다.',points:['벽 충돌 5회마다 발동','모든 적에게 먼저 15 피해','피해 후 2초 취약 부여','김민서 자신도 방어 무시 10 피해','각 적은 독립적으로 10% 확률 판정','당첨된 적은 4초 동안 무력화']}
+      {kind:'벽 충돌 광역 공격',type:'attack',name:'DNA에 각인된 채찍질',desc:'벽에 5번 부딪힐 때마다 DNA처럼 뒤틀린 거대한 채찍 궤적으로 필드의 모든 적을 후려친다.',points:['벽 충돌 5회마다 발동','모든 적에게 먼저 15 피해','피해 후 2초 취약 부여','김민서 자신도 방어 무시 10 피해','각 적은 독립적으로 10% 확률 판정','당첨된 적은 4초 동안 무력화']}
     ]
   };
 
@@ -31970,16 +31969,20 @@ window.__GONG_V266_RUNTIME__={
   function v273Whip(owner){
     if(!owner?.alive)return;
     const targets=enemies(owner).filter(q=>q.alive&&!q.hidden);
-    spawnAttackFx(owner.x,owner.y,'#693d2c','',1.55);v274SkillCue(owner,'🪢','채찍질','#693d2c','필드 전체 공격');
+    spawnAttackFx(owner.x,owner.y,'#a21caf','',1.7);v274SkillCue(owner,'🧬','DNA에 각인된 채찍질','#a21caf','DNA 채찍으로 필드 전체 공격');
+    game.v294DnaWhips=game.v294DnaWhips||[];
+    let whipIndex=0;
     for(const target of targets){
-      const dealt=damage(target,15,owner,'채찍질',{contact:false});
+      const now=game.t||0;
+      game.v294DnaWhips.push({owner,target,ox:owner.x,oy:owner.y,tx:target.x,ty:target.y,start:now,until:now+.92,index:whipIndex++});
+      const dealt=damage(target,15,owner,'DNA에 각인된 채찍질',{contact:false});
       if(target.alive){
         v273SetVulnerable(target,2,owner);
         if(Math.random()<.10){target.data.v160PowerlessTimer=Math.max(target.data.v160PowerlessTimer||0,4);target.data.v160PowerlessSource=owner;floater(target.x,target.y-target.r-25,'✖ 무력화 4초','#666b73',15,.85);}
       }
-      if(dealt>0)floater(target.x,target.y-target.r-12,'🪢 -15 · 취약 2초','#8b543c',12,.5);
+      if(dealt>0)floater(target.x,target.y-target.r-12,'🧬 -15 · 취약 2초','#a21caf',13,.65);
     }
-    if(owner.alive)damage(owner,10,owner,'채찍질 · 반동',{selfDamage:true,allowFriendly:true,trueDamage:true});
+    if(owner.alive)damage(owner,10,owner,'DNA에 각인된 채찍질 · 반동',{selfDamage:true,allowFriendly:true,trueDamage:true});
   }
   function v273StartMinseoCombo(owner,target){
     if(!owner?.alive||!target?.alive||v273Powerless(owner)||target.hidden||!isEnemy(owner,target))return false;
@@ -32096,7 +32099,7 @@ window.__GONG_V266_RUNTIME__={
       if(p.data.v273SubinWalls>=3){p.data.v273SubinWalls=0;v273StartSubinCast(p);}
     }
     if(real==='kimminseo'){
-      p.data.v273WhipWalls=(p.data.v273WhipWalls||0)+1;floater(p.x,p.y-p.r-16,`🪢 채찍 ${p.data.v273WhipWalls}/5`,'#693d2c',12,.45);
+      p.data.v273WhipWalls=(p.data.v273WhipWalls||0)+1;floater(p.x,p.y-p.r-16,`🧬 DNA채찍 ${p.data.v273WhipWalls}/5`,'#693d2c',12,.45);
       if(p.data.v273WhipWalls>=5){p.data.v273WhipWalls=0;v273Whip(p);}
     }
     return result;
@@ -32258,7 +32261,7 @@ window.__GONG_V266_RUNTIME__={
     if(p?.id==='dong')x.push(`🍅 케찹 ${Math.max(0,p.cool.v273Ketchup||0).toFixed(1)}s`);
     if(p?.id==='subinnew')x.push((p.data.v273SubinCast||0)>0?`😾 표독 시전 ${p.data.v273SubinCast.toFixed(1)}s`:`😾 벽 ${p.data.v273SubinWalls||0}/3 · 공격 ×${(p.data.v273SubinAttackMult||1).toFixed(2)}`);
     if(p?.id==='kimjio')x.push(`♪ 벽 ${p.data.v273SongWalls||0}/4 · 🦌 ${game?.v273Deer?.filter(d=>d.owner===p).length||0}`);
-    if(p?.id==='kimminseo')x.push(`🥊 붙잡기 ${(p.data.v273Combos||[]).length}명 · 🪢 벽 ${p.data.v273WhipWalls||0}/5`);
+    if(p?.id==='kimminseo')x.push(`🥊 붙잡기 ${(p.data.v273Combos||[]).length}명 · 🧬 DNA채찍 ${p.data.v273WhipWalls||0}/5`);
     return [base,...x].filter(Boolean).join(' · ')||'정상';
   };
 
@@ -32277,6 +32280,23 @@ window.__GONG_V266_RUNTIME__={
       else if(s.type==='jioNote'){ctx.globalAlpha=.28;ctx.strokeStyle='#60a5fa';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(-31,0);ctx.lineTo(-7,0);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle='#1976d2';ctx.font='1000 28px Georgia';ctx.fillText(s.index%2?'♪':'♫',0,1);}
       else if(s.type==='subinWave'){ctx.globalAlpha=.22;ctx.strokeStyle='#f472b6';ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(-9,0);ctx.stroke();ctx.globalAlpha=.92;ctx.strokeStyle='#b03b6b';ctx.lineWidth=7;for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(-i*18,0,11+i*5,-.9,.9);ctx.stroke();}}
       ctx.restore();
+    }
+    /* V294 · DNA에 각인된 채찍질: 휘어진 채찍 + 이중나선 + 타격 섬광 */
+    const v294Now=game.t||0;
+    game.v294DnaWhips=(game.v294DnaWhips||[]).filter(e=>(e.until||0)>v294Now);
+    for(const e of game.v294DnaWhips){
+      const duration=Math.max(.01,(e.until||v294Now)-(e.start||v294Now-.92)),age=Math.max(0,v294Now-(e.start||v294Now)),progress=Math.min(1,age/duration),alpha=Math.max(0,1-progress);
+      const x0=e.owner?.alive?e.owner.x:e.ox,y0=e.owner?.alive?e.owner.y:e.oy,x1=e.target?.alive?e.target.x:e.tx,y1=e.target?.alive?e.target.y:e.ty;
+      const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy)||1,nx=-dy/len,ny=dx/len,bend=(44+Math.min(95,len*.16))*((e.index||0)%2?1:-1),cx=(x0+x1)/2+nx*bend,cy=(y0+y1)/2+ny*bend;
+      const qp=t=>{const u=1-t;return {x:u*u*x0+2*u*t*cx+t*t*x1,y:u*u*y0+2*u*t*cy+t*t*y1}};
+      const qt=t=>({x:2*(1-t)*(cx-x0)+2*t*(x1-cx),y:2*(1-t)*(cy-y0)+2*t*(y1-cy)});
+      ctx.save();ctx.globalAlpha=.94*alpha;ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='#d946ef';ctx.shadowBlur=20;
+      ctx.strokeStyle='#4a0d68';ctx.lineWidth=14;ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(cx,cy,x1,y1);ctx.stroke();
+      ctx.strokeStyle='#f0abfc';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(x0,y0);ctx.quadraticCurveTo(cx,cy,x1,y1);ctx.stroke();ctx.shadowBlur=0;
+      const strandA=[],strandB=[];for(let i=0;i<=22;i++){const t=i/22,p=qp(t),v=qt(t),vl=Math.hypot(v.x,v.y)||1,px=-v.y/vl,py=v.x/vl,off=Math.sin(t*Math.PI*8+(e.index||0))*8;strandA.push([p.x+px*off,p.y+py*off]);strandB.push([p.x-px*off,p.y-py*off])}
+      for(const pair of [[strandA,'#22d3ee'],[strandB,'#fb7185']]){const pts=pair[0];ctx.strokeStyle=pair[1];ctx.lineWidth=2.8;ctx.beginPath();pts.forEach((pt,i)=>i?ctx.lineTo(pt[0],pt[1]):ctx.moveTo(pt[0],pt[1]));ctx.stroke()}
+      ctx.globalAlpha=.68*alpha;ctx.strokeStyle='#fff';ctx.lineWidth=1.6;for(let i=2;i<22;i+=3){ctx.beginPath();ctx.moveTo(strandA[i][0],strandA[i][1]);ctx.lineTo(strandB[i][0],strandB[i][1]);ctx.stroke()}
+      ctx.globalAlpha=alpha;ctx.translate(x1,y1);ctx.rotate(age*14);ctx.strokeStyle='#f5d0fe';ctx.shadowColor='#f0abfc';ctx.shadowBlur=18;ctx.lineWidth=5;for(let i=0;i<6;i++){const a=i*Math.PI/3;ctx.beginPath();ctx.moveTo(Math.cos(a)*12,Math.sin(a)*12);ctx.lineTo(Math.cos(a)*31,Math.sin(a)*31);ctx.stroke()}ctx.restore();
     }
     for(const p of game.players||[]){
       if(!p.alive||p.hidden)continue;
@@ -32872,7 +32892,7 @@ window.__GONG_V266_RUNTIME__={
       ['MR.VOMITING GUY','MR에게 실제 피해를 준 적에게 🤮 이모티콘을 4초간 붙인다. VOMITING 상태에서는 이동속도가 70% 감소한다.'],
       ['번따','10초 동안 MR에게 피해를 주지 않은 적을 충돌할 때까지 끌어당긴다. 끌려오는 동안 1초마다 20 피해.'],
       ['고백공격','한 적이 MR에게 누적 450 이상의 실제 피해를 주면 화려한 고백공격을 받고 즉사한다.'],
-      ['충격적인행실로인해팔로우일방적으로끊기','MR을 제외한 같은 팀 아군의 투사체가 빗나갈 때마다 대상에게 X를 던진다. X는 15 피해, 3초 60% 감속, 강한 넉백을 준다.']
+      ['충격적인행실로인해팔로우일방적으로끊기','도전자 팀(내가 선택한 팀)의 투사체가 빗나갈 때마다 그 투사체를 발사한 캐릭터에게 X를 던진다. X는 15 피해, 3초 60% 감속, 강한 넉백을 준다.']
     ]},
     [SM]:{name:'서민지(자퇴Ver)',hp:7000,img:SM_IMG,meta:'중급보스 · HP 7000',skills:[
       ['악취싫어하기','지속 데미지와 잔향형 피해를 받지 않는다.'],
@@ -32965,7 +32985,7 @@ window.__GONG_V266_RUNTIME__={
   function updateGuitars(dt){for(const s of game.v287Guitars||[]){if(s.dead)continue;s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;if(s.life<=0||s.x<-60||s.x>W+60||s.y<-60||s.y>H+60){s.dead=true;continue}for(const t of heroList(s.owner))if(Math.hypot(t.x-s.x,t.y-s.y)<t.r+s.r){const d=damage(t,50,s.owner,'락페스티벌 · 일렉기타',{projectile:true});if(d>0)t.data.v287GuitarSlow=Math.max(t.data.v287GuitarSlow||0,30);s.dead=true;break}}game.v287Guitars=(game.v287Guitars||[]).filter(s=>!s.dead)}
   function spawnX(mr,target){if(!mr?.alive||!target?.alive)return;const a=Math.atan2(target.y-mr.y,target.x-mr.x);game.v287XShots.push({owner:mr,target,x:mr.x,y:mr.y,vx:Math.cos(a)*760,vy:Math.sin(a)*760,r:16,life:2.8,dead:false});announce(mr,'충격적인행실로인해팔로우일방적으로끊기',1.25)}
   function updateX(dt){for(const s of game.v287XShots||[]){if(s.dead)continue;s.life-=dt;if(s.target?.alive){const a=Math.atan2(s.target.y-s.y,s.target.x-s.x),sp=Math.hypot(s.vx,s.vy)||760;s.vx=Math.cos(a)*sp;s.vy=Math.sin(a)*sp}s.x+=s.vx*dt;s.y+=s.vy*dt;if(s.life<=0){s.dead=true;continue}for(const t of heroList(s.owner))if(Math.hypot(t.x-s.x,t.y-s.y)<t.r+s.r){const d=damage(t,15,s.owner,'팔로우 끊기 · X',{projectile:true,textAttack:true});if(d>0){t.data.v287XSlow=Math.max(t.data.v287XSlow||0,3);hugeKnock(t,s.owner,1500,.75)}s.dead=true;break}}game.v287XShots=(game.v287XShots||[]).filter(s=>!s.dead)}
-  function scanAllyMisses(){const mr=bossPlayer(MR);if(!mr?.alive)return;const tracked=game.v287TrackedMisses||(game.v287TrackedMisses=new Map()),seen=new Set();for(const [name,arr] of Object.entries(game)){if(!Array.isArray(arr)||name==='v287XShots'||name==='v287Guitars')continue;for(const shot of arr){if(!shot||typeof shot!=='object'||!shot.owner||shot.owner===mr||shot.owner.team!==mr.team||!Number.isFinite(shot.x)||!Number.isFinite(shot.y))continue;let id=shot.__v287MissId;if(!id)shot.__v287MissId=id=`m${++game.v287MissSerial}`;seen.add(id);if(!tracked.has(id))tracked.set(id,{shot,owner:shot.owner,target:shot.target?.alive?shot.target:nearestFrom(shot.owner,heroList(mr)),damageStart:Number(shot.owner.damageDealt)||0});}}for(const [id,row] of [...tracked]){const ended=!seen.has(id)||row.shot.dead===true||(Number.isFinite(row.shot.life)&&row.shot.life<=0);if(!ended)continue;const hit=(Number(row.owner.damageDealt)||0)>row.damageStart||row.shot.hit===true||row.shot.v287Hit===true;if(!hit&&row.target?.alive)spawnX(mr,row.target);tracked.delete(id)}}
+  function scanAllyMisses(){const mr=bossPlayer(MR);if(!mr?.alive)return;const heroes=heroList(mr),heroSet=new Set(heroes),tracked=game.v287TrackedMisses||(game.v287TrackedMisses=new Map()),seen=new Set();for(const [name,arr] of Object.entries(game)){if(!Array.isArray(arr)||name==='v287XShots'||name==='v287Guitars')continue;for(const shot of arr){const shooter=shot?.owner;if(!shot||typeof shot!=='object'||!shooter||!heroSet.has(shooter)||!Number.isFinite(shot.x)||!Number.isFinite(shot.y))continue;let id=shot.__v287MissId;if(!id)shot.__v287MissId=id=`m${++game.v287MissSerial}`;seen.add(id);if(!tracked.has(id))tracked.set(id,{shot,owner:shooter,target:shooter,damageStart:Number(shooter.damageDealt)||0});}}for(const [id,row] of [...tracked]){const ended=!seen.has(id)||row.shot.dead===true||(Number.isFinite(row.shot.life)&&row.shot.life<=0);if(!ended)continue;const hit=(Number(row.owner.damageDealt)||0)>row.damageStart||row.shot.hit===true||row.shot.v287Hit===true;if(!hit&&row.owner?.alive)spawnX(mr,row.owner);tracked.delete(id)}}
 
   const previousTick=tick;
   tick=function(dt){const r=previousTick.apply(this,arguments);if(!game)return r;dt=Math.max(0,Number(dt)||0);updateTimers(dt);if(!game.over&&currentConfig?.mode==='boss'){updateMr(dt);updateSm(dt);updateGuitars(dt);updateX(dt);scanAllyMisses()}for(const e of game.v287Confessions||[])e.t-=dt;game.v287Confessions=(game.v287Confessions||[]).filter(e=>e.t>0);game.v287Announcements=(game.v287Announcements||[]).filter(e=>e.until>(game.t||0));return r};
@@ -34792,7 +34812,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=293',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=294',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -37087,6 +37107,44 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   window.__GONG_V293__={build:BUILD,seoRoot,patchSeoMetadata,overlayOpen,syncFloatOverlayGuard,decorateGuide,verify(){return {build:BUILD,demonContract:true,demonContractText:'정다연에게 가하는 모든 데미지가 2.666배가 된다.',seoSkills:'악마의계약',overlayOpen:overlayOpen(),floatBlocked:document.body.classList.contains('v293-ui-overlay-open'),tournamentTip:window.__GONG_V292__?.modes?.tournament?.desc||'',trainingTip:window.__GONG_V292__?.modes?.training?.desc||'',latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V293_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V293] 오서윤 악마의계약 ×2.666 · 토너먼트 XP쿠폰/육성 켜두기 팁 · 프로필/업적/캐릭터/가이드 중 보조 시작 버튼 완전 숨김');
+})();
+</script>
+
+
+<style id="v294CharacterMetaStyle">
+/* V294 · character cards show only HP/speed under the name. Role/skill blurbs remain in data for filters, never in roster UI. */
+.char-card .char-mini{display:none!important}
+</style>
+<script id="v294WhipRosterBossFixScript">
+(()=>{
+  'use strict';
+  const BUILD='V294_DNA_WHIP_HP270_CLEAN_CHARACTER_META_MR_HERO_MISS';
+  function patchMetadata(){
+    try{
+      if(typeof DEFS!=='undefined'){
+        if(DEFS.chaeun)DEFS.chaeun.hp=270;
+        if(DEFS.kimminseo){
+          DEFS.kimminseo.skills=String(DEFS.kimminseo.skills||'').replace(/(^| · )채찍질(?= · |$)/,'$1DNA에 각인된 채찍질');
+        }
+      }
+      if(typeof SKILL_INFO!=='undefined'){
+        if(SKILL_INFO.chaeun)SKILL_INFO.chaeun.hp='270';
+        const info=SKILL_INFO.kimminseo;
+        if(info){
+          const whip=info.skills?.find?.(x=>x?.name==='채찍질'||x?.name==='DNA에 각인된 채찍질');
+          if(whip){whip.name='DNA에 각인된 채찍질';whip.desc='벽에 5번 부딪힐 때마다 DNA처럼 뒤틀린 거대한 채찍 궤적으로 필드의 모든 적을 후려친다.'}
+        }
+      }
+    }catch(error){console.warn('[V294] metadata patch failed',error)}
+  }
+  function verify(){
+    const defs=window.__GONG_V134_DEBUG__?.defs||{},skills=window.__GONG_V134_DEBUG__?.skillInfo||{},whipInfo=skills.kimminseo?.skills?.find?.(x=>x.name==='DNA에 각인된 채찍질');
+    const card=document.querySelector('.char-card[data-char="kimminseo"]');
+    return {build:BUILD,chaeunHp:defs.chaeun?.hp??null,minseoSkill:whipInfo?.name||'',characterCardRoleLineGone:card?!card.querySelector('.char-mini'):true,skillProfileUsesOnlyHpSpeed:!document.querySelector('.skill-profile-meta')?.textContent?.includes('형'),mrHeroMissRule:'selected-hero-projectile-miss-punishes-shooter',latest:window.__GONG_LATEST_BUILD__};
+  }
+  patchMetadata();
+  window.__GONG_V294__={build:BUILD,patchMetadata,verify};window.__GONG_V294_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V294] 김민서 DNA 채찍 시각화/명칭 · 서채은 HP270 · 캐릭터 하단 HP/속도만 · MR 도전자팀 빗나감 X 처벌');
 })();
 </script>
 
