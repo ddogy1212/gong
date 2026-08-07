@@ -3767,11 +3767,7 @@ function orderedCharacterIds(){
       const generationA=DEFS[a].generation||20;
       const generationB=DEFS[b].generation||20;
       if(generationA!==generationB)return generationA-generationB;
-      const byName=DEFS[a].name.localeCompare(DEFS[b].name,'ko');
-      if(byName!==0)return byName;
-      if(a==='subin'&&b==='subinnew')return -1;
-      if(a==='subinnew'&&b==='subin')return 1;
-      return 0;
+      return DEFS[a].name.localeCompare(DEFS[b].name,'ko');
     });
   ids.forEach((id,index)=>{DEFS[id].color=V207_ROSTER_COLOR_CYCLE[index%V207_ROSTER_COLOR_CYCLE.length];});
   return ids;
@@ -9438,14 +9434,8 @@ function fireGyuminLips(gyumin){
     });
   }
 
-  spawnAttackFx(
-    gyumin.x,
-    gyumin.y,
-    '#ff65a8',
-    '입술',
-    1.45
-  );
-
+  // V275: 12개 투사체가 동시에 뜨는 순간의 프레임 스파이크를 줄이기 위해
+  // 별도의 무거운 AttackFX 링은 생략하고 발동 플로터만 유지한다.
   floater(
     gyumin.x,
     gyumin.y-50,
@@ -16812,7 +16802,7 @@ function updateShots(dt){
         )
       )continue;
 
-      if(dist(s,q)>=s.r+q.r)continue;
+      {const dx=q.x-s.x,dy=q.y-s.y,rr=s.r+q.r;if(dx*dx+dy*dy>=rr*rr)continue;}
 
       if(isChaewonDashing(q))continue;
 
@@ -17935,8 +17925,8 @@ function tick(dt){
   game.uiAcc=(game.uiAcc||0)+dt;
   const v145Count=currentConfig?.participants?.length||0;
   const uiInterval=currentConfig?.mode==='boss'
-    ?(v145Count>=45?.28:(v145Count>=24?.20:.10))
-    :(v145Count>=14?.14:.035);
+    ?(v145Count>=45?.30:(v145Count>=24?.22:.11))
+    :(v145Count>=14?.16:.05);
   if(game.uiAcc>=uiInterval||game.over){game.uiAcc=0;updateUI();}
 }
 
@@ -20208,9 +20198,9 @@ if(game.chaewonDash){const d=game.chaewonDash;if(d.owner?.alive&&d.target?.alive
     else if(s.type==='jongyeopBelt'){ctx.shadowColor='#b98555';ctx.shadowBlur=12;ctx.strokeStyle='#6b452e';ctx.lineWidth=6;ctx.beginPath();ctx.arc(0,0,10,.25,Math.PI*1.75);ctx.stroke();ctx.shadowBlur=0;}
     else if(s.type==='poop'){ctx.font='21px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.fillText('💩',0,0)}
     else if(s.type==='kiss'){
-      ctx.shadowColor='#ff5ca8';ctx.shadowBlur=14;
-      ctx.font='22px "Apple Color Emoji","Segoe UI Emoji",Arial';
-      ctx.fillText('💋',0,0);ctx.shadowBlur=0;
+      // V275: emoji font + shadowBlur 대신 경량 벡터 입술. 판정/개수/피해는 그대로 유지한다.
+      ctx.fillStyle='#ff4f91';ctx.beginPath();ctx.moveTo(-11,0);ctx.quadraticCurveTo(-6,-7,0,-3);ctx.quadraticCurveTo(6,-7,11,0);ctx.quadraticCurveTo(6,7,0,3);ctx.quadraticCurveTo(-6,7,-11,0);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#c92f70';ctx.beginPath();ctx.moveTo(-7,0);ctx.quadraticCurveTo(0,2,7,0);ctx.quadraticCurveTo(0,5,-7,0);ctx.fill();
     }
     else if(s.type==='jihyunFlag'){
       ctx.shadowColor='#e8c66a';ctx.shadowBlur=12;
@@ -31393,7 +31383,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(shot.dead)continue;shot.life-=dt;shot.rot+=dt*8;shot.x+=shot.vx*dt;shot.y+=shot.vy*dt;
       if(shot.life<=0||shot.x<-30||shot.x>W+30||shot.y<-30||shot.y>H+30){shot.dead=true;continue}
       for(const target of v259EnemyList(shot.owner)){
-        if(Math.hypot(target.x-shot.x,target.y-shot.y)>target.r+shot.r)continue;
+        {const dx=target.x-shot.x,dy=target.y-shot.y,rr=target.r+shot.r;if(dx*dx+dy*dy>rr*rr)continue;}
         damage(target,12,shot.owner,'성실한기자 · 클립보드',{allowDeadSource:true,v200FixedDamage:true});
         if(target.alive){target.data.v259ClipboardSlowTimer=Math.max(target.data.v259ClipboardSlowTimer||0,3);normalizeSpeed(target,normalSpeed(target)*effectiveScale(target));floater(target.x,target.y-target.r-18,'📋 3초 감속','#314fb6',13,.72)}
         shot.dead=true;break;
@@ -31738,7 +31728,7 @@ window.__GONG_V266_RUNTIME__={
   SKILL_INFO.kimjio={
     summary:'파란 테두리 대응 방어·연속 음표·밤비 설치형',hp:'210',speed:'220',skills:[
       {kind:'색상 대응 방어',type:'defense',name:'푸르지오',desc:'캐릭터 테두리가 파란색인 적에게 받는 모든 피해를 절반만 받는다.',points:['전투에서 실제 표시되는 테두리 색을 기준으로 판정','파랑·남색 계열 테두리의 적이 주는 최종 입력 피해 ×0.5','해당 적의 투사체·접촉·스킬 피해 모두 적용']},
-      {kind:'벽 충돌 4연속 투사체',type:'attack',name:'러시아어로 노래부르기',desc:'벽에 4번 부딪힐 때마다 현재 HP가 가장 낮은 적 방향으로 빠른 음표 4개를 순서대로 발사한다.',points:['벽 충돌 4회마다 발동','1번 음표: 4초 동안 속도 40% 감소','2번 음표: 20 피해','3번 음표: 4초 동안 취약','4번 음표: 8 피해 + 강한 넉백','1번·3번 지속시간은 요청에 없어 V273 기본값 4초 적용']},
+      {kind:'벽 충돌 4연속 투사체',type:'attack',name:'러시아어로 노래부르기',desc:'벽에 4번 부딪힐 때마다 현재 HP가 가장 낮은 적 방향으로 빠른 음표 4개를 순서대로 발사한다.',points:['벽 충돌 4회마다 발동','음표 비행 속도: 940','1번 음표: 4초 동안 속도 40% 감소','2번 음표: 20 피해','3번 음표: 4초 동안 취약','4번 음표: 8 피해 + 강한 넉백','1번·3번 지속시간은 요청에 없어 V273 기본값 4초 적용']},
       {kind:'충돌 설치물',type:'attack',name:'밤비',desc:'적과 직접 충돌할 때마다 경기장 무작위 위치에 사슴을 생성한다.',points:['적과 새로 충돌할 때마다 사슴 1마리 생성','사슴은 7초 후 사라짐','사람이 밟아도 사라지지 않음','사슴 접촉: 4 피해','접촉한 적은 4초 동안 속도 20% 감소','감속 지속시간은 요청에 없어 V273 기본값 4초 적용']}
     ]
   };
@@ -31787,8 +31777,9 @@ window.__GONG_V266_RUNTIME__={
     target.knockbackTimer=Math.max(target.knockbackTimer||0,.7);
   }
   function v273Farthest(owner){
-    const list=enemies(owner);if(!list.length)return null;
-    return list.reduce((best,q)=>dist(owner,q)>dist(owner,best)?q:best,list[0]);
+    const list=enemies(owner);if(!list.length)return null;let best=list[0],bestD=-1;
+    for(const q of list){const dx=q.x-owner.x,dy=q.y-owner.y,d2=dx*dx+dy*dy;if(d2>bestD){bestD=d2;best=q;}}
+    return best;
   }
   function v273LowestHp(owner){
     const list=enemies(owner);if(!list.length)return null;
@@ -31828,8 +31819,8 @@ window.__GONG_V266_RUNTIME__={
     if(!owner?.alive||owner.data.v273SkyCast>0)return;
     owner.data.v273SkyCast=1;owner.data.v273SkyX=owner.x;owner.data.v273SkyY=owner.y;
     owner.vx=0;owner.vy=0;
-    spawnAttackFx(owner.x,owner.y,'#6e7fbf','하늘에맹세하기',1.2);
-    floater(owner.x,owner.y-owner.r-24,'☁ 하늘님! 하늘님!','#5365a7',19,1.0);v274SkillCue(owner,'☁','하늘에맹세하기','#5365a7','1초 시전 · 피격 시 취소',1.15);
+    // V275: 시전 중 전용 큰 텍스트가 계속 보이므로 중복 스킬명/플로터는 생략한다.
+    spawnAttackFx(owner.x,owner.y,'#6e7fbf','',1.2);
   }
   function v273GyuminCollision(owner,target){
     if(!v273ContactReady(owner,target,'sky'))return;
@@ -31839,9 +31830,8 @@ window.__GONG_V266_RUNTIME__={
   }
   function v273FireJioSong(owner){
     const low=v273LowestHp(owner);if(!low)return false;
-    for(let i=0;i<4;i++)v273SpawnShot(owner,'jioNote',low,{speed:800,r:10,life:2.25,delay:i*.12,index:i+1});
-    spawnAttackFx(owner.x,owner.y,'#1976d2','러시아어로 노래부르기',1.25);
-    floater(owner.x,owner.y-owner.r-22,'♪ 러시아어로 노래부르기!','#1976d2',15,.75);
+    for(let i=0;i<4;i++)v273SpawnShot(owner,'jioNote',low,{speed:940,r:10,life:2.25,delay:i*.12,index:i+1});
+    spawnAttackFx(owner.x,owner.y,'#1976d2','',1.25);
     v274SkillCue(owner,'♪','러시아어로 노래부르기','#1976d2','벽 4회 · 음표 4연사');
     return true;
   }
@@ -31857,24 +31847,24 @@ window.__GONG_V266_RUNTIME__={
   function v273StartSubinCast(p){
     if(!p?.alive||p.data.v273SubinCast>0)return;
     p.data.v273SubinCast=1;p.data.v273SubinX=p.x;p.data.v273SubinY=p.y;p.vx=0;p.vy=0;
-    floater(p.x,p.y-p.r-24,'😾 표독해지기~','#7d3048',17,1.05);spawnAttackFx(p.x,p.y,'#a73d62','표독해지기',1.15);v274SkillCue(p,'😾','표독해지기','#a73d62','1초 후 공격력 ×1.2',1.15);
+    spawnAttackFx(p.x,p.y,'#a73d62','',1.15);
   }
   function v273FireSubinWave(owner){
     const far=v273Farthest(owner);if(!far)return false;
-    v273SpawnFan(owner,'subinWave',far,2,.095,{speed:920,r:18,life:1.9});spawnAttackFx(owner.x,owner.y,'#b03b6b','고음지르기',1.25);floater(owner.x,owner.y-owner.r-22,'🎤 고음지르기 ×2!','#b03b6b',15,.75);v274SkillCue(owner,'🎤','고음지르기','#b03b6b','고속 음파 2개');return true;
+    v273SpawnFan(owner,'subinWave',far,2,.095,{speed:920,r:18,life:1.9});spawnAttackFx(owner.x,owner.y,'#b03b6b','',1.25);v274SkillCue(owner,'🎤','고음지르기','#b03b6b','고속 음파 2개');return true;
   }
   function v273FireKetchup(owner){
     const target=nearest(owner);if(!target)return false;
-    v273SpawnFan(owner,'ketchup',target,3,.15,{speed:610,r:9,life:2.1});spawnAttackFx(owner.x,owner.y,'#d9271c','케찹뿌리기',1.2);floater(owner.x,owner.y-owner.r-19,'🍅 케찹뿌리기','#d9271c',14,.65);v274SkillCue(owner,'🍅','케찹뿌리기','#d9271c','케찹 3방울');return true;
+    v273SpawnFan(owner,'ketchup',target,3,.15,{speed:610,r:9,life:2.1});spawnAttackFx(owner.x,owner.y,'#d9271c','',1.2);v274SkillCue(owner,'🍅','케찹뿌리기','#d9271c','케찹 3방울');return true;
   }
   function v273FireIce(owner){
     const target=nearest(owner);if(!target)return;
-    v273SpawnFan(owner,'ice',target,3,.14,{speed:590,r:10,life:2.3});spawnAttackFx(owner.x,owner.y,'#56b7e8','얼음뱉기',1.2);floater(owner.x,owner.y-owner.r-19,'❄ 얼음뱉기','#3c9bd0',14,.65);v274SkillCue(owner,'❄','얼음뱉기','#3c9bd0','얼음 3개 분사');
+    v273SpawnFan(owner,'ice',target,3,.14,{speed:590,r:10,life:2.3});spawnAttackFx(owner.x,owner.y,'#56b7e8','',1.2);v274SkillCue(owner,'❄','얼음뱉기','#3c9bd0','얼음 3개 분사');
   }
   function v273Whip(owner){
     if(!owner?.alive)return;
     const targets=enemies(owner).filter(q=>q.alive&&!q.hidden);
-    spawnAttackFx(owner.x,owner.y,'#693d2c','채찍질',1.55);floater(owner.x,owner.y-owner.r-25,'🪢 채찍질!','#693d2c',18,.9);v274SkillCue(owner,'🪢','채찍질','#693d2c','필드 전체 공격');
+    spawnAttackFx(owner.x,owner.y,'#693d2c','',1.55);v274SkillCue(owner,'🪢','채찍질','#693d2c','필드 전체 공격');
     for(const target of targets){
       const dealt=damage(target,15,owner,'채찍질',{contact:false});
       if(target.alive){
@@ -31893,7 +31883,7 @@ window.__GONG_V266_RUNTIME__={
     const angle=Math.atan2(target.y-owner.y,target.x-owner.x);
     const combo={target,t:0,angle,one:false,two:false,jab:false,hook:false};
     owner.data.v273Combos.push(combo);target.data=target.data||{};target.data.v273GrabbedBy=owner;
-    spawnAttackFx(owner.x,owner.y,'#202632','원투잽훅',1.35);floater(owner.x,owner.y-owner.r-26,'🥊 원투잽훅','#202632',16,.75);v274SkillCue(owner,'🥊','원투잽훅','#202632','3초 붙잡기 콤보');return true;
+    spawnAttackFx(owner.x,owner.y,'#202632','',1.35);v274SkillCue(owner,'🥊','원투잽훅','#202632','3초 붙잡기 콤보');return true;
   }
   function v273PinGrabbed(target){
     const owner=target?.data?.v273GrabbedBy;if(!owner?.alive||target.hidden)return false;
@@ -32048,7 +32038,7 @@ window.__GONG_V266_RUNTIME__={
       if(shot.x<-60||shot.x>W+60||shot.y<-60||shot.y>H+60){shot.dead=true;continue;}
       for(const target of game.players){
         if(!target.alive||target.hidden||!isEnemy(shot.owner,target))continue;
-        if(Math.hypot(target.x-shot.x,target.y-shot.y)>target.r+shot.r)continue;
+        {const dx=target.x-shot.x,dy=target.y-shot.y,rr=target.r+shot.r;if(dx*dx+dy*dy>rr*rr)continue;}
         v273HitShot(shot,target);shot.dead=true;break;
       }
     }
@@ -32080,7 +32070,7 @@ window.__GONG_V266_RUNTIME__={
       deer.life-=dt;if(deer.life<=0)continue;
       for(const target of game.players){
         if(!target.alive||target.hidden||!isEnemy(deer.owner,target))continue;
-        if(Math.hypot(target.x-deer.x,target.y-deer.y)>target.r+deer.r)continue;
+        {const dx=target.x-deer.x,dy=target.y-deer.y,rr=target.r+deer.r;if(dx*dx+dy*dy>rr*rr)continue;}
         const key=v273Uid(target),now=game.t;if((deer.contacts[key]||-99)+.75>now)continue;deer.contacts[key]=now;
         damage(target,4,deer.owner,'밤비',{contact:true});if(target.alive)target.data.v273DeerSlowTimer=Math.max(target.data.v273DeerSlowTimer||0,V273_JIO_EFFECT_SECONDS);floater(target.x,target.y-target.r-13,'🦌 -4 · 20% 감속','#8a6139',12,.5);
       }
@@ -32177,12 +32167,12 @@ window.__GONG_V266_RUNTIME__={
         const beam=ctx.createLinearGradient(p.x,p.y-p.r-95,p.x,p.y+p.r+30);beam.addColorStop(0,'rgba(210,225,255,0)');beam.addColorStop(.45,'rgba(156,177,255,.30)');beam.addColorStop(1,'rgba(90,111,190,0)');
         ctx.fillStyle=beam;ctx.fillRect(p.x-p.r-24,p.y-p.r-95,(p.r+24)*2,p.r*2+125);
         for(let i=0;i<3;i++){ctx.strokeStyle=`rgba(106,128,205,${.35+.18*pulse})`;ctx.lineWidth=4-i;ctx.beginPath();ctx.arc(p.x,p.y,p.r+12+i*10+pulse*3,0,Math.PI*2);ctx.stroke();}
-        ctx.fillStyle='rgba(15,23,42,.90)';ctx.fillRect(p.x-70,p.y-p.r-58,140,25);ctx.strokeStyle='#a8b6ed';ctx.lineWidth=2;ctx.strokeRect(p.x-70,p.y-p.r-58,140,25);
-        ctx.fillStyle='#fff';ctx.font='1000 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('☁ 하늘에맹세하기',p.x,p.y-p.r-45);
-        ctx.fillStyle='#eef2ff';ctx.font='1000 15px Arial';ctx.fillText('하늘님! 하늘님!',p.x,p.y-p.r-75);
-        ctx.fillStyle='rgba(255,255,255,.28)';ctx.fillRect(p.x-52,p.y+p.r+12,104,8);ctx.fillStyle='#7487d0';ctx.fillRect(p.x-52,p.y+p.r+12,104*progress,8);
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.globalAlpha=.92+.08*pulse;ctx.fillStyle='#6477d3';ctx.font='1000 14px Arial';ctx.fillText('☁ 하늘에맹세하기',p.x,p.y-p.r-50);
+        ctx.globalAlpha=.96;ctx.fillStyle='#4053b7';ctx.font=`1000 ${26+Math.round(pulse*5)}px Arial`;ctx.fillText('하늘님 ~ 하늘님 ~',p.x,p.y-p.r-84-pulse*2);
+        ctx.globalAlpha=1;ctx.fillStyle='rgba(255,255,255,.30)';ctx.fillRect(p.x-52,p.y+p.r+12,104,8);ctx.fillStyle='#8ea2ff';ctx.fillRect(p.x-52,p.y+p.r+12,104*progress,8);
       }
-      if(p.id==='subinnew'&&(p.data.v273SubinCast||0)>0){ctx.strokeStyle='#a73d62';ctx.lineWidth=5;ctx.beginPath();ctx.arc(p.x,p.y,p.r+13,0,Math.PI*2);ctx.stroke();ctx.fillStyle='rgba(125,48,72,.90)';ctx.fillRect(p.x-48,p.y-p.r-46,96,22);ctx.fillStyle='#fff';ctx.font='1000 12px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('😾 표독해지기~',p.x,p.y-p.r-35);}
+      if(p.id==='subinnew'&&(p.data.v273SubinCast||0)>0){ctx.strokeStyle='#a73d62';ctx.lineWidth=5;ctx.beginPath();ctx.arc(p.x,p.y,p.r+13,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.font='1000 15px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('😾 표독해지기~',p.x,p.y-p.r-38);}
       if(p.id==='kimminseo'){for(const c of p.data.v273Combos||[]){if(c.target?.alive){ctx.strokeStyle='rgba(40,46,58,.55)';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(c.target.x,c.target.y);ctx.stroke();}}}
     }
     const now=game.t||0;
@@ -32190,10 +32180,9 @@ window.__GONG_V266_RUNTIME__={
     for(const c of game.v274SkillCues){
       const remain=Math.max(0,(c.until||0)-now),ratio=Math.min(1,remain/Math.max(.01,c.duration||1)),rise=(1-ratio)*18,o=c.owner;
       ctx.save();ctx.globalAlpha=Math.min(1,ratio*1.35);ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.font='1000 12px Arial';const title=`${c.icon||'✦'} ${c.title||''}`,w=Math.min(190,Math.max(96,ctx.measureText(title).width+30)),y=o.y-o.r-82-rise;
-      ctx.fillStyle='rgba(8,12,24,.88)';ctx.strokeStyle=c.color||'#fff';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(o.x-w/2,y,w,c.sub?39:27,9);ctx.fill();ctx.stroke();
-      ctx.fillStyle='#fff';ctx.fillText(title,o.x,y+12);
-      if(c.sub){ctx.fillStyle='#dbe4ff';ctx.font='900 9px Arial';ctx.fillText(c.sub,o.x,y+28);}
+      const title=`${c.icon||'✦'} ${c.title||''}`,y=o.y-o.r-73-rise;
+      ctx.font='1000 15px Arial';ctx.fillStyle='#28324a';ctx.fillText(title,o.x,y);
+      if(c.sub){ctx.fillStyle='#59637a';ctx.font='900 10px Arial';ctx.fillText(c.sub,o.x,y+16);}
       ctx.restore();
     }
     ctx.restore();
@@ -32209,6 +32198,10 @@ window.__GONG_V266_RUNTIME__={
     defaults:{ketchupPeriod:V273_KETCHUP_PERIOD,jioEffectSeconds:V273_JIO_EFFECT_SECONDS},
     start(ids){return window.__GONG_V134_DEBUG__?.start?.(ids)},
     player(id){return game?.players?.find(p=>(p.data?.v160RealId||p.id)===id)||null},
+    v273Shots(){return (game?.v273Shots||[]).map(s=>({type:s.type,index:s.index,speed:Math.hypot(s.vx||0,s.vy||0),delay:s.delay,life:s.life}));},
+    legacyShots(type=''){return (game?.shots||[]).filter(s=>!type||s.type===type).map(s=>({type:s.type,speed:s.speed||Math.hypot(s.vx||0,s.vy||0),life:s.life,delay:s.delay||0}));},
+    attackFxCount(){return game?.attackFx?.length||0;},
+    forceLips(){const p=this.player('gyumin');if(!p)return null;p.cool.lips=0;updateGyumin(p,0);return {kiss:this.legacyShots('kiss').length,attackFx:this.attackFxCount()};},
     wall(id,times=1){const p=this.player(id);if(!p)return null;for(let i=0;i<times;i++)onWallHit(p);return p;},
     collide(aId,bId,times=1){const a=this.player(aId),b=this.player(bId);if(!a||!b)return null;for(let i=0;i<times;i++){a.x=W*.45;b.x=a.x+a.r+b.r-1;a.y=b.y=H*.5;collide(a,b);if(i<times-1){b.x=a.x+a.r+b.r+8;tick(.8);}}return {a,b};},
     advance(seconds=.1,step=.05){let t=0;while(game&&!game.over&&t<seconds){tick(Math.min(step,seconds-t));t+=step;}return game;},
@@ -34646,8 +34639,8 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function compact(data){return normalize(data)}
   function mergeData(a,b){a=normalize(a);b=normalize(b);const out=baseData();out.ledger={...a.ledger,...b.ledger};for(const [id,row] of Object.entries(a.ledger||{}))if(b.ledger?.[id]&&(Number(row.at)||0)>(Number(b.ledger[id].at)||0))out.ledger[id]=row;out.unlocked={...a.unlocked,...b.unlocked};out.claimed={...a.claimed,...b.claimed};out.titles={...a.titles,...b.titles};out.seenUnlocks={...a.seenUnlocks,...b.seenUnlocks};const pick=(Number(a.equippedUpdatedAt)||0)>=(Number(b.equippedUpdatedAt)||0)?a:b;out.equippedTitle=pick.equippedTitle||'';out.equippedUpdatedAt=Math.max(Number(a.equippedUpdatedAt)||0,Number(b.equippedUpdatedAt)||0);return normalize(out)}
   let syncTimer=0;function scheduleSync(delay=1200){clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncCloud(),delay)}
-  async function syncCloud(){const b=backend();if(!b?.user?.uid||b.user.isAnonymous||state.syncing)return false;state.syncing=true;try{const ref=b.dbmod.ref(b.db,`${CLOUD_ROOT}/${b.user.uid}`),snap=await b.dbmod.get(ref),cloud=snap.exists()?JSON.parse(String(snap.val()?.payload||'{}')):{},local=read(),merged=mergeData(cloud,local),before=JSON.stringify(local),after=JSON.stringify(merged);if(before!==after){localStorage.setItem(KEY,after);evaluate(merged,{save:false});renderProfile();if(!document.getElementById('v260Modal')?.classList.contains('hidden'))renderModal()}await b.dbmod.set(ref,{uid:b.user.uid,payload:JSON.stringify(compact(merged)),updatedAt:b.dbmod.serverTimestamp(),version:1});const repaired=repairAchievementRewards();if(repaired)console.info(`[V274] 클라우드 병합 후 누락 업적 XP 쿠폰 ${repaired}개 복구`);state.lastSyncAt=Date.now();state.lastError='';return true}catch(error){state.lastError=String(error?.code||error?.message||error);console.warn('[V260 업적 동기화]',error);return false}finally{state.syncing=false}}
-  function install(){ensureModal();const repair=()=>{const count=repairAchievementRewards();if(count)console.info(`[V274] 누락 업적 XP 쿠폰 ${count}개 복구`);return count};repair();renderProfile();ingestRecent();const profile=document.getElementById('v232ProfileModal');if(profile)new MutationObserver(()=>{if(!profile.classList.contains('hidden')){repair();ingestRecent();renderProfile()}}).observe(profile,{attributes:true,attributeFilter:['class']});window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>ingestRecent(),0));window.addEventListener('gong-v254-mastery-changed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v238-mastery-reward-claimed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v257-attendance-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-competitive-profile-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{syncCloud();repair()},500));window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>{syncCloud();repair()},700));window.addEventListener('gong-v255-cloud-sync-complete',()=>setTimeout(()=>{syncCloud();repair()},250));setInterval(()=>{repair();ingestRecent();renderProfile()},5000);setInterval(syncCloud,20000);setTimeout(()=>{syncCloud();repair()},1800)}
+  async function syncCloud(){const b=backend();if(!b?.user?.uid||b.user.isAnonymous||state.syncing)return false;state.syncing=true;try{const ref=b.dbmod.ref(b.db,`${CLOUD_ROOT}/${b.user.uid}`),snap=await b.dbmod.get(ref),cloud=snap.exists()?JSON.parse(String(snap.val()?.payload||'{}')):{},local=read(),merged=mergeData(cloud,local),before=JSON.stringify(local),after=JSON.stringify(merged);if(before!==after){localStorage.setItem(KEY,after);evaluate(merged,{save:false});renderProfile();if(!document.getElementById('v260Modal')?.classList.contains('hidden'))renderModal()}await b.dbmod.set(ref,{uid:b.user.uid,payload:JSON.stringify(compact(merged)),updatedAt:b.dbmod.serverTimestamp(),version:1});state.lastSyncAt=Date.now();state.lastError='';return true}catch(error){state.lastError=String(error?.code||error?.message||error);console.warn('[V260 업적 동기화]',error);return false}finally{state.syncing=false}}
+  function install(){ensureModal();const repaired=repairAchievementRewards();if(repaired)console.info(`[V274] 누락 업적 XP 쿠폰 ${repaired}개 복구`);renderProfile();ingestRecent();const profile=document.getElementById('v232ProfileModal');if(profile)new MutationObserver(()=>{if(!profile.classList.contains('hidden')){ingestRecent();renderProfile()}}).observe(profile,{attributes:true,attributeFilter:['class']});window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>ingestRecent(),0));window.addEventListener('gong-v254-mastery-changed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v238-mastery-reward-claimed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v257-attendance-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-competitive-profile-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v230-online-ready',()=>setTimeout(syncCloud,500));window.addEventListener('gong-v232-auth-changed',()=>setTimeout(syncCloud,700));window.addEventListener('gong-v255-cloud-sync-complete',()=>setTimeout(syncCloud,250));setInterval(()=>{ingestRecent();renderProfile()},5000);setInterval(syncCloud,20000);setTimeout(syncCloud,1800)}
   window.__GONG_V260__={build:BUILD,achievements:()=>clone(ACH),read:()=>clone(read()),aggregate:()=>clone(aggregate(read())),evaluate:()=>clone(evaluate(read(),{save:true,notify:false})),open,close,claim,claimAll,repairAchievementRewards,equipTitle,currentTitle:()=>currentTitle(read()),publicProfile,syncCloud,refresh:()=>{ingestRecent();renderProfile();renderModal()},verify(){const data=read(),ctx=aggregate(data);return {build:BUILD,totalAchievements:ACH.length,hiddenAchievements:ACH.filter(a=>a.hidden).length,unlocked:Object.keys(data.unlocked).length,claimed:Object.keys(data.claimed).length,rosterCount:ctx.rosterCount,playedCharacters:ctx.playedCharacters,title:currentTitle(data),cloudRoot:CLOUD_ROOT}}};
   window.__GONG_V260_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
@@ -35121,7 +35114,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
     }
   };
   window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V273] 토너먼트 16/32/64 + 2v2/3v3/4v4 · 보상 유지 · 신규 캐릭터/추가 스킬 완료');
+  console.info('[V273] 토너먼트 16/32/64 + 2v2/3v3/4v4 · 보상 유지 · 신규/리워크 스킬 완료');
 })();
 </script>
 
@@ -35224,5 +35217,29 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 </script>
 <script id="v274LatestBuildScript">(()=>{const BUILD='V274_GUIDE_COUPON_REWARD_DUAL_SUBIN_VISUAL_SKILLS';window.__GONG_V274_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
+
+<script id="v275PerformanceVisualPatch">
+(()=>{
+  'use strict';
+  const BUILD='V275_TEXT_ONLY_CUES_LIPS_PERF_JIO_SKY_VISUAL';
+  window.__GONG_V275__={
+    build:BUILD,
+    notes:{
+      skillCue:'rounded background/border removed; text only',
+      jioNoteSpeed:940,
+      gyuminLips:'12 shots and damage unchanged; vector rendering + heavy burst FX removed',
+      skyPrayer:'larger pulsing 하늘님 ~ 하늘님 ~ text',
+      performance:'squared projectile collision checks + lighter DOM UI refresh'
+    },
+    verify(){
+      const info=(typeof SKILL_INFO!=='undefined'?SKILL_INFO:null);
+      return {build:BUILD,jioInfo:info?.kimjio?.skills?.find?.(s=>s.name==='러시아어로 노래부르기')?.points||[],latest:window.__GONG_LATEST_BUILD__};
+    }
+  };
+  window.__GONG_V275_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V275] 스킬 안내 텍스트-only · 김규민 입술 렉 완화 · 김지오 음표 가속 · 하늘님 문구 강화 · 전반 성능 최적화');
+})();
+</script>
 </body>
 </html>
