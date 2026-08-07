@@ -33072,6 +33072,89 @@ window.__GONG_V266_RUNTIME__={
   console.info('[V288] 보스 스킬명 깜빡임 제거 · 서민지 시각화 강화 · 보스 업적 기록 수정/75개 감사 · Lv30 짧은 트레일+오라');
 })();
 
+/* =========================================================
+   V290 · Lv30 longer trail + per-character mastery TOP 5
+   ========================================================= */
+(()=>{
+  'use strict';
+  const BUILD='V290_MASTERY_TOP5_LONG_TRAIL_FLOAT_PLAY_GUARD';
+  const RANK_ROOT='characterMasteryLeaderboard/v1';
+  const TRAIL_LIFE=.86,TRAIL_MAX_DESKTOP=12,TRAIL_MAX_MOBILE=8;
+  const rankState={cache:new Map(),loading:new Map(),syncing:false,pending:false,lastHash:'',lastError:'',lastSyncAt:0,loads:0};
+  const masteryApi=()=>window.__GONG_V226__||window.__GONG_V224__||window.__GONG_V221__||window.__GONG_V219__;
+  const backend=()=>window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null;
+  const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const cleanName=value=>String(value||'').replace(/\s+/g,' ').trim().slice(0,24)||'솔리언';
+  function levelForXp(xp){try{return Math.max(1,Math.min(30,Number(masteryApi()?.levelInfo?.(Math.max(0,Number(xp)||0))?.level)||1))}catch(_){return 1}}
+  function masteryXp(id){try{return Math.max(0,Math.min(176155,Math.floor(Number(masteryApi()?.mastery?.()?.characters?.[id]?.xp)||0)))}catch(_){return 0}}
+  function masteryLevel(id){try{const x=masteryApi()?.masteryLevelForId?.(id);return Math.max(1,Number(x?.level||x)||1)}catch(_){return 1}}
+  function rankNickname(b=backend()){try{return cleanName(window.__GONG_V232__?.nickname?.(b?.user)||`솔리언 ${window.__GONG_V232__?.solianNumber?.(b?.user)||1}`)}catch(_){return '솔리언'}}
+  function rankEligiblePlayer(p){return !!(p&&p.alive!==false&&!p.hidden&&!p.isBoss&&!p.isBossSummon&&DEFS[p.id]&&!BOSS_IDS.has(p.id)&&masteryLevel(p.id)>=30)}
+
+  /* A separate longer Lv.30 trail: keeps the original trail and aura, but leaves a longer soft afterimage behind the ball. */
+  function updateV290Trails(dt){
+    if(!game?.players)return;dt=Math.max(0,Number(dt)||0);const alive=game.players.filter(rankEligiblePlayer),mobile=!!window.__GONG_V222_MOBILE__,crowded=alive.length>=24,interval=mobile||crowded?.095:.07,max=mobile||crowded?TRAIL_MAX_MOBILE:TRAIL_MAX_DESKTOP;
+    for(const p of game.players){
+      p.data||(p.data={});
+      if(!rankEligiblePlayer(p)){if(p.data.v290MasteryTrail)p.data.v290MasteryTrail.length=0;p.data.v290TrailTimer=0;continue}
+      const trail=p.data.v290MasteryTrail||(p.data.v290MasteryTrail=[]);p.data.v290TrailTimer=(p.data.v290TrailTimer||0)+dt;
+      for(const pt of trail)pt.life-=dt;while(trail.length&&trail[0].life<=0)trail.shift();
+      if(p.data.v290TrailTimer>=interval){p.data.v290TrailTimer%=interval;const last=trail[trail.length-1];if(!last||Math.hypot(p.x-last.x,p.y-last.y)>=Math.max(4,p.r*.18)){trail.push({x:p.x,y:p.y,life:TRAIL_LIFE});if(trail.length>max)trail.splice(0,trail.length-max)}}
+    }
+  }
+  const oldTickV290=tick;tick=function(dt){const r=oldTickV290.apply(this,arguments);try{updateV290Trails(dt)}catch(error){console.warn('[V290 trail tick]',error)}return r};
+  const oldTrailDrawV290=v224DrawMasteryTrails;
+  v224DrawMasteryTrails=function(){
+    try{oldTrailDrawV290?.()}catch(_){}
+    if(!game?.players)return;ctx.save();try{
+      ctx.lineCap='round';ctx.lineJoin='round';
+      for(const p of game.players){if(!rankEligiblePlayer(p))continue;const tr=p.data?.v290MasteryTrail;if(!Array.isArray(tr)||tr.length<2)continue;const color=DEFS[p.id]?.color||'#8b5cf6';
+        for(let i=1;i<tr.length;i++){const a=tr[i-1],b=tr[i],q=Math.max(0,Math.min(1,b.life/TRAIL_LIFE)),age=(i+1)/tr.length;ctx.globalAlpha=.035+.15*q*age;ctx.strokeStyle=color;ctx.lineWidth=Math.max(4,p.r*(.30-.08*(1-age)));ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.globalAlpha=.035+.08*q;ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(1.2,p.r*.055);ctx.stroke()}
+        const ghosts=tr.filter((_,i)=>i%2===0).slice(-5);for(let i=0;i<ghosts.length;i++){const pt=ghosts[i],q=Math.max(0,Math.min(1,pt.life/TRAIL_LIFE));ctx.globalAlpha=.035+.09*q;ctx.fillStyle=color;ctx.beginPath();ctx.arc(pt.x,pt.y,p.r*(.28+.13*q),0,Math.PI*2);ctx.fill()}
+      }
+    }finally{ctx.restore();ctx.globalAlpha=1}
+  };
+
+  function rankHost(id){return document.querySelector(`.v290-mastery-ranking[data-character-id="${CSS.escape(String(id||''))}"]`)}
+  function ownRankFooter(id){const xp=masteryXp(id),lv=levelForXp(xp);return xp>0?`<div class="v290-rank-own">내 기록 · Lv.${lv} · ${xp.toLocaleString('ko-KR')} XP</div>`:''}
+  function renderRankRows(id,rows,{message=''}={}){
+    const host=rankHost(id);if(!host)return false;const b=backend(),uid=b?.user?.uid||'';
+    if(message){host.querySelector('.v290-rank-list').innerHTML=`<div class="v290-rank-empty">${esc(message)}</div>${ownRankFooter(id)}`;return true}
+    const html=rows.length?rows.slice(0,5).map((row,index)=>`<div class="v290-rank-row ${row.uid===uid?'me':''}"><span class="v290-rank-no">${index+1}</span><span class="v290-rank-name"><b>${esc(row.nickname||'솔리언')}${row.uid===uid?' · 나':''}</b><small>Lv.${Math.max(1,Number(row.level)||levelForXp(row.xp))}</small></span><span class="v290-rank-xp">${Math.max(0,Number(row.xp)||0).toLocaleString('ko-KR')}<small>XP</small></span></div>`).join(''):`<div class="v290-rank-empty">아직 이 캐릭터의 마스터리 순위 기록이 없어.</div>`;
+    host.querySelector('.v290-rank-list').innerHTML=html+ownRankFooter(id);return true;
+  }
+  function mountRanking(id){
+    if(!id||!DEFS[id]||BOSS_IDS.has(id))return false;
+    document.querySelectorAll('.v290-mastery-ranking').forEach(node=>node.remove());
+    const section=document.createElement('section');section.className='v290-mastery-ranking';section.dataset.characterId=id;section.innerHTML=`<div class="v290-rank-head"><div><strong>🏆 ${esc(DEFS[id].name)} 마스터리 TOP 5</strong><span>전체 이용자 · 숙련도 XP 기준</span></div><button type="button" class="v290-rank-refresh" aria-label="마스터리 랭킹 새로고침">↻</button></div><div class="v290-rank-list"><div class="v290-rank-empty">랭킹을 불러오는 중…</div></div>`;
+    const masteryCard=skillBody.querySelector('.v221-skill-mastery'),profile=skillBody.querySelector('.skill-profile');if(masteryCard)masteryCard.insertAdjacentElement('afterend',section);else if(profile)profile.insertAdjacentElement('afterend',section);else skillBody.prepend(section);section.querySelector('.v290-rank-refresh')?.addEventListener('click',()=>loadRanking(id,{force:true}));
+    loadRanking(id);return true;
+  }
+  async function loadRanking(id,{force=false}={}){
+    const host=rankHost(id);if(!host)return false;const cached=rankState.cache.get(id);if(!force&&cached&&Date.now()-cached.at<20000){renderRankRows(id,cached.rows);return true}
+    if(rankState.loading.get(id))return rankState.loading.get(id);
+    const b=backend();if(!b?.user?.uid||!b.dbmod?.query){renderRankRows(id,[],{message:'온라인 연결 후 전체 마스터리 TOP 5가 표시돼.'});return false}
+    const job=(async()=>{try{host.querySelector('.v290-rank-list').innerHTML='<div class="v290-rank-empty">랭킹을 불러오는 중…</div>';const base=b.dbmod.ref(b.db,`${RANK_ROOT}/${id}`),q=b.dbmod.query(base,b.dbmod.orderByChild('xp'),b.dbmod.limitToLast(5)),snap=await b.dbmod.get(q),rows=[];snap.forEach(child=>{const row=child.val()||{},xp=Math.max(0,Number(row.xp)||0);if(xp>0)rows.push({uid:String(row.uid||child.key||''),nickname:cleanName(row.nickname),xp,level:Math.max(1,Number(row.level)||levelForXp(xp))})});rows.sort((a,b)=>b.xp-a.xp||String(a.nickname).localeCompare(String(b.nickname),'ko'));rankState.cache.set(id,{at:Date.now(),rows});rankState.loads++;rankState.lastError='';if(rankHost(id))renderRankRows(id,rows);return true}catch(error){rankState.lastError=String(error?.code||error?.message||error);if(rankHost(id))renderRankRows(id,[],{message:'마스터리 랭킹을 불러오지 못했어. Firebase 랭킹 규칙을 확인해 줘.'});return false}finally{rankState.loading.delete(id)}})();rankState.loading.set(id,job);return job;
+  }
+  function refreshVisibleRanking(){const host=document.querySelector('.v290-mastery-ranking[data-character-id]');if(host)loadRanking(host.dataset.characterId,{force:true})}
+  function syncHash(){const b=backend(),chars=masteryApi()?.mastery?.()?.characters||{},name=rankNickname(b),parts=[b?.user?.uid||'',name];for(const id of orderedCharacterIds()){const xp=Math.max(0,Math.floor(Number(chars?.[id]?.xp)||0));if(xp>0)parts.push(`${id}:${xp}`)}return parts.join('|')}
+  async function syncMyRankings({force=false,onlyId=''}={}){
+    const b=backend();if(!b?.user?.uid||!b.dbmod?.update)return false;if(rankState.syncing){rankState.pending=true;return false}const hash=syncHash();if(!force&&!onlyId&&hash===rankState.lastHash)return true;rankState.syncing=true;
+    try{const chars=masteryApi()?.mastery?.()?.characters||{},name=rankNickname(b),updates={},ids=onlyId?[onlyId]:orderedCharacterIds();for(const id of ids){if(!DEFS[id]||BOSS_IDS.has(id))continue;const xp=Math.max(0,Math.min(176155,Math.floor(Number(chars?.[id]?.xp)||0))),path=`${RANK_ROOT}/${id}/${b.user.uid}`;updates[path]=xp>0?{uid:b.user.uid,characterId:id,nickname:name,xp,level:levelForXp(xp),updatedAt:b.dbmod.serverTimestamp(),version:1}:null}if(Object.keys(updates).length)await b.dbmod.update(b.dbmod.ref(b.db),updates);rankState.lastHash=syncHash();rankState.lastSyncAt=Date.now();rankState.lastError='';if(onlyId)rankState.cache.delete(onlyId);return true}catch(error){rankState.lastError=String(error?.code||error?.message||error);console.warn('[V290 마스터리 랭킹 동기화]',error);return false}finally{rankState.syncing=false;if(rankState.pending){rankState.pending=false;setTimeout(()=>syncMyRankings({force:true}),250)}}
+  }
+
+  const oldRenderSkillDetailV290=renderSkillDetail;renderSkillDetail=function(){const r=oldRenderSkillDetailV290.apply(this,arguments);try{mountRanking(skillSelected)}catch(error){console.warn('[V290 mastery ranking UI]',error)}return r};
+  window.addEventListener('gong-v254-mastery-changed',event=>{const id=String(event.detail?.id||'');if(id){rankState.cache.delete(id);setTimeout(()=>syncMyRankings({force:true,onlyId:id}),80)}});
+  window.addEventListener('gong-v232-nickname-ready',()=>setTimeout(()=>{syncMyRankings({force:true});refreshVisibleRanking()},120));
+  window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{syncMyRankings({force:true});refreshVisibleRanking()},350));
+  window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>{syncMyRankings({force:true});refreshVisibleRanking()},450));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>syncMyRankings(),100)});setInterval(()=>syncMyRankings(),30000);setTimeout(()=>syncMyRankings({force:true}),1200);
+  if(window.__GONG_V134_DEBUG__)Object.assign(window.__GONG_V134_DEBUG__,{tick});if(window.__GONG_V134_TEST__)Object.assign(window.__GONG_V134_TEST__,{tick});
+  window.__GONG_V290_CORE__={build:BUILD,rankRoot:RANK_ROOT,trail:{life:TRAIL_LIFE,desktopMax:TRAIL_MAX_DESKTOP,mobileMax:TRAIL_MAX_MOBILE},loadRanking,syncMyRankings,status:()=>({lastError:rankState.lastError,lastSyncAt:rankState.lastSyncAt,loads:rankState.loads,cache:[...rankState.cache.keys()]}),verify(){return {build:BUILD,rankRoot:RANK_ROOT,skillRankingMounted:!!document.querySelector('.v290-mastery-ranking'),trailLife:TRAIL_LIFE,desktopMax:TRAIL_MAX_DESKTOP,mobileMax:TRAIL_MAX_MOBILE,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V290_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V290] Lv30 잔상 연장 · 모든 캐릭터별 실시간 마스터리 TOP5');
+})();
+
 
 })();
 </script>
@@ -34690,7 +34773,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=289',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=290',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36670,9 +36753,14 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   function updateFloatingPlay(){
     const btn=ensureFloatingPlay(),start=$('start'),setup=$('setup');if(!btn||!start||!setup)return;
     const setupVisible=!setup.classList.contains('hidden')&&getComputedStyle(setup).display!=='none';
-    const visibleDialog=[...document.querySelectorAll('[role="dialog"]')].some(dialog=>{let node=dialog;while(node&&node!==document.body){const style=getComputedStyle(node);if(node.classList?.contains('hidden')||style.display==='none'||style.visibility==='hidden')return false;node=node.parentElement}return true});
-    const modalBlocking=!$('resultModal')?.classList.contains('hidden')||!$('v289EventModal')?.classList.contains('hidden')||visibleDialog;
-    const should=setupVisible&&!start.disabled&&!originalVisible&&!modalBlocking;
+    const battle=$('battle'),battleVisible=!!battle&&!battle.classList.contains('hidden')&&getComputedStyle(battle).display!=='none';
+    const activeMode=document.querySelector('#modeHub .mode-btn.active[data-mode]')?.dataset?.mode||'';
+    const allowedMode=activeMode==='showdown'||activeMode==='team'||activeMode==='boss';
+    const otherScreenVisible=['draftScreen','tournamentScreen','trainingScreen'].some(id=>{const el=$(id);return !!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none'});
+    const specialFlow=!!document.body.classList.contains('competitive-battle')||!!document.body.classList.contains('friendly-battle')||!!document.body.classList.contains('tournament-battle')||!!document.body.classList.contains('v248-training-battle');
+    const modalBlocking=!$('resultModal')?.classList.contains('hidden')||!$('v289EventModal')?.classList.contains('hidden');
+    const homeAllowed=setupVisible&&!battleVisible&&!otherScreenVisible&&!specialFlow&&allowedMode;
+    const should=homeAllowed&&!start.disabled&&!originalVisible&&!modalBlocking;
     btn.classList.toggle('show',should);btn.disabled=!should;
   }
   function installFloatingPlay(){
@@ -36680,6 +36768,9 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
     const io=new IntersectionObserver(entries=>{for(const e of entries)if(e.target===start)originalVisible=e.isIntersecting&&e.intersectionRatio>.12;updateFloatingPlay()},{threshold:[0,.12,.5,1]});io.observe(start);
     new MutationObserver(updateFloatingPlay).observe(start,{attributes:true,attributeFilter:['disabled','class']});
     const setup=$('setup');if(setup)new MutationObserver(updateFloatingPlay).observe(setup,{attributes:true,attributeFilter:['class']});
+    for(const id of ['battle','draftScreen','tournamentScreen','trainingScreen']){const el=$(id);if(el)new MutationObserver(updateFloatingPlay).observe(el,{attributes:true,attributeFilter:['class']})}
+    document.querySelectorAll('#modeHub .mode-btn[data-mode]').forEach(el=>new MutationObserver(updateFloatingPlay).observe(el,{attributes:true,attributeFilter:['class']}));
+    $('modeHub')?.addEventListener('click',()=>setTimeout(updateFloatingPlay,0));
     window.addEventListener('scroll',updateFloatingPlay,{passive:true});window.addEventListener('resize',updateFloatingPlay,{passive:true});setTimeout(updateFloatingPlay,100);return true;
   }
 
@@ -36719,6 +36810,34 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_V289__={build:BUILD,eventStart:EVENT_START,eventEnd:EVENT_END,eventActive,eventEnded,applyMrEventAvailability,maybeShowEventAd,showAchievementNotice,updateFloatingPlay,verify(){const start=$('start'),float=$('v289FloatingPlay'),mr=document.querySelector('.boss-card[data-boss="mrbeyblade"]');return {build:BUILD,kstEventActive:eventActive(),eventEnded:eventEnded(),mrHiddenAfterEnd:eventEnded()?(!mr||mr.hidden||getComputedStyle(mr).display==='none'):true,floatingPlayPresent:!!float,achievementWatcher:true,startPresent:!!start,latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V289_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V289] 업적 완료 알림 · 화면 밖 플레이 버튼 보조 · MR.베이블레이드 8/7~8/15 KST 한정 이벤트/8월16일 자동 종료');
+})();
+</script>
+
+
+<style id="v290MasteryLeaderboardStyle">
+/* V290 · character mastery TOP 5 + longer Lv30 trail support */
+.v290-mastery-ranking{margin:10px 0 0;border:2px solid #d4c2f7;border-radius:15px;background:linear-gradient(145deg,#fbf8ff,#fffdf4);padding:10px;box-shadow:0 3px 0 #5f2ca51a}
+.v290-rank-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.v290-rank-head>div{min-width:0}.v290-rank-head strong{display:block;font-size:12px;font-weight:1000;color:#2d174f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v290-rank-head span{display:block;margin-top:2px;font-size:7.5px;font-weight:900;color:#7b7186}.v290-rank-refresh{flex:0 0 32px;width:32px;height:32px;border:2px solid #111;border-radius:9px;background:#fff;color:#111;font-size:17px;font-weight:1000;cursor:pointer}.v290-rank-list{display:grid;gap:5px}.v290-rank-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:7px;align-items:center;border:1px solid #ddd5e9;border-radius:10px;background:#fff;padding:6px 7px}.v290-rank-row.me{border-color:#7c3aed;background:#f6f0ff;box-shadow:inset 3px 0 #7c3aed}.v290-rank-no{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#2a2432;color:#fff;font-size:10px;font-weight:1000}.v290-rank-row:nth-child(1) .v290-rank-no{background:#e7b91f;color:#211800}.v290-rank-row:nth-child(2) .v290-rank-no{background:#c9ced6;color:#222}.v290-rank-row:nth-child(3) .v290-rank-no{background:#b87443;color:#fff}.v290-rank-name{min-width:0}.v290-rank-name b{display:block;font-size:10px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v290-rank-name small{display:block;margin-top:1px;font-size:7px;font-weight:900;color:#746d7d}.v290-rank-xp{text-align:right;color:#4d256f;font-size:11px;font-weight:1000;white-space:nowrap}.v290-rank-xp small{display:block;font-size:6px;color:#8a8191}.v290-rank-empty{border:1px dashed #c8bdd9;border-radius:9px;background:#fff;padding:11px 8px;text-align:center;color:#766d7e;font-size:8px;font-weight:900;line-height:1.4}.v290-rank-own{margin-top:1px;border-radius:8px;background:#221a2b;color:#fff;padding:6px 8px;text-align:center;font-size:8px;font-weight:1000}
+@media(max-width:480px){.v290-mastery-ranking{padding:8px}.v290-rank-row{grid-template-columns:27px minmax(0,1fr) auto;padding:5px 6px}.v290-rank-no{width:24px;height:24px}.v290-rank-head strong{font-size:11px}}
+/* Hard guard: if another V289 callback briefly toggles the helper, battle/special screens still cannot visibly keep it. */
+#battle:not(.hidden)~#v289FloatingPlay,body.competitive-battle #v289FloatingPlay,body.friendly-battle #v289FloatingPlay,body.tournament-battle #v289FloatingPlay,body.v248-training-battle #v289FloatingPlay{display:none!important}
+</style>
+<script id="v290FinalGuardsScript">
+(()=>{
+  'use strict';
+  const BUILD='V290_MASTERY_TOP5_LONG_TRAIL_FLOAT_PLAY_GUARD';
+  const btn=document.getElementById('v289FloatingPlay');
+  function guardFloat(){
+    const setup=document.getElementById('setup'),battle=document.getElementById('battle'),draft=document.getElementById('draftScreen'),tour=document.getElementById('tournamentScreen'),training=document.getElementById('trainingScreen');if(!btn||!setup)return false;
+    const visible=el=>!!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';
+    const active=document.querySelector('#modeHub .mode-btn.active[data-mode]')?.dataset?.mode||'';const allowed=['showdown','team','boss'].includes(active);const home=visible(setup)&&!visible(battle)&&!visible(draft)&&!visible(tour)&&!visible(training);
+    if(!(home&&allowed)){btn.classList.remove('show');btn.disabled=true;return false}window.__GONG_V289__?.updateFloatingPlay?.();return btn.classList.contains('show');
+  }
+  ['setup','battle','draftScreen','tournamentScreen','trainingScreen','modeHub'].forEach(id=>{const el=document.getElementById(id);if(el)new MutationObserver(()=>setTimeout(guardFloat,0)).observe(el,{attributes:true,childList:id==='modeHub',subtree:id==='modeHub',attributeFilter:id==='modeHub'?['class']:['class']})});
+  document.addEventListener('click',()=>setTimeout(guardFloat,0),true);window.addEventListener('scroll',guardFloat,{passive:true});setInterval(guardFloat,700);setTimeout(guardFloat,150);
+  window.__GONG_V290__={build:BUILD,guardFloat,core:()=>window.__GONG_V290_CORE__,verify(){const active=document.querySelector('#modeHub .mode-btn.active[data-mode]')?.dataset?.mode||'';const float=document.getElementById('v289FloatingPlay');return {build:BUILD,activeMode:active,floatVisible:!!float?.classList.contains('show'),rankRoot:window.__GONG_V290_CORE__?.rankRoot||'',trail:window.__GONG_V290_CORE__?.trail||null,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V290_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V290] 쇼다운·팀전·보스전 홈 전용 보조 시작 버튼 · 캐릭터별 마스터리 TOP5 · Lv30 잔상 연장');
 })();
 </script>
 
