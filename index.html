@@ -32632,6 +32632,208 @@ window.__GONG_V266_RUNTIME__={
   console.info('[V276] 이서현 추가 · 웨더아주머니 4종 날씨 · 페니 동전 반격');
 })();
 
+/* ========================================================================== */
+/* V286 · 오정훈 장판 / 성우진 먼작귀컬랙터 / 김동환 케찹 벽 충돌 패치      */
+/* ========================================================================== */
+(()=>{
+  'use strict';
+  const BUILD='V286_JUNGHOON_SMELL_WOO_MONG_DONG_KETCHUP';
+  const SMELL_RADIUS=144;
+  const SMELL_SCALE=.90;
+  const MONG_COOLDOWN=1.0;
+  const KETCHUP_WALLS=5;
+  const MONG_WORDS=[
+    {text:'운',damage:8,color:'#7c3aed'},
+    {text:'나나',damage:10,color:'#db2777'},
+    {text:'우나',damage:10,color:'#0f8f8a'}
+  ];
+  const DEFS_REF=window.__GONG_V134_DEBUG__?.defs||{};
+  const SKILL_REF=window.__GONG_V134_DEBUG__?.skillInfo||{};
+
+  function realId(p){return p?.data?.v160RealId||p?.id||'';}
+  function targetsOf(owner){return (game?.players||[]).filter(q=>q?.alive&&!q.hidden&&q!==owner&&isEnemy(owner,q));}
+  function nearestEnemy(owner){const list=targetsOf(owner);return list.length?list.reduce((a,b)=>dist(owner,a)<=dist(owner,b)?a:b):null;}
+  function ensureMongShots(){if(game&&!Array.isArray(game.v286MongShots))game.v286MongShots=[];return game?.v286MongShots||[];}
+
+  // ---- runtime descriptions ----
+  if(DEFS_REF.junghoon){DEFS_REF.junghoon.role='피격 조건 정지·확장 지속피해·10% 감속 장판형';}
+  if(DEFS_REF.woo){DEFS_REF.woo.role='성장·범위 공격·피격 반격·5회 공부 회복형';DEFS_REF.woo.skills='공부하기 · 미인계 · 복습하기 · 극강의안정형 · 먼작귀컬랙터';}
+  if(DEFS_REF.dong){DEFS_REF.dong.role='벽 성장·잡기·회피·벽충돌 케찹 투사체형';DEFS_REF.dong.skills='스피드 · 덩크슛 · 회피 · 케찹뿌리기';}
+  if(SKILL_REF.junghoon){
+    SKILL_REF.junghoon.summary='피격 조건 정지·확장 지속피해·10% 감속 장판형';
+    const skill=SKILL_REF.junghoon.skills?.find(x=>x.name==='중국냄새 풍기기');
+    if(skill){skill.desc='NPC처럼 서있기가 시작된 뒤 3초가 지나면 오정훈 주변에 더 넓어진 냄새 영역이 생긴다.';skill.points=[
+      '냄새 범위: 오정훈 중심 반경 144픽셀 (기존 120의 1.2배)',
+      '범위 안 적은 이동속도 10% 감소',
+      '범위 안 적은 0.1초마다 기본 1.3 피해 · 오정훈 공격력 2.2배 반영',
+      '범위 밖으로 나가면 기존과 동일하게 4초 동안 냄새 잔향 피해'
+    ];}
+  }
+  if(SKILL_REF.woo){
+    SKILL_REF.woo.summary='성장·범위 공격·피격 반격형';
+    SKILL_REF.woo.skills=(SKILL_REF.woo.skills||[]).filter(x=>x.name!=='먼작귀컬랙터');
+    SKILL_REF.woo.skills.push({kind:'피격 반격 투사체',type:'attack',name:'먼작귀컬랙터',desc:'적에게 실제 피해를 받으면 가장 가까운 적 방향으로 운·나나·우나 중 한 단어를 무작위로 발사한다.',points:[
+      '실제 적 피해를 받았을 때 발동',
+      '가장 가까운 살아 있는 적을 조준',
+      '운 / 나나 / 우나 중 하나를 같은 확률로 무작위 발사',
+      '운 적중 피해: 8',
+      '나나·우나 적중 피해: 10',
+      '지속 피해·초고속 다단히트 스팸 방지 내부 쿨타임: 1.0초',
+      '오정훈 중국냄새·나건우 블랙홀처럼 0.1초 단위 피해를 받아도 최대 초당 1발만 발사',
+      '먼작귀컬랙터 투사체 피해로 다른 먼작귀컬랙터가 연쇄 발동하지 않음'
+    ]});
+  }
+  if(SKILL_REF.dong){
+    SKILL_REF.dong.summary='벽 성장·잡기·회피·벽충돌 케찹 투사체형';
+    const skill=SKILL_REF.dong.skills?.find(x=>x.name==='케찹뿌리기');
+    if(skill){skill.kind='벽 충돌 투사체';skill.desc='벽에 5번 부딪힐 때마다 가장 가까운 적 방향으로 케찹 3방울을 뿌린다.';skill.points=[
+      '벽 충돌 5회마다 1회 발동',
+      '발동 후 벽 충돌 횟수는 0/5로 초기화',
+      '케찹 3방울을 부채꼴로 발사',
+      '방울 1개당 10 피해',
+      '적중한 적은 2초 동안 속도 30% 증가',
+      '적중 시 강하게 멀리 넉백'
+    ];}
+  }
+
+  function applyRuntimeState(){
+    if(!game)return;
+    game.v286MongShots=game.v286MongShots||[];
+    for(const p of game.players||[]){
+      const id=realId(p);p.data=p.data||{};p.cool=p.cool||{};
+      if(id==='junghoon')p.data.smellRadius=SMELL_RADIUS;
+      if(id==='woo'){
+        if(!Number.isFinite(p.data.v286MongNextAt))p.data.v286MongNextAt=0;
+        if(!Number.isFinite(p.data.v286MongFired))p.data.v286MongFired=0;
+      }
+      if(id==='dong'){
+        if(!Number.isFinite(p.data.v286KetchupWalls))p.data.v286KetchupWalls=0;
+        // Disable the V273 automatic 5-second ketchup timer without touching the rest of V273.
+        p.cool.v273Ketchup=1e9;
+      }
+    }
+  }
+
+  // ---- Junghoon smell 10% slow, active only while geometrically inside ----
+  const _effectiveScale=effectiveScale;
+  effectiveScale=function(p){
+    let scale=_effectiveScale(p);
+    const inside=(game?.players||[]).some(j=>
+      realId(j)==='junghoon'&&j.alive&&!j.hidden&&j.data?.smellActive&&
+      p!==j&&p?.alive&&!p.hidden&&isEnemy(j,p)&&
+      dist(j,p)<=Number(j.data?.smellRadius||SMELL_RADIUS)+p.r
+    );
+    if(inside)scale*=SMELL_SCALE;
+    return scale;
+  };
+
+  // ---- Woo: MONG collector ----
+  function fireMong(owner){
+    if(!owner?.alive||owner.hidden)return false;
+    const target=nearestEnemy(owner);if(!target)return false;
+    const pick=MONG_WORDS[Math.floor(Math.random()*MONG_WORDS.length)];
+    const a=Math.atan2(target.y-owner.y,target.x-owner.x),speed=620;
+    ensureMongShots().push({owner,text:pick.text,damage:pick.damage,color:pick.color,x:owner.x+Math.cos(a)*(owner.r+9),y:owner.y+Math.sin(a)*(owner.r+9),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:15,life:2.35,dead:false});
+    owner.data.v286MongFired=(owner.data.v286MongFired||0)+1;
+    spawnAttackFx(owner.x,owner.y,pick.color,'먼작귀컬랙터',1.05);
+    floater(owner.x,owner.y-owner.r-24,`✦ ${pick.text}!`,pick.color,18,.72);
+    return true;
+  }
+  function tryMong(owner,opts={}){
+    if(!owner?.alive||owner.hidden||opts.v286MongCollector)return false;
+    const now=Number(game?.t)||0,next=Number(owner.data?.v286MongNextAt)||0;
+    if(now+1e-6<next||!nearestEnemy(owner))return false;
+    owner.data.v286MongNextAt=now+MONG_COOLDOWN;
+    return fireMong(owner);
+  }
+  function updateMongShots(dt){
+    const shots=ensureMongShots();
+    for(const shot of shots){
+      if(shot.dead)continue;shot.life-=dt;if(shot.life<=0){shot.dead=true;continue;}
+      shot.x+=shot.vx*dt;shot.y+=shot.vy*dt;
+      if(shot.x<-70||shot.x>W+70||shot.y<-70||shot.y>H+70){shot.dead=true;continue;}
+      for(const target of game.players||[]){
+        if(!target?.alive||target.hidden||!isEnemy(shot.owner,target))continue;
+        const dx=target.x-shot.x,dy=target.y-shot.y,rr=target.r+shot.r;if(dx*dx+dy*dy>rr*rr)continue;
+        const dealt=damage(target,shot.damage,shot.owner,`먼작귀컬랙터 · ${shot.text}`,{v286MongCollector:true,projectile:true,textAttack:true});
+        if(dealt>0)floater(target.x,target.y-target.r-16,`${shot.text} -${dealt.toFixed(1)}`,shot.color,14,.62);
+        shot.dead=true;break;
+      }
+    }
+    game.v286MongShots=shots.filter(s=>!s.dead).slice(-120);
+  }
+  function drawMongShots(){
+    if(!game?.v286MongShots?.length)return;
+    ctx.save();
+    for(const shot of game.v286MongShots){
+      if(shot.dead)continue;const a=Math.atan2(shot.vy,shot.vx);
+      ctx.save();ctx.translate(shot.x,shot.y);ctx.rotate(a);ctx.globalAlpha=.24;ctx.strokeStyle=shot.color;ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(-34,0);ctx.lineTo(-10,0);ctx.stroke();ctx.globalAlpha=1;ctx.rotate(-a);ctx.font='1000 22px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineWidth=5;ctx.strokeStyle='rgba(255,255,255,.96)';ctx.fillStyle=shot.color;ctx.strokeText(shot.text,0,0);ctx.fillText(shot.text,0,0);ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  const _damage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    const dealt=_damage(target,amount,source,skill,opts);
+    if(dealt>0&&realId(target)==='woo'&&target.alive&&source&&source!==target&&!opts.selfDamage&&isEnemy(source,target))tryMong(target,opts);
+    return dealt;
+  };
+
+  // ---- Donghwan: ketchup every 5 wall impacts ----
+  function fireKetchup(owner){
+    const target=nearestEnemy(owner);if(!target)return false;
+    const base=Math.atan2(target.y-owner.y,target.x-owner.x);
+    game.v273Shots=game.v273Shots||[];
+    for(let i=0;i<3;i++){
+      const a=base+(i-1)*.15,speed=610;
+      game.v273Shots.push({type:'ketchup',owner,x:owner.x+Math.cos(a)*(owner.r+7),y:owner.y+Math.sin(a)*(owner.r+7),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:9,life:2.1,delay:i*.04,dead:false});
+    }
+    spawnAttackFx(owner.x,owner.y,'#d9271c','케찹뿌리기',1.2);
+    floater(owner.x,owner.y-owner.r-20,'🍅 케찹뿌리기!','#d9271c',16,.72);
+    return true;
+  }
+  const _onWallHit=onWallHit;
+  onWallHit=function(p){
+    const result=_onWallHit(p);
+    if(realId(p)==='dong'&&p?.alive&&!p.hidden&&(p.data?.v160PowerlessTimer||0)<=1e-9){
+      p.data.v286KetchupWalls=(p.data.v286KetchupWalls||0)+1;
+      floater(p.x,p.y-p.r-16,`🍅 케찹 ${p.data.v286KetchupWalls}/${KETCHUP_WALLS}`,'#d9271c',12,.45);
+      if(p.data.v286KetchupWalls>=KETCHUP_WALLS){p.data.v286KetchupWalls=0;fireKetchup(p);}
+      p.cool.v273Ketchup=1e9;
+    }
+    return result;
+  };
+
+  const _tick=tick;
+  tick=function(dt){
+    const result=_tick(dt);
+    if(game){applyRuntimeState();if(!game.over)updateMongShots(dt);}
+    return result;
+  };
+  const _draw=draw;draw=function(){_draw();drawMongShots();};
+  const _resetBattle=resetBattle;
+  resetBattle=function(){const result=_resetBattle();if(game){game.v286MongShots=[];applyRuntimeState();for(const p of game.players||[]){if(realId(p)==='woo'){p.data.v286MongNextAt=0;p.data.v286MongFired=0;}if(realId(p)==='dong')p.data.v286KetchupWalls=0;}}return result;};
+
+  const _statusText=statusText;
+  statusText=function(p){
+    let base=_statusText(p).replace(/(?: · )?🍅 케찹 [0-9.]+s/g,'');
+    const extra=[];
+    if(realId(p)==='woo'){const left=Math.max(0,(Number(p.data?.v286MongNextAt)||0)-(Number(game?.t)||0));extra.push(left>0?`먼작귀 ${left.toFixed(1)}s`:'먼작귀 준비');}
+    if(realId(p)==='dong')extra.push(`🍅 케찹 벽 ${p.data?.v286KetchupWalls||0}/${KETCHUP_WALLS}`);
+    if(realId(p)!=='junghoon'){
+      const inside=(game?.players||[]).some(j=>realId(j)==='junghoon'&&j.alive&&!j.hidden&&j.data?.smellActive&&p?.alive&&!p.hidden&&isEnemy(j,p)&&dist(j,p)<=Number(j.data?.smellRadius||SMELL_RADIUS)+p.r);
+      if(inside)extra.push('☣ 중국냄새 10% 감속');
+    }
+    return [base,...extra].filter(Boolean).join(' · ');
+  };
+
+  applyRuntimeState();
+  if(window.__GONG_V134_DEBUG__){Object.assign(window.__GONG_V134_DEBUG__,{damage,tick,onWallHit,resetBattle});}
+  window.__GONG_V286__={build:BUILD,constants:{smellRadius:SMELL_RADIUS,smellSlowPercent:10,mongCooldown:MONG_COOLDOWN,ketchupWalls:KETCHUP_WALLS},player(id){return game?.players?.find(p=>realId(p)===id)||null;},scale(id){const p=this.player(id);return p?effectiveScale(p):null;},status(id){const p=this.player(id);return p?statusText(p):'';},verify(){return {build:BUILD,constants:this.constants,wooSkills:DEFS_REF.woo?.skills,dongSkills:DEFS_REF.dong?.skills,junghoonInfo:SKILL_REF.junghoon?.skills?.find(s=>s.name==='중국냄새 풍기기'),wooInfo:SKILL_REF.woo?.skills?.find(s=>s.name==='먼작귀컬랙터'),dongInfo:SKILL_REF.dong?.skills?.find(s=>s.name==='케찹뿌리기'),latest:window.__GONG_LATEST_BUILD__};}};
+  window.__GONG_V286_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V286] 오정훈 중국냄새 반경 144 + 10% 감속 · 성우진 먼작귀컬랙터 1.0초 스팸방지 · 김동환 케찹 벽 5회 발동');
+})();
+
 })();
 </script>
 
@@ -34249,7 +34451,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=285',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=286',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36091,6 +36293,19 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_V285_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V285] 보스전 + 친선전 메인 허브 복구 · 좌우 2칸 배치 · 경쟁전 가로 전체 유지');
+})();
+</script>
+
+
+
+
+<script id="v286LatestBuildMarker">
+(()=>{
+  'use strict';
+  const BUILD='V286_JUNGHOON_SMELL_WOO_MONG_DONG_KETCHUP';
+  window.__GONG_V286_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V286 latest] 오정훈 냄새 강화 · 성우진 먼작귀컬랙터 · 김동환 케찹 벽 5회');
 })();
 </script>
 
