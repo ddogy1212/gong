@@ -2388,7 +2388,7 @@ chaewon:{id:'chaewon',name:'이채원',color:'#d79b3f',hp:200,speed:150,img:IMAG
   shion:{id:'shion',name:'이시온',generation:21,color:'#6f9f46',hp:240,speed:320,img:IMAGES.shion,role:'테두리 버섯 설치·주기 연결 레이저·4회 방어·대피 회복형',skills:'버섯돌이 · 버섯 레이저 · 표독한시선 · 해외도피'},
   seoyoung:{id:'seoyoung',name:'박서영',generation:21,color:'#704f9a',hp:180,speed:280,img:IMAGES.seoyoung,role:'피격 강화·무피격 성장 시전·일본어 연사형',skills:'멘헤라 · 애니정주행하기 · 일본어쓰기'},
   yangchaewon:{id:'yangchaewon',name:'양채원',color:'#3f8a35',hp:200,speed:200,img:IMAGES.yangchaewon,role:'성우진 연계·더미 요새·반사 녹차·장기 생존형',skills:'성우진 갈구기 · 안산의 왕 · 녹차던지기 · 장기연애'},
-  leeseohyun:{id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:200,speed:520,img:'characters/lee_seohyun_v277.png',role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'},
+  leeseohyun:{id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:250,speed:520,img:'characters/lee_seohyun_v277.png',role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'},
   james:{id:'james',name:'제임스',color:'#87552e',hp:5000,speed:200,img:IMAGES.james,role:'보스 전용·거대 공·속도 폭주·중첩 식중독형',skills:'도발 · 중국가라오케 · 형편없는식사'},
   yoogeon:{id:'yoogeon',name:'유건우',color:'#183a66',hp:7500,speed:210,img:IMAGES.yoogeon,role:'자퇴생 보스·다중 페이즈·학교 탈출 기믹형',skills:'자퇴 선언 · 출석부 찢기 · 야자 탈주 · 교무실 습격 · 졸업장 파쇄 · 보충수업 거부'},
   youngsik:{id:'youngsik',name:'김영식',color:'#3f7f63',hp:18000,speed:30,img:IMAGES.youngsik,role:'35인 권장 교사 보스·과제·수면·구속·탄막형',skills:'작문시키기 · 잠들게하기 · 아이스크림 선물 · 노래추천 · 기타치기 · 학탈 잡기 · 수원외고잔나비'},
@@ -20199,9 +20199,12 @@ if(game.chaewonDash){const d=game.chaewonDash;if(d.owner?.alive&&d.target?.alive
     else if(s.type==='jongyeopBelt'){ctx.shadowColor='#b98555';ctx.shadowBlur=12;ctx.strokeStyle='#6b452e';ctx.lineWidth=6;ctx.beginPath();ctx.arc(0,0,10,.25,Math.PI*1.75);ctx.stroke();ctx.shadowBlur=0;}
     else if(s.type==='poop'){ctx.font='21px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.fillText('💩',0,0)}
     else if(s.type==='kiss'){
-      // V275: emoji font + shadowBlur 대신 경량 벡터 입술. 판정/개수/피해는 그대로 유지한다.
-      ctx.fillStyle='#ff4f91';ctx.beginPath();ctx.moveTo(-11,0);ctx.quadraticCurveTo(-6,-7,0,-3);ctx.quadraticCurveTo(6,-7,11,0);ctx.quadraticCurveTo(6,7,0,3);ctx.quadraticCurveTo(-6,7,-11,0);ctx.closePath();ctx.fill();
-      ctx.fillStyle='#c92f70';ctx.beginPath();ctx.moveTo(-7,0);ctx.quadraticCurveTo(0,2,7,0);ctx.quadraticCurveTo(0,5,-7,0);ctx.fill();
+      // V280: 큐피드 보우·아랫입술 볼륨·입술 틈을 분리한 경량 벡터 입술.
+      ctx.save();ctx.rotate(-(s.rot||0)*.35);
+      ctx.fillStyle='#ff5b91';ctx.beginPath();ctx.moveTo(-12,0);ctx.bezierCurveTo(-9,-4.5,-5.5,-6.5,-1.5,-3.2);ctx.bezierCurveTo(-.7,-2.4,-.25,-2,0,-1.2);ctx.bezierCurveTo(.25,-2,.7,-2.4,1.5,-3.2);ctx.bezierCurveTo(5.5,-6.5,9,-4.5,12,0);ctx.bezierCurveTo(8.5,1.4,4.5,2.3,0,2.1);ctx.bezierCurveTo(-4.5,2.3,-8.5,1.4,-12,0);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#e64279';ctx.beginPath();ctx.moveTo(-11.5,.2);ctx.bezierCurveTo(-7.5,2.4,-4,7.2,0,7.4);ctx.bezierCurveTo(4,7.2,7.5,2.4,11.5,.2);ctx.bezierCurveTo(7.1,1.9,3.4,2.8,0,2.7);ctx.bezierCurveTo(-3.4,2.8,-7.1,1.9,-11.5,.2);ctx.closePath();ctx.fill();
+      ctx.strokeStyle='#9f2354';ctx.lineWidth=1.35;ctx.beginPath();ctx.moveTo(-9.5,.35);ctx.bezierCurveTo(-5.2,1.25,-2.4,.95,0,1.1);ctx.bezierCurveTo(2.4,.95,5.2,1.25,9.5,.35);ctx.stroke();
+      ctx.globalAlpha=.55;ctx.strokeStyle='#ffd2df';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-4.5,-3.3);ctx.quadraticCurveTo(-2.8,-4.1,-1.6,-3.1);ctx.stroke();ctx.restore();
     }
     else if(s.type==='jihyunFlag'){
       ctx.shadowColor='#e8c66a';ctx.shadowBlur=12;
@@ -21124,9 +21127,10 @@ function frame(ts){
     const batch=()=>{
       if(token!==fastToken||!state?.active){fastOverlay.classList.add('hidden');return;}
       let processed=0;
-      while(!state.completed&&processed<14){
+      while(!state.completed&&processed<1){
         const m=currentMatch();
         if(!m){stalled++;break;}
+        el('tournamentFastMatch').textContent=`${TDEFS[m.a]?.name||m.a} VS ${TDEFS[m.b]?.name||m.b}`;
         const out=v279ResolveFastMatch(m,first?targetGame:null);first=false;
         if(!out){stalled++;break;}
         processed++;stalled=0;
@@ -21136,9 +21140,9 @@ function frame(ts){
       const next=currentMatch();
       if(state.completed){fastOverlay.classList.add('hidden');setScreens('tournament');setTimeout(showFinalResult,35);return;}
       if(!next&&stalled>1){fastOverlay.classList.add('hidden');console.warn('[V279] 빠른 토너먼트 진행 복구 실패',state);setScreens('tournament');return;}
-      setTimeout(batch,0);
+      setTimeout(batch,420);
     };
-    setTimeout(batch,0);
+    setTimeout(batch,180);
   }
   function fastRun(targetGame,token,mode='auto'){
     if(!targetGame||targetGame._tournamentHandled||!state?.active)return;
@@ -21149,14 +21153,14 @@ function frame(ts){
       el('tournamentFastProgress').textContent='⚡ 남은 대진 전체를 경량 계산 중...';
       v279FastAll(token,targetGame);return;
     }
-    el('tournamentFastProgress').textContent='⚡ 현재 경기를 경량 계산 중...';
+    el('tournamentFastProgress').textContent='⚡ 현재 경기를 잠깐 보여준 뒤 결과를 계산합니다...';
     setTimeout(()=>{
       if(token!==fastToken||game!==targetGame||!state?.active)return;
       const out=v279ResolveFastMatch(m,targetGame);if(!out){fastOverlay.classList.add('hidden');return;}
       renderBracket();fastOverlay.classList.add('hidden');
       if(state.completed){setScreens('tournament');setTimeout(mode==='auto'?showFinalResult:showChampionSequence,35);return;}
-      if(mode==='auto')setTimeout(()=>prepareMatch(currentMatch()),0);else showGameResult(m,out.record,!out.seriesDone,mode);
-    },0);
+      if(mode==='auto')setTimeout(()=>prepareMatch(currentMatch()),120);else showGameResult(m,out.record,!out.seriesDone,mode);
+    },420);
   }
   function skipCurrent(mode){
     if(!state||!game||game.over||game._tournamentHandled)return;
@@ -26181,7 +26185,7 @@ Object.assign(SKILL_INFO,{
   shin_jimin:{summary:'정병 지속 피해·안경 강화·회전 원반형',hp:'250',speed:'200 · 안경 보유 시 600',skills:[
     {kind:'패시브',type:'passive',name:'연애정병',desc:'직접 충돌한 적에게 10초 동안 1초마다 0.5 피해를 준다. 재충돌하면 중첩 대신 지속시간이 갱신된다.',points:['총 10회 피해','신지민 사망 후에도 남은 지속 피해 유지','피해·킬은 신지민에게 귀속','팀전 아군 제외']},
     {kind:'강화 스킬',type:'defense',name:'뿔테안경',desc:'벽 3회마다 안경 1개를 장착한다. 안경이 하나라도 있으면 속도 3배, 모든 공격 피해 2.5배가 된다.',points:['스택 무제한','실제 피해 1회마다 1개 소모','피해가 0이면 소모되지 않음','공 위에 안경과 스택 수 표시']},
-    {kind:'공격 스킬',type:'attack',name:'극우',desc:'2초마다 빨간 원반 2개가 2초 동안 서로 반대편에서 빠르게 회전한다.',points:['원반당 15 피해','강한 넉백','적중 1초 뒤 4초 동안 속도 80% 감소','원반 하나당 같은 활성화에서 같은 적 1회 타격']}
+    {kind:'공격 스킬',type:'attack',name:'극우',desc:'2초마다 빨간 원반 2개가 2초 동안 서로 반대편에서 빠르게 회전한다.',points:['원반당 6 피해','강한 넉백','적중 1초 뒤 4초 동안 속도 80% 감소','원반 하나당 같은 활성화에서 같은 적 1회 타격']}
   ]},
   park_hanul:{summary:'부채꼴 탄막·문자 연사·확률 누적 강화형',hp:'170',speed:'210',skills:[
     {kind:'공격 스킬',type:'attack',name:'마라탕발사',desc:'벽 3회마다 가장 가까운 적 방향으로 마라탕 20개를 부채꼴로 분사한다.',points:['개당 4 피해','적 또는 벽 충돌 시 제거','팀전 아군 제외']},
@@ -26235,7 +26239,7 @@ function v174TriggerExplosion(p,forcedSuccess=null){
   spawnSkillBanner(`💥 정병폭발 성공 · 공격 ×${p.data.v174ExplosionMult}`,'#d74831');spawnAttackFx(p.x,p.y,'#d74831','정병폭발 성공',1.8);floater(p.x,p.y-p.r-24,`공격 ×${p.data.v174ExplosionMult}`,'#d74831',20,1.2);return {success:true,mult:p.data.v174ExplosionMult};
 }
 function v174ApplyLoveDot(owner,target){
-  if(!owner?.alive||!target?.alive||v273Powerless(owner)||!isEnemy(owner,target))return false;
+  if(!owner?.alive||!target?.alive||((owner.data?.v160PowerlessTimer||0)>1e-9)||!isEnemy(owner,target))return false;
   const prev=target.data.v174LoveDot;
   // 겹쳐 있는 동안 접촉 판정이 반복되어도 1초 피해 주기가 계속 흐르도록 한다.
   // 지속시간은 10초로 갱신하되, 이미 진행 중인 다음 틱 카운트다운은 보존한다.
@@ -26353,7 +26357,7 @@ function v174UpdateShots(dt){
   game.v174Shots=game.v174Shots.filter(s=>s.life>0);
 }
 function v174UpdateDiscs(dt){
-  for(const d of game.v174Discs){d.age+=dt;d.life-=dt;if(!d.owner?.alive){d.life=0;continue;}d.angle+=dt*8.5;const rr=d.owner.r+28;d.x=d.owner.x+Math.cos(d.angle)*rr;d.y=d.owner.y+Math.sin(d.angle)*rr;for(const q of game.players){if(!q.alive||q.hidden||!isEnemy(d.owner,q)||d.hit.has(v174Uid(q)))continue;if(Math.hypot(q.x-d.x,q.y-d.y)<q.r+d.r){d.hit.add(v174Uid(q));damage(q,15,d.owner,'극우 · 빨간 원반');v174Knock(q,d.owner,1050);(q.data.v174ExtremeSlowQueue||(q.data.v174ExtremeSlowQueue=[])).push(1);}}}
+  for(const d of game.v174Discs){d.age+=dt;d.life-=dt;if(!d.owner?.alive){d.life=0;continue;}d.angle+=dt*8.5;const rr=d.owner.r+28;d.x=d.owner.x+Math.cos(d.angle)*rr;d.y=d.owner.y+Math.sin(d.angle)*rr;for(const q of game.players){if(!q.alive||q.hidden||!isEnemy(d.owner,q)||d.hit.has(v174Uid(q)))continue;if(Math.hypot(q.x-d.x,q.y-d.y)<q.r+d.r){d.hit.add(v174Uid(q));damage(q,6,d.owner,'극우 · 빨간 원반');v174Knock(q,d.owner,1050);(q.data.v174ExtremeSlowQueue||(q.data.v174ExtremeSlowQueue=[])).push(1);}}}
   game.v174Discs=game.v174Discs.filter(d=>d.life>0);
 }
 function v174SummonContact(s,q,force=false){
@@ -32297,9 +32301,9 @@ window.__GONG_V266_RUNTIME__={
   const WEATHER_LABELS={rain:'폭우',hail:'우박',storm:'폭풍',lightning:'번개'};
 
   IMAGES.leeseohyun=IMG;
-  DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:200,speed:520,img:IMG,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
+  DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:250,speed:520,img:IMG,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
   SKILL_INFO.leeseohyun={
-    summary:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',hp:'200',speed:'520',skills:[
+    summary:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',hp:'250',speed:'520',skills:[
       {kind:'벽 충돌 날씨 전환',type:'attack',name:'웨더아주머니',desc:'벽에 3번 닿을 때마다 4종 날씨 중 1개를 랜덤 발동한다. 날씨가 끝난 뒤 다시 3번부터 카운트한다.',points:['벽 충돌 3회마다 랜덤 날씨 1개 발동','날씨 지속시간: 4초','폭우: 가장 가까운 적 방향으로 물방울 30발 연사, 1발당 1.4 피해','우박: 360도 회전하며 얼음 60발 분사, 1발당 4 피해 + 2초 정지','폭풍: 모든 적에게 유도되는 바람 1개씩 발사, 1회 적중 시 15 피해 + 강한 넉백','번개: 이상은의 벼락처럼 4초 동안 2번 모두에게 낙뢰(기본 22 피해)']},
       {kind:'피격 반격 투사체',type:'attack',name:'페니',desc:'투사체에 맞을 때마다 공격한 적 방향으로 동전을 던진다.',points:['투사체에 실제 피해를 받을 때마다 발동','동전에 맞은 적은 3초 동안 1초마다 2 피해','동전 적중 시 3초 동안 이동속도 40% 감소','여러 번 맞으면 지속시간이 갱신됨']}
     ]
@@ -35683,10 +35687,10 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
       const img='characters/lee_seohyun_v277.png';
       if(!DEFS.leeseohyun){
         if(typeof IMAGES!=='undefined')IMAGES.leeseohyun=img;
-        DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:200,speed:520,img,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
+        DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:250,speed:520,img,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
       }
-      DEFS.leeseohyun.generation=20;DEFS.leeseohyun.speed=520;DEFS.leeseohyun.img=img;
-      if(SKILL_INFO.leeseohyun)SKILL_INFO.leeseohyun.speed='520';
+      DEFS.leeseohyun.generation=20;DEFS.leeseohyun.hp=250;DEFS.leeseohyun.speed=520;DEFS.leeseohyun.img=img;
+      if(SKILL_INFO.leeseohyun){SKILL_INFO.leeseohyun.hp='250';SKILL_INFO.leeseohyun.speed='520';}
       if(typeof assignments!=='undefined'&&!Object.prototype.hasOwnProperty.call(assignments,'leeseohyun'))assignments.leeseohyun='pool';
       if(typeof syncCharacterAssignments==='function')syncCharacterAssignments();
       if(typeof renderSetup==='function')renderSetup();
@@ -35797,6 +35801,19 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_V279_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
   console.info('[V279] 랭킹 TOP3 쿠폰 배수 · 신 점수 무제한 · 이서현 픽창 복구 · 토너먼트 숫자 아이콘 삭제 · 빠른 경기 경량화');
+})();
+</script>
+
+<script id="v280TournamentShinStabilityPatch">
+(()=>{
+  'use strict';
+  const BUILD='V280_TOURNAMENT_PACED_SKIP_SHIN_STABILITY_BALANCE';
+  if(typeof DEFS!=='undefined'&&DEFS.leeseohyun)DEFS.leeseohyun.hp=250;
+  if(typeof SKILL_INFO!=='undefined'&&SKILL_INFO.leeseohyun)SKILL_INFO.leeseohyun.hp='250';
+  window.__GONG_V280_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V280__={build:BUILD,verify(){return {build:BUILD,leeSeohyunHp:(window.__GONG_V173_TEST__?.character?.('leeseohyun')?.hp??null),shinJiminDiscDamage:6,shinJiminLoveDotScopeSafe:true,tournamentSkipDelayMs:420,tournamentSkipBatchSize:1,gyuminLipVector:'cupid-bow-volume-slit',latest:window.__GONG_LATEST_BUILD__};}};
+  console.info('[V280] 토너먼트 스킵 한 경기씩 표시 · 김규민 입술 개선 · 이서현 HP 250 · 신지민 멈춤 수정 · 극우 원반 6');
 })();
 </script>
 </body>
