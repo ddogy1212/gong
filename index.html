@@ -32856,7 +32856,7 @@ window.__GONG_V266_RUNTIME__={
   IMAGES[MR]=MR_IMG;IMAGES[SM]=SM_IMG;
   BOSS_IDS.add(MR);BOSS_IDS.add(SM);BOSS_IDS.add('julia');
   DEFS[MR]={id:MR,name:'MR.베이블레이드',color:'#d8af38',hp:1000,speed:3000,img:MR_IMG,role:'이벤트 보스·4인 제한·초고속 가시·끌어오기·즉사형',skills:'베이블레이드 · 아악살려줘 · MR.VOMITING GUY · 번따 · 고백공격 · 충격적인행실로인해팔로우일방적으로끊기'};
-  DEFS[SM]={id:SM,name:'서민지(자퇴Ver)',color:'#5a465f',hp:6000,speed:4000,img:SM_IMG,role:'초중급 보스·지속피해 면역·자퇴 무적·기타 탄막·연속 돌진형',skills:'악취싫어하기 · 자퇴당일통보 · 락페스티벌 · 잡도리하기 · 학탈하기'};
+  DEFS[SM]={id:SM,name:'서민지(자퇴Ver)',color:'#5a465f',hp:7000,speed:4000,img:SM_IMG,role:'중급 보스·지속피해 면역·자퇴 무적·기타 탄막·연속 돌진형',skills:'악취싫어하기 · 자퇴당일통보 · 락페스티벌 · 잡도리하기 · 학탈하기'};
   Object.assign(BOSS_INFO,{
     [MR]:{name:'MR.베이블레이드',hp:1000,img:MR_IMG,meta:'이벤트 · HP 1000 · 도전자 최대 4명',skills:[
       ['베이블레이드','공 주위를 가시가 둘러싼다. 가시에 닿은 적은 20 피해를 받고 매우 강하게 멀리 튕겨나간다.'],
@@ -32866,14 +32866,14 @@ window.__GONG_V266_RUNTIME__={
       ['고백공격','한 적이 MR에게 누적 450 이상의 실제 피해를 주면 화려한 고백공격을 받고 즉사한다.'],
       ['충격적인행실로인해팔로우일방적으로끊기','MR을 제외한 같은 팀 아군의 투사체가 빗나갈 때마다 대상에게 X를 던진다. X는 15 피해, 3초 60% 감속, 강한 넉백을 준다.']
     ]},
-    [SM]:{name:'서민지(자퇴Ver)',hp:6000,img:SM_IMG,meta:'초중급보스 · HP 6000',skills:[
+    [SM]:{name:'서민지(자퇴Ver)',hp:7000,img:SM_IMG,meta:'중급보스 · HP 7000',skills:[
       ['악취싫어하기','지속 데미지와 잔향형 피해를 받지 않는다.'],
       ['자퇴당일통보','2~9초의 무작위 쿨타임 후 5초간 자퇴 상태가 되어 모든 공격을 무효화한다.'],
       ['락페스티벌','벽 4회 충돌마다 가장 가까운 적 방향의 부채꼴로 일렉기타 5개를 발사한다. 기타 하나당 50 피해, 적중 시 30초간 20% 감속.'],
       ['잡도리하기','적과 충돌할 때 30% 확률로 상대 최대 HP의 절반 피해. 나머지 70%는 20 피해와 강한 넉백.'],
       ['학탈하기','벽 7회마다 서로 다른 3명을 거리 사슬 순서로 연속 돌진한다. 각 대상은 50~200 무작위 피해를 받고, 연속 돌진이 끝나면 HP 90 회복.']
     ]},
-    yoogeon:{...BOSS_INFO.yoogeon,meta:'중급보스 · HP 7500'}
+    yoogeon:{...BOSS_INFO.yoogeon,meta:'초중급보스 · HP 7500'}
   });
   try{GongGameModules?.registerBoss?.(MR,{id:MR,source:'src/bosses/mrbeyblade.js',definition:()=>DEFS[MR],info:()=>BOSS_INFO[MR]});GongGameModules?.registerBoss?.(SM,{id:SM,source:'src/bosses/seominji_dropout.js',definition:()=>DEFS[SM],info:()=>BOSS_INFO[SM]})}catch(_){}
 
@@ -32885,8 +32885,8 @@ window.__GONG_V266_RUNTIME__={
     const rows=[
       [MR,'MR.베이블레이드','이벤트',1000,MR_IMG],
       ['james','제임스','초급보스',5000,IMAGES.james],
-      [SM,'서민지(자퇴Ver)','초중급보스',6000,SM_IMG],
-      ['yoogeon','유건우','중급보스',7500,IMAGES.yoogeon],
+      ['yoogeon','유건우','초중급보스',7500,IMAGES.yoogeon],
+      [SM,'서민지(자퇴Ver)','중급보스',7000,SM_IMG],
       ['youngsik','김영식','중상급보스',20000,IMAGES.youngsik],
       ['julia','JULIA','상급보스',juliaHp,IMAGES.julia]
     ];
@@ -32905,7 +32905,7 @@ window.__GONG_V266_RUNTIME__={
   function initBossRuntime(){
     if(!game)return;game.v287Guitars=[];game.v287XShots=[];game.v287Confessions=[];game.v287TrackedMisses=new Map();game.v287MissSerial=0;game.v287Announcements=[];
     const mr=bossPlayer(MR);if(mr){mr.isBoss=true;mr.maxHp=1000;mr.hp=Math.min(mr.hp,1000);mr.speed=3000;mr.r=78;mr.data.v287HelpUsed=false;mr.data.v287HelpCast=0;mr.data.v287HelpX=mr.x;mr.data.v287HelpY=mr.y;mr.data.v287HelpCry=0;mr.data.v287SpikeAt={};mr.data.v287LastDamageAt={};mr.data.v287DamageBy={};mr.data.v287Confessed={};normalizeSpeed(mr,3000);for(const h of heroList(mr))mr.data.v287LastDamageAt[keyOf(h)]=0;}
-    const sm=bossPlayer(SM);if(sm){sm.isBoss=true;sm.maxHp=6000;sm.hp=Math.min(sm.hp,6000);sm.speed=4000;sm.r=84;sm.data.v287QuitTimer=0;sm.data.v287QuitNext=(game.t||0)+randRange(2,9);sm.data.v287RockWalls=0;sm.data.v287DropWalls=0;sm.data.v287GrabAt={};sm.data.v287Dash=null;normalizeSpeed(sm,4000);}
+    const sm=bossPlayer(SM);if(sm){sm.isBoss=true;sm.maxHp=7000;sm.hp=Math.min(sm.hp,7000);sm.speed=4000;sm.r=84;sm.data.v287QuitTimer=0;sm.data.v287QuitNext=(game.t||0)+randRange(2,9);sm.data.v287RockWalls=0;sm.data.v287DropWalls=0;sm.data.v287GrabAt={};sm.data.v287Dash=null;normalizeSpeed(sm,4000);}
   }
 
   const previousReset=resetBattle;
@@ -32972,7 +32972,7 @@ window.__GONG_V266_RUNTIME__={
   statusText=function(p){const base=previousStatus(p),x=[];if(realId(p)===MR){if((p.data?.v287HelpCast||0)>0)x.push(`🆘 아악살려줘 ${p.data.v287HelpCast.toFixed(1)}s`);x.push('🌀 가시 20');}if(realId(p)===SM){if((p.data?.v287QuitTimer||0)>0)x.push(`🏃 자퇴 ${p.data.v287QuitTimer.toFixed(1)}s · 무적`);x.push(`🎸 벽 ${p.data?.v287RockWalls||0}/4 · 🏫 ${p.data?.v287DropWalls||0}/7`);}if((p.data?.v287Vomiting||0)>0)x.push(`🤮 VOMITING ${p.data.v287Vomiting.toFixed(1)}s`);if((p.data?.v287GuitarSlow||0)>0)x.push(`🎸 감속 ${p.data.v287GuitarSlow.toFixed(1)}s`);if((p.data?.v287XSlow||0)>0)x.push(`X 감속 ${p.data.v287XSlow.toFixed(1)}s`);if(p.data?.v287NumberPull)x.push('📞 번따 끌림');return [base,...x].filter(Boolean).join(' · ')};
 
   window.__GONG_V287__={
-    build:BUILD,images:{mr:MR_IMG,seominji:SM_IMG},bossOrder:[MR,'james',SM,'yoogeon','youngsik','julia'],
+    build:BUILD,images:{mr:MR_IMG,seominji:SM_IMG},bossOrder:[MR,'james','yoogeon',SM,'youngsik','julia'],getSelectedBoss:()=>selectedBoss,setSelectedBoss:(id)=>{if(![MR,'james','yoogeon',SM,'youngsik','julia'].includes(id))return false;selectedBoss=id;const grid=document.querySelector('.boss-select-grid');grid?.querySelectorAll('.boss-card').forEach(c=>c.classList.toggle('active',c.dataset.boss===id));try{renderBossInfo(id)}catch(_){}return true},
     verify(){const cards=[...document.querySelectorAll('.boss-select-grid .boss-card')];const ach=window.__GONG_V260__?.achievements?.()||[];return {build:BUILD,bossOrder:cards.map(c=>c.dataset.boss),bossTags:cards.map(c=>c.querySelector('.boss-tag')?.textContent),placeholderGone:!document.querySelector('.boss-placeholder-card'),mr:DEFS[MR],seominji:DEFS[SM],achievementCount:ach.length,hiddenReveals:ach.filter(a=>a.hidden).map(a=>({id:a.id,name:a.name,desc:a.desc})),hubSubtitlesHidden:getComputedStyle(document.querySelector('#modeHub .v283-boss-mode-btn'),'::after').display==='none'&&getComputedStyle(document.getElementById('friendlyModeBtn'),'::after').display==='none',latest:window.__GONG_LATEST_BUILD__}},
     enforceMrCap,trimMrAssignments,renderBossGrid,boss:id=>bossPlayer(id),fireGuitars,startSchoolDash,startHelp,confess:(target)=>flashyConfession(bossPlayer(MR),target),spawnX:(target)=>spawnX(bossPlayer(MR),target)
   };
@@ -34690,7 +34690,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=288',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=289',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36595,6 +36595,130 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   const BUILD='V288_BOSS_VISUAL_ACHIEVEMENT_AUDIT_MASTERY30_TRAIL';
   window.__GONG_V288_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
+})();
+</script>
+
+
+<style id="v289UxEventStyle">
+/* V289 · achievement notice + contextual play button + MR limited event */
+.v289-ach-toast{position:fixed;left:50%;bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));z-index:145500;transform:translate(-50%,18px);width:min(92vw,520px);opacity:0;pointer-events:none;transition:.22s ease;border:3px solid #111;border-radius:17px;background:linear-gradient(135deg,#fff8cf,#fff,#f0e8ff);box-shadow:0 18px 50px #0008;padding:12px 13px;color:#17131d}
+.v289-ach-toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}.v289-ach-toast-head{display:flex;align-items:flex-start;gap:9px}.v289-ach-toast-icon{font-size:27px;line-height:1}.v289-ach-toast-copy{min-width:0;flex:1}.v289-ach-toast-copy strong{display:block;font-size:14px;font-weight:1000}.v289-ach-toast-copy span{display:block;margin-top:3px;font-size:9px;font-weight:900;color:#665d6e;line-height:1.45}.v289-ach-toast-actions{display:flex;gap:7px;margin-top:9px}.v289-ach-toast button{min-height:36px;border:2px solid #111;border-radius:10px;padding:0 11px;font-size:9px;font-weight:1000;cursor:pointer}.v289-ach-profile{background:#111;color:#fff}.v289-ach-close{background:#fff;color:#111}
+.v289-result-ach{margin:0 0 10px;border:3px solid #d99a00;border-radius:15px;background:linear-gradient(135deg,#fff4b6,#fff 60%,#efe5ff);padding:11px 12px;box-shadow:0 5px 0 #b97800}.v289-result-ach strong{display:block;font-size:13px;font-weight:1000;color:#4c3400}.v289-result-ach span{display:block;margin-top:4px;font-size:9px;font-weight:900;color:#66572d;line-height:1.4}.v289-result-ach button{margin-top:8px;min-height:34px;border:2px solid #111;border-radius:9px;background:#111;color:#fff;padding:0 11px;font-size:9px;font-weight:1000;cursor:pointer}
+#v289FloatingPlay{position:fixed;left:50%;bottom:max(11px,calc(env(safe-area-inset-bottom) + 8px));z-index:72000;transform:translate(-50%,16px);opacity:0;pointer-events:none;min-width:min(78vw,330px);max-width:90vw;min-height:47px;border:3px solid #111;border-radius:999px;background:linear-gradient(135deg,#101010,#2d183f 52%,#7a251b);color:#fff;box-shadow:0 12px 35px #0008,0 3px 0 #111;padding:0 18px;font-size:12px;font-weight:1000;letter-spacing:.2px;transition:.18s ease}
+#v289FloatingPlay.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}#v289FloatingPlay:disabled{opacity:.45;pointer-events:none}
+.v289-event-modal{position:fixed;inset:0;z-index:160500;display:grid;place-items:center;padding:14px;background:#050711d9;backdrop-filter:blur(9px)}.v289-event-modal.hidden{display:none!important}.v289-event-card{position:relative;width:min(94vw,680px);overflow:hidden;border:3px solid #e5b936;border-radius:24px;background:#08152c;color:#fff;box-shadow:0 28px 90px #000d}.v289-event-hero{position:relative;display:grid;grid-template-columns:minmax(180px,.92fr) minmax(0,1.08fr);min-height:310px;background:radial-gradient(circle at 20% 30%,#2666b888,transparent 36%),radial-gradient(circle at 82% 60%,#ae241f88,transparent 40%),linear-gradient(145deg,#061631,#111827 48%,#4c1010)}.v289-event-img-wrap{position:relative;display:grid;place-items:center;padding:23px 8px 18px 20px}.v289-event-img-wrap:before{content:'';position:absolute;width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#ffd95b66 0 25%,#2f75d477 38%,#ba241f44 58%,transparent 70%);filter:blur(2px);animation:v289Pulse 1.8s ease-in-out infinite}.v289-event-img{position:relative;width:min(92%,300px);max-height:286px;object-fit:contain;filter:drop-shadow(0 13px 18px #0009) drop-shadow(0 0 11px #ffd34c66)}.v289-event-copy{display:flex;flex-direction:column;justify-content:center;padding:25px 25px 24px 12px}.v289-event-eyebrow{font-size:10px;font-weight:1000;letter-spacing:2px;color:#ffd65c}.v289-event-title{margin-top:6px;font-size:28px;line-height:1.02;font-weight:1000;text-shadow:0 3px 0 #000}.v289-event-period{display:inline-flex;align-self:flex-start;margin-top:9px;border:2px solid #ffd65c;border-radius:999px;padding:5px 9px;background:#0007;color:#fff1a8;font-size:10px;font-weight:1000}.v289-event-desc{margin-top:13px;font-size:12px;line-height:1.5;font-weight:950;color:#f4f5ff}.v289-event-prize{margin-top:10px;border-left:4px solid #ffd65c;padding:7px 9px;background:#ffffff12;font-size:10px;font-weight:950;color:#ffe98f}.v289-event-actions{display:grid;grid-template-columns:1.25fr .75fr;gap:8px;padding:12px;background:#050b18;border-top:1px solid #ffffff20}.v289-event-actions button{min-height:45px;border:2px solid #fff;border-radius:12px;font-size:10px;font-weight:1000;cursor:pointer}.v289-event-snooze{background:#fff;color:#111}.v289-event-close{background:#681f1c;color:#fff}.v289-event-x{position:absolute;right:10px;top:10px;z-index:3;width:38px;height:38px;border:2px solid #fff;border-radius:11px;background:#000b;color:#fff;font-size:20px;font-weight:1000;cursor:pointer}@keyframes v289Pulse{50%{transform:scale(1.08);opacity:.72}}
+@media(max-width:580px){.v289-event-hero{grid-template-columns:1fr;min-height:0}.v289-event-img-wrap{padding:18px 24px 4px}.v289-event-img{width:min(62vw,230px);max-height:205px}.v289-event-copy{padding:8px 20px 20px;text-align:center;align-items:center}.v289-event-title{font-size:23px}.v289-event-period{align-self:center}.v289-event-prize{border-left:0;border-top:3px solid #ffd65c}.v289-event-actions{grid-template-columns:1fr}.v289-ach-toast{bottom:max(72px,calc(env(safe-area-inset-bottom) + 70px))}}
+</style>
+<script id="v289UxEventPatch">
+(()=>{
+  'use strict';
+  const BUILD='V289_ACHIEVEMENT_NOTICE_FLOAT_PLAY_MR_EVENT_END';
+  const EVENT_START=Date.parse('2026-08-06T15:00:00Z'); // 2026-08-07 00:00 KST
+  const EVENT_END=Date.parse('2026-08-15T15:00:00Z');   // 2026-08-16 00:00 KST
+  const SNOOZE_KEY='gonggame_v289_mr_event_ad_snooze_until';
+  const MR='mrbeyblade';
+  const $=id=>document.getElementById(id);
+  const now=()=>Date.now();
+  const eventActive=()=>{const t=now();return t>=EVENT_START&&t<EVENT_END};
+  const eventEnded=()=>now()>=EVENT_END;
+
+  function ensureAchievementToast(){
+    let el=$('v289AchievementToast');if(el)return el;
+    el=document.createElement('aside');el.id='v289AchievementToast';el.className='v289-ach-toast';el.setAttribute('aria-live','assertive');
+    el.innerHTML='<div class="v289-ach-toast-head"><div class="v289-ach-toast-icon">🏆</div><div class="v289-ach-toast-copy"><strong>새 업적 달성!</strong><span></span></div></div><div class="v289-ach-toast-actions"><button type="button" class="v289-ach-profile">프로필 열기</button><button type="button" class="v289-ach-close">닫기</button></div>';
+    document.body.appendChild(el);
+    el.querySelector('.v289-ach-profile')?.addEventListener('click',()=>{hideAchievementToast();window.__GONG_V232__?.openProfile?.()});
+    el.querySelector('.v289-ach-close')?.addEventListener('click',hideAchievementToast);
+    return el;
+  }
+  let achTimer=0,lastFresh=[],lastFreshAt=0;
+  function hideAchievementToast(){clearTimeout(achTimer);$('v289AchievementToast')?.classList.remove('show')}
+  function showAchievementNotice(rows){
+    if(!rows?.length)return;
+    lastFresh=rows.map(x=>x.name||x.id).filter(Boolean);lastFreshAt=Date.now();
+    const el=ensureAchievementToast(),copy=el.querySelector('.v289-ach-toast-copy span');
+    const names=lastFresh.slice(0,3).join(' · ')+(lastFresh.length>3?` 외 ${lastFresh.length-3}개`:``);
+    if(copy)copy.textContent=`${names} 완료! 프로필 → 업적에서 보상을 수령해.`;
+    el.classList.add('show');clearTimeout(achTimer);achTimer=setTimeout(hideAchievementToast,8000);
+    injectAchievementIntoResult(lastFresh);
+  }
+  function injectAchievementIntoResult(names=lastFresh){
+    const modal=$('resultModal'),body=$('resultBody');if(!modal||!body||modal.classList.contains('hidden')||!names?.length||Date.now()-lastFreshAt>20000)return false;
+    let box=body.querySelector('.v289-result-ach');if(!box){box=document.createElement('section');box.className='v289-result-ach';body.prepend(box)}
+    const summary=names.slice(0,3).join(' · ')+(names.length>3?` 외 ${names.length-3}개`:``);
+    box.innerHTML=`<strong>🏆 업적 달성 · ${summary}</strong><span>프로필의 업적 메뉴에서 보상 XP 쿠폰과 칭호를 수령할 수 있어.</span><button type="button">프로필에서 보상 확인</button>`;
+    box.querySelector('button')?.addEventListener('click',()=>window.__GONG_V232__?.openProfile?.());return true;
+  }
+  function installAchievementWatcher(){
+    const api=window.__GONG_V260__;if(!api?.read||!api?.achievements)return false;
+    let known=new Set(Object.keys(api.read()?.unlocked||{}));
+    const meta=new Map(api.achievements().map(a=>[a.id,a]));
+    window.addEventListener('gong-v260-achievement-change',event=>{
+      const current=api.read()?.unlocked||{},ids=Object.keys(current),fresh=ids.filter(id=>!known.has(id));known=new Set(ids);
+      if(fresh.length)showAchievementNotice(fresh.map(id=>meta.get(id)||{id,name:id}));
+    });
+    const result=$('resultModal');if(result)new MutationObserver(()=>{if(!result.classList.contains('hidden')&&lastFresh.length)setTimeout(()=>injectAchievementIntoResult(lastFresh),0)}).observe(result,{attributes:true,attributeFilter:['class']});
+    return true;
+  }
+
+  function ensureFloatingPlay(){
+    let btn=$('v289FloatingPlay');if(btn)return btn;
+    btn=document.createElement('button');btn.id='v289FloatingPlay';btn.type='button';btn.textContent='▶ 배정한 캐릭터로 전투 시작';document.body.appendChild(btn);
+    btn.addEventListener('click',()=>{const start=$('start');if(start&&!start.disabled)start.click()});return btn;
+  }
+  let originalVisible=false;
+  function updateFloatingPlay(){
+    const btn=ensureFloatingPlay(),start=$('start'),setup=$('setup');if(!btn||!start||!setup)return;
+    const setupVisible=!setup.classList.contains('hidden')&&getComputedStyle(setup).display!=='none';
+    const visibleDialog=[...document.querySelectorAll('[role="dialog"]')].some(dialog=>{let node=dialog;while(node&&node!==document.body){const style=getComputedStyle(node);if(node.classList?.contains('hidden')||style.display==='none'||style.visibility==='hidden')return false;node=node.parentElement}return true});
+    const modalBlocking=!$('resultModal')?.classList.contains('hidden')||!$('v289EventModal')?.classList.contains('hidden')||visibleDialog;
+    const should=setupVisible&&!start.disabled&&!originalVisible&&!modalBlocking;
+    btn.classList.toggle('show',should);btn.disabled=!should;
+  }
+  function installFloatingPlay(){
+    const start=$('start');if(!start)return false;ensureFloatingPlay();
+    const io=new IntersectionObserver(entries=>{for(const e of entries)if(e.target===start)originalVisible=e.isIntersecting&&e.intersectionRatio>.12;updateFloatingPlay()},{threshold:[0,.12,.5,1]});io.observe(start);
+    new MutationObserver(updateFloatingPlay).observe(start,{attributes:true,attributeFilter:['disabled','class']});
+    const setup=$('setup');if(setup)new MutationObserver(updateFloatingPlay).observe(setup,{attributes:true,attributeFilter:['class']});
+    window.addEventListener('scroll',updateFloatingPlay,{passive:true});window.addEventListener('resize',updateFloatingPlay,{passive:true});setTimeout(updateFloatingPlay,100);return true;
+  }
+
+  function ensureEventModal(){
+    let modal=$('v289EventModal');if(modal)return modal;
+    modal=document.createElement('div');modal.id='v289EventModal';modal.className='v289-event-modal hidden';modal.setAttribute('aria-hidden','true');
+    const img=document.querySelector('.boss-card[data-boss="mrbeyblade"] img')?.getAttribute('src')||'';
+    modal.innerHTML=`<section class="v289-event-card" role="dialog" aria-modal="true" aria-label="MR.베이블레이드 한정 이벤트"><button type="button" class="v289-event-x" aria-label="닫기">×</button><div class="v289-event-hero"><div class="v289-event-img-wrap"><img class="v289-event-img" src="${img}" alt="MR.베이블레이드"></div><div class="v289-event-copy"><div class="v289-event-eyebrow">LIMITED BOSS EVENT · 2026</div><div class="v289-event-title">MR.베이블레이드<br>한정 등장</div><div class="v289-event-period">8월 7일 ~ 8월 15일까지!!</div><div class="v289-event-desc">이벤트 보스를 쓰러뜨리고 한정 업적을 완성해. 도전자 최대 4명 — 짧고 강렬하게 끝내라.</div><div class="v289-event-prize">🏆 쓰러뜨리고 칭호 「베이블레이드 브레이커」 획득에 도전!</div></div></div><div class="v289-event-actions"><button type="button" class="v289-event-snooze">24시간 동안 보지 않기</button><button type="button" class="v289-event-close">닫기</button></div></section>`;
+    document.body.appendChild(modal);
+    const close=()=>{modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');updateFloatingPlay()};
+    modal.querySelector('.v289-event-x')?.addEventListener('click',close);modal.querySelector('.v289-event-close')?.addEventListener('click',close);
+    modal.querySelector('.v289-event-snooze')?.addEventListener('click',()=>{try{localStorage.setItem(SNOOZE_KEY,String(now()+24*60*60*1000))}catch(_){}close()});
+    modal.addEventListener('click',e=>{if(e.target===modal)close()});return modal;
+  }
+  function maybeShowEventAd(){
+    if(!eventActive())return false;let until=0;try{until=Number(localStorage.getItem(SNOOZE_KEY)||0)}catch(_){}if(now()<until)return false;
+    const modal=ensureEventModal();modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');updateFloatingPlay();return true;
+  }
+  function applyMrEventAvailability(){
+    const ended=eventEnded(),grid=document.querySelector('.boss-select-grid'),mr=grid?.querySelector('.boss-card[data-boss="mrbeyblade"]');
+    if(mr){mr.hidden=ended;mr.style.display=ended?'none':'';mr.setAttribute('aria-hidden',ended?'true':'false')}
+    if(ended){const eventModal=$('v289EventModal');if(eventModal&&!eventModal.classList.contains('hidden')){eventModal.classList.add('hidden');eventModal.setAttribute('aria-hidden','true')}}
+    const bossApi=window.__GONG_V287__,selected=bossApi?.getSelectedBoss?.();
+    if(ended&&selected===MR){bossApi?.setSelectedBoss?.('james')}
+    return {ended,mrVisible:!!mr&&!ended,selected:bossApi?.getSelectedBoss?.()||null};
+  }
+  function installEventLifecycle(){
+    ensureEventModal();applyMrEventAvailability();
+    const grid=document.querySelector('.boss-select-grid');if(grid)new MutationObserver(()=>applyMrEventAvailability()).observe(grid,{childList:true,subtree:true});
+    setInterval(()=>{const before=window.__GONG_V287__?.getSelectedBoss?.()||null;const state=applyMrEventAvailability();if(state.ended&&before===MR&&!$('setup')?.classList.contains('hidden')){try{window.__GONG_V287__?.renderBossGrid?.();applyMrEventAvailability()}catch(_){}}},30000);
+    const untilEnd=EVENT_END-now();if(untilEnd>0&&untilEnd<2147483000)setTimeout(()=>{const before=window.__GONG_V287__?.getSelectedBoss?.()||null;const state=applyMrEventAvailability();if(state.ended&&before===MR&&!$('setup')?.classList.contains('hidden')){try{window.__GONG_V287__?.renderBossGrid?.();applyMrEventAvailability()}catch(_){}}},untilEnd+80);
+    setTimeout(maybeShowEventAd,350);return true;
+  }
+
+  function install(){installAchievementWatcher();installFloatingPlay();installEventLifecycle()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.__GONG_V289__={build:BUILD,eventStart:EVENT_START,eventEnd:EVENT_END,eventActive,eventEnded,applyMrEventAvailability,maybeShowEventAd,showAchievementNotice,updateFloatingPlay,verify(){const start=$('start'),float=$('v289FloatingPlay'),mr=document.querySelector('.boss-card[data-boss="mrbeyblade"]');return {build:BUILD,kstEventActive:eventActive(),eventEnded:eventEnded(),mrHiddenAfterEnd:eventEnded()?(!mr||mr.hidden||getComputedStyle(mr).display==='none'):true,floatingPlayPresent:!!float,achievementWatcher:true,startPresent:!!start,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V289_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V289] 업적 완료 알림 · 화면 밖 플레이 버튼 보조 · MR.베이블레이드 8/7~8/15 KST 한정 이벤트/8월16일 자동 종료');
 })();
 </script>
 
