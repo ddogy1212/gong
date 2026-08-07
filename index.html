@@ -21119,28 +21119,42 @@ function frame(ts){
     if(targetGame&&targetGame._tournamentMatchKey===m.key){targetGame._tournamentHandled=true;targetGame.over=true;targetGame.t=record.duration;targetGame.resultTitle=`${TDEFS[record.winner]?.name||record.winner} 승리`;}
     const result=applyMatchRecord(m,record);
     const predictedFirst=state.rankPredictions.first;
-    if(result.seriesDone&&predictedFirst===record.loser&&!state.predictionFirstEliminatedNotified)state.predictionFirstEliminatedNotified=true;
-    return {record,...result};
+    const predictionEliminated=!!(result.seriesDone&&predictedFirst===record.loser&&!state.predictionFirstEliminatedNotified);
+    if(predictionEliminated)state.predictionFirstEliminatedNotified=true;
+    return {record,...result,predictionEliminated};
   }
   function v279FastAll(token,targetGame){
     let first=true,stalled=0;
-    const batch=()=>{
-      if(token!==fastToken||!state?.active){fastOverlay.classList.add('hidden');return;}
-      let processed=0;
-      while(!state.completed&&processed<1){
-        const m=currentMatch();
-        if(!m){stalled++;break;}
-        el('tournamentFastMatch').textContent=`${TDEFS[m.a]?.name||m.a} VS ${TDEFS[m.b]?.name||m.b}`;
-        const out=v279ResolveFastMatch(m,first?targetGame:null);first=false;
-        if(!out){stalled++;break;}
-        processed++;stalled=0;
-      }
-      renderBracket();
-      el('tournamentFastProgress').textContent=`${state.completedGames}/${state.totalGames}경기 완료 · 빠른 경기 진행 중`;
+    const finishOrContinue=()=>{
       const next=currentMatch();
       if(state.completed){fastOverlay.classList.add('hidden');setScreens('tournament');setTimeout(showFinalResult,35);return;}
-      if(!next&&stalled>1){fastOverlay.classList.add('hidden');console.warn('[V279] 빠른 토너먼트 진행 복구 실패',state);setScreens('tournament');return;}
+      if(!next&&stalled>1){fastOverlay.classList.add('hidden');console.warn('[V281] 빠른 토너먼트 진행 복구 실패',state);setScreens('tournament');return;}
       setTimeout(batch,420);
+    };
+    const batch=()=>{
+      if(token!==fastToken||!state?.active){fastOverlay.classList.add('hidden');return;}
+      const m=currentMatch();
+      if(!m){stalled++;finishOrContinue();return;}
+      el('tournamentFastMatch').textContent=`${TDEFS[m.a]?.name||m.a} VS ${TDEFS[m.b]?.name||m.b}`;
+      const out=v279ResolveFastMatch(m,first?targetGame:null);first=false;
+      if(!out){stalled++;finishOrContinue();return;}
+      stalled=0;renderBracket();
+      const winnerName=TDEFS[out.record.winner]?.name||out.record.winner,loserName=TDEFS[out.record.loser]?.name||out.record.loser;
+      el('tournamentFastMatch').textContent=`🏆 ${winnerName} 승리`;
+      el('tournamentFastProgress').textContent=`${state.completedGames}/${state.totalGames}경기 완료 · ${loserName} 탈락`;
+      if(out.predictionEliminated){
+        setTimeout(()=>{
+          if(token!==fastToken||!state?.active)return;
+          fastOverlay.classList.add('hidden');
+          showPredictionEliminated(out.record.loser,m,()=>{
+            if(token!==fastToken||!state?.active)return;
+            if(!state.completed)fastOverlay.classList.remove('hidden');
+            finishOrContinue();
+          });
+        },420);
+        return;
+      }
+      finishOrContinue();
     };
     setTimeout(batch,180);
   }
@@ -21150,16 +21164,26 @@ function frame(ts){
     const matchKey=targetGame._tournamentMatchKey,m=[...state.rounds.flat(),state.thirdPlaceMatch].find(x=>x?.key===matchKey);
     if(!m){fastOverlay.classList.add('hidden');return;}
     if(mode==='all'){
-      el('tournamentFastProgress').textContent='⚡ 남은 대진 전체를 경량 계산 중...';
+      el('tournamentFastProgress').textContent='⚡ 남은 대진을 한 경기씩 계산합니다.';
       v279FastAll(token,targetGame);return;
     }
     el('tournamentFastProgress').textContent='⚡ 현재 경기를 잠깐 보여준 뒤 결과를 계산합니다...';
     setTimeout(()=>{
       if(token!==fastToken||game!==targetGame||!state?.active)return;
       const out=v279ResolveFastMatch(m,targetGame);if(!out){fastOverlay.classList.add('hidden');return;}
-      renderBracket();fastOverlay.classList.add('hidden');
-      if(state.completed){setScreens('tournament');setTimeout(mode==='auto'?showFinalResult:showChampionSequence,35);return;}
-      if(mode==='auto')setTimeout(()=>prepareMatch(currentMatch()),120);else showGameResult(m,out.record,!out.seriesDone,mode);
+      renderBracket();
+      const winnerName=TDEFS[out.record.winner]?.name||out.record.winner,loserName=TDEFS[out.record.loser]?.name||out.record.loser;
+      el('tournamentFastMatch').textContent=`🏆 ${winnerName} 승리`;
+      el('tournamentFastProgress').textContent=`${winnerName} 승리 · ${loserName} 탈락`;
+      const continueFlow=()=>{
+        fastOverlay.classList.add('hidden');
+        if(state.completed){setScreens('tournament');setTimeout(mode==='auto'?showFinalResult:showChampionSequence,35);return;}
+        if(mode==='auto')setTimeout(()=>prepareMatch(currentMatch()),120);else showGameResult(m,out.record,!out.seriesDone,mode);
+      };
+      setTimeout(()=>{
+        if(token!==fastToken||!state?.active)return;
+        if(out.predictionEliminated){fastOverlay.classList.add('hidden');showPredictionEliminated(out.record.loser,m,continueFlow)}else continueFlow();
+      },420);
     },420);
   }
   function skipCurrent(mode){
@@ -29736,8 +29760,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     function v226QueueMasteryReward(slot=v219Daily.slot){let reward=v226RewardQueue.rewards.find(r=>r?.slot===slot);if(!reward){reward={slot,xp:200,claimed:false,characterId:null,createdAt:new Date().toISOString(),claimedAt:null};v226RewardQueue.rewards.push(reward);v226RewardQueue.rewards=v226RewardQueue.rewards.slice(-32)}const coupon=v226IssueMasteryCoupon(slot,reward.xp||200);reward.claimed=true;reward.characterId='coupon';reward.claimedAt=reward.claimedAt||new Date().toISOString();reward.receipt=coupon.id;v226SaveRewards();if(typeof v219Daily!=='undefined'&&v219Daily?.slot===slot)v219Daily.masteryRewardQueued=true;return reward}
     function v226PendingReward(){return v226RewardQueue.rewards.find(r=>r&&!r.claimed)||null}
     let v219Daily=v226NormalizeDaily(v219Store.get(DAILY_KEY,v219NewDaily()));
-    for(const legacy of v226RewardQueue.rewards.filter(r=>r&&!r.claimed)){const coupon=v226IssueMasteryCoupon(legacy.slot,legacy.xp||200);legacy.claimed=true;legacy.characterId='coupon';legacy.claimedAt=legacy.claimedAt||new Date().toISOString();legacy.receipt=coupon.id}v226SaveRewards();
-    if(v219Daily.claimed.all&&!v219Daily.masteryRewardQueued){v226QueueMasteryReward(v219Daily.slot);v219Store.set(DAILY_KEY,v219Daily)}
+    // V281: 과거/불완전 상태의 보상을 페이지 로드만으로 다시 쿠폰화하지 않는다.
+    for(const legacy of v226RewardQueue.rewards.filter(r=>r&&!r.claimed)){legacy.claimed=true;legacy.characterId='passive-migration-suppressed';legacy.claimMode='v281-passive-suppressed';legacy.claimedAt=legacy.claimedAt||new Date().toISOString()}v226SaveRewards();
+    if(v219Daily.claimed.all&&!v219Daily.masteryRewardQueued){v219Daily.masteryRewardQueued=true;v219Store.set(DAILY_KEY,v219Daily)}
     const v219DailyDefs=[{id:'battles',label:'전투 3회 완료',target:3,reward:3,get:()=>v219Daily.battles},{id:'damage',label:'누적 피해 2,000 기록',target:2000,reward:3,get:()=>v219Daily.damage},{id:'competitive',label:'경쟁전 1회 완료',target:1,reward:3,get:()=>v219Daily.competitive}];
     function v219AddRankPoints(amount){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;if(!api?.profile||!api?.setRank)return false;const p=api.profile(),ranks=api.ranks||[],unit=Math.max(1,Number(api.pointsPerTier)||50);let index=Math.max(0,Number(p.rankIndex)||0),points=Math.max(0,Number(p.points)||0)+amount;while(points>=unit&&index<ranks.length-1){points-=unit;index++}api.setRank(index,points);api.render?.();return true}
     function v219AwardDaily(){let awarded=0,allClearedNow=false;for(const m of v219DailyDefs)if(!v219Daily.claimed[m.id]&&m.get()>=m.target){v219Daily.claimed[m.id]=true;v219Daily.earned+=m.reward;awarded+=m.reward}if(v219DailyDefs.every(m=>v219Daily.claimed[m.id])&&!v219Daily.claimed.all){v219Daily.claimed.all=true;allClearedNow=true;v226QueueMasteryReward(v219Daily.slot)}if(awarded){v219AddRankPoints(awarded);v219Toast(`임무 보상 +${awarded} 경쟁전 점수`)}v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();if(allClearedNow){v219Toast('올클리어! 🎟️ 숙련도 +200 XP 쿠폰이 자동 지급됐어.')}return awarded}
@@ -30045,8 +30070,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(!inv.spent||typeof inv.spent!=='object'||Array.isArray(inv.spent))inv.spent={};
       inv.version=Math.max(2,Number(inv.version)||0);return inv;
     }
-    function issuePendingSeasonCoupons(){
-      const pendingRows=state.rewards.filter(r=>r&&!r.claimed);if(!pendingRows.length)return 0;
+    function issuePendingSeasonCoupons(allowedSeasonIds=null){
+      const allow=allowedSeasonIds?new Set([...allowedSeasonIds].map(String)):null;
+      const pendingRows=state.rewards.filter(r=>r&&!r.claimed&&(!allow||allow.has(String(r.seasonId))));if(!pendingRows.length)return 0;
       const inv=itemInventory(),now=new Date().toISOString();let created=0;
       for(const reward of pendingRows){
         const receipt=`competitive:${reward.seasonId}:base-coupon`;
@@ -30080,15 +30106,15 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     function scan(){
       initialize();
       currentProfile();
-      let queued=0;
+      let queued=0;const queuedSeasonIds=[];
       for(const row of history()){
         const id=String(row?.seasonId||'');
         if(!validSeasonId(id)||state.seenSeasons.includes(id))continue;
         state.seenSeasons.push(id);
-        if(queueFromRow(row,{force:true}))queued++;
+        if(queueFromRow(row,{force:true})){queued++;queuedSeasonIds.push(id)}
       }
       state.seenSeasons=[...new Set(state.seenSeasons)].slice(-48);save();
-      const couponCount=issuePendingSeasonCoupons();
+      const couponCount=queuedSeasonIds.length?issuePendingSeasonCoupons(queuedSeasonIds):0;
       updateRankMeta();
       if(couponCount)seasonToast(`경쟁전 시즌 XP 쿠폰 ${couponCount}개가 지급됐어!`);
       return queued;
@@ -30143,7 +30169,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     initialize();updateRankMeta();setTimeout(scan,180);setInterval(scan,30000);setInterval(maybeOpen,1200);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()});
     document.getElementById('draftModeBtn')?.addEventListener('click',()=>setTimeout(updateRankMeta,0));
-    const api={build:BUILD,rewardForRank,issuePendingSeasonCoupons,rankRewards:RANK_NAMES.map((name,index)=>({name,index,xp:rewardForRank(index)})),pending:()=>state.rewards.filter(r=>!r.claimed).map(r=>({...r})),history:()=>state.rewards.map(r=>({...r})),scan,open:()=>open(true),claim,queueSeasonRewardForTest(rankIndex=0,seasonId='2099-01-05'){const row={seasonId,seasonLabel:`${seasonId} 테스트 주간 시즌`,rankIndex:clampRank(rankIndex),points:0,wins:0,losses:0,matches:0};const r=queueFromRow(row,{force:true});if(r){state.seenSeasons.push(seasonId);save();issuePendingSeasonCoupons()}return r?{...r}:null},resetRewardsForTest(){state={version:1,initialized:true,activatedSeasonId:currentProfile()?.seasonId||null,seenSeasons:history().map(r=>r?.seasonId).filter(validSeasonId),rewards:[]};save();close();updateRankMeta();return true}};
+    const api={build:BUILD,rewardForRank,issuePendingSeasonCoupons,rankRewards:RANK_NAMES.map((name,index)=>({name,index,xp:rewardForRank(index)})),pending:()=>state.rewards.filter(r=>!r.claimed).map(r=>({...r})),history:()=>state.rewards.map(r=>({...r})),scan,open:()=>open(true),claim,queueSeasonRewardForTest(rankIndex=0,seasonId='2099-01-05'){const row={seasonId,seasonLabel:`${seasonId} 테스트 주간 시즌`,rankIndex:clampRank(rankIndex),points:0,wins:0,losses:0,matches:0};const r=queueFromRow(row,{force:true});if(r){state.seenSeasons.push(seasonId);save();issuePendingSeasonCoupons([seasonId])}return r?{...r}:null},resetRewardsForTest(){state={version:1,initialized:true,activatedSeasonId:currentProfile()?.seasonId||null,seenSeasons:history().map(r=>r?.seasonId).filter(validSeasonId),rewards:[]};save();close();updateRankMeta();return true}};
     window.__GONG_V227__=api;window.__GONG_V227_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
     console.info('[V227] 경쟁전 시즌 종료 티어별 캐릭터 숙련도 선택 보상 · 솔리언 1 10,000 XP ~ 신 100,000 XP');
   })();
@@ -32304,7 +32330,7 @@ window.__GONG_V266_RUNTIME__={
   DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:250,speed:520,img:IMG,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
   SKILL_INFO.leeseohyun={
     summary:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',hp:'250',speed:'520',skills:[
-      {kind:'벽 충돌 날씨 전환',type:'attack',name:'웨더아주머니',desc:'벽에 3번 닿을 때마다 4종 날씨 중 1개를 랜덤 발동한다. 날씨가 끝난 뒤 다시 3번부터 카운트한다.',points:['벽 충돌 3회마다 랜덤 날씨 1개 발동','날씨 지속시간: 4초','폭우: 가장 가까운 적 방향으로 물방울 30발 연사, 1발당 1.4 피해','우박: 360도 회전하며 얼음 60발 분사, 1발당 4 피해 + 2초 정지','폭풍: 모든 적에게 유도되는 바람 1개씩 발사, 1회 적중 시 15 피해 + 강한 넉백','번개: 이상은의 벼락처럼 4초 동안 2번 모두에게 낙뢰(기본 22 피해)']},
+      {kind:'벽 충돌 날씨 전환',type:'attack',name:'웨더아주머니',desc:'벽에 3번 닿을 때마다 4종 날씨 중 1개를 랜덤 발동한다. 날씨가 끝난 뒤 다시 3번부터 카운트한다.',points:['벽 충돌 3회마다 랜덤 날씨 1개 발동','날씨 지속시간: 4초','폭우: 가장 가까운 적 방향으로 물방울 30발 연사, 1발당 15 피해','우박: 360도 회전하며 얼음 60발 분사, 1발당 9 피해 + 2초 정지','폭풍: 모든 적에게 유도되는 바람 1개씩 발사, 1회 적중 시 15 피해 + 강한 넉백','번개: 이상은의 벼락처럼 4초 동안 2번 모두에게 낙뢰(기본 22 피해)']},
       {kind:'피격 반격 투사체',type:'attack',name:'페니',desc:'투사체에 맞을 때마다 공격한 적 방향으로 동전을 던진다.',points:['투사체에 실제 피해를 받을 때마다 발동','동전에 맞은 적은 3초 동안 1초마다 2 피해','동전 적중 시 3초 동안 이동속도 40% 감소','여러 번 맞으면 지속시간이 갱신됨']}
     ]
   };
@@ -32409,12 +32435,12 @@ window.__GONG_V266_RUNTIME__={
   function v276HitShot(shot,target){
     const owner=shot.owner;if(!owner?.alive||!target?.alive)return;
     if(shot.type==='rain'){
-      damage(target,1.4,owner,'웨더아주머니 · 폭우',{v276Projectile:true});
-      floater(target.x,target.y-target.r-13,'💧 -1.4','#348de6',11,.45);
+      damage(target,15,owner,'웨더아주머니 · 폭우',{v276Projectile:true});
+      floater(target.x,target.y-target.r-13,'💧 -15','#348de6',11,.45);
     }else if(shot.type==='hail'){
-      damage(target,4,owner,'웨더아주머니 · 우박',{v276Projectile:true});
+      damage(target,9,owner,'웨더아주머니 · 우박',{v276Projectile:true});
       if(target.alive){target.data.v276HailFreezeTimer=Math.max(target.data.v276HailFreezeTimer||0,2);target.vx=0;target.vy=0;}
-      floater(target.x,target.y-target.r-13,'🧊 -4 · 2초 정지','#63c7ff',12,.55);
+      floater(target.x,target.y-target.r-13,'🧊 -9 · 2초 정지','#63c7ff',12,.55);
     }else if(shot.type==='storm'){
       damage(target,15,owner,'웨더아주머니 · 폭풍',{v276Projectile:true});
       if(target.alive)v276Knock(target,owner,1160);
@@ -35032,7 +35058,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function mergeData(a,b){a=normalize(a);b=normalize(b);const out=baseData();out.ledger={...a.ledger,...b.ledger};for(const [id,row] of Object.entries(a.ledger||{}))if(b.ledger?.[id]&&(Number(row.at)||0)>(Number(b.ledger[id].at)||0))out.ledger[id]=row;out.unlocked={...a.unlocked,...b.unlocked};out.claimed={...a.claimed,...b.claimed};out.titles={...a.titles,...b.titles};out.seenUnlocks={...a.seenUnlocks,...b.seenUnlocks};const pick=(Number(a.equippedUpdatedAt)||0)>=(Number(b.equippedUpdatedAt)||0)?a:b;out.equippedTitle=pick.equippedTitle||'';out.equippedUpdatedAt=Math.max(Number(a.equippedUpdatedAt)||0,Number(b.equippedUpdatedAt)||0);return normalize(out)}
   let syncTimer=0;function scheduleSync(delay=1200){clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncCloud(),delay)}
   async function syncCloud(){const b=backend();if(!b?.user?.uid||b.user.isAnonymous||state.syncing)return false;state.syncing=true;try{const ref=b.dbmod.ref(b.db,`${CLOUD_ROOT}/${b.user.uid}`),snap=await b.dbmod.get(ref),cloud=snap.exists()?JSON.parse(String(snap.val()?.payload||'{}')):{},local=read(),merged=mergeData(cloud,local),before=JSON.stringify(local),after=JSON.stringify(merged);if(before!==after){localStorage.setItem(KEY,after);evaluate(merged,{save:false});renderProfile();if(!document.getElementById('v260Modal')?.classList.contains('hidden'))renderModal()}await b.dbmod.set(ref,{uid:b.user.uid,payload:JSON.stringify(compact(merged)),updatedAt:b.dbmod.serverTimestamp(),version:1});state.lastSyncAt=Date.now();state.lastError='';return true}catch(error){state.lastError=String(error?.code||error?.message||error);console.warn('[V260 업적 동기화]',error);return false}finally{state.syncing=false}}
-  function install(){ensureModal();const repaired=repairAchievementRewards();if(repaired)console.info(`[V274] 누락 업적 XP 쿠폰 ${repaired}개 복구`);renderProfile();ingestRecent();const profile=document.getElementById('v232ProfileModal');if(profile)new MutationObserver(()=>{if(!profile.classList.contains('hidden')){ingestRecent();renderProfile()}}).observe(profile,{attributes:true,attributeFilter:['class']});window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>ingestRecent(),0));window.addEventListener('gong-v254-mastery-changed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v238-mastery-reward-claimed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v257-attendance-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-competitive-profile-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v230-online-ready',()=>setTimeout(syncCloud,500));window.addEventListener('gong-v232-auth-changed',()=>setTimeout(syncCloud,700));window.addEventListener('gong-v255-cloud-sync-complete',()=>setTimeout(syncCloud,250));setInterval(()=>{ingestRecent();renderProfile()},5000);setInterval(syncCloud,20000);setTimeout(syncCloud,1800)}
+  function install(){ensureModal();/* V281: 보상 복구는 수동 호출만 허용. 페이지 로드만으로 쿠폰을 생성하지 않음. */renderProfile();ingestRecent();const profile=document.getElementById('v232ProfileModal');if(profile)new MutationObserver(()=>{if(!profile.classList.contains('hidden')){ingestRecent();renderProfile()}}).observe(profile,{attributes:true,attributeFilter:['class']});window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>ingestRecent(),0));window.addEventListener('gong-v254-mastery-changed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v238-mastery-reward-claimed',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v257-attendance-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-competitive-profile-change',()=>{evaluate(read(),{save:true,notify:true});renderProfile()});window.addEventListener('gong-v230-online-ready',()=>setTimeout(syncCloud,500));window.addEventListener('gong-v232-auth-changed',()=>setTimeout(syncCloud,700));window.addEventListener('gong-v255-cloud-sync-complete',()=>setTimeout(syncCloud,250));setInterval(()=>{ingestRecent();renderProfile()},5000);setInterval(syncCloud,20000);setTimeout(syncCloud,1800)}
   window.__GONG_V260__={build:BUILD,achievements:()=>clone(ACH),read:()=>clone(read()),aggregate:()=>clone(aggregate(read())),evaluate:()=>clone(evaluate(read(),{save:true,notify:false})),open,close,claim,claimAll,repairAchievementRewards,equipTitle,currentTitle:()=>currentTitle(read()),publicProfile,syncCloud,refresh:()=>{ingestRecent();renderProfile();renderModal()},verify(){const data=read(),ctx=aggregate(data);return {build:BUILD,totalAchievements:ACH.length,hiddenAchievements:ACH.filter(a=>a.hidden).length,unlocked:Object.keys(data.unlocked).length,claimed:Object.keys(data.claimed).length,rosterCount:ctx.rosterCount,playedCharacters:ctx.playedCharacters,title:currentTitle(data),cloudRoot:CLOUD_ROOT}}};
   window.__GONG_V260_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
@@ -35741,7 +35767,8 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   async function scanSettlementBonuses(){
     initBaseline();
     const backend=window.__GONG_V230__?.backend?.(),user=backend?.user;if(!backend||!user?.uid)return {ready:false};
-    const rows=history().filter(r=>r?.seasonId&&!state.processed[String(r.seasonId)]);
+    const now=Date.now(),maxPassiveAge=45*24*60*60*1000;
+    const rows=history().filter(r=>{if(!r?.seasonId||state.processed[String(r.seasonId)])return false;const archived=Date.parse(String(r.archivedAt||''));return Number.isFinite(archived)&&archived<=now&&now-archived<=maxPassiveAge;});
     let processed=0,awarded=0;
     for(const season of rows){
       const seasonId=String(season.seasonId);
@@ -35814,6 +35841,33 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   window.__GONG_LATEST_BUILD__=BUILD;
   window.__GONG_V280__={build:BUILD,verify(){return {build:BUILD,leeSeohyunHp:(window.__GONG_V173_TEST__?.character?.('leeseohyun')?.hp??null),shinJiminDiscDamage:6,shinJiminLoveDotScopeSafe:true,tournamentSkipDelayMs:420,tournamentSkipBatchSize:1,gyuminLipVector:'cupid-bow-volume-slit',latest:window.__GONG_LATEST_BUILD__};}};
   console.info('[V280] 토너먼트 스킵 한 경기씩 표시 · 김규민 입술 개선 · 이서현 HP 250 · 신지민 멈춤 수정 · 극우 원반 6');
+})();
+</script>
+<script id="v281WeatherCouponFastResultPatch">
+(()=>{
+  'use strict';
+  const BUILD='V281_WEATHER_DAMAGE_COUPON_GUARD_FAST_WINNER_PREDICTION_EVENT';
+  const ITEM_KEY='gonggame_v239_items_v1';
+  let removedTestCoupons=0;
+  function readInventory(){try{const inv=JSON.parse(localStorage.getItem(ITEM_KEY)||'null');return inv&&typeof inv==='object'?inv:{version:2,earned:{},spent:{}}}catch(_){return {version:2,earned:{},spent:{}}}}
+  function sanitizeTestCoupons(){
+    const inv=readInventory();if(!inv.earned||typeof inv.earned!=='object')return 0;let removed=0;
+    for(const [id,row] of Object.entries(inv.earned)){
+      const text=`${id} ${row?.seasonId||''} ${row?.tournamentRewardId||''} ${row?.uid||''}`;
+      if(/(?:^|[^a-z])test(?:[^a-z]|$)|TEST-USER|2099-(?:01|12)-/i.test(text)){delete inv.earned[id];removed++;}
+    }
+    if(removed){try{localStorage.setItem(ITEM_KEY,JSON.stringify(inv))}catch(_){}removedTestCoupons+=removed;window.dispatchEvent(new CustomEvent('gong-v239-item-progress-change',{detail:{reason:'v281-test-coupon-cleanup',count:removed,version:2}}));}
+    return removed;
+  }
+  function couponAudit(){
+    const inv=readInventory(),rows=Object.entries(inv.earned||{}).filter(([id])=>!inv.spent?.[id]);const bySource={};
+    for(const [,row] of rows){const source=String(row?.source||row?.type||'unknown');bySource[source]=(bySource[source]||0)+1;}
+    return {available:rows.length,bySource,removedTestCoupons};
+  }
+  sanitizeTestCoupons();
+  window.__GONG_V281_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V281__={build:BUILD,couponAudit,sanitizeTestCoupons,verify(){const seo=window.__GONG_V173_TEST__?.character?.('leeseohyun')||null;const info=(typeof SKILL_INFO!=='undefined'?SKILL_INFO.leeseohyun:null);return {build:BUILD,leeSeohyunHp:seo?.hp??null,leeSeohyunRainDamage:15,leeSeohyunHailDamage:9,rainDescription:info?.skills?.find?.(x=>x?.name==='웨더아주머니')?.points?.find?.(x=>String(x).includes('폭우'))||'',couponPassiveRepairDisabled:true,fastWinnerVisible:true,fastPredictionEliminationEvent:true,couponAudit:couponAudit(),latest:window.__GONG_LATEST_BUILD__};}};
+  console.info('[V281] 이서현 폭우 15/우박 9 · 수동행동 없는 쿠폰 재발급 차단 · 빠른경기 승자 표시 · 예측 탈락 이벤트 복구');
 })();
 </script>
 </body>
