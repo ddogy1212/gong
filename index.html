@@ -21517,6 +21517,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정'],
   ['V302','경쟁전 개편 공지 · 모든 이용자 강등 방어막 +1 지급 · 문의하기를 최근 10개 패치노트로 교체'],
   ['V301','경쟁전에 2단/3단 특별승급과 일일 임무 올클리어 강등 방어막 시스템 추가'],
   ['V300','캐릭터 도감 삭제 · 업적/칭호 유지 · 사진과 글씨 겹침을 화면 멈춤 없이 CSS 중심으로 수정'],
@@ -21525,8 +21526,7 @@ const V302_PATCH_NOTES=[
   ['V297','업적 삭제를 시도했던 버전 · 이후 V298에서 전부 롤백됨'],
   ['V296','캐릭터 스킬 설명 상단 사진·이름·체력·속도 레이아웃 겹침 개선'],
   ['V295','캐릭터 이름 아래 역할형 설명을 제거하고 체력/속도를 두 줄로 통일'],
-  ['V294','김민서 DNA 채찍 시각화 · 서채은 HP270 · MR 도전자팀 투사체 미스 X 판정 수정'],
-  ['V293','오서윤 악마의계약 추가 · 모드가이드 XP 파밍 팁 · 팝업 중 보조 플레이 버튼 차단']
+  ['V294','김민서 DNA 채찍 시각화 · 서채은 HP270 · MR 도전자팀 투사체 미스 X 판정 수정']
 ];
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -30603,9 +30603,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(field==='competitive'&&cloud?.seasonId&&local?.seasonId){
         cloud=migrateLegacyCompetitive(cloud,local);local=migrateLegacyCompetitive(local,cloud);
         if(cloud.seasonId!==local.seasonId)return JSON.stringify(String(cloud.seasonId)>String(local.seasonId)?cloud:local);
-        const authoritative=newerCompetitive(cloud,local),combined=mergeDeep(cloud,local,field),coreKeys=['rankIndex','points','wins','losses','matches','lastChange','lastPerformance','settlementRevision','seasonId','seasonLabel','seasonEndsAt','seasonStartedAt','updatedAt','scoreMigratedAt'];
+        const authoritative=newerCompetitive(cloud,local),combined=mergeDeep(cloud,local,field),coreKeys=['rankIndex','points','wins','losses','matches','winStreak','lastChange','lastPerformance','settlementRevision','rankShield','seasonId','seasonLabel','seasonEndsAt','seasonStartedAt','updatedAt','scoreMigratedAt'];
         for(const key of coreKeys)if(Object.prototype.hasOwnProperty.call(authoritative,key))combined[key]=clone(authoritative[key]);
-        combined.rankIndex=Math.max(0,Number(authoritative.rankIndex)||0);combined.points=Math.max(0,Number(authoritative.points)||0);combined.wins=Math.max(0,Number(authoritative.wins)||0);combined.losses=Math.max(0,Number(authoritative.losses)||0);combined.matches=Math.max(0,Number(authoritative.matches)||0);combined.settlementRevision=Math.max(0,Number(authoritative.settlementRevision)||combined.matches||0);combined.seasonId=authoritative.seasonId;combined.pointUnit=50;combined.scoringVersion=Math.max(3,Number(authoritative.scoringVersion)||0);combined.seasonCycle='weekly';
+        combined.rankIndex=Math.max(0,Number(authoritative.rankIndex)||0);combined.points=Math.max(0,Number(authoritative.points)||0);combined.wins=Math.max(0,Number(authoritative.wins)||0);combined.losses=Math.max(0,Number(authoritative.losses)||0);combined.matches=Math.max(0,Number(authoritative.matches)||0);combined.winStreak=Math.max(0,Math.floor(Number(authoritative.winStreak)||0));combined.bestWinStreak=Math.max(Number(cloud.bestWinStreak)||0,Number(local.bestWinStreak)||0,combined.winStreak);combined.lastSkipPromotionMatch=Math.max(-99,Math.floor(Number(cloud.lastSkipPromotionMatch)||-99),Math.floor(Number(local.lastSkipPromotionMatch)||-99));combined.rankShield=Math.max(0,Math.min(2,Math.floor(Number(authoritative.rankShield)||0)));combined.rankShieldAwardDate=[String(cloud.rankShieldAwardDate||''),String(local.rankShieldAwardDate||'')].sort().at(-1)||'';combined.rankShieldUsedAt=[String(cloud.rankShieldUsedAt||''),String(local.rankShieldUsedAt||'')].sort().at(-1)||'';combined.v302GlobalShieldGranted=!!(cloud.v302GlobalShieldGranted||local.v302GlobalShieldGranted);combined.v302GlobalShieldGrantedAt=[String(cloud.v302GlobalShieldGrantedAt||''),String(local.v302GlobalShieldGrantedAt||'')].sort().at(-1)||'';combined.settlementRevision=Math.max(0,Number(authoritative.settlementRevision)||combined.matches||0);combined.seasonId=authoritative.seasonId;combined.pointUnit=50;combined.scoringVersion=Math.max(3,Number(authoritative.scoringVersion)||0);combined.seasonCycle='weekly';
         return JSON.stringify(combined)
       }
       if(field==='daily'&&cloud?.slot&&local?.slot&&cloud.slot!==local.slot)return JSON.stringify(String(cloud.slot)>String(local.slot)?cloud:local);
@@ -34791,7 +34791,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=302',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=303',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -37510,6 +37510,9 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   console.info('[V302] 경쟁전 개편 공지 · 전 이용자 방어막 1개 지급 · 문의하기 삭제/최근 10개 패치노트');
 })();
 </script>
+
+
+<script id="v303RankShieldCloudConsumeFix">(()=>{const BUILD='V303_RANK_SHIELD_CLOUD_CONSUME_FIX';window.__GONG_V303__={build:BUILD,verify(){const rank=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.profile?.()||{};return {build:BUILD,rankShield:rank.rankShield??null,rankShieldUsedAt:rank.rankShieldUsedAt||'',patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};window.__GONG_V303_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V303] 강등 방어막 클라우드 동기화 소모 복원 버그 수정');})();</script>
 
 </body>
 </html>
