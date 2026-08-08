@@ -3784,7 +3784,7 @@ function renderSkillDetail(){
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
       <div>
         <div class="skill-profile-name">${d.name}</div>
-        <div class="skill-profile-meta">체력 ${info.hp} · 속도 ${info.speed}</div>
+        <div class="skill-profile-meta"><span class="v295-stat-line">체력 ${info.hp}</span><span class="v295-stat-line">속도 ${info.speed}</span></div>
       </div>
     </div>
     ${window.__GONG_V221_MASTERY_HTML__?.(skillSelected)||''}
@@ -4168,7 +4168,7 @@ function cardHTML(id){
     <img src="${d.img}" alt="${d.name}" loading="lazy" decoding="async" fetchpriority="low" width="44" height="44" style="object-position:${crop(id)}">
     <div style="min-width:0;flex:1">
       <div class="char-name">${d.name}</div>
-      <div class="char-meta">체력 ${d.hp} · 속도 ${d.speed}</div>
+      <div class="char-meta"><span class="v295-stat-line">체력 ${d.hp}</span><span class="v295-stat-line">속도 ${d.speed}</span></div>
     </div>
     <button class="card-skill-info" data-info-id="${id}" title="스킬 설명" style="border:0;background:#eee;border-radius:8px;width:28px;height:28px;font-weight:900;cursor:pointer">?</button>
   </div>`;
@@ -34812,7 +34812,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=294',{scope:'./'}).then(()=>navigator.serviceWorker.ready).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=295',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -37145,6 +37145,110 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   patchMetadata();
   window.__GONG_V294__={build:BUILD,patchMetadata,verify};window.__GONG_V294_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V294] 김민서 DNA 채찍 시각화/명칭 · 서채은 HP270 · 캐릭터 하단 HP/속도만 · MR 도전자팀 빗나감 X 처벌');
+})();
+</script>
+
+
+<style id="v295CleanCharacterMetaStyle">
+/* V295 · character identity UI: absolutely no role/archetype blurbs under names. HP and speed are always two separate rows. */
+.char-card .char-mini,
+.skill-profile .char-mini,
+[data-character-role],
+.character-role,
+.char-role{display:none!important}
+.char-card .char-meta,
+.skill-profile .skill-profile-meta{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:1px!important;
+  white-space:normal!important;
+  line-height:1.28!important;
+}
+.char-card .char-meta .v295-stat-line,
+.skill-profile .skill-profile-meta .v295-stat-line{display:block!important;white-space:nowrap!important}
+.zone-cards .char-meta{font-size:8px;line-height:1.22!important}
+</style>
+<script id="v295CleanCharacterMetaScript">
+(()=>{
+  'use strict';
+  const BUILD='V295_CHARACTER_META_ZERO_ROLE_TWO_LINE_STATS';
+  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function defs(){try{return typeof DEFS!=='undefined'?DEFS:(window.__GONG_V134_DEBUG__?.defs||{})}catch(_){return window.__GONG_V134_DEBUG__?.defs||{}}}
+  function infos(){try{return typeof SKILL_INFO!=='undefined'?SKILL_INFO:(window.__GONG_V134_DEBUG__?.skillInfo||{})}catch(_){return window.__GONG_V134_DEBUG__?.skillInfo||{}}}
+  function statHtml(hp,speed){return `<span class="v295-stat-line">체력 ${esc(hp)}</span><span class="v295-stat-line">속도 ${esc(speed)}</span>`}
+  function activeSkillId(){return document.querySelector('#skillTabs [data-skill-tab].active')?.dataset?.skillTab||document.querySelector('#skillTabs [aria-selected="true"][data-skill-tab]')?.dataset?.skillTab||''}
+  function cleanCard(card){
+    const id=card?.dataset?.char,d=defs()[id];
+    card?.querySelectorAll?.('.char-mini').forEach(el=>el.remove());
+    if(!d)return false;
+    const meta=card.querySelector('.char-meta');
+    if(meta){const wanted=statHtml(d.hp,d.speed);if(meta.innerHTML!==wanted)meta.innerHTML=wanted;}
+    return true;
+  }
+  function cleanSkillProfile(profile){
+    if(!profile)return false;
+    const id=activeSkillId(),d=defs()[id],info=infos()[id];
+    profile.querySelectorAll('.char-mini,[data-character-role],.character-role,.char-role').forEach(el=>el.remove());
+    const meta=profile.querySelector('.skill-profile-meta');
+    if(meta&&(d||info)){
+      const hp=info?.hp??d?.hp??'-',speed=info?.speed??d?.speed??'-',wanted=statHtml(hp,speed);
+      if(meta.innerHTML!==wanted)meta.innerHTML=wanted;
+    }
+    return true;
+  }
+  function roleStrings(){
+    const out=new Set();
+    Object.values(defs()).forEach(d=>{const x=String(d?.role||'').trim();if(x)out.add(x)});
+    Object.values(infos()).forEach(i=>{const x=String(i?.summary||'').trim();if(x)out.add(x)});
+    return out;
+  }
+  function stripLegacyRoleText(root=document){
+    const roles=roleStrings();
+    const scope=root?.querySelectorAll?root:document;
+    scope.querySelectorAll('.skill-profile-meta,.char-meta,.char-mini,[data-character-role],.character-role,.char-role').forEach(el=>{
+      const text=String(el.textContent||'').trim();
+      if(el.classList.contains('char-mini')||roles.has(text)){el.remove();return;}
+      // Legacy V293 header: "역할 설명 · 체력 N · 이동속도 N"
+      for(const r of roles){
+        if(r&&text.startsWith(r)&&/체력/.test(text)&&/(?:이동)?속도/.test(text)){
+          const profile=el.closest('.skill-profile');
+          if(profile)cleanSkillProfile(profile);
+          break;
+        }
+      }
+    });
+  }
+  function clean(root=document){
+    const scope=root?.querySelectorAll?root:document;
+    if(root?.matches?.('.char-card[data-char]'))cleanCard(root);
+    scope.querySelectorAll('.char-card[data-char]').forEach(cleanCard);
+    if(root?.matches?.('.skill-profile'))cleanSkillProfile(root);
+    scope.querySelectorAll('.skill-profile').forEach(cleanSkillProfile);
+    stripLegacyRoleText(root);
+  }
+  function install(){
+    clean(document);
+    const targets=[document.getElementById('setup'),document.getElementById('skillBody'),document.getElementById('v260Modal'),document.getElementById('tournamentScreen'),document.getElementById('draftScreen')].filter(Boolean);
+    targets.forEach(target=>new MutationObserver(mutations=>{
+      let relevant=false;
+      for(const m of mutations){if(m.type==='childList'){relevant=true;break}}
+      if(relevant)queueMicrotask(()=>clean(target));
+    }).observe(target,{childList:true,subtree:true}));
+    document.addEventListener('click',()=>setTimeout(()=>clean(document),0),true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.__GONG_V295__={build:BUILD,clean,verify(){
+    clean(document);
+    const roleLeak=[...document.querySelectorAll('.skill-profile-meta,.char-meta,.char-mini')].filter(el=>{
+      const t=String(el.textContent||'').trim();return [...roleStrings()].some(r=>r&&t.includes(r));
+    });
+    const badStats=[...document.querySelectorAll('.char-card[data-char] .char-meta')].filter(el=>el.querySelectorAll('.v295-stat-line').length!==2);
+    const skillMeta=document.querySelector('.skill-profile-meta');
+    return {build:BUILD,roleLeakCount:roleLeak.length,badCardStatCount:badStats.length,skillMetaLines:skillMeta?.querySelectorAll('.v295-stat-line').length||0,latest:window.__GONG_LATEST_BUILD__};
+  }};
+  window.__GONG_V295_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V295] 캐릭터 이름 아래 역할형 설명 전수 제거 · 체력/속도 2줄 고정');
 })();
 </script>
 
