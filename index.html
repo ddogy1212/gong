@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V309_FRIEND_REQUEST_DELIVERY_INPUT_STABILITY -->
+<!-- V310_FRIEND_BATTLE_INVITE_MODAL_TUTORIAL_ONCE -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -21544,6 +21544,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V310','친구 친선전 요청을 중앙 수락/거절 팝업으로 변경 · 첫 모드 가이드 자동 팝업은 1회만 표시'],
   ['V309','친구 신청 수신 권한 수정 · 친구코드 입력값/포커스 유지 · 친구창 불필요 재렌더 제거'],
   ['V308','4자리 친구코드 · 친구 신청/수락/거절 · 랭킹 친구추가 · 친구끼리 코드 없는 친선전 요청 추가'],
   ['V307','김민재·이은채·박한울·오해원·양채원 밸런스 상향 · 캐릭터 설명창 반복 DOM 감시 제거 및 흔들림 안정화'],
@@ -21552,8 +21553,7 @@ const V302_PATCH_NOTES=[
   ['V304','7,000원 수동 커스텀 칭호 상점 · 신청문 복사 · 운영자 승인 후 장착 기능 추가'],
   ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정'],
   ['V302','경쟁전 개편 공지 · 모든 이용자 강등 방어막 +1 지급 · 문의하기를 패치노트로 교체'],
-  ['V301','경쟁전에 2단/3단 특별승급과 일일 임무 올클리어 강등 방어막 시스템 추가'],
-  ['V300','캐릭터 도감 삭제 · 업적/칭호 유지 · 사진과 글씨 겹침을 화면 멈춤 없이 CSS 중심으로 수정']
+  ['V301','경쟁전에 2단/3단 특별승급과 일일 임무 올클리어 강등 방어막 시스템 추가']
 ];
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -30996,6 +30996,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     overlay.querySelector('.v247-tutorial-skip')?.addEventListener('click',()=>{
       tutorialState.skipped=true;
       saveState();
+      try{localStorage.setItem('gonggame_v292_mode_guide_seen_v1','1')}catch(_){}
       overlay.classList.add('hidden');
     });
     const coach=document.createElement('div');
@@ -31054,6 +31055,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     if(!selected||!opponent)return;
     tutorialState.selected=selected;
     saveState();
+    try{localStorage.setItem('gonggame_v292_mode_guide_seen_v1','1')}catch(_){}
     $v247('v247Tutorial')?.classList.add('hidden');
     try{
       currentConfig={mode:'showdown',participants:[selected,opponent],teams:{[selected]:'tutorial-user',[opponent]:'tutorial-ai'},zoneNames:{'tutorial-user':'내 튜토리얼 캐릭터','tutorial-ai':'연습 상대'},tutorial:{version:1,selected,opponent}};
@@ -31153,7 +31155,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       observer.observe(document.body,{childList:true,subtree:true});
       setTimeout(()=>observer.disconnect(),15000);
     }
-    if(!tutorialState.completed&&!tutorialState.skipped)setTimeout(()=>openTutorial(false),850);
+    const modeGuideSeen=(()=>{try{return localStorage.getItem('gonggame_v292_mode_guide_seen_v1')==='1'}catch(_){return false}})();
+    if(!tutorialState.completed&&!tutorialState.skipped&&!modeGuideSeen)setTimeout(()=>openTutorial(false),850);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 
@@ -34818,7 +34821,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=304',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=310',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -37675,7 +37678,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 .v308-friend-panel-copy{margin-top:5px;color:#62667a;font-size:8px;font-weight:850;line-height:1.45}.v308-friend-panel-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.v308-friend-pill{border-radius:999px;background:#e4e7ff;color:#3730a3;padding:4px 7px;font-size:8px;font-weight:1000}.v308-friend-open{display:block;width:100%;margin-top:8px;min-height:42px;border:2px solid #111;border-radius:11px;background:#4f46e5;color:#fff;font-size:10px;font-weight:1000;cursor:pointer}.v308-friend-open:disabled{opacity:.48;cursor:default}
 .v308-friend-modal{position:fixed;inset:0;z-index:525;display:grid;place-items:center;padding:12px;background:#000b;backdrop-filter:blur(5px)}.v308-friend-modal.hidden{display:none!important}.v308-friend-card{width:min(560px,100%);max-height:92vh;overflow:auto;border:3px solid #111;border-radius:20px;background:#fff;box-shadow:0 24px 80px #0009}.v308-friend-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;background:linear-gradient(135deg,#25205c,#4f46e5);color:#fff}.v308-friend-head strong{font-size:18px}.v308-friend-close{width:34px;height:34px;border:0;border-radius:9px;background:#fff;color:#111;font-size:20px;font-weight:1000;cursor:pointer}.v308-friend-body{padding:11px;display:grid;gap:10px}.v308-code-card,.v308-section{border:2px solid #dedfeb;border-radius:14px;background:#fafbff;padding:10px}.v308-code-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;background:linear-gradient(135deg,#eef0ff,#fff9df)}.v308-code-card small{display:block;color:#666b78;font-size:8px;font-weight:850}.v308-code-card b{display:block;margin-top:2px;font-size:24px;letter-spacing:3px}.v308-copy-code{border:2px solid #111;border-radius:9px;background:#fff;padding:8px 10px;font-size:9px;font-weight:1000;cursor:pointer}.v308-section-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.v308-section-title strong{font-size:12px}.v308-section-title span{font-size:8px;font-weight:900;color:#6e7280}.v308-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}.v308-add-row input{min-width:0;border:2px solid #4f46e5;border-radius:10px;padding:10px;text-transform:uppercase;letter-spacing:2px;font-size:16px;font-weight:1000}.v308-add-row button{border:0;border-radius:10px;background:#111;color:#fff;padding:9px 12px;font-size:10px;font-weight:1000;cursor:pointer}.v308-list{display:grid;gap:6px}.v308-empty{border:1px dashed #c4c6d2;border-radius:10px;background:#fff;padding:12px;text-align:center;color:#727684;font-size:9px;font-weight:850;line-height:1.45}.v308-friend-row,.v308-request-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:8px;align-items:center;border:1px solid #d7d9e3;border-radius:11px;background:#fff;padding:7px}.v308-avatar{display:grid;place-items:center;width:36px;height:36px;border:2px solid #111;border-radius:50%;background:linear-gradient(135deg,#ffe064,#a78bfa);font-size:14px;font-weight:1000}.v308-row-copy{min-width:0}.v308-row-copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}.v308-row-copy small{display:block;margin-top:2px;color:#777b86;font-size:7.5px;font-weight:850}.v308-row-actions{display:flex;gap:5px}.v308-row-actions button{min-height:32px;border:1px solid #111;border-radius:8px;background:#fff;padding:5px 7px;font-size:8px;font-weight:1000;cursor:pointer}.v308-row-actions .accept,.v308-row-actions .battle{background:#4f46e5;color:#fff}.v308-row-actions .reject{color:#a11b1b;border-color:#c96a6a}.v308-login-nudge{margin:10px 14px 6px;border:2px solid #4285f4;border-radius:13px;background:#eef6ff;padding:9px;text-align:center;color:#174ea6;font-size:9px;font-weight:1000;line-height:1.45}.v308-login-nudge[hidden]{display:none!important}.v308-login-first{margin-top:6px!important;box-shadow:0 0 0 4px #4285f422,0 4px 0 #1112!important}
 .v231-rank-row{grid-template-columns:28px minmax(0,1fr) auto auto!important}.v308-rank-friend{border:1px solid #fff8;border-radius:8px;background:#ffffff17;color:#fff;padding:5px 6px;font-size:7px;font-weight:1000;cursor:pointer;white-space:nowrap}.v308-rank-friend:hover{background:#fff;color:#312e81}.v308-rank-friend.sent{opacity:.6}
-.v308-battle-invite{position:fixed;left:50%;bottom:18px;z-index:760;transform:translateX(-50%);width:min(92vw,430px);border:3px solid #111;border-radius:16px;background:#fff;padding:11px;box-shadow:0 18px 50px #0008}.v308-battle-invite.hidden{display:none!important}.v308-battle-invite strong{display:block;font-size:13px}.v308-battle-invite span{display:block;margin-top:3px;color:#666;font-size:9px;font-weight:850}.v308-battle-invite-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.v308-battle-invite-actions button{min-height:38px;border:2px solid #111;border-radius:9px;background:#fff;font-size:9px;font-weight:1000;cursor:pointer}.v308-battle-invite-actions .accept{background:#4f46e5;color:#fff}
+.v308-battle-invite{position:fixed;left:50%;top:50%;bottom:auto;z-index:166000;transform:translate(-50%,-50%);width:min(92vw,430px);border:3px solid #111;border-radius:20px;background:#fff;padding:15px 14px;box-shadow:0 0 0 100vmax #08050dcc,0 24px 80px #000d}.v308-battle-invite.hidden{display:none!important}.v308-battle-invite strong{display:block;font-size:15px;line-height:1.25;text-align:center}.v308-battle-invite span{display:block;margin-top:6px;color:#666;font-size:9px;font-weight:850;line-height:1.45;text-align:center}.v308-battle-invite-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}.v308-battle-invite-actions button{min-height:44px;border:2px solid #111;border-radius:11px;background:#fff;font-size:10px;font-weight:1000;cursor:pointer}.v308-battle-invite-actions .accept{background:#4f46e5;color:#fff}.v308-battle-invite-actions .reject{background:#fff;color:#111}body.v310-friend-invite-open #v289FloatingPlay{display:none!important;opacity:0!important;pointer-events:none!important}
 @media(max-width:480px){.v231-rank-row{grid-template-columns:26px minmax(0,1fr) auto!important}.v308-rank-friend{grid-column:2/4;width:100%;margin-top:2px}.v308-friend-row,.v308-request-row{grid-template-columns:34px minmax(0,1fr)}.v308-row-actions{grid-column:1/-1}.v308-row-actions button{flex:1}.v308-code-card{grid-template-columns:1fr}.v308-code-card b{font-size:22px}.v308-add-row{grid-template-columns:1fr}.v308-add-row button{min-height:40px}}
 </style>
 <script id="v308FriendsScript">
@@ -37748,8 +37751,8 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   async function challengeFriend(targetUid){const b=backend(),uid=myUid();if(!logged()||!b)return false;if(!state.friends[targetUid]){toast('친구에게만 바로 친선전을 걸 수 있어.');return false}const friendly=window.__GONG_V231__;if(!friendly?.createRoom){toast('친선전 시스템을 불러오지 못했어.');return false}if(friendly.status?.().roomCode){toast('이미 참가 중인 친선방이 있어. 먼저 기존 방을 나가줘.');return false}try{const roomCode=await friendly.createRoom();if(!roomCode){toast('친선방 생성에 실패했어.');return false}const expiresAt=now()+3*60*1000;await b.dbmod.set(b.dbmod.ref(b.db,`${ROOT.invites}/${targetUid}/${uid}`),{senderUid:uid,targetUid,roomCode:String(roomCode),senderName:myName(),createdAt:b.dbmod.serverTimestamp(),expiresAt,version:1});toast('⚔️ 친구에게 친선전 요청을 보냈어. 코드 입력은 필요 없어!');closeFriendModal();window.__GONG_V232__?.closeProfile?.();return true}catch(error){state.lastError=String(error?.code||error?.message||error);toast('친선전 요청 전송에 실패했어.');return false}}
   async function acceptBattleInvite(senderUid){const b=backend(),uid=myUid(),invite=state.invites?.[senderUid];if(!logged()||!b||!invite)return false;if(!state.friends[senderUid]){await rejectBattleInvite(senderUid);toast('친구 관계가 확인되지 않아 요청을 닫았어.');return false}if(Number(invite.expiresAt||0)<=now()){await rejectBattleInvite(senderUid);toast('만료된 친선전 요청이야.');return false}const friendly=window.__GONG_V231__;if(friendly?.status?.().roomCode){toast('이미 참가 중인 친선방이 있어.');return false}try{closeFriendModal();window.__GONG_V232__?.closeProfile?.();$('v254PublicProfileModal')?.classList.add('hidden');const ok=await friendly?.joinRoom?.(invite.roomCode);if(ok){await b.dbmod.remove(b.dbmod.ref(b.db,`${ROOT.invites}/${uid}/${senderUid}`));toast('⚔️ 친구 친선전에 참가했어!');return true}toast('친선방에 참가하지 못했어. 요청이 만료됐을 수 있어.');return false}catch(error){state.lastError=String(error?.code||error?.message||error);toast('친선전 참가에 실패했어.');return false}}
   async function rejectBattleInvite(senderUid){const b=backend(),uid=myUid();if(!b||!uid)return false;try{await b.dbmod.remove(b.dbmod.ref(b.db,`${ROOT.invites}/${uid}/${senderUid}`));return true}catch(_){return false}}
-  function ensureBattleInvite(){let el=$('v308BattleInvite');if(el)return el;el=document.createElement('div');el.id='v308BattleInvite';el.className='v308-battle-invite hidden';document.body.appendChild(el);return el}
-  function renderBattleInvite(){const el=ensureBattleInvite(),rows=inviteRows();if(!rows.length){el.classList.add('hidden');el.innerHTML='';state.lastInviteSig='';return}const invite=rows[0],sig=`${invite.uid}:${invite.roomCode}:${invite.createdAt}`;el.innerHTML=`<strong>⚔️ ${esc(invite.senderName||'친구')}의 친선전 요청</strong><span>친구끼리는 방 코드 입력 없이 바로 참가할 수 있어.</span><div class="v308-battle-invite-actions"><button type="button" class="accept">수락하고 참가</button><button type="button" class="reject">거절</button></div>`;el.classList.remove('hidden');el.querySelector('.accept')?.addEventListener('click',()=>acceptBattleInvite(invite.uid));el.querySelector('.reject')?.addEventListener('click',()=>rejectBattleInvite(invite.uid));if(sig!==state.lastInviteSig){state.lastInviteSig=sig;toast(`⚔️ ${invite.senderName||'친구'}에게 친선전 요청이 왔어!`)}}
+  function ensureBattleInvite(){let el=$('v308BattleInvite');if(el)return el;el=document.createElement('div');el.id='v308BattleInvite';el.className='v308-battle-invite hidden';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','친구 친선전 요청');document.body.appendChild(el);return el}
+  function renderBattleInvite(){const el=ensureBattleInvite(),rows=inviteRows();if(!rows.length){el.classList.add('hidden');el.innerHTML='';state.lastInviteSig='';document.body.classList.remove('v310-friend-invite-open');window.__GONG_V289__?.updateFloatingPlay?.();return}const invite=rows[0],sig=`${invite.uid}:${invite.roomCode}:${invite.createdAt}`;el.innerHTML=`<strong>⚔️ ${esc(invite.senderName||'친구')}의 친선전 요청</strong><span>지금 친선전에 참가할래?<br>수락하면 방 코드를 입력하지 않고 바로 참가해.</span><div class="v308-battle-invite-actions"><button type="button" class="accept">수락하고 참가</button><button type="button" class="reject">거절</button></div>`;document.body.classList.add('v310-friend-invite-open');$('v289FloatingPlay')?.classList.remove('show');el.classList.remove('hidden');el.querySelector('.accept')?.addEventListener('click',()=>acceptBattleInvite(invite.uid));el.querySelector('.reject')?.addEventListener('click',()=>rejectBattleInvite(invite.uid));if(sig!==state.lastInviteSig)state.lastInviteSig=sig}
   function startListeners(){clearListeners();const b=backend();if(!logged()||!b){renderPanel();renderBattleInvite();return false}const uid=b.user.uid;state.uid=uid;const listen=(path,assign)=>{const off=b.dbmod.onValue(b.dbmod.ref(b.db,path),snap=>{assign(snap.val()||{});renderPanel();if(state.friendModalOpen)renderFriendModal();renderBattleInvite()},error=>{state.lastError=String(error?.code||error?.message||error)});state.offs.push(off)};listen(`${ROOT.friends}/${uid}`,v=>state.friends=v);listen(`${ROOT.requests}/${uid}`,v=>state.requests=v);listen(`${ROOT.invites}/${uid}`,v=>state.invites=v);ensureCode().then(()=>{renderPanel();if(state.friendModalOpen)renderFriendModal()});return true}
   function installRankHandler(){document.addEventListener('click',e=>{const btn=e.target.closest?.('[data-v308-rank-friend]');if(!btn)return;e.preventDefault();e.stopImmediatePropagation();sendRequest(btn.dataset.v308RankFriend).then(ok=>{if(ok){btn.classList.add('sent');btn.textContent='신청됨'}})},true);document.addEventListener('keydown',e=>{if(e.target.closest?.('[data-v308-rank-friend]'))e.stopPropagation()},true)}
   function installLoginFirst(){prioritizeLogin();$('v232ProfileButton')?.addEventListener('click',()=>{prioritizeLogin();if(!logged())setTimeout(()=>{$('v232ProfileModal')?.querySelector('.v232-profile-card')?.scrollTo?.({top:0,behavior:'smooth'});$('v232GoogleLogin')?.focus?.()},30)},true)}
@@ -37766,6 +37769,17 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   window.__GONG_V309__={build:BUILD,verify(){const api=window.__GONG_V308__;return {build:BUILD,friendState:api?.state?.()||null,inputValue:document.getElementById('v308FriendCodeInput')?.value||'',patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V309_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V309] 친구 요청 수신 권한 · 친구코드 입력값/포커스 유지 · 불필요한 친구창 전체 재렌더 제거');
+})();
+</script>
+
+
+<script id="v310FriendInviteTutorialOnceFix">
+(()=>{
+  'use strict';
+  const BUILD='V310_FRIEND_BATTLE_INVITE_MODAL_TUTORIAL_ONCE';
+  window.__GONG_V310__={build:BUILD,verify(){const invite=document.getElementById('v308BattleInvite');let guideSeen=false;try{guideSeen=localStorage.getItem('gonggame_v292_mode_guide_seen_v1')==='1'}catch(_){}return {build:BUILD,inviteModal:!!invite,inviteVisible:!!invite&&!invite.classList.contains('hidden'),inviteCentered:!!invite&&getComputedStyle(invite).top==='50%',guideSeen,patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V310_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V310] 친구 친선전 중앙 수락/거절 팝업 · 모드 가이드 자동 표시 1회 고정');
 })();
 </script>
 
