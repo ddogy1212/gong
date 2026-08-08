@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V316_SEOYEONSEO_CLASS6_DANCE_TOMATO -->
+<!-- V317_SEOYEONSEO_TUNING_SCROLL_UNIFIED_BATTLE_VIEW -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -3777,10 +3777,30 @@ function orderedCharacterIds(){
 }
 
 let skillSelected='moon';
+// V317 · 같은 캐릭터 설명이 비동기로 다시 그려져도 읽던 위치를 잃지 않는다.
+let v317SkillRenderedId='';
+let v317SkillForceTop=true;
+const v317SkillScrollPositions=new Map();
+function v317RememberSkillScroll(id=v317SkillRenderedId){
+  if(!id||!skillBody)return;
+  v317SkillScrollPositions.set(id,Math.max(0,Number(skillBody.scrollTop)||0));
+}
+function v317RestoreSkillScroll(id,top){
+  const restore=()=>{
+    if(skillSelected!==id||v317SkillRenderedId!==id)return;
+    skillBody.scrollTop=Math.max(0,Number(top)||0);
+  };
+  requestAnimationFrame(()=>{restore();requestAnimationFrame(restore);});
+}
 
 function renderSkillDetail(){
+  const previousId=v317SkillRenderedId;
+  const sameCharacter=previousId===skillSelected;
+  const previousTop=Math.max(0,Number(skillBody.scrollTop)||0);
+  if(previousId)v317SkillScrollPositions.set(previousId,previousTop);
   const d=DEFS[skillSelected],info=SKILL_INFO[skillSelected];
-  if(!d||!info){skillBody.innerHTML='<div class="skill-empty">스킬 정보를 불러오지 못했습니다.</div>';return;}
+  if(!d||!info){skillBody.innerHTML='<div class="skill-empty">스킬 정보를 불러오지 못했습니다.</div>';v317SkillRenderedId=skillSelected;return;}
+  const restoreTop=(!v317SkillForceTop&&sameCharacter)?(v317SkillScrollPositions.get(skillSelected)??previousTop):0;
   skillBody.innerHTML=`
     <div class="skill-profile" style="--c:${d.color}">
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
@@ -3798,8 +3818,16 @@ function renderSkillDetail(){
         <ul class="skill-points">${s.points.map(p=>`<li>${p}</li>`).join('')}</ul>
       </section>`).join('')}
   `;
-  skillBody.scrollTop=0;
+  v317SkillRenderedId=skillSelected;
+  v317SkillForceTop=false;
+  skillBody.scrollTop=restoreTop;
+  v317SkillScrollPositions.set(skillSelected,restoreTop);
+  v317RestoreSkillScroll(skillSelected,restoreTop);
 }
+
+skillBody.addEventListener('scroll',()=>{
+  if(v317SkillRenderedId===skillSelected&&!v317SkillForceTop)v317RememberSkillScroll(skillSelected);
+},{passive:true});
 
 function updateSkillTabSelection(){
   skillTabs.querySelectorAll('[data-skill-tab]').forEach(btn=>{
@@ -3828,7 +3856,9 @@ function renderSkillModal(){
 skillTabs.addEventListener('click',e=>{
   const btn=e.target.closest('[data-skill-tab]');
   if(!btn)return;
-  skillSelected=btn.dataset.skillTab;
+  const nextId=btn.dataset.skillTab;
+  if(nextId!==skillSelected){v317RememberSkillScroll(skillSelected);v317SkillForceTop=true;}
+  skillSelected=nextId;
   updateSkillTabSelection();
   renderSkillDetail();
   btn.scrollIntoView({block:'nearest'});
@@ -3851,6 +3881,7 @@ function openSkillModal(preferredId){
   const ids=orderedCharacterIds();
   if(preferredId&&ids.includes(preferredId))skillSelected=preferredId;
   else if(!ids.includes(skillSelected))skillSelected=ids[0];
+  v317SkillForceTop=true;
   renderSkillModal();
   skillModal.classList.remove('hidden');
   skillModal.setAttribute('aria-hidden','false');
@@ -21568,6 +21599,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V317','서연서 조정 · 6반반장 15 피해 · 블쉴요정 춤 2초/무력화 1초 · 캐릭터 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일'],
   ['V316','서연서(20기) 추가 · 이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토'],
   ['V315','최다은 소심하게걸어다니기 패시브 추가 · 적 충돌 13 피해 + 강한 넉백'],
   ['V314','친구신청 새로고침 유지 · 친구 온라인 현재 모드 표시 · 채팅 프로필/친구추가 · 비로그인 채팅 읽기'],
@@ -33480,8 +33512,8 @@ window.__GONG_V266_RUNTIME__={
     skills:[
       {kind:'이도윤 한정 피해 증폭',type:'passive',name:'이도윤담당일진',desc:'서연서가 이도윤에게 가하는 모든 피해가 2배가 된다.',points:['대상: 이도윤','서연서가 가하는 모든 기본 피해 ×2','충돌기·춤 연계 후속 공격·토마토 피해에도 동일 적용']},
       {kind:'서민지 연계 패시브',type:'passive',name:'서씨집안',desc:'서민지와 같은 팀인지 다른 팀인지에 따라 두 사람 모두에게 다른 효과를 준다.',points:['같은 팀: 두 사람 모두 10초마다 HP 10 회복','서로 다른 팀: 전투 시작 시 서연서 최대·현재 HP +40','서로 다른 팀: 전투 시작 시 서민지 최대·현재 HP +40']},
-      {kind:'적 충돌 약화',type:'control',name:'6반반장',desc:'부딪힌 적에게 권력을 과시해 피해와 다중 약화를 건다.',points:['충돌 피해: 20','“복종하라~ 나는 권력자다~” 말풍선 표시','이동속도 3초 동안 30% 감소','5초 동안 해당 적이 가하는 공격 피해 50% 감소']},
-      {kind:'벽 3회 영구 가속·춤 투사체',type:'control',name:'블쉴요정',desc:'벽에 3번 부딪힐 때마다 춤을 추며 영구적으로 빨라지고 춤 이모티콘 3개를 발사한다.',points:['발동할 때마다 이동속도 ×1.012 영구 누적','춤 이모티콘 총 3개','가장 가까운 적 최대 3명의 방향으로 분배 발사','적중한 적은 3초 동안 제자리에서 360° 회전','춤추는 3초 동안 취약 상태','춤 적중 후 2초 동안 무력화 상태']},
+      {kind:'적 충돌 약화',type:'control',name:'6반반장',desc:'부딪힌 적에게 권력을 과시해 피해와 다중 약화를 건다.',points:['충돌 피해: 15','“복종하라~ 나는 권력자다~” 말풍선 표시','이동속도 3초 동안 30% 감소','5초 동안 해당 적이 가하는 공격 피해 50% 감소']},
+      {kind:'벽 3회 영구 가속·춤 투사체',type:'control',name:'블쉴요정',desc:'벽에 3번 부딪힐 때마다 춤을 추며 영구적으로 빨라지고 춤 이모티콘 3개를 발사한다.',points:['발동할 때마다 이동속도 ×1.012 영구 누적','춤 이모티콘 총 3개','가장 가까운 적 최대 3명의 방향으로 분배 발사','적중한 적은 2초 동안 제자리에서 360° 회전','춤추는 2초 동안 취약 상태','춤 적중 후 1초 동안 무력화 상태']},
       {kind:'3회 피격 반응 소환',type:'attack',name:'토마토',desc:'실제 피해를 3번 받을 때마다 토마토 공 3개를 소환한다.',points:['실제 피해 3회마다 토마토 3개 생성','토마토는 일반 공처럼 직선 이동하고 벽에서 반사','누군가에게 맞기 전에는 시간으로 사라지지 않음','적중 시 기본 피해 20','적중한 적은 1초 동안 무력화','적중한 토마토만 즉시 사라짐']}
     ]
   };
@@ -33515,7 +33547,7 @@ window.__GONG_V266_RUNTIME__={
     const key=uid(target),now=Math.max(0,Number(game?.t)||0);
     if((owner.data.v316ContactCd[key]||0)>now)return false;
     owner.data.v316ContactCd[key]=now+.18;
-    const dealt=damage(target,20,owner,'6반반장',{contact:true});
+    const dealt=damage(target,15,owner,'6반반장',{contact:true});
     if(target.alive){
       target.data.v316ClassSlowTimer=Math.max(target.data.v316ClassSlowTimer||0,3);
       target.data.v316AttackHalfTimer=Math.max(target.data.v316AttackHalfTimer||0,5);
@@ -33534,13 +33566,13 @@ window.__GONG_V266_RUNTIME__={
     if((target.data.v316DanceTimer||0)<=1e-9){
       target.data.v316DanceRestoreAngle=v>1e-6?Math.atan2(target.vy,target.vx):rand(0,Math.PI*2);
     }
-    target.data.v316DanceTimer=Math.max(target.data.v316DanceTimer||0,3);
-    target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,3);
+    target.data.v316DanceTimer=Math.max(target.data.v316DanceTimer||0,2);
+    target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,2);
     target.data.v151VulnerableSource=owner||target.data.v151VulnerableSource;
-    applyPowerless(target,2,owner);
+    applyPowerless(target,1,owner);
     target.vx=0;target.vy=0;
     spawnAttackFx(target.x,target.y,'#e53935','블쉴요정 · 춤',1.35);
-    floater(target.x,target.y-target.r-22,'💃 춤 3초 · 취약 · 무력화 2초','#e53935',13,.9);
+    floater(target.x,target.y-target.r-22,'💃 춤 2초 · 취약 · 무력화 1초','#e53935',13,.9);
     return true;
   }
   function fireDanceShots(owner){
@@ -38543,6 +38575,61 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 
 
 <script id="v316LatestBuildScript">(()=>{const BUILD='V316_SEOYEONSEO_CLASS6_DANCE_TOMATO';window.__GONG_V316_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<style id="v317SkillScrollStabilityStyle">#skillBody{overflow-anchor:auto!important}</style>
+<style id="v317UnifiedBattleViewportStyle">
+/* V317 · 모든 기종의 실제 전투 화면을 2번 사진과 같은 모바일형 비율로 통일한다. */
+body.v317-battle-normalized .app{max-width:430px!important}
+body.v317-battle-normalized #battle.screen{padding:10px 8px 18px!important}
+body.v317-battle-normalized #battle .battle-head{margin-bottom:9px!important}
+body.v317-battle-normalized #battle .battle-title{font-size:17px!important}
+body.v317-battle-normalized #battle .battle-actions{gap:5px!important}
+body.v317-battle-normalized #battle .skill-help-btn,
+body.v317-battle-normalized #battle .result-btn{font-size:11px!important;padding:9px 8px!important}
+body.v317-battle-normalized #battle .v313-battle-chat-row{margin-top:-3px!important;gap:7px!important}
+body.v317-battle-normalized #battle .v313-chat-strip{height:27px!important;min-height:0!important;padding:0 7px!important}
+body.v317-battle-normalized #battle .v313-chat-label,
+body.v317-battle-normalized #battle .v313-chat-preview{font-size:7px!important}
+body.v317-battle-normalized #battle .score{padding:6px!important}
+body.v317-battle-normalized #battle .score-name{font-size:12px!important}
+body.v317-battle-normalized #battle .controls{gap:4px!important}
+body.v317-battle-normalized #battle .ctrl{font-size:11px!important}
+body.v317-battle-normalized #battle .speed-row{padding:7px 9px!important}
+body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:none!important;margin-left:auto!important;margin-right:auto!important}
+@media(max-width:350px){
+  body.v317-battle-normalized #battle.screen{padding-left:6px!important;padding-right:6px!important}
+  body.v317-battle-normalized #battle .skill-help-btn,
+  body.v317-battle-normalized #battle .result-btn{padding-left:7px!important;padding-right:7px!important}
+}
+</style>
+<script id="v317LatestBuildScript">(()=>{
+  const BUILD='V317_SEOYEONSEO_TUNING_SCROLL_UNIFIED_BATTLE_VIEW';
+  const battle=document.getElementById('battle');
+  function syncBattleViewport(){
+    const active=!!battle&&!battle.classList.contains('hidden');
+    document.body.classList.toggle('v317-battle-normalized',active);
+    return active;
+  }
+  if(battle){
+    new MutationObserver(syncBattleViewport).observe(battle,{attributes:true,attributeFilter:['class']});
+    syncBattleViewport();
+  }
+  window.__GONG_V317_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V317__={
+    build:BUILD,
+    seoyeonseo:{class6Damage:15,danceSeconds:2,powerlessSeconds:1},
+    skillScroll:{preserveSameCharacter:true,resetOnCharacterChange:true,nativeAnchor:true},
+    battleViewport:{maxWidth:430,mobileStyleOnAllDevices:true,sync:syncBattleViewport},
+    verify(){
+      const debug=window.__GONG_V134_DEBUG__;
+      const skill=debug?.skillInfo?.seoyeonseo?.skills||[];
+      const appRect=document.querySelector('.app')?.getBoundingClientRect();
+      const arenaRect=document.querySelector('#battle .arena-wrap')?.getBoundingClientRect();
+      const scrollEl=document.getElementById('skillBody');
+      return {build:BUILD,class6:skill.find(s=>s.name==='6반반장')?.points||[],dance:skill.find(s=>s.name==='블쉴요정')?.points||[],scrollTop:scrollEl?.scrollTop||0,battleNormalized:document.body.classList.contains('v317-battle-normalized'),appWidth:appRect?.width||0,arenaWidth:arenaRect?.width||0,latest:window.__GONG_LATEST_BUILD__};
+    }
+  };
+  console.info('[V317] 서연서 15 피해 · 춤 2초/무력화 1초 · 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일');
+})();</script>
 
 </body>
 </html>
