@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V314_FRIEND_REQUEST_PERSIST_MODE_CHAT_PROFILE_PUBLIC_READ -->
+<!-- V315_DAEUN_SHY_WALK_KNOCKBACK -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -2363,7 +2363,7 @@ chaewon:{id:'chaewon',name:'이채원',color:'#d79b3f',hp:200,speed:150,img:IMAG
   eunchae:{id:'eunchae',name:'장은채',generation:21,color:'#2d5d8a',hp:210,speed:240,img:IMAGES.eunchae,role:'문자 연사·무적 돌진 반격형',skills:'디스랩하기 · 러시아어하기 · 예끼!'},
   hyeeum:{id:'hyeeum',name:'박혜음',generation:21,color:'#d26a9a',hp:200,speed:400,img:IMAGES.hyeeum,role:'윤현 연계 회복·혼란 반사·소용돌이 추적형',skills:'윤현딸 크로스 · 딸 · 부성애자극 · 멘헤라발동'},
   kangyeonwoo:{id:'kangyeonwoo',name:'강연우',generation:21,color:'#4f8f52',hp:250,speed:300,img:'characters/kang_yeonwoo_v311.png',role:'윤현 조건 변환·충돌 회복·상추 씨앗 DoT·물 유도탄·광역 무력화형',skills:'명예멘토상추농부 · 스탠딩점거 · 상추에 물주기 · 농담곰 삔'},
-  choidaeun:{id:'choidaeun',name:'최다은',generation:21,color:'#8256a8',hp:200,speed:400,img:'characters/choi_daeun_v311.png',role:'윤현딸 공유 HP·영구 감속·광역 회복·졸림·피격 무력화·광역 취약형',skills:'윤현딸 크로스 · 아스트 면접 1등 · 늦게자기 · 재밌는거보기 · 친구사귀기!!!!!!!'},
+  choidaeun:{id:'choidaeun',name:'최다은',generation:21,color:'#8256a8',hp:200,speed:400,img:'characters/choi_daeun_v311.png',role:'윤현딸 공유 HP·충돌 피해/넉백·영구 감속·광역 회복·졸림·피격 무력화·광역 취약형',skills:'윤현딸 크로스 · 소심하게걸어다니기 · 아스트 면접 1등 · 늦게자기 · 재밌는거보기 · 친구사귀기!!!!!!!'},
   haewon:{id:'haewon',name:'오해원',generation:21,color:'#4267a8',hp:250,speed:200,img:IMAGES.haewon,role:'피해 누적 회전 반격·맵 회복 오브젝트·특정 대상 특효형',skills:'기타휘두르기 · 다사랑먹기 · 유수영을이긴남자'},
   shion:{id:'shion',name:'이시온',generation:21,color:'#6f9f46',hp:240,speed:320,img:IMAGES.shion,role:'테두리 버섯 설치·주기 연결 레이저·4회 방어·대피 회복형',skills:'버섯돌이 · 버섯 레이저 · 표독한시선 · 해외도피'},
   seoyoung:{id:'seoyoung',name:'박서영',generation:21,color:'#704f9a',hp:180,speed:280,img:IMAGES.seoyoung,role:'피격 강화·무피격 성장 시전·일본어 연사형',skills:'멘헤라 · 애니정주행하기 · 일본어쓰기'},
@@ -3560,9 +3560,10 @@ chaewon:{
     ]
   },
   choidaeun:{
-    summary:'윤현딸 공유 HP·영구 감속·광역 회복·졸림·피격 무력화·광역 취약형',hp:'200 (크로스 2000/3000 공유)',speed:'400',
+    summary:'윤현딸 공유 HP·충돌 피해/넉백·영구 감속·광역 회복·졸림·피격 무력화·광역 취약형',hp:'200 (크로스 2000/3000 공유)',speed:'400',
     skills:[
       {kind:'박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'윤현딸 크로스를 가진 최다은과 박혜음이 같은 팀이면 공유 HP 2000을 사용한다. 같은 팀 윤현이 있으면 윤현까지 공유하며 HP가 3000이 된다.',points:['최다은+박혜음 같은 팀: 공유 HP 2000','같은 팀 윤현 포함: 공유 HP 3000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락']},
+      {kind:'적 충돌 공격·강한 넉백',type:'passive',name:'소심하게걸어다니기',desc:'적과 부딪힐 때마다 13 피해를 주고 최다은에게서 멀어지는 방향으로 강하게 튕겨낸다.',points:['적 충돌 1회당 피해: 13','적을 최다은 반대 방향으로 멀리 튕겨냄','같은 접촉이 프레임마다 중복 발동하지 않도록 충돌 중복 방지 적용']},
       {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 10%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.9','감속은 계속 중첩','최종 이동속도 최소 1']},
       {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 모든 아군을 각자 최대 HP의 70%만큼 회복하고 모든 적에게 졸림을 부여한다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 모든 아군: 각자 최대 HP의 70% 회복','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
       {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받으면 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다. 발동 후 2초의 재사용 대기시간이 있다.',points:['실제 피해를 받은 경우에만 발동','발동 후 재사용 대기시간 2초','모든 적 무력화 0.4초','자신 HP +3']},
@@ -21566,6 +21567,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V315','최다은 소심하게걸어다니기 패시브 추가 · 적 충돌 13 피해 + 강한 넉백'],
   ['V314','친구신청 새로고침 유지 · 친구 온라인 현재 모드 표시 · 채팅 프로필/친구추가 · 비로그인 채팅 읽기'],
   ['V313','대표 칭호 공개 동기화 수정 · 홈/전투 미니 전체채팅 추가 · 채팅 3분 전송 제한'],
   ['V312','친구 온라인·마지막 접속 시간 표시 · 최다은 늦게자기/재밌는거보기 조정'],
@@ -33370,7 +33372,22 @@ window.__GONG_V266_RUNTIME__={
     if(id===YEON&&isEnemy(owner,target)){owner.data.v311EnemyContacts=(owner.data.v311EnemyContacts||0)+1;if(owner.data.v311EnemyContacts>=3){owner.data.v311EnemyContacts=0;heal(owner,20,owner,'스탠딩점거');spawnAttackFx(owner.x,owner.y,'#4f8f52','스탠딩점거',1.1);}}
     if(id===DAEUN){
       owner.data.v311AnyContacts=(owner.data.v311AnyContacts||0)+1;
-      if(isEnemy(owner,target)){target.data=target.data||{};target.data.v311PermanentSpeedMult=Math.max(0.0001,(target.data.v311PermanentSpeedMult||1)*.9);normalizeSpeed(target,normalSpeed(target));floater(target.x,target.y-target.r-16,'🎤 속도 영구 -10%','#8256a8',11,.45);}
+      if(isEnemy(owner,target)){
+        target.data=target.data||{};
+        target.data.v311PermanentSpeedMult=Math.max(0.0001,(target.data.v311PermanentSpeedMult||1)*.9);
+        if(target.alive)normalizeSpeed(target,normalSpeed(target));
+        floater(target.x,target.y-target.r-16,'🎤 속도 영구 -10%','#8256a8',11,.45);
+        const shyDealt=damage(target,13,owner,'소심하게걸어다니기',{contact:true});
+        if(target.alive){
+          let dx=target.x-owner.x,dy=target.y-owner.y,d=Math.hypot(dx,dy);
+          if(!(d>0)){const a=(Math.hypot(target.vx||0,target.vy||0)>0)?Math.atan2(target.vy||0,target.vx||0):rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);d=1;}
+          target.knockbackRestore=normalSpeed(target);
+          target.knockbackTimer=Math.max(target.knockbackTimer||0,.62);
+          target.vx=dx/d*650;target.vy=dy/d*650;
+          spawnAttackFx(target.x,target.y,'#8256a8','소심하게걸어다니기',1.25);
+          floater(target.x,target.y-target.r-18,`💨 ${shyDealt>0?'-'+Math.round(shyDealt):'방어'} · 멀리 튕김`,'#8256a8',12,.55);
+        }
+      }
       if(owner.data.v311AnyContacts>=7){owner.data.v311AnyContacts=0;v311DaeunFriendSkill(owner);}
     }
   }
@@ -38200,6 +38217,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 })();
 </script>
 <script id="v314LatestBuildScript">(()=>{const BUILD='V314_FRIEND_REQUEST_PERSIST_MODE_CHAT_PROFILE_PUBLIC_READ';window.__GONG_V314_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
+<script id="v315LatestBuildScript">(()=>{const BUILD='V315_DAEUN_SHY_WALK_KNOCKBACK';window.__GONG_V315_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;window.__GONG_V315__={build:BUILD,skill:'소심하게걸어다니기',damage:13,knockbackSpeed:650,knockbackSeconds:.62,verify(){const d=DEFS?.choidaeun,skills=SKILL_INFO?.choidaeun?.skills||[];return {build:BUILD,hasSkill:skills.some(s=>s.name==='소심하게걸어다니기'),rosterSkill:String(d?.skills||'').includes('소심하게걸어다니기'),damage:13,knockbackSpeed:650,latest:window.__GONG_LATEST_BUILD__};}};console.info('[V315] 최다은 소심하게걸어다니기 · 적 충돌 13 피해 + 강한 넉백');})();</script>
 
 </body>
 </html>
