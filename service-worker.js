@@ -1,4 +1,4 @@
-const CACHE_NAME='gonggame-v312-friend-presence-daeun-cooldown';
+const CACHE_NAME='gonggame-v313-public-title-global-chat-compact';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png','./characters/lee_eunho.jpeg','./characters/yoon_juhyeong.jpg','./characters/lee_seohyun_v277.png','./characters/kang_yeonwoo_v311.png','./characters/choi_daeun_v311.png'];
 
 self.addEventListener('install',event=>{

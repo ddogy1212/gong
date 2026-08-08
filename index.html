@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V312_FRIEND_PRESENCE_DAEUN_COOLDOWN -->
+<!-- V313_PUBLIC_TITLE_GLOBAL_CHAT_COMPACT -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -21566,6 +21566,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V313','대표 칭호 공개 동기화 수정 · 홈/전투 미니 전체채팅 추가 · 채팅 3분 전송 제한'],
   ['V312','친구 온라인·마지막 접속 시간 표시 · 최다은 늦게자기/재밌는거보기 조정'],
   ['V311','강연우·최다은 신규 캐릭터 추가 · 박혜음 윤현딸 크로스 연계 추가'],
   ['V310','친구 친선전 요청을 중앙 수락/거절 팝업으로 변경 · 첫 모드 가이드 자동 팝업은 1회만 표시'],
@@ -21574,8 +21575,7 @@ const V302_PATCH_NOTES=[
   ['V307','김민재·이은채·박한울·오해원·양채원 밸런스 상향 · 캐릭터 설명창 반복 DOM 감시 제거 및 흔들림 안정화'],
   ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회 충돌로 상향'],
   ['V305','커스텀 칭호 구매 안내에 관리자 Instagram @vol_404_ 추가 · UID 해시형 수동 승인 명단 도입'],
-  ['V304','7,000원 수동 커스텀 칭호 상점 · 신청문 복사 · 운영자 승인 후 장착 기능 추가'],
-  ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정']
+  ['V304','7,000원 수동 커스텀 칭호 상점 · 신청문 복사 · 운영자 승인 후 장착 기능 추가']
 ]
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -38070,6 +38070,76 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 <script id="v312FinalBuildMarker">
 (()=>{const BUILD='V312_FRIEND_PRESENCE_DAEUN_COOLDOWN';window.__GONG_V312_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V312] 최신 빌드 활성화 · 친구 접속 상태 · 최다은 스킬 조정');})();
 </script>
+
+
+<style id="v313CompactGlobalChatStyle">
+/* V313 · compact global chat: a thin preview strip, expanded only on demand. */
+.v313-home-chat-row{display:flex;align-items:center;gap:9px;margin-bottom:9px;min-width:0}
+.v313-home-chat-row>.panel-title{flex:0 0 auto;margin:0!important}
+.v313-chat-strip{min-width:0;height:30px!important;min-height:0!important;border:1.5px solid #c9ccd4;border-radius:10px;background:linear-gradient(180deg,#fff,#f7f8fb);display:flex;align-items:center;gap:6px;padding:0 9px;color:#31343b;cursor:pointer;box-shadow:0 2px 0 #1111;overflow:hidden;text-align:left;font-family:inherit}
+.v313-home-chat-row>.v313-chat-strip{flex:1 1 auto}
+.v313-chat-strip:active{transform:translateY(1px)}
+.v313-chat-label{flex:0 0 auto;font-size:8px;font-weight:1000;color:#4f46e5;white-space:nowrap}
+.v313-chat-preview{min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;font-weight:900;color:#616671}
+.v313-chat-unread{display:none;flex:0 0 auto;min-width:17px;height:17px;border-radius:999px;background:#ef4444;color:#fff;place-items:center;padding:0 4px;font-size:7px;font-weight:1000}.v313-chat-unread.show{display:grid}
+.v313-battle-chat-row{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:7px;margin:-2px 0 7px;min-width:0}
+.v313-battle-chat-row #modeBadge{max-width:none!important;justify-self:start;white-space:nowrap}
+.v313-battle-chat-row .v313-chat-strip{width:100%;height:27px!important;min-height:0!important;background:#f8f8fb;border-color:#bec2cc;box-shadow:none}
+.v313-battle-chat-row .v313-chat-label{font-size:7px}.v313-battle-chat-row .v313-chat-preview{font-size:7px}
+.v313-chat-modal{position:fixed;inset:0;z-index:164500;display:grid;place-items:center;padding:12px;background:#080910a8;backdrop-filter:blur(4px)}.v313-chat-modal.hidden{display:none!important}
+.v313-chat-card{width:min(520px,100%);max-height:min(72vh,640px);display:flex;flex-direction:column;border:2.5px solid #111;border-radius:18px;background:#fff;overflow:hidden;box-shadow:0 22px 70px #000a}
+.v313-chat-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 11px;background:linear-gradient(135deg,#171923,#393f63);color:#fff}.v313-chat-head strong{font-size:14px}.v313-chat-head span{font-size:7px;font-weight:900;color:#d6d9e6}.v313-chat-close{width:31px;height:31px;border:0;border-radius:9px;background:#fff;color:#111;font-size:18px;font-weight:1000;cursor:pointer}
+.v313-chat-list{flex:1 1 auto;min-height:180px;max-height:46vh;overflow:auto;padding:9px;background:#f3f4f7;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.v313-chat-empty{margin:auto;text-align:center;font-size:9px;font-weight:900;color:#777d88;line-height:1.5}
+.v313-chat-msg{align-self:flex-start;max-width:88%;border:1px solid #d8dae1;border-radius:5px 12px 12px 12px;background:#fff;padding:6px 8px;box-shadow:0 1px 0 #0000000d}.v313-chat-msg.mine{align-self:flex-end;border-radius:12px 5px 12px 12px;background:#eef0ff;border-color:#c9c7f7}
+.v313-chat-meta{display:flex;align-items:center;gap:5px;min-width:0;margin-bottom:3px}.v313-chat-name{font-size:8px;font-weight:1000;color:#232630;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.v313-chat-title{max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:999px;background:#4c1d95;color:#fff;padding:2px 5px;font-size:6px;font-weight:1000}.v313-chat-time{margin-left:auto;color:#9498a2;font-size:6px;font-weight:850;white-space:nowrap}.v313-chat-text{font-size:10px;font-weight:850;color:#282b32;line-height:1.38;overflow-wrap:anywhere;white-space:pre-wrap}
+.v313-chat-compose{flex:0 0 auto;padding:8px;border-top:1px solid #ddd;background:#fff}.v313-chat-compose-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px}.v313-chat-input{min-width:0;height:38px;border:2px solid #cfd2da;border-radius:10px;padding:0 10px;font:900 11px/1.2 inherit;outline:none}.v313-chat-input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px #4f46e51a}.v313-chat-send{min-width:68px;border:0;border-radius:10px;background:#4f46e5;color:#fff;padding:0 11px;font-size:9px;font-weight:1000;cursor:pointer}.v313-chat-send:disabled{background:#a9adb8;cursor:default}.v313-chat-foot{display:flex;justify-content:space-between;gap:8px;margin-top:5px;font-size:7px;font-weight:850;color:#7a7e88}.v313-chat-cooldown{color:#4f46e5;font-weight:1000}
+.v313-chat-login{margin:auto;width:min(330px,100%);text-align:center;border:1px dashed #b9bfd0;border-radius:13px;background:#fff;padding:15px 12px;color:#5e6370;font-size:9px;font-weight:900;line-height:1.5}.v313-chat-login button{display:block;width:100%;margin-top:9px;min-height:40px;border:2px solid #111;border-radius:10px;background:#fff;color:#111;font-size:9px;font-weight:1000;cursor:pointer}
+@media(max-width:560px){.v313-home-chat-row{gap:6px}.v313-home-chat-row>.panel-title{font-size:12px}.v313-chat-strip{height:28px!important;min-height:0!important;padding:0 7px}.v313-chat-label{font-size:7px}.v313-chat-preview{font-size:7px}.v313-chat-modal{padding:8px}.v313-chat-card{max-height:78vh;border-radius:15px}.v313-chat-list{max-height:52vh}.v313-chat-msg{max-width:93%}.v313-chat-title{max-width:92px}.v313-battle-chat-row{margin-top:-3px}}
+</style>
+<script id="v313CompactGlobalChatScript">
+(()=>{
+  'use strict';
+  const BUILD='V313_PUBLIC_TITLE_GLOBAL_CHAT_COMPACT',MSG_ROOT='globalChat/v1/messages',RATE_ROOT='globalChatRate/v1',PUBLIC_ROOT='publicPlayerProfiles/v1',COOLDOWN=180000,MAX_TEXT=120;
+  const state={messages:[],messageOff:null,rateOff:null,offsetOff:null,rate:{},serverOffset:0,modalOpen:false,lastSeenMessage:'',unread:0,lastError:'',ownPublishedTitle:null,syncingTitle:false};
+  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const backend=()=>window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null;
+  const logged=()=>{const b=backend();return !!(b?.user?.uid&&!b.user.isAnonymous)};
+  const myUid=()=>backend()?.user?.uid||'';
+  const myName=()=>String(window.__GONG_V232__?.nickname?.(backend()?.user)||backend()?.user?.displayName||'솔리언').trim().slice(0,24);
+  const myTitle=()=>String(window.__GONG_V260__?.currentTitle?.()||'').trim().slice(0,40);
+  const serverNow=()=>Date.now()+(Number(state.serverOffset)||0);
+  const cleanText=v=>Array.from(String(v??'').replace(/[\r\n\t]+/g,' ').replace(/\s{2,}/g,' ').trim()).slice(0,MAX_TEXT).join('');
+  const timeLabel=ts=>{const d=new Date(Number(ts)||Date.now());return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+  function remainingMs(){return Math.max(0,(Number(state.rate?.lastSentAt)||0)+COOLDOWN-serverNow())}
+  function remainLabel(ms=remainingMs()){if(ms<=0)return '지금 전송 가능';const sec=Math.ceil(ms/1000),m=Math.floor(sec/60),s=sec%60;return `다음 전송 ${m}:${String(s).padStart(2,'0')}`}
+  function ensureBars(){
+    const title=document.querySelector('#setup .panel > .panel-title');
+    if(title&&!$('v313HomeChatStrip')){const row=document.createElement('div');row.className='v313-home-chat-row';title.insertAdjacentElement('beforebegin',row);row.appendChild(title);row.appendChild(makeStrip('v313HomeChatStrip'))}
+    const badge=$('modeBadge'),head=document.querySelector('#battle .battle-head');
+    if(badge&&head&&!$('v313BattleChatRow')){const row=document.createElement('div');row.id='v313BattleChatRow';row.className='v313-battle-chat-row';head.insertAdjacentElement('afterend',row);row.appendChild(badge);row.appendChild(makeStrip('v313BattleChatStrip'))}
+    updateStrips();
+  }
+  function makeStrip(id){const btn=document.createElement('button');btn.type='button';btn.id=id;btn.className='v313-chat-strip';btn.innerHTML='<span class="v313-chat-label">💬 전체채팅</span><span class="v313-chat-preview">채팅 불러오는 중</span><span class="v313-chat-unread">0</span>';btn.addEventListener('click',open);return btn}
+  function updateStrips(){const last=state.messages[state.messages.length-1],preview=!logged()?'로그인 후 채팅 가능':last?`${last.nickname||'플레이어'}: ${last.text}`:'아직 메시지가 없어';document.querySelectorAll('.v313-chat-strip').forEach(btn=>{const p=btn.querySelector('.v313-chat-preview'),u=btn.querySelector('.v313-chat-unread');if(p&&p.textContent!==preview)p.textContent=preview;if(u){u.textContent=String(Math.min(99,state.unread));u.classList.toggle('show',state.unread>0)}})}
+  function ensureModal(){let modal=$('v313ChatModal');if(modal)return modal;modal=document.createElement('div');modal.id='v313ChatModal';modal.className='v313-chat-modal hidden';modal.setAttribute('aria-hidden','true');modal.innerHTML='<section class="v313-chat-card" role="dialog" aria-modal="true" aria-labelledby="v313ChatTitle"><header class="v313-chat-head"><div><strong id="v313ChatTitle">💬 전체채팅</strong><span> · 전송은 3분에 한 번</span></div><button type="button" class="v313-chat-close" aria-label="채팅 닫기">×</button></header><div id="v313ChatList" class="v313-chat-list"></div><div class="v313-chat-compose"><div class="v313-chat-compose-row"><input id="v313ChatInput" class="v313-chat-input" maxlength="120" autocomplete="off" placeholder="메시지 입력 (최대 120자)"><button id="v313ChatSend" class="v313-chat-send" type="button">전송</button></div><div class="v313-chat-foot"><span>게임은 채팅창을 열어도 계속 진행돼.</span><span id="v313ChatCooldown" class="v313-chat-cooldown">지금 전송 가능</span></div></div></section>';document.body.appendChild(modal);modal.querySelector('.v313-chat-close')?.addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close()});$('v313ChatSend')?.addEventListener('click',sendFromInput);$('v313ChatInput')?.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendFromInput()}});return modal}
+  function renderMessages({stick=true}={}){const list=$('v313ChatList');if(!list)return;const nearBottom=list.scrollHeight-list.scrollTop-list.clientHeight<45;if(!logged()){list.innerHTML='<div class="v313-chat-login">전체채팅은 Google 로그인 후 사용할 수 있어.<button type="button" id="v313ChatLogin">Google 로그인하러 가기</button></div>';$('v313ChatLogin')?.addEventListener('click',()=>{close();window.__GONG_V232__?.openProfile?.();setTimeout(()=>$('v232GoogleLogin')?.click(),120)});return}if(!state.messages.length){list.innerHTML='<div class="v313-chat-empty">아직 전체채팅 메시지가 없어.<br>첫 메시지를 남겨봐.</div>';return}const uid=myUid();list.innerHTML=state.messages.map(row=>`<article class="v313-chat-msg ${row.uid===uid?'mine':''}"><div class="v313-chat-meta"><span class="v313-chat-name">${esc(row.nickname||'플레이어')}</span>${row.title?`<span class="v313-chat-title">🏷 ${esc(row.title)}</span>`:''}<span class="v313-chat-time">${esc(timeLabel(row.createdAt))}</span></div><div class="v313-chat-text">${esc(row.text)}</div></article>`).join('');if(stick||nearBottom)requestAnimationFrame(()=>{list.scrollTop=list.scrollHeight})}
+  function updateCompose(){const input=$('v313ChatInput'),send=$('v313ChatSend'),cool=$('v313ChatCooldown'),left=remainingMs(),ok=logged()&&left<=0;if(input){input.disabled=!logged();input.placeholder=logged()?'메시지 입력 (최대 120자)':'로그인이 필요해'}if(send)send.disabled=!ok;if(cool)cool.textContent=logged()?remainLabel(left):'로그인 필요'}
+  function open(){ensureBars();ensureModal();const modal=$('v313ChatModal');state.modalOpen=true;state.unread=0;const last=state.messages.at(-1);if(last)state.lastSeenMessage=last.id;modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');renderMessages({stick:true});updateCompose();updateStrips();setTimeout(()=>$('v313ChatInput')?.focus(),60)}
+  function close(){const modal=$('v313ChatModal');if(!modal)return;state.modalOpen=false;modal.classList.add('hidden');modal.setAttribute('aria-hidden','true')}
+  async function sendFromInput(){const input=$('v313ChatInput'),text=cleanText(input?.value||'');if(!logged()){open();return false}if(!text)return false;if(remainingMs()>0){updateCompose();return false}const b=backend();if(!b)return false;const uid=b.user.uid,at=Math.floor(serverNow());let key='';try{key=b.dbmod.push(b.dbmod.ref(b.db,MSG_ROOT)).key||'';if(!key)throw new Error('message-key-failed');const rateRef=b.dbmod.ref(b.db,`${RATE_ROOT}/${uid}`);const tx=await b.dbmod.runTransaction(rateRef,current=>{const last=Math.max(0,Number(current?.lastSentAt)||0);if(last&&at-last<COOLDOWN)return;return {lastSentAt:at,messageId:key,version:1}},{applyLocally:false});if(!tx.committed){state.rate=tx.snapshot.val()||state.rate;updateCompose();return false}state.rate=tx.snapshot.val()||{lastSentAt:at,messageId:key,version:1};await b.dbmod.set(b.dbmod.ref(b.db,`${MSG_ROOT}/${key}`),{uid,nickname:myName(),title:myTitle(),text,createdAt:at,version:1});if(input)input.value='';updateCompose();return true}catch(error){state.lastError=String(error?.code||error?.message||error);console.warn('[V313 전체채팅 전송]',error);updateCompose();return false}}
+  function clearListeners(){for(const k of ['messageOff','rateOff','offsetOff']){try{state[k]?.()}catch(_){}state[k]=null}state.messages=[];state.rate={};updateStrips();renderMessages({stick:false});updateCompose()}
+  function startListeners(){clearListeners();const b=backend();ensureBars();ensureModal();if(!logged()||!b){updateStrips();renderMessages({stick:false});updateCompose();return false}state.offsetOff=b.dbmod.onValue(b.dbmod.ref(b.db,'.info/serverTimeOffset'),s=>{state.serverOffset=Number(s.val())||0;updateCompose()});const q=b.dbmod.query(b.dbmod.ref(b.db,MSG_ROOT),b.dbmod.orderByChild('createdAt'),b.dbmod.limitToLast(50));state.messageOff=b.dbmod.onValue(q,snap=>{const rows=[];snap.forEach(child=>{const v=child.val()||{},text=cleanText(v.text);if(text)rows.push({id:child.key,uid:String(v.uid||''),nickname:String(v.nickname||'플레이어').slice(0,24),title:String(v.title||'').slice(0,40),text,createdAt:Number(v.createdAt)||0})});rows.sort((a,b)=>a.createdAt-b.createdAt);const prevLast=state.messages.at(-1)?.id||'';state.messages=rows;const nextLast=rows.at(-1)?.id||'';if(nextLast&&prevLast&&nextLast!==prevLast&&!state.modalOpen)state.unread=Math.min(99,state.unread+1);if(state.modalOpen&&nextLast)state.lastSeenMessage=nextLast;updateStrips();renderMessages({stick:false})},error=>{state.lastError=String(error?.code||error?.message||error);console.warn('[V313 전체채팅 읽기]',error)});state.rateOff=b.dbmod.onValue(b.dbmod.ref(b.db,`${RATE_ROOT}/${b.user.uid}`),snap=>{state.rate=snap.val()||{};updateCompose()},error=>{state.lastError=String(error?.code||error?.message||error)});return true}
+  async function syncOwnPublicTitle({force=false}={}){const b=backend(),api=window.__GONG_V254__;if(!logged()||!b||!api?.syncPublicProfile||state.syncingTitle)return false;const title=myTitle();if(!force&&state.ownPublishedTitle===title)return true;state.syncingTitle=true;try{await api.syncPublicProfile({force:true});const ref=b.dbmod.ref(b.db,`${PUBLIC_ROOT}/${b.user.uid}`),snap=await b.dbmod.get(ref);if(snap.exists()&&String(snap.val()?.representativeTitle||'')!==title)await b.dbmod.update(ref,{representativeTitle:title,updatedAt:b.dbmod.serverTimestamp()});state.ownPublishedTitle=title;window.dispatchEvent(new CustomEvent('gong-v313-public-title-synced',{detail:{title}}));return true}catch(error){state.lastError=String(error?.code||error?.message||error);console.warn('[V313 대표 칭호 공개 동기화]',error);return false}finally{state.syncingTitle=false}}
+  function wrapTitleApi(){const api=window.__GONG_V260__;if(!api||api.__v313TitleWrapped)return false;if(typeof api.equipTitle==='function'){const prev=api.equipTitle.bind(api);api.equipTitle=(id)=>{const result=prev(id);setTimeout(()=>syncOwnPublicTitle({force:true}),80);return result}}if(typeof api.syncCustomTitleEntitlement==='function'){const prev=api.syncCustomTitleEntitlement.bind(api);api.syncCustomTitleEntitlement=async opts=>{const result=await prev(opts);setTimeout(()=>syncOwnPublicTitle({force:true}),80);return result}}api.__v313TitleWrapped=true;return true}
+  function install(){ensureBars();ensureModal();wrapTitleApi();startListeners();setTimeout(()=>syncOwnPublicTitle({force:true}),3200);['gong-v230-online-ready','gong-v232-auth-changed','gong-v232-nickname-ready'].forEach(name=>window.addEventListener(name,()=>{setTimeout(()=>{wrapTitleApi();startListeners();syncOwnPublicTitle({force:true})},180)}));setInterval(()=>{ensureBars();wrapTitleApi();syncOwnPublicTitle();updateCompose()},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){startListeners();syncOwnPublicTitle({force:true})}})}
+  window.__GONG_V313__={build:BUILD,open,close,send:text=>{const input=ensureModal().querySelector('#v313ChatInput');input.value=cleanText(text);return sendFromInput()},cleanText,remainingMs,remainLabel,syncOwnPublicTitle,refresh:()=>{ensureBars();startListeners();syncOwnPublicTitle({force:true})},state:()=>({messages:state.messages.length,cooldown:remainingMs(),modalOpen:state.modalOpen,lastError:state.lastError,publicTitle:state.ownPublishedTitle}),verify(){return {build:BUILD,homeStrip:!!$('v313HomeChatStrip'),battleStrip:!!$('v313BattleChatStrip'),modal:!!$('v313ChatModal'),modeBadgeInChatRow:$('modeBadge')?.parentElement?.id==='v313BattleChatRow',cooldownMs:COOLDOWN,maxText:MAX_TEXT,patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V313_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  console.info('[V313] 대표 칭호 공개 동기화 · 홈/전투 미니 전체채팅 · 3분 전송 제한');
+})();
+</script>
+<script id="v313LatestBuildScript">(()=>{const BUILD='V313_PUBLIC_TITLE_GLOBAL_CHAT_COMPACT';window.__GONG_V313_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 </body>
 </html>
