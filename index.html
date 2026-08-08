@@ -2228,13 +2228,13 @@ body.competitive-battle #restart{display:none!important}
 <div id="patchNotesModal" class="contact-modal hidden" aria-hidden="true">
   <div class="contact-card v302-patch-card" role="dialog" aria-modal="true" aria-labelledby="patchNotesTitle">
     <div class="contact-head">
-      <div id="patchNotesTitle" class="contact-title">📋 공게임 최근 패치노트</div>
+      <div id="patchNotesTitle" class="contact-title">📋 공게임 패치노트</div>
       <button id="patchNotesClose" class="contact-close" type="button">닫기</button>
     </div>
     <div class="v302-patch-body">
-      <div class="v302-patch-hero"><strong>V302 경쟁전 개편</strong><span>특별승급 + 강등 방어막 · 전원 방어막 1개 지급!</span></div>
-      <ol id="v302PatchList" class="v302-patch-list" aria-label="최근 10개 버전 패치노트"></ol>
-      <div class="v302-patch-foot">최신 10개 버전 기준 · 롤백된 변경도 이력에 표시됩니다.</div>
+      <div id="patchNotesHero" class="v302-patch-hero"><strong id="patchNotesHeroVersion">최신 패치</strong><span id="patchNotesHeroSummary">최신 변경사항을 불러오는 중...</span></div>
+      <ol id="v302PatchList" class="v302-patch-list" aria-label="V219 이후 공게임 패치노트"></ol>
+      <div class="v302-patch-foot"><span id="patchNotesCount"></span> · V219 이후 실제 배포 이력 기준 · 롤백된 변경도 표시됩니다.</div>
     </div>
   </div>
 </div>
@@ -3563,8 +3563,8 @@ chaewon:{
     summary:'윤현딸 공유 HP·충돌 피해/넉백·영구 감속·광역 회복·졸림·피격 무력화·광역 취약형',hp:'200 (크로스 2000/3000 공유)',speed:'400',
     skills:[
       {kind:'박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'윤현딸 크로스를 가진 최다은과 박혜음이 같은 팀이면 공유 HP 2000을 사용한다. 같은 팀 윤현이 있으면 윤현까지 공유하며 HP가 3000이 된다.',points:['최다은+박혜음 같은 팀: 공유 HP 2000','같은 팀 윤현 포함: 공유 HP 3000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락']},
-      {kind:'적 충돌 공격·강한 넉백',type:'passive',name:'소심하게걸어다니기',desc:'적과 부딪힐 때마다 13 피해를 주고 최다은에게서 멀어지는 방향으로 강하게 튕겨낸다.',points:['적 충돌 1회당 피해: 13','적을 최다은 반대 방향으로 멀리 튕겨냄','같은 접촉이 프레임마다 중복 발동하지 않도록 충돌 중복 방지 적용']},
-      {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 10%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.9','감속은 계속 중첩','최종 이동속도 최소 1']},
+      {kind:'적 충돌 공격·강한 넉백',type:'passive',name:'소심하게걸어다니기',desc:'적과 부딪힐 때마다 20 피해를 주고 최다은에게서 멀어지는 방향으로 강하게 튕겨낸다.',points:['적 충돌 1회당 피해: 20','적을 최다은 반대 방향으로 멀리 튕겨냄','같은 접촉이 프레임마다 중복 발동하지 않도록 충돌 중복 방지 적용']},
+      {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 30%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.7','30% 감소가 충돌할 때마다 계속 누적','최종 이동속도 최소 1']},
       {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 살아 있는 모든 아군을 각각 100 HP 회복하고 모든 적에게 졸림을 부여한다. 발동 횟수 제한은 없다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 살아 있는 아군 1명당 발동 1회마다 HP 100 회복','여러 번 발동 가능 · 별도 누적 회복 한도 없음','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
       {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받으면 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다. 발동 후 2초의 재사용 대기시간이 있다.',points:['실제 피해를 받은 경우에만 발동','발동 후 재사용 대기시간 2초','모든 적 무력화 0.4초','자신 HP +3']},
       {kind:'모든 공 충돌 7회 광역 취약',type:'attack',name:'친구사귀기!!!!!!!',desc:'자신을 제외한 어떤 공과든 7번 부딪힐 때마다 모든 적에게 취약 7초와 3초 지속피해를 부여한다.',points:['아군·적군·소환 공 충돌 모두 카운트','효과 대상: 같은 팀 아군과 최다은 자신을 제외한 모든 적','7회마다 모든 적 취약 7초','3초 동안 0.1초마다 1 피해 · 기본 총 30 피해','팀전 아군에게는 취약·지속피해가 적용되지 않음']}
@@ -21598,27 +21598,138 @@ const autoBattleObserver=new MutationObserver(()=>{
 autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class']});
 setInterval(syncAutoBattleUI,200);
 
-const V302_PATCH_NOTES=[
+const GONG_PATCH_NOTES=[
+  ['V322','V219 이후 패치노트 전체 복구 · V302 고정 문구 제거 · 최다은 아스트 면접 1등 누적 30% 감속 · 소심하게걸어다니기 20 피해'],
+  ['V321','아군 friendly-fire 차단 · 최다은 친구사귀기와 이서현 번개는 적에게만 적용'],
+  ['V320','전역 타깃 판정 감사 · 최다은 친구사귀기/이서현 전원 낙뢰 판정 수정 시도 (V321에서 아군 피해 제거)'],
+  ['V319','경쟁전 TOP10 한 줄 압축 랭킹 · 모바일 친구 버튼 하단 전체폭 문제 제거'],
   ['V318','최다은 늦게자기 아군 1명당 100 회복·반복 가능 · 윤현멘티크로스 공유 HP 1400 · 유인성 20기 분류 수정'],
-  ['V317','서연서 조정 · 6반반장 15 피해 · 블쉴요정 춤 2초/무력화 1초 · 캐릭터 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일'],
+  ['V317','서연서 6반반장 15 피해 · 춤 2초/무력화 1초 · 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일'],
   ['V316','서연서(20기) 추가 · 이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토'],
-  ['V315','최다은 소심하게걸어다니기 패시브 추가 · 적 충돌 13 피해 + 강한 넉백'],
-  ['V314','친구신청 새로고침 유지 · 친구 온라인 현재 모드 표시 · 채팅 프로필/친구추가 · 비로그인 채팅 읽기'],
-  ['V313','대표 칭호 공개 동기화 수정 · 홈/전투 미니 전체채팅 추가 · 채팅 3분 전송 제한'],
-  ['V312','친구 온라인·마지막 접속 시간 표시 · 최다은 늦게자기/재밌는거보기 조정'],
-  ['V311','강연우·최다은 신규 캐릭터 추가 · 박혜음 윤현딸 크로스 연계 추가'],
-  ['V310','친구 친선전 요청을 중앙 수락/거절 팝업으로 변경 · 첫 모드 가이드 자동 팝업은 1회만 표시'],
-  ['V309','친구 신청 수신 권한 수정 · 친구코드 입력값/포커스 유지 · 친구창 불필요 재렌더 제거'],
-  ['V308','4자리 친구코드 · 친구 신청/수락/거절 · 랭킹 친구추가 · 친구끼리 코드 없는 친선전 요청 추가'],
-  ['V307','김민재·이은채·박한울·오해원·양채원 밸런스 상향 · 캐릭터 설명창 반복 DOM 감시 제거 및 흔들림 안정화'],
-  ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회 충돌로 상향'],
-  ['V305','커스텀 칭호 구매 안내에 관리자 Instagram @vol_404_ 추가 · UID 해시형 수동 승인 명단 도입']
-]
-window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
+  ['V315','최다은 소심하게걸어다니기 추가 · 적 충돌 13 피해 + 강한 넉백'],
+  ['V314','친구신청 새로고침 유지 · 온라인 현재 모드 · 채팅 프로필/친구추가 · 비로그인 채팅 읽기'],
+  ['V313','대표 칭호 공개 동기화 · 홈/전투 미니 전체채팅 · 채팅 3분 전송 제한'],
+  ['V312','친구 온라인/마지막 접속 표시 · 최다은 늦게자기 자신 제외 · 재밌는거보기 2초 쿨타임'],
+  ['V311','강연우·최다은 신규 캐릭터 · 박혜음 윤현딸 크로스 연계'],
+  ['V310','친구 친선전 중앙 수락/거절 팝업 · 모드 가이드 자동 표시 1회 고정'],
+  ['V309','친구 요청 수신 권한 수정 · 친구코드 입력값/포커스 유지 · 불필요한 친구창 전체 재렌더 제거'],
+  ['V308','4자리 친구코드 · 신청/수락/거절 · 랭킹 친구추가 · 친구 직접 친선전 · 프로필 마스터리 접기'],
+  ['V307','김민재·이은채·박한울·오해원·양채원 버프 · 캐릭터 설명창 DOM 감시 제거/레이아웃 안정화'],
+  ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회로 상향'],
+  ['V305','커스텀 칭호 관리자 Instagram 안내 · 해시형 GitHub 수동 승인 명단'],
+  ['V304','7,000원 수동 커스텀 칭호 · Firebase 운영자 승인 후 장착'],
+  ['V303','강등 방어막 클라우드 동기화 소모 복원 버그 수정'],
+  ['V302','경쟁전 개편 공지 · 전 이용자 강등 방어막 1개 지급 · 문의하기 삭제 · 패치노트 UI 도입'],
+  ['V301','경쟁전 2단/3단 특별승급 · 일일 임무 올클리어 강등 방어막'],
+  ['V300','캐릭터 도감 UI 삭제 · 업적/칭호 유지 · CSS-only 사진/텍스트 겹침 방지'],
+  ['V299','모바일/PWA 우측 빈 여백 수정 · 앱 폭/가로 오버플로우 안정화'],
+  ['V298','V297 업적 삭제 롤백 · 무한 DOM 감시 제거 · UI 프리즈 복구'],
+  ['V297','업적 삭제 및 UI 감시 변경 시도 (V298에서 롤백)'],
+  ['V296','스킬 설명 상단 프로필 레이아웃 정리 · 사진/텍스트 분리 · 모바일 간격/줄바꿈 안정화'],
+  ['V295','캐릭터 이름 아래 역할형 설명 전수 제거 · 체력/속도 2줄 고정'],
+  ['V294','김민서 DNA 채찍 시각화/명칭 · 서채은 HP 270 · 캐릭터 하단 HP/속도만 · MR 도전자팀 빗나감 처벌 제거'],
+  ['V293','오서윤 악마의계약 ×2.666 · 토너먼트/육성 팁 · 프로필/업적/캐릭터/가이드 중 보조 시작 버튼 숨김'],
+  ['V292','목적별 모드 추천 튜토리얼 · 9개 모드 전체 가이드 · 홈 재실행 버튼 · 첫 진입 상황별 팁'],
+  ['V291','보조 시작 버튼 쇼다운·팀전·보스전 홈만 허용 · 마스터리 Lv1~4 포함 TOP5/공개 프로필 병합'],
+  ['V290','홈 전용 보조 시작 버튼 · 캐릭터별 실시간 마스터리 TOP5 · Lv30 잔상 연장'],
+  ['V289','업적 완료 알림 · 화면 밖 플레이 버튼 보조 · MR.베이블레이드 한정 이벤트 일정 적용'],
+  ['V288','보스 스킬명 깜빡임 제거 · 서민지 시각화 강화 · 보스 업적 기록 수정 · Lv30 짧은 트레일+오라'],
+  ['V287','MR.베이블레이드 + 서민지(자퇴Ver) 보스 추가 · 이벤트 규칙 · 업적 75개 · 히든 업적 공개 버그 수정'],
+  ['V286','오정훈 중국냄새 범위/감속 · 성우진 먼작귀컬랙터 스팸 방지 · 김동환 케찹 벽 5회 발동'],
+  ['V285','보스전 + 친선전 메인 허브 복구 · 좌우 2칸 배치 · 경쟁전 가로 전체 유지'],
+  ['V284','일반 쇼다운 결과창 자동 닫힘 제거 · X/배경 클릭 시 홈 복귀 · V282 서버푸시 계획 제거'],
+  ['V283','보스전 메인 허브 복구 · 가로 프리미엄 카드 배치 · 빠른경기 대진+승자 유지'],
+  ['V282','Firebase Functions/FCM 기반 스마트 푸시·업데이트 알림 시스템 준비 (V284에서 제거)'],
+  ['V281','이서현 폭우 15/우박 9 · 수동행동 없는 쿠폰 재발급 차단 · 빠른경기 승자 표시 · 예측 탈락 이벤트 복구'],
+  ['V280','토너먼트 스킵 한 경기씩 표시 · 김규민 입술 개선 · 이서현 HP 250 · 신지민 멈춤 수정 · 극우 원반 6'],
+  ['V279','랭킹 TOP3 쿠폰 배수 · 신 점수 무제한 · 이서현 픽창 복구 · 토너먼트 숫자 아이콘 삭제 · 빠른 경기 경량화'],
+  ['V278','이서현 이동속도 520으로 조정'],
+  ['V277','김지오 음표 속도 1600 · 밤비 접촉 즉시 소멸 · 밤비 소멸 시 김지오 HP +3'],
+  ['V276','이서현 추가 · 웨더아주머니 4종 날씨 · 페니 동전 반격'],
+  ['V275','스킬 안내 텍스트-only · 김규민 입술 렉 완화 · 김지오 음표 가속 · 하늘님 문구 강화 · 전반 성능 최적화'],
+  ['V274','게임 공략법 · 일일 올클리어 XP 쿠폰 · 업적 XP 복구 · 조수빈 2명 분리 · 김지오 벽 4회 · 신규 스킬 시각화 강화'],
+  ['V273','토너먼트 16/32/64 + 2v2/3v3/4v4 · 보상 유지 · 신규/리워크 스킬 완료'],
+  ['V272','기수 분류 수정 · 강예성~홍재욱 20기 · 고혁주 이후 21기 · 기타 기수 삭제'],
+  ['V271','토너먼트 즉시 랜덤 편성 · 예측 확정 후 첫 경기 자동 시작 · 새 토너먼트 즉시 예측 · 메인화면 버튼'],
+  ['V270','경쟁전 패배 점수 보존 · 클라우드 병합을 경기 최신성 기준으로 수정'],
+  ['V269','임서윤 리락쿠마헤어밴드 · 최예은 멜라치오 추가 · 자동전투 Screen Wake Lock'],
+  ['V268','전투 방식 버튼 예전 카드형 디자인 복원'],
+  ['V267','전투 방식 버튼 높이 복원 · 모드 카드 레이아웃 보정'],
+  ['V266','토너먼트 전체 랜덤 · 모드 순서 고정 · 수동 쇼다운만 자동 홈 · 자동전투 연속 · 이은호 HP 300 · iOS 터치 안전영역'],
+  ['V264','일반 쇼다운 종료 후 자동 홈 · 경쟁전 일시정지만 표시 · 접속 인원 광고 위 배치'],
+  ['V263','플레이 버튼 이동 · 일일보상 자동 닫기 · 홈으로 가기 버튼'],
+  ['V262','검색창 오른쪽 캐릭터 분류 필터 적용'],
+  ['V261','강예성 이빨투척 전투 로직 · 대표 칭호 랭킹/이름 옆 표시'],
+  ['V260','업적·보상·대표 칭호·캐릭터 도감 · 업적 클라우드 저장/경기 원장 병합 시스템 추가'],
+  ['V259','이은호 · 윤주형 신규 캐릭터 추가'],
+  ['V258','육성모드 매 경기 결과를 오프라인 대기열을 거쳐 전체 이용자 통계/육성 탭에 반영'],
+  ['V257','50일 연속 출석 보상 · 전체 이용자 통계에 육성모드 완전 합산'],
+  ['V256','마스터리 3 해금 지점을 Lv.30 · 176,155 XP로 변경'],
+  ['V255','계정 저장·복구 · 프로필 최근 20경기 · 마스터리 2/3 보상 · 육성 30FPS 절전 · 육성 통계 직접 제출'],
+  ['V254','Lv.5/15/30 마스터리 단계 · 랭킹 상대 공개 프로필'],
+  ['V253','하단 킬로그 유지 · 상단 기본 킬 배너 이펙트 강화 · 캐릭터 연관 아이콘'],
+  ['V252','PWA 설치 준비 후 1회 클릭 시스템 설치창 · 자동 육성 Screen Wake Lock 유지'],
+  ['V251','육성 중 Screen Wake Lock · PWA 설치 카드/고품질 앱 아이콘 추가'],
+  ['V250','육성모드 전투를 전체 이용자 통계에 별도 모드로 반영'],
+  ['V249','친선전 메인 버튼을 랜덤모드 오른쪽에 배치 · 경쟁전 내부 친선전 카드 분리'],
+  ['V248','연속 육성모드 추가 · 선택 캐릭터 1대1 자동전투 · 승리당 숙련도 +30 XP'],
+  ['V247','V246 확장 기능 롤백 · 메인 버튼/Functions/PWA 확장 제거 · 프로필 재실행형 튜토리얼만 유지'],
+  ['V246','분석·허브·라이벌·관리·PWA/Functions 확장 기능 실험 (V247에서 롤백)'],
+  ['V245','모바일 캐릭터 상세 카드 폭 복구 · 아이템 버튼 별도 줄 · 토너먼트 예측 버튼 상단/확정 버튼 상시 노출'],
+  ['V244','토너먼트 8·16·32·64강 순위 예측 XP 쿠폰 · 4인 삭제 · 아이템 버튼 줄바꿈 방지'],
+  ['V243','경쟁전 팀 활약도 점수 승리 +16~+40 · 패배 -20~-45 · 0점 정산 제거'],
+  ['V242','친선 경쟁전은 방 생성/코드 입장 후에만 열림 · 현재 화면 재연결 유지 · MASTER 문구 제거'],
+  ['V241','숙련도 Lv.5 킬 배너 전면 재설계 · 대형 중앙 배너 · AWAKENED/RADIANT/MYTHIC/ASCENDED 프레임'],
+  ['V240','친선 다시 플레이 후보 24명 재추첨 · 경쟁전 시작 버튼 문구 간소화'],
+  ['V239','친선전 다시 플레이 · 승리 XP +100 쿠폰 · 캐릭터 설명창 아이템 사용'],
+  ['V238','일일 임무 올클리어 숙련도 +200 XP 지급 · 계정 동기화 유지'],
+  ['V237','페이지 새로고침 없는 계정 진척도 동기화 · 익명 랭킹 이전 · 경기 중 상태 보호 · 친선방 원자 참가 안정화'],
+  ['V236','친선방 서버 선조회 참가 · 익명/Google 랭킹 중복 정리 · TOP10 보정'],
+  ['V235','경기 중 자동 새로고침 제거 · Google 로그아웃 · 내 랭킹 쓰기 검증 · 친선방 전투 시작 안정화'],
+  ['V234','Google 로그인/프로필 안정화 · 밴픽 집중 화면 · 친선전 점수 완전 제외 · KST 주간 시즌/티어당 50점'],
+  ['V233','최원서 신규 캐릭터 · 학자 누적 성장 · 중남보기 완전 반사 · 정병사랑 영구 하트 지형'],
+  ['V232','프로필·닉네임·솔리언 번호 · 계정 진척도 동기화 · 동접 위치 정리'],
+  ['V231','경쟁전 시즌 TOP10 랭킹 · 2인 친선 경쟁전 방'],
+  ['V230','Firebase 실제 연결 검증 · 본인 포함 동접 집계 · 자동 재연결 진단'],
+  ['V229','스킬 설명창 복구 · 경쟁전 자동 시작 · 모바일 밴픽 가독성 · Firebase 규칙/전송 일치'],
+  ['V228','Firebase 익명/Google 연결 · 실시간 동접 · 캐릭터별 커뮤니티 전투 통계 · 오프라인 결과 재전송'],
+  ['V227','경쟁전 시즌 종료 티어별 숙련도 선택 보상 · 솔리언1 10,000 XP ~ 신 100,000 XP'],
+  ['V226','오전·오후 일일 임무 · 올클리어 캐릭터 숙련도 +200 XP'],
+  ['V225','일반 캐릭터 크기 통일 · 명시적 크기 스킬만 예외 · 경기 중 레벨 숫자 숨김'],
+  ['V224','숙련도 최대 Lv.30 · Lv.5 마스터리1 · Lv.15 마스터리2 · Lv.30 마스터리3/트레일'],
+  ['V223','영상 녹화 제거 · 모바일 화질/프레임 복원 · 오서윤 쵸텐 최대 3명'],
+  ['V222','모바일 전투 렌더링 안정화 · 숙련도 광휘/영상 녹화 경량화 · 오서윤 쵸텐 최대 3명'],
+  ['V221','숙련도 상세 화면 통합 · 일반전 XP 순위 차등 · 보스전 상위 공헌자 XP 지급'],
+  ['V220','일일 임무 올클리어 후 숨김 · 숙련도 XP/보스전 XP 개편 · Lv.5/10/20 광휘 · 결과 미디어 UI 정리'],
+  ['V219','캐릭터 숙련도 · 전투 영상 저장 · 인스타 스토리 9:16 공유 · KST 일일 임무 추가'],
+];
+const V302_PATCH_NOTES=GONG_PATCH_NOTES; // legacy alias for V302+ diagnostics
+
+function syncPatchNotesExport(){
+  window.__GONG_V302_PATCH_NOTES__=GONG_PATCH_NOTES.map(row=>[...row]);
+}
+function registerPatchNote(version,summary){
+  version=String(version||'').trim().toUpperCase();summary=String(summary||'').trim();
+  if(!/^V\d+$/.test(version)||!summary)return false;
+  const found=GONG_PATCH_NOTES.findIndex(row=>row[0]===version);
+  if(found>=0)GONG_PATCH_NOTES[found]=[version,summary];else GONG_PATCH_NOTES.push([version,summary]);
+  GONG_PATCH_NOTES.sort((a,b)=>(parseInt(b[0].slice(1),10)||0)-(parseInt(a[0].slice(1),10)||0));
+  syncPatchNotesExport();
+  if(typeof renderPatchNotes==='function'&&patchNotesModal&&!patchNotesModal.classList.contains('hidden'))renderPatchNotes();
+  return true;
+}
+syncPatchNotesExport();
+window.__GONG_PATCH_NOTES__={all:()=>GONG_PATCH_NOTES.map(row=>[...row]),register:registerPatchNote,latest:()=>GONG_PATCH_NOTES[0]?[...GONG_PATCH_NOTES[0]]:null};
 const patchNotesModal=$('patchNotesModal');
 function renderPatchNotes(){
   const list=$('v302PatchList');if(!list)return;
-  list.innerHTML=V302_PATCH_NOTES.map(([version,summary],i)=>`<li class="${i===0?'latest':''}"><b>${version}</b><span>${summary}</span></li>`).join('');
+  const rows=GONG_PATCH_NOTES;
+  list.innerHTML=rows.map(([version,summary],i)=>`<li class="${i===0?'latest':''}"><b>${version}</b><span>${summary}</span></li>`).join('');
+  const latest=rows[0]||['',''];
+  const hv=$('patchNotesHeroVersion'),hs=$('patchNotesHeroSummary'),count=$('patchNotesCount');
+  if(hv)hv.textContent=latest[0]?`${latest[0]} 최신 업데이트`:'최신 패치';
+  if(hs)hs.textContent=latest[1]||'패치 기록이 없습니다.';
+  if(count)count.textContent=`총 ${rows.length}개 버전 기록`;
 }
 function openPatchNotes(){renderPatchNotes();patchNotesModal?.classList.remove('hidden');patchNotesModal?.setAttribute('aria-hidden','false');const float=$('v289FloatingPlay');if(float){float.classList.remove('show');float.disabled=true}}
 function closePatchNotes(){patchNotesModal?.classList.add('hidden');patchNotesModal?.setAttribute('aria-hidden','true');window.__GONG_V289__?.updateFloatingPlay?.()}
@@ -33427,10 +33538,10 @@ window.__GONG_V266_RUNTIME__={
       owner.data.v311AnyContacts=(owner.data.v311AnyContacts||0)+1;
       if(isEnemy(owner,target)){
         target.data=target.data||{};
-        target.data.v311PermanentSpeedMult=Math.max(0.0001,(target.data.v311PermanentSpeedMult||1)*.9);
+        target.data.v311PermanentSpeedMult=Math.max(0.0001,(target.data.v311PermanentSpeedMult||1)*.7);
         if(target.alive)normalizeSpeed(target,normalSpeed(target));
-        floater(target.x,target.y-target.r-16,'🎤 속도 영구 -10%','#8256a8',11,.45);
-        const shyDealt=damage(target,13,owner,'소심하게걸어다니기',{contact:true});
+        floater(target.x,target.y-target.r-16,'🎤 속도 영구 -30%','#8256a8',11,.45);
+        const shyDealt=damage(target,20,owner,'소심하게걸어다니기',{contact:true});
         if(target.alive){
           let dx=target.x-owner.x,dy=target.y-owner.y,d=Math.hypot(dx,dy);
           if(!(d>0)){const a=(Math.hypot(target.vx||0,target.vy||0)>0)?Math.atan2(target.vy||0,target.vx||0):rand(0,Math.PI*2);dx=Math.cos(a);dy=Math.sin(a);d=1;}
@@ -38194,21 +38305,17 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
     const ids=['v289EventModal','resultModal','skillModal','v232ProfileModal','v260Modal','v292ModeGuideModal'];
     return ids.some(id=>{const el=$(id);return !!el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none'});
   }
-  function maybeShowNotice(){
-    if(noticeSeen())return false;if(blockerVisible())return false;
-    const modal=ensureModal();modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');const float=$('v289FloatingPlay');if(float){float.classList.remove('show');float.disabled=true}return true;
-  }
+  // V322: V302의 역사적 보상 로직은 유지하지만, 오래된 V302 개편 공지는 더 이상 자동 표시하지 않는다.
+  function maybeShowNotice(){return false;}
   function install(){
     const result=grantEveryoneOneShield();
-    let tries=0;const timer=setInterval(()=>{tries++;if(maybeShowNotice()||noticeSeen()||tries>50)clearInterval(timer)},400);
-    document.addEventListener('click',event=>{if(event.target.closest('.v289-event-close,.v289-event-x,.v289-event-snooze'))setTimeout(maybeShowNotice,120)},{passive:true});
     setTimeout(()=>{window.__GONG_V232__?.syncProgress?.({force:true})},1200);
     return result;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
   window.__GONG_V302__={build:BUILD,patchNotes:()=>((window.__GONG_V302_PATCH_NOTES__||[]).map(row=>[...row])),grantEveryoneOneShield,maybeShowNotice,verify(){const rank=api()?.profile?.()||{},notes=window.__GONG_V302_PATCH_NOTES__||[];return {build:BUILD,shield:rank.rankShield||0,globalGranted:!!rank.v302GlobalShieldGranted,contactButton:!!$('contactOpen'),patchNotesButton:!!$('patchNotesOpen'),patchCount:notes.length,latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V302_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V302] 경쟁전 개편 공지 · 전 이용자 방어막 1개 지급 · 문의하기 삭제/최근 10개 패치노트');
+  console.info('[V302] 경쟁전 개편 공지 · 전 이용자 방어막 1개 지급 · 문의하기 삭제 · 패치노트 UI 도입');
 })();
 </script>
 
@@ -38804,5 +38911,17 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
 
 <script id="v320AllExceptSelfTargetingFix">(()=>{const BUILD='V320_ALL_EXCEPT_SELF_GLOBAL_TARGETING';window.__GONG_V320_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;window.__GONG_V320__={build:BUILD,rule:'모두/전원/모든 공 대상 공격·디버프는 시전자 자신 제외',verify(){return {build:BUILD,rule:this.rule,daeunDebugFriendSkill:typeof window.__GONG_V311__?.friendSkill==='function',latest:window.__GONG_LATEST_BUILD__};}};console.info('[V320] 전역 타깃 원칙 · 최다은 친구사귀기 + 이서현 전원 낙뢰 자신만 제외');})();</script>
 <script id="v321NoFriendlyFireGlobalDamageFix">(()=>{const BUILD='V321_NO_FRIENDLY_FIRE_GLOBAL_DAMAGE';window.__GONG_V321_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;window.__GONG_V321__={build:BUILD,rule:'공격·피해·해로운 디버프의 모두/전원은 같은 팀 아군과 시전자 자신을 제외한 적 전원',verify(){return {build:BUILD,rule:this.rule,daeunFriendSkill:typeof window.__GONG_V311__?.friendSkill==='function',latest:window.__GONG_LATEST_BUILD__};}};console.info('[V321] friendly-fire 차단 · 최다은 친구사귀기/이서현 번개는 적에게만 적용');})();</script>
+
+<script id="v322PatchNotesHistoryFix">
+(()=>{
+  'use strict';
+  const BUILD='V322_PATCH_NOTES_FULL_HISTORY_DAEUN_TUNING';
+  const api=window.__GONG_PATCH_NOTES__;
+  api?.register?.('V322','V219 이후 패치노트 전체 복구 · V302 고정 문구 제거 · 최다은 아스트 면접 1등 누적 30% 감속 · 소심하게걸어다니기 20 피해');
+  window.__GONG_V322__={build:BUILD,verify(){const rows=api?.all?.()||[],daeun=(SKILL_INFO?.choidaeun?.skills||[]);return {build:BUILD,count:rows.length,latest:rows[0]||null,has219:rows.some(r=>r[0]==='V219'),has321:rows.some(r=>r[0]==='V321'),fixedV302Hero:document.getElementById('patchNotesHeroVersion')?.textContent?.startsWith('V302')||false,oldV302NoticeDisabled:window.__GONG_V302__?.maybeShowNotice?.()===false,daeunShyDamage:/damage\(target,20,owner,'소심하게걸어다니기'/.test(String(v311TouchEvent)),daeunAst30:/\*\.7\)/.test(String(v311TouchEvent))&&daeun.some(s=>s.name==='아스트 면접 1등'&&String(s.desc).includes('30%')),latestBuild:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V322_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V322] V219 이후 패치노트 전체 복구 · V302 고정 문구 제거 · 최다은 아스트 면접 1등 누적 30% 감속 · 소심하게걸어다니기 20 피해');
+})();
+</script>
 </body>
 </html>
