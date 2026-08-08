@@ -2890,7 +2890,7 @@ const SKILL_INFO={
         '방어막은 남아 있는 개수만큼 계속 누적',
         '전원 무적 시간에는 자해 피해가 들어가지 않으며 방어막도 획득하지 않음'
       ]},
-      {kind:'공격 스킬',type:'attack',name:'전화하기',desc:'4~5초 사이 무작위 시간마다 전화 공격을 건다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.',points:[
+      {kind:'공격 스킬',type:'attack',name:'전화하기',desc:'4~5초 사이 무작위 시간마다 전화 공격을 건다. 8% 확률로 적 전원에게 약화된 크리티컬 피해를 준다.',points:[
         '발동 주기: 4~5초 사이 무작위',
         '일반 전화: 살아 있는 적 중 무작위 1명에게 기본 28 피해',
         '크리티컬 확률: 약 8%',
@@ -3567,7 +3567,7 @@ chaewon:{
       {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 10%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.9','감속은 계속 중첩','최종 이동속도 최소 1']},
       {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 살아 있는 모든 아군을 각각 100 HP 회복하고 모든 적에게 졸림을 부여한다. 발동 횟수 제한은 없다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 살아 있는 아군 1명당 발동 1회마다 HP 100 회복','여러 번 발동 가능 · 별도 누적 회복 한도 없음','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
       {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받으면 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다. 발동 후 2초의 재사용 대기시간이 있다.',points:['실제 피해를 받은 경우에만 발동','발동 후 재사용 대기시간 2초','모든 적 무력화 0.4초','자신 HP +3']},
-      {kind:'모든 공 충돌 7회 광역 취약',type:'attack',name:'친구사귀기!!!!!!!',desc:'자신을 제외한 어떤 공과든 7번 부딪힐 때마다 모든 적에게 취약 7초와 3초 지속피해를 부여한다.',points:['아군·적군·소환 공 충돌 모두 카운트','7회마다 모든 적 취약 7초','3초 동안 0.1초마다 1 피해 · 기본 총 30 피해']}
+      {kind:'모든 공 충돌 7회 광역 취약',type:'attack',name:'친구사귀기!!!!!!!',desc:'자신을 제외한 어떤 공과든 7번 부딪힐 때마다 최다은 자신을 제외한 모든 살아 있는 공에게 취약 7초와 3초 지속피해를 부여한다.',points:['아군·적군·소환 공 충돌 모두 카운트','효과 대상: 최다은 자신만 제외한 모든 살아 있는 공','7회마다 대상 전원 취약 7초','3초 동안 0.1초마다 1 피해 · 기본 총 30 피해','아군에게도 취약과 지속피해가 실제 적용됨']}
     ]
   },
 
@@ -25259,7 +25259,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   if(SKILL_INFO.jiwon){
     const skill=SKILL_INFO.jiwon.skills?.find(s=>s?.name==='전화하기');
     if(skill){
-      skill.desc='4~5초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 3초 동안 무력화된다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.';
+      skill.desc='4~5초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 3초 동안 무력화된다. 8% 확률로 적 전원에게 약화된 크리티컬 피해를 준다.';
       if(Array.isArray(skill.points)){
         skill.points=skill.points.map(p=>String(p).replace(/발동 주기:\s*3~8초 사이 무작위/g,'발동 주기: 4~5초 사이 무작위').replace(/전화 피해를 실제로 받은 적:\s*5초 무력화/g,'전화 피해를 실제로 받은 적: 3초 무력화'));
         if(!skill.points.some(p=>String(p).includes('3초 무력화')))skill.points.push('전화 피해를 실제로 받은 적: 3초 무력화');
@@ -25594,7 +25594,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   if(SKILL_INFO.jiwon){
     const skill=SKILL_INFO.jiwon.skills?.find(s=>s?.name==='전화하기');
     if(skill){
-      skill.desc='5~6초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 2초 동안 무력화된다. 8% 확률로 전원에게 약화된 크리티컬 피해를 준다.';
+      skill.desc='5~6초 사이 무작위 시간마다 전화 공격을 건다. 전화 피해를 실제로 받은 적은 2초 동안 무력화된다. 8% 확률로 적 전원에게 약화된 크리티컬 피해를 준다.';
       if(Array.isArray(skill.points)){
         skill.points=skill.points.map(p=>String(p)
           .replace(/발동 주기:\s*4~5초 사이 무작위/g,'발동 주기: 5~6초 사이 무작위')
@@ -32431,7 +32431,7 @@ window.__GONG_V266_RUNTIME__={
   DEFS.leeseohyun={id:'leeseohyun',name:'이서현',generation:20,color:'#4966c8',hp:250,speed:520,img:IMG,role:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',skills:'웨더아주머니 · 페니'};
   SKILL_INFO.leeseohyun={
     summary:'4종 날씨 전환·다타수 기상 공격·투사체 반격 동전형',hp:'250',speed:'520',skills:[
-      {kind:'벽 충돌 날씨 전환',type:'attack',name:'웨더아주머니',desc:'벽에 3번 닿을 때마다 4종 날씨 중 1개를 랜덤 발동한다. 날씨가 끝난 뒤 다시 3번부터 카운트한다.',points:['벽 충돌 3회마다 랜덤 날씨 1개 발동','날씨 지속시간: 4초','폭우: 가장 가까운 적 방향으로 물방울 30발 연사, 1발당 15 피해','우박: 360도 회전하며 얼음 60발 분사, 1발당 9 피해 + 2초 정지','폭풍: 모든 적에게 유도되는 바람 1개씩 발사, 1회 적중 시 15 피해 + 강한 넉백','번개: 이상은의 벼락처럼 4초 동안 2번 모두에게 낙뢰(기본 22 피해)']},
+      {kind:'벽 충돌 날씨 전환',type:'attack',name:'웨더아주머니',desc:'벽에 3번 닿을 때마다 4종 날씨 중 1개를 랜덤 발동한다. 날씨가 끝난 뒤 다시 3번부터 카운트한다.',points:['벽 충돌 3회마다 랜덤 날씨 1개 발동','날씨 지속시간: 4초','폭우: 가장 가까운 적 방향으로 물방울 30발 연사, 1발당 15 피해','우박: 360도 회전하며 얼음 60발 분사, 1발당 9 피해 + 2초 정지','폭풍: 모든 적에게 유도되는 바람 1개씩 발사, 1회 적중 시 15 피해 + 강한 넉백','번개: 4초 동안 2번 이서현 자신을 제외한 전원에게 낙뢰(기본 22 피해)']},
       {kind:'피격 반격 투사체',type:'attack',name:'페니',desc:'투사체에 맞을 때마다 공격한 적 방향으로 동전을 던진다.',points:['투사체에 실제 피해를 받을 때마다 발동','동전에 맞은 적은 3초 동안 1초마다 2 피해','동전 적중 시 3초 동안 이동속도 40% 감소','여러 번 맞으면 지속시간이 갱신됨']}
     ]
   };
@@ -32533,6 +32533,22 @@ window.__GONG_V266_RUNTIME__={
     dots[v276Uid(owner)]={owner,left:3,tick:1};
     floater(target.x,target.y-target.r-15,'🪙 3초 지속피해 · 40% 감속','#c78e16',12,.55);
   }
+  function v320SeohyunLightningAllExceptSelf(owner,reason='웨더아주머니 · 번개'){
+    if(!owner?.alive)return 0;
+    let count=0;
+    for(const q of (game?.players||[])){
+      if(!q?.alive||q.hidden||q===owner)continue;
+      const dmg=22;
+      game.v205LightningFx ||= [];
+      game.v205LightningFx.push({kind:'sangeun',x:q.x,y:q.y,start:Number(game.t)||0,life:.82,seed:Math.random()*9999,stacks:1,dmg});
+      game.v205LightningFlashUntil=Math.max(game.v205LightningFlashUntil||0,(Number(game.t)||0)+.16);
+      spawnAttackFx(q.x,q.y,'#f5d44f',`⚡ ${dmg}`,1.45);
+      damage(q,dmg,owner,reason,{allowFriendly:true});
+      count++;
+    }
+    spawnSkillBanner(`⚡ ${reason} · ${count}명`,'#8b7a25');
+    return count;
+  }
   function v276HitShot(shot,target){
     const owner=shot.owner;if(!owner?.alive||!target?.alive)return;
     if(shot.type==='rain'){
@@ -32615,8 +32631,8 @@ window.__GONG_V266_RUNTIME__={
         p.data.v276HailCd=(p.data.v276HailCd||0)-dt;
         while((p.data.v276HailCd||0)<=0&&(p.data.v276HailShots||0)<60){p.data.v276HailCd+=4/60;v276EmitHail(p);p.data.v276HailShots=(p.data.v276HailShots||0)+1;}
       }else if(type==='lightning'){
-        if((p.data.v276LightningCount||0)<1&&p.data.v276WeatherElapsed>=4/3){p.data.v276LightningCount=1;(typeof v191Lightning==='function'&&v191Lightning(p,'웨더아주머니 · 번개'));v276Cue(p,'⚡','웨더아주머니 · 번개','#c89d1e','모두에게 낙뢰',.9);}
-        if((p.data.v276LightningCount||0)<2&&p.data.v276WeatherElapsed>=8/3){p.data.v276LightningCount=2;(typeof v191Lightning==='function'&&v191Lightning(p,'웨더아주머니 · 번개'));}
+        if((p.data.v276LightningCount||0)<1&&p.data.v276WeatherElapsed>=4/3){p.data.v276LightningCount=1;v320SeohyunLightningAllExceptSelf(p,'웨더아주머니 · 번개');v276Cue(p,'⚡','웨더아주머니 · 번개','#c89d1e','자신 제외 전원 낙뢰',.9);}
+        if((p.data.v276LightningCount||0)<2&&p.data.v276WeatherElapsed>=8/3){p.data.v276LightningCount=2;v320SeohyunLightningAllExceptSelf(p,'웨더아주머니 · 번개');}
       }
       if((p.data.v276WeatherTimer||0)<=0){p.data.v276WeatherType='';p.data.v276WeatherElapsed=0;}
     }
@@ -33359,7 +33375,7 @@ window.__GONG_V266_RUNTIME__={
       if(seed?.count>0){seed.tick=(seed.tick??1)-dt;while(seed.tick<=0&&alive(p)){seed.tick+=1;damage(p,Math.round(seed.count*.7*100)/100,seed.owner||game.arenaSource,'상추 씨앗 지속피해',{allowDeadSource:true,v311IgnoreVulnerable:true});}}
       if((p.data.v311SleepSlowTimer||0)>0)p.data.v311SleepSlowTimer=Math.max(0,p.data.v311SleepSlowTimer-dt);
       const sleepy=p.data.v311SleepDot;if(sleepy?.ticksLeft>0){sleepy.acc=(sleepy.acc||0)+dt;while(sleepy.acc>=1-1e-9&&sleepy.ticksLeft>0&&alive(p)){sleepy.acc-=1;sleepy.ticksLeft--;damage(p,1.5,sleepy.owner||game.arenaSource,'늦게자기 · 졸림',{allowDeadSource:true,v311IgnoreVulnerable:true});}if(sleepy.ticksLeft<=0)delete p.data.v311SleepDot;}
-      const f=p.data.v311FriendDot;if(f?.ticksLeft>0){f.acc=(f.acc||0)+dt;let guard=0;while(f.acc>=.1&&f.ticksLeft>0&&alive(p)&&guard++<20){f.acc-=.1;f.ticksLeft--;damage(p,1,f.owner||game.arenaSource,'친구사귀기!!!!!!! · 지속피해',{allowDeadSource:true,v311IgnoreVulnerable:true});}if(f.ticksLeft<=0)delete p.data.v311FriendDot;}
+      const f=p.data.v311FriendDot;if(f?.ticksLeft>0){f.acc=(f.acc||0)+dt;let guard=0;while(f.acc>=.1&&f.ticksLeft>0&&alive(p)&&guard++<20){f.acc-=.1;f.ticksLeft--;damage(p,1,f.owner||game.arenaSource,'친구사귀기!!!!!!! · 지속피해',{allowDeadSource:true,allowFriendly:!!f.allowFriendly,v311IgnoreVulnerable:true});}if(f.ticksLeft<=0)delete p.data.v311FriendDot;}
     }
   }
   function v311DaeunLateSleep(p){
@@ -33368,7 +33384,10 @@ window.__GONG_V266_RUNTIME__={
     spawnAttackFx(p.x,p.y,'#8256a8','늦게자기',1.5);
   }
   function v311DaeunFriendSkill(p){
-    for(const e of enemyList(p)){e.data=e.data||{};e.data.v151VulnerableTimer=Math.max(e.data.v151VulnerableTimer||0,7);e.data.v151VulnerableSource=p;e.data.v311FriendDot={owner:p,ticksLeft:30,acc:0};floater(e.x,e.y-e.r-22,'🤝 취약 7초','#df3d73',13,.7);}
+    // V320 전역 타깃 원칙: '모두/전원/모든 공'은 시전자 자신만 제외한다.
+    // 친구사귀기!!!!!!!은 적군뿐 아니라 아군·소환 공도 포함하고, 최다은 본인만 제외한다.
+    const targets=(game?.players||[]).filter(e=>alive(e)&&!e.hidden&&e!==p);
+    for(const e of targets){e.data=e.data||{};e.data.v151VulnerableTimer=Math.max(e.data.v151VulnerableTimer||0,7);e.data.v151VulnerableSource=p;e.data.v311FriendDot={owner:p,ticksLeft:30,acc:0,allowFriendly:true};floater(e.x,e.y-e.r-22,'🤝 취약 7초','#df3d73',13,.7);}
     spawnAttackFx(p.x,p.y,'#df3d73','친구사귀기!!!!!!!',1.5);
   }
   function v311ApplyAllPowerless(owner,seconds,label){
@@ -33483,7 +33502,7 @@ window.__GONG_V266_RUNTIME__={
   try{syncCharacterAssignments();renderSetup();}catch(_){}
   const teamSelect=document.getElementById('teamCount');if(teamSelect){const needed=orderedCharacterIds().length;while(teamSelect.options.length<needed){const i=teamSelect.options.length+1,o=document.createElement('option');o.value=String(i);o.textContent=i+'팀';teamSelect.appendChild(o);}}
 
-  window.__GONG_V311__={build:BUILD,ids:{yeonwoo:YEON,daeun:DAEUN,hyeeum:HYEEUM},player(id){return game?.players?.find(p=>realId(p)===id)||null},cross(){return (game?.v311CrossGroups||[]).map(g=>({hp:g.hp,maxHp:g.maxHp,members:g.members.map(realId)}))},farmShots(){return (game?.v311FarmShots||[]).map(s=>({kind:s.kind,x:s.x,y:s.y,life:s.life,target:realId(s.target)}))},forceFarm(kind='lettuce'){const p=this.player(YEON);return p?v311SpawnFarm(p,kind):false},seed(targetId,stacks=1){const p=this.player(YEON),t=this.player(targetId);if(!p||!t)return 0;for(let i=0;i<stacks;i++)v311AddSeed(t,p);return t.data.v311Seeds.count},powerless(targetId,seconds=3){const p=this.player(YEON),t=this.player(targetId);return t?setPowerless(t,seconds,p):false},applySleep(targetId){const p=this.player(DAEUN),t=this.player(targetId);if(!p||!t)return false;t.data=t.data||{};t.data.v311SleepSlowTimer=10;t.data.v311SleepDot={owner:p,ticksLeft:20,acc:0};return true},applyFriendDot(targetId){const p=this.player(DAEUN),t=this.player(targetId);if(!p||!t)return false;t.data=t.data||{};t.data.v151VulnerableTimer=7;t.data.v151VulnerableSource=p;t.data.v311FriendDot={owner:p,ticksLeft:30,acc:0};return true},dotOnly(seconds=1,step=.05){let left=Math.max(0,Number(seconds)||0),d=Math.max(.005,Number(step)||.05);while(left>1e-9){const x=Math.min(d,left);v311UpdateDots(x);left-=x;}return true},verify(){return {build:BUILD,roster:orderedCharacterIds().length,yeonwoo:DEFS[YEON],daeun:DEFS[DAEUN],hyeeumCross:SKILL_INFO[HYEEUM]?.skills?.some(s=>s.name==='윤현딸 크로스'),patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V311__={build:BUILD,ids:{yeonwoo:YEON,daeun:DAEUN,hyeeum:HYEEUM},player(id){return game?.players?.find(p=>realId(p)===id)||null},cross(){return (game?.v311CrossGroups||[]).map(g=>({hp:g.hp,maxHp:g.maxHp,members:g.members.map(realId)}))},farmShots(){return (game?.v311FarmShots||[]).map(s=>({kind:s.kind,x:s.x,y:s.y,life:s.life,target:realId(s.target)}))},forceFarm(kind='lettuce'){const p=this.player(YEON);return p?v311SpawnFarm(p,kind):false},seed(targetId,stacks=1){const p=this.player(YEON),t=this.player(targetId);if(!p||!t)return 0;for(let i=0;i<stacks;i++)v311AddSeed(t,p);return t.data.v311Seeds.count},powerless(targetId,seconds=3){const p=this.player(YEON),t=this.player(targetId);return t?setPowerless(t,seconds,p):false},applySleep(targetId){const p=this.player(DAEUN),t=this.player(targetId);if(!p||!t)return false;t.data=t.data||{};t.data.v311SleepSlowTimer=10;t.data.v311SleepDot={owner:p,ticksLeft:20,acc:0};return true},applyFriendDot(targetId){const p=this.player(DAEUN),t=this.player(targetId);if(!p||!t||t===p)return false;t.data=t.data||{};t.data.v151VulnerableTimer=7;t.data.v151VulnerableSource=p;t.data.v311FriendDot={owner:p,ticksLeft:30,acc:0,allowFriendly:true};return true},friendSkill(){const p=this.player(DAEUN);if(!p)return false;v311DaeunFriendSkill(p);return true},dotOnly(seconds=1,step=.05){let left=Math.max(0,Number(seconds)||0),d=Math.max(.005,Number(step)||.05);while(left>1e-9){const x=Math.min(d,left);v311UpdateDots(x);left-=x;}return true},verify(){return {build:BUILD,roster:orderedCharacterIds().length,yeonwoo:DEFS[YEON],daeun:DEFS[DAEUN],hyeeumCross:SKILL_INFO[HYEEUM]?.skills?.some(s=>s.name==='윤현딸 크로스'),patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
   if(window.__GONG_V151_TEST__){window.__GONG_V151_TEST__.reset=()=>{resetBattle();paused=true;last=0;return {players:game?.players?.map(p=>realId(p)),timeLeft:game?.timeLeft};};}
   window.__GONG_V311_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V311] 강연우·최다은 신규 캐릭터 · 박혜음 윤현딸 크로스');
@@ -38784,5 +38803,6 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   console.info('[V319] 경쟁전 TOP10 한 줄 압축 랭킹 · 모바일 친구 버튼 하단 전체폭 문제 제거');
 })();</script>
 
+<script id="v320AllExceptSelfTargetingFix">(()=>{const BUILD='V320_ALL_EXCEPT_SELF_GLOBAL_TARGETING';window.__GONG_V320_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;window.__GONG_V320__={build:BUILD,rule:'모두/전원/모든 공 대상 공격·디버프는 시전자 자신 제외',verify(){return {build:BUILD,rule:this.rule,daeunDebugFriendSkill:typeof window.__GONG_V311__?.friendSkill==='function',latest:window.__GONG_LATEST_BUILD__};}};console.info('[V320] 전역 타깃 원칙 · 최다은 친구사귀기 + 이서현 전원 낙뢰 자신만 제외');})();</script>
 </body>
 </html>
