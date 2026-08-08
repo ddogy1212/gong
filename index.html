@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V315_DAEUN_SHY_WALK_KNOCKBACK -->
+<!-- V316_SEOYEONSEO_CLASS6_DANCE_TOMATO -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -18133,6 +18133,7 @@ function drawBall(p){
   else{ctx.shadowColor='#0005';ctx.shadowBlur=8;ctx.shadowOffsetY=3;}
   ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.shadowColor='transparent';
   ctx.save();ctx.beginPath();ctx.arc(0,0,p.r-2,0,Math.PI*2);ctx.clip();
+  if((p.data?.v316DanceTimer||0)>0||(p.data?.v316SelfDanceFxTimer||0)>0)ctx.rotate((game?.t||0)*Math.PI*4);
 
   const im=p.imageObj;
   if(im.complete&&im.naturalWidth){
@@ -21567,6 +21568,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V316','서연서(20기) 추가 · 이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토'],
   ['V315','최다은 소심하게걸어다니기 패시브 추가 · 적 충돌 13 피해 + 강한 넉백'],
   ['V314','친구신청 새로고침 유지 · 친구 온라인 현재 모드 표시 · 채팅 프로필/친구추가 · 비로그인 채팅 읽기'],
   ['V313','대표 칭호 공개 동기화 수정 · 홈/전투 미니 전체채팅 추가 · 채팅 3분 전송 제한'],
@@ -29263,7 +29265,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* ---------- 5. V262 character search + compact classification filter ---------- */
   const V272_GEN20_IDS=new Set([
-    'yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun'
+    'yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo'
   ]);
   for(const [id,d] of Object.entries(DEFS)){
     if(!BOSS_IDS.has(id))d.generation=V272_GEN20_IDS.has(id)?20:21;
@@ -33455,6 +33457,326 @@ window.__GONG_V266_RUNTIME__={
 })();
 
 
+/* V316 · 서연서(20기) 신규 캐릭터 */
+(()=>{
+  'use strict';
+  const BUILD='V316_SEOYEONSEO_CLASS6_DANCE_TOMATO';
+  const YEON='seoyeonseo', MINJI='seominji', DOYUN='doyun';
+  const realId=p=>p?.data?.v160RealId||p?.id||'';
+  const alive=p=>!!p?.alive&&!p?.hidden;
+  const powerless=p=>(p?.data?.v160PowerlessTimer||0)>1e-9;
+  const uid=p=>String(p?.data?.v151Uid||p?.data?.v207Uid||realId(p)||p?.name||'entity');
+  const clamp316=(n,a,b)=>Math.max(a,Math.min(b,n));
+
+  // 사용자 제공 사진을 원본 그대로 characters 폴더에서 사용한다.
+  IMAGES.seoyeonseo='characters/seoyeonseo_v316.png';
+  DEFS[YEON]={
+    id:YEON,name:'서연서',generation:20,color:'#e53935',hp:200,speed:190,img:IMAGES.seoyeonseo,
+    role:'이도윤 상성·서민지 연계·충돌 약화·영구 가속·춤 제어·토마토 소환형',
+    skills:'이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토'
+  };
+  SKILL_INFO[YEON]={
+    summary:'이도윤 상성·서민지 연계·충돌 약화·영구 가속·춤 제어·토마토 소환형',hp:'200',speed:'190',
+    skills:[
+      {kind:'이도윤 한정 피해 증폭',type:'passive',name:'이도윤담당일진',desc:'서연서가 이도윤에게 가하는 모든 피해가 2배가 된다.',points:['대상: 이도윤','서연서가 가하는 모든 기본 피해 ×2','충돌기·춤 연계 후속 공격·토마토 피해에도 동일 적용']},
+      {kind:'서민지 연계 패시브',type:'passive',name:'서씨집안',desc:'서민지와 같은 팀인지 다른 팀인지에 따라 두 사람 모두에게 다른 효과를 준다.',points:['같은 팀: 두 사람 모두 10초마다 HP 10 회복','서로 다른 팀: 전투 시작 시 서연서 최대·현재 HP +40','서로 다른 팀: 전투 시작 시 서민지 최대·현재 HP +40']},
+      {kind:'적 충돌 약화',type:'control',name:'6반반장',desc:'부딪힌 적에게 권력을 과시해 피해와 다중 약화를 건다.',points:['충돌 피해: 20','“복종하라~ 나는 권력자다~” 말풍선 표시','이동속도 3초 동안 30% 감소','5초 동안 해당 적이 가하는 공격 피해 50% 감소']},
+      {kind:'벽 3회 영구 가속·춤 투사체',type:'control',name:'블쉴요정',desc:'벽에 3번 부딪힐 때마다 춤을 추며 영구적으로 빨라지고 춤 이모티콘 3개를 발사한다.',points:['발동할 때마다 이동속도 ×1.012 영구 누적','춤 이모티콘 총 3개','가장 가까운 적 최대 3명의 방향으로 분배 발사','적중한 적은 3초 동안 제자리에서 360° 회전','춤추는 3초 동안 취약 상태','춤 적중 후 2초 동안 무력화 상태']},
+      {kind:'3회 피격 반응 소환',type:'attack',name:'토마토',desc:'실제 피해를 3번 받을 때마다 토마토 공 3개를 소환한다.',points:['실제 피해 3회마다 토마토 3개 생성','토마토는 일반 공처럼 직선 이동하고 벽에서 반사','누군가에게 맞기 전에는 시간으로 사라지지 않음','적중 시 기본 피해 20','적중한 적은 1초 동안 무력화','적중한 토마토만 즉시 사라짐']}
+    ]
+  };
+
+  // 프로필/카드 크롭: 얼굴 중심이 공 안에 안정적으로 들어오도록 한다.
+  const previousCrop=crop;
+  crop=function(id){return id===YEON?'50% 43%':previousCrop(id)};
+
+  function rootSource(source){
+    if(!source)return source;
+    let cur=source,guard=0;
+    while(cur&&guard++<6){
+      const next=cur?.data?.v151Summoner||cur?.data?.v185SeoProxyOwner||cur?.rootOwner||cur?.owner;
+      if(!next||next===cur)break;
+      cur=next;
+    }
+    return cur||source;
+  }
+  function enemiesOf(owner){return (game?.players||[]).filter(q=>alive(q)&&isEnemy(owner,q));}
+  function applyPowerless(target,seconds,source){
+    if(!alive(target))return false;
+    target.data=target.data||{};
+    target.data.v160PowerlessTimer=Math.max(target.data.v160PowerlessTimer||0,seconds);
+    target.data.v160PowerlessSource=source||target.data.v160PowerlessSource||null;
+    return true;
+  }
+  function applyClassPresident(owner,target){
+    if(!alive(owner)||!alive(target)||powerless(owner)||!isEnemy(owner,target))return false;
+    owner.data=owner.data||{};target.data=target.data||{};
+    owner.data.v316ContactCd=owner.data.v316ContactCd||{};
+    const key=uid(target),now=Math.max(0,Number(game?.t)||0);
+    if((owner.data.v316ContactCd[key]||0)>now)return false;
+    owner.data.v316ContactCd[key]=now+.18;
+    const dealt=damage(target,20,owner,'6반반장',{contact:true});
+    if(target.alive){
+      target.data.v316ClassSlowTimer=Math.max(target.data.v316ClassSlowTimer||0,3);
+      target.data.v316AttackHalfTimer=Math.max(target.data.v316AttackHalfTimer||0,5);
+      normalizeSpeed(target,normalSpeed(target));
+      floater(target.x,target.y-target.r-34,'복종하라~ 나는 권력자다~','#e53935',13,1.05);
+      floater(target.x,target.y-target.r-17,`👑 -${Math.round(dealt)} · 속도 -30% · 공격 1/2`,'#b91c1c',11,.8);
+      spawnAttackFx(target.x,target.y,'#e53935','6반반장',1.3);
+    }
+    return true;
+  }
+
+  function startDance(target,owner){
+    if(!alive(target))return false;
+    target.data=target.data||{};
+    const v=Math.hypot(target.vx||0,target.vy||0);
+    if((target.data.v316DanceTimer||0)<=1e-9){
+      target.data.v316DanceRestoreAngle=v>1e-6?Math.atan2(target.vy,target.vx):rand(0,Math.PI*2);
+    }
+    target.data.v316DanceTimer=Math.max(target.data.v316DanceTimer||0,3);
+    target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,3);
+    target.data.v151VulnerableSource=owner||target.data.v151VulnerableSource;
+    applyPowerless(target,2,owner);
+    target.vx=0;target.vy=0;
+    spawnAttackFx(target.x,target.y,'#e53935','블쉴요정 · 춤',1.35);
+    floater(target.x,target.y-target.r-22,'💃 춤 3초 · 취약 · 무력화 2초','#e53935',13,.9);
+    return true;
+  }
+  function fireDanceShots(owner){
+    if(!game||!alive(owner))return false;
+    const targets=enemiesOf(owner).sort((a,b)=>dist(owner,a)-dist(owner,b));
+    if(!targets.length)return false;
+    game.v316DanceShots=game.v316DanceShots||[];
+    for(let i=0;i<3;i++){
+      const target=targets[i%Math.min(3,targets.length)];
+      let angle=Math.atan2(target.y-owner.y,target.x-owner.x);
+      if(targets.length===1)angle+=(i-1)*.12;
+      else if(targets.length===2&&i===2)angle+=.10;
+      const r=9,speed=470;
+      game.v316DanceShots.push({owner,target,x:owner.x+Math.cos(angle)*(owner.r+r+2),y:owner.y+Math.sin(angle)*(owner.r+r+2),vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r,life:4,dead:false});
+    }
+    spawnAttackFx(owner.x,owner.y,'#e53935','블쉴요정',1.4);
+    return true;
+  }
+  function updateDanceShots(dt){
+    const shots=game?.v316DanceShots;if(!Array.isArray(shots))return;
+    for(const s of shots){
+      if(s.dead)continue;
+      s.life-=dt;if(s.life<=0){s.dead=true;continue;}
+      s.x+=s.vx*dt;s.y+=s.vy*dt;
+      if(s.x<-30||s.x>W+30||s.y<-30||s.y>H+30){s.dead=true;continue;}
+      for(const q of enemiesOf(s.owner)){
+        if(Math.hypot(q.x-s.x,q.y-s.y)>q.r+s.r)continue;
+        startDance(q,s.owner);s.dead=true;break;
+      }
+    }
+    game.v316DanceShots=shots.filter(s=>!s.dead&&s.life>0);
+  }
+
+  function spawnTomatoes(owner){
+    if(!game||!alive(owner))return false;
+    game.v316Tomatoes=game.v316Tomatoes||[];
+    const base=rand(0,Math.PI*2),speed=Math.max(120,Math.min(520,normalSpeed(owner)||190));
+    for(let i=0;i<3;i++){
+      const a=base+i*Math.PI*2/3,r=13;
+      game.v316Tomatoes.push({owner,x:clamp316(owner.x+Math.cos(a)*(owner.r+r+3),r,W-r),y:clamp316(owner.y+Math.sin(a)*(owner.r+r+3),r,H-r),vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r,dead:false});
+    }
+    spawnAttackFx(owner.x,owner.y,'#d9271c','토마토',1.45);
+    floater(owner.x,owner.y-owner.r-25,'🍅 토마토 3개 소환!','#d9271c',14,.9);
+    return true;
+  }
+  function updateTomatoes(dt){
+    const list=game?.v316Tomatoes;if(!Array.isArray(list))return;
+    for(const t of list){
+      if(t.dead||!t.owner)continue;
+      t.x+=t.vx*dt;t.y+=t.vy*dt;
+      if(t.x-t.r<0){t.x=t.r;t.vx=Math.abs(t.vx)}else if(t.x+t.r>W){t.x=W-t.r;t.vx=-Math.abs(t.vx)}
+      if(t.y-t.r<0){t.y=t.r;t.vy=Math.abs(t.vy)}else if(t.y+t.r>H){t.y=H-t.r;t.vy=-Math.abs(t.vy)}
+      for(const q of enemiesOf(t.owner)){
+        if(Math.hypot(q.x-t.x,q.y-t.y)>q.r+t.r)continue;
+        const dealt=damage(q,20,t.owner,'토마토',{v316Tomato:true});
+        if(q.alive)applyPowerless(q,1,t.owner);
+        floater(q.x,q.y-q.r-18,`🍅 ${dealt>0?'-'+Math.round(dealt):'방어'} · 무력화 1초`,'#d9271c',12,.7);
+        spawnAttackFx(q.x,q.y,'#d9271c','토마토 적중',1.15);
+        t.dead=true;break;
+      }
+    }
+    game.v316Tomatoes=list.filter(t=>!t.dead);
+  }
+
+  // 춤 누적 속도와 6반반장 감속을 기존 속도 파이프라인의 마지막에서 합성한다.
+  const previousNormalSpeed=normalSpeed;
+  normalSpeed=function(p){
+    if((p?.data?.v316DanceTimer||0)>1e-9)return 0;
+    let speed=previousNormalSpeed(p);
+    if(realId(p)===YEON)speed*=Math.max(.0001,Number(p?.data?.v316DanceSpeedMult)||1);
+    if((p?.data?.v316ClassSlowTimer||0)>1e-9)speed*=.7;
+    return Math.max(0,speed);
+  };
+
+  const previousReset=resetBattle;
+  resetBattle=function(){
+    const result=previousReset.apply(this,arguments);
+    if(!game)return result;
+    game.v316DanceShots=[];game.v316Tomatoes=[];game.v316FamilyHealTimer=10;game.v316FamilySameTeam=false;
+    for(const p of game.players||[]){
+      p.data=p.data||{};
+      if(realId(p)===YEON)Object.assign(p.data,{v316WallHits:0,v316DamageHits:0,v316ContactCd:{},v316DanceSpeedMult:1,v316SelfDanceFxTimer:0});
+      p.data.v316ClassSlowTimer=0;p.data.v316AttackHalfTimer=0;p.data.v316DanceTimer=0;
+    }
+    const yeon=game.players.find(p=>realId(p)===YEON),minji=game.players.find(p=>realId(p)===MINJI);
+    if(yeon&&minji){
+      const same=!isEnemy(yeon,minji);
+      game.v316FamilySameTeam=same;
+      if(same){
+        floater(yeon.x,yeon.y-yeon.r-22,'🏠 서씨집안 · 10초마다 둘 다 +10','#b91c1c',12,.9);
+        floater(minji.x,minji.y-minji.r-22,'🏠 서씨집안 · 10초마다 둘 다 +10','#5f7f68',12,.9);
+      }else{
+        for(const p of [yeon,minji]){p.maxHp+=40;p.hp+=40;floater(p.x,p.y-p.r-22,'🏠 서씨집안 · 최대 HP +40','#b91c1c',12,.9);}
+      }
+    }
+    renderScores();updateUI();
+    return result;
+  };
+
+  const previousWall=onWallHit;
+  onWallHit=function(p){
+    const result=previousWall.apply(this,arguments);
+    if(!alive(p)||realId(p)!==YEON||powerless(p))return result;
+    p.data=p.data||{};p.data.v316WallHits=(p.data.v316WallHits||0)+1;
+    floater(p.x,p.y-p.r-14,`💃 블쉴 ${p.data.v316WallHits}/3`,'#e53935',11,.42);
+    if(p.data.v316WallHits>=3){
+      p.data.v316WallHits=0;
+      p.data.v316DanceSpeedMult=Math.max(.0001,(p.data.v316DanceSpeedMult||1)*1.012);
+      p.data.v316SelfDanceFxTimer=.85;
+      normalizeSpeed(p,normalSpeed(p));
+      floater(p.x,p.y-p.r-28,`💃 춤! · 속도 ×${p.data.v316DanceSpeedMult.toFixed(3)}`,'#e53935',13,.75);
+      fireDanceShots(p);
+    }
+    return result;
+  };
+
+  const previousCollide=collide;
+  collide=function(a,b){
+    const touching=!!(a&&b&&alive(a)&&alive(b)&&a!==b&&dist(a,b)<a.r+b.r);
+    const result=previousCollide.apply(this,arguments);
+    if(touching){if(realId(a)===YEON)applyClassPresident(a,b);if(realId(b)===YEON)applyClassPresident(b,a);}
+    return result;
+  };
+
+  // 공격력 절반 디버프와 이도윤 한정 ×2를 모든 최신 피해 처리보다 바깥에서 적용한다.
+  const previousDamage=damage;
+  damage=function(target,amount,source,skill='공격',opts={}){
+    let adjusted=Number(amount)||0;
+    const root=rootSource(source);
+    if(adjusted>0&&root&&root!==target&&!opts.selfDamage&&(root?.data?.v316AttackHalfTimer||0)>1e-9){
+      adjusted=Math.round(adjusted*.5*1000)/1000;
+    }
+    if(adjusted>0&&realId(root)===YEON&&realId(target)===DOYUN&&root!==target&&!opts.selfDamage){
+      adjusted=Math.round(adjusted*2*1000)/1000;
+    }
+    const dealt=previousDamage(target,adjusted,source,skill,opts);
+    if(dealt>0&&realId(target)===YEON&&!opts.selfDamage){
+      target.data=target.data||{};target.data.v316DamageHits=(target.data.v316DamageHits||0)+1;
+      floater(target.x,target.y-target.r-14,`🍅 피격 ${target.data.v316DamageHits}/3`,'#d9271c',11,.4);
+      if(target.data.v316DamageHits>=3){target.data.v316DamageHits=0;spawnTomatoes(target);}
+    }
+    return dealt;
+  };
+
+  const previousTick=tick;
+  tick=function(dt){
+    dt=Math.max(0,Number(dt)||0);
+    // 이전 엔진 틱이 움직이기 전부터 춤 대상의 속도를 0으로 고정한다.
+    for(const p of game?.players||[])if(alive(p)&&(p.data?.v316DanceTimer||0)>1e-9){p.vx=0;p.vy=0;}
+    const result=previousTick.apply(this,arguments);
+    if(!game||game.over)return result;
+    const yeon=game.players.find(p=>realId(p)===YEON),minji=game.players.find(p=>realId(p)===MINJI);
+    if(game.v316FamilySameTeam&&yeon&&minji){
+      game.v316FamilyHealTimer=(game.v316FamilyHealTimer??10)-dt;
+      while(game.v316FamilyHealTimer<=1e-9){
+        game.v316FamilyHealTimer+=10;
+        if(alive(yeon))heal(yeon,10,yeon,'서씨집안');
+        if(alive(minji))heal(minji,10,yeon,'서씨집안');
+        if(alive(yeon)||alive(minji))spawnAttackFx(alive(yeon)?yeon.x:minji.x,alive(yeon)?yeon.y:minji.y,'#b91c1c','서씨집안 회복',1.1);
+      }
+    }
+    for(const p of game.players||[]){
+      if(!alive(p))continue;p.data=p.data||{};
+      if((p.data.v316SelfDanceFxTimer||0)>0)p.data.v316SelfDanceFxTimer=Math.max(0,p.data.v316SelfDanceFxTimer-dt);
+      if((p.data.v316AttackHalfTimer||0)>0)p.data.v316AttackHalfTimer=Math.max(0,p.data.v316AttackHalfTimer-dt);
+      if((p.data.v316ClassSlowTimer||0)>0){const before=p.data.v316ClassSlowTimer;p.data.v316ClassSlowTimer=Math.max(0,before-dt);if(before>0&&p.data.v316ClassSlowTimer<=1e-9)normalizeSpeed(p,normalSpeed(p));}
+      if((p.data.v316DanceTimer||0)>0){
+        const before=p.data.v316DanceTimer;p.data.v316DanceTimer=Math.max(0,before-dt);
+        p.vx=0;p.vy=0;
+        if(before>0&&p.data.v316DanceTimer<=1e-9){
+          const a=Number.isFinite(p.data.v316DanceRestoreAngle)?p.data.v316DanceRestoreAngle:rand(0,Math.PI*2),speed=normalSpeed(p);
+          p.vx=Math.cos(a)*speed;p.vy=Math.sin(a)*speed;
+          floater(p.x,p.y-p.r-18,'💃 춤 종료','#666',11,.5);
+        }
+      }
+    }
+    updateDanceShots(dt);updateTomatoes(dt);
+    return result;
+  };
+
+  const previousStatus=statusText;
+  statusText=function(p){
+    const base=previousStatus(p),extra=[];
+    if(realId(p)===YEON){extra.push(`💃 ${(p.data?.v316DanceSpeedMult||1).toFixed(3)}x`);extra.push(`🍅 ${p.data?.v316DamageHits||0}/3`);}
+    if((p.data?.v316ClassSlowTimer||0)>0)extra.push(`👑 감속 ${p.data.v316ClassSlowTimer.toFixed(1)}s`);
+    if((p.data?.v316AttackHalfTimer||0)>0)extra.push(`📉 공격 1/2 ${p.data.v316AttackHalfTimer.toFixed(1)}s`);
+    if((p.data?.v316DanceTimer||0)>0)extra.push(`💃 춤 ${p.data.v316DanceTimer.toFixed(1)}s`);
+    return extra.length?(base&&base!=='정상'?`${base} · ${extra.join(' · ')}`:extra.join(' · ')):base;
+  };
+
+  const previousDraw=draw;
+  draw=function(){
+    const result=previousDraw.apply(this,arguments);if(!game)return result;
+    ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+    for(const s of game.v316DanceShots||[]){ctx.font='22px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.fillText('💃',s.x,s.y);}
+    for(const t of game.v316Tomatoes||[]){ctx.font='27px "Apple Color Emoji","Segoe UI Emoji",Arial';ctx.fillText('🍅',t.x,t.y);}
+    for(const p of game.players||[]){
+      if(!alive(p))continue;
+      if((p.data?.v316DanceTimer||0)>0){ctx.save();ctx.translate(p.x,p.y);ctx.rotate((game.t||0)*Math.PI*4);ctx.font='17px "Apple Color Emoji","Segoe UI Emoji",Arial';for(let i=0;i<3;i++){const a=i*Math.PI*2/3;ctx.fillText('💃',Math.cos(a)*(p.r+20),Math.sin(a)*(p.r+20));}ctx.restore();}
+      if((p.data?.v316AttackHalfTimer||0)>0){ctx.fillStyle='#b91c1c';ctx.font='1000 10px Arial';ctx.fillText('공격 1/2',p.x,p.y+p.r+28);}
+    }
+    ctx.restore();return result;
+  };
+
+  // 새 캐릭터를 현재 열려 있는 선택/도감 UI에 즉시 반영한다.
+  try{if(typeof assignments!=='undefined'&&!Object.prototype.hasOwnProperty.call(assignments,YEON))assignments[YEON]='pool';syncCharacterAssignments();renderSetup();if(skillSelected===YEON)renderSkillDetail();}catch(_){ }
+  const teamSelect=document.getElementById('teamCount');if(teamSelect){const needed=orderedCharacterIds().length;while(teamSelect.options.length<needed){const i=teamSelect.options.length+1,o=document.createElement('option');o.value=String(i);o.textContent=i+'팀';teamSelect.appendChild(o);}}
+
+  if(window.__GONG_V134_DEBUG__)Object.assign(window.__GONG_V134_DEBUG__,{damage,tick,collide,onWallHit,resetBattle});
+  if(window.__GONG_V134_TEST__)Object.assign(window.__GONG_V134_TEST__,{damage,tick,collide,onWallHit,resetBattle});
+  window.__GONG_V316__={
+    build:BUILD,id:YEON,
+    player(id=YEON){return game?.players?.find(p=>realId(p)===id)||null;},
+    startTeam(teamMap){
+      const ids=Object.keys(teamMap||{}).filter(id=>DEFS[id]);
+      if(!ids.length)return [];
+      currentConfig={mode:'team',participants:[...ids],teams:{...teamMap},zoneNames:{}};
+      mode='team';paused=true;last=0;
+      setup.classList.add('hidden');battle.classList.remove('hidden');
+      resize();resetBattle();paused=true;
+      return game.players.map(p=>({id:realId(p),team:p.team,hp:p.hp,maxHp:p.maxHp}));
+    },
+    danceShots(){return (game?.v316DanceShots||[]).map(s=>({x:s.x,y:s.y,owner:realId(s.owner),life:s.life}));},
+    tomatoes(){return (game?.v316Tomatoes||[]).map(t=>({x:t.x,y:t.y,owner:realId(t.owner),vx:t.vx,vy:t.vy}));},
+    forceDance(targetId){const o=this.player(YEON),t=this.player(targetId);return o&&t?startDance(t,o):false;},
+    forceTomatoes(){const o=this.player(YEON);return o?spawnTomatoes(o):false;},
+    forceClass(targetId){const o=this.player(YEON),t=this.player(targetId);if(!o||!t)return false;o.data.v316ContactCd={};return applyClassPresident(o,t);},
+    wall(times=1){const o=this.player(YEON);if(!o)return null;for(let i=0;i<times;i++)onWallHit(o);return {wallHits:o.data.v316WallHits,speedMult:o.data.v316DanceSpeedMult,shots:this.danceShots().length};},
+    advance(seconds=1,step=.05){let left=Math.max(0,Number(seconds)||0),d=Math.max(.005,Number(step)||.05);while(left>1e-9&&!game?.over){const x=Math.min(d,left);tick(x);left-=x;}return true;},
+    verify(){return {build:BUILD,character:DEFS[YEON],skills:(SKILL_INFO[YEON]?.skills||[]).map(s=>s.name),generation:DEFS[YEON]?.generation,photo:DEFS[YEON]?.img,roster:orderedCharacterIds().length,latest:window.__GONG_LATEST_BUILD__};}
+  };
+  window.__GONG_V316_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V316] 서연서 추가 · 이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토');
+})();
+
+
 })();
 </script>
 
@@ -36383,7 +36705,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 (()=>{
   'use strict';
   const BUILD='V272_GENERATION_CLASSIFICATION_FIX';
-  const GEN20=new Set(['yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun']);
+  const GEN20=new Set(['yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo']);
   window.__GONG_V272__={
     build:BUILD,
     generationOf(id){if(GEN20.has(id))return 20;return (typeof DEFS!=='undefined'&&DEFS[id]&&!(typeof BOSS_IDS!=='undefined'&&BOSS_IDS.has(id)))?21:null},
@@ -36425,7 +36747,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 (()=>{
   'use strict';
   const BUILD='V273_TOURNAMENT_VARIANTS_SKILLS_SUBIN_JIO_MINSEO';
-  const GEN20_EXTRA=new Set(['subin','subinnew','kimminseo','leeseohyun']);
+  const GEN20_EXTRA=new Set(['subin','subinnew','kimminseo','leeseohyun','seoyeonseo']);
   window.__GONG_V273__={
     build:BUILD,
     core:window.__GONG_V273_CORE__||null,
@@ -38218,6 +38540,9 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 </script>
 <script id="v314LatestBuildScript">(()=>{const BUILD='V314_FRIEND_REQUEST_PERSIST_MODE_CHAT_PROFILE_PUBLIC_READ';window.__GONG_V314_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 <script id="v315LatestBuildScript">(()=>{const BUILD='V315_DAEUN_SHY_WALK_KNOCKBACK';window.__GONG_V315_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;window.__GONG_V315__={build:BUILD,skill:'소심하게걸어다니기',damage:13,knockbackSpeed:650,knockbackSeconds:.62,verify(){const d=DEFS?.choidaeun,skills=SKILL_INFO?.choidaeun?.skills||[];return {build:BUILD,hasSkill:skills.some(s=>s.name==='소심하게걸어다니기'),rosterSkill:String(d?.skills||'').includes('소심하게걸어다니기'),damage:13,knockbackSpeed:650,latest:window.__GONG_LATEST_BUILD__};}};console.info('[V315] 최다은 소심하게걸어다니기 · 적 충돌 13 피해 + 강한 넉백');})();</script>
+
+
+<script id="v316LatestBuildScript">(()=>{const BUILD='V316_SEOYEONSEO_CLASS6_DANCE_TOMATO';window.__GONG_V316_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;})();</script>
 
 </body>
 </html>
