@@ -2321,7 +2321,7 @@ const DEFS={
   dong:{id:'dong',name:'김동환',color:'#ff7a21',hp:200,speed:240,img:IMAGES.dong,role:'초고속 벽 충돌·잡기형',skills:'스피드 · 덩크슛 · 회피'},
   yesung:{id:'yesung',name:'강예성',color:'#7a4cff',hp:220,speed:120,img:IMAGES.yesung,role:'광역 충격·시체 성장형',skills:'노크 55 · 먹기'},
   seo:{id:'seo',name:'서재하',color:'#247fca',hp:180,speed:100,img:IMAGES.seo,role:'시전 성장·전원 무적·반발 투사체형',skills:'새자나가기 · 조용히시키기 · 수건날리기 · 잠좀자자'},
-  min:{id:'min',name:'김민재',color:'#ff5f93',hp:170,speed:80,img:IMAGES.min,role:'영역전개·추적 발화형',skills:'선상고백 · 나도 대화에 껴줘 · 7초 회복'},
+  min:{id:'min',name:'김민재',color:'#ff5f93',hp:170,speed:200,img:IMAGES.min,role:'영역전개·추적 발화형',skills:'선상고백 · 나도 대화에 껴줘 · 7초 회복'},
   geun:{id:'geun',name:'김근수',color:'#d52b2b',hp:220,speed:120,img:IMAGES.geun,role:'자해 성장·피격 분노형',skills:'유리멘탈 · 분노 · 지랄발광'},
   jiwon:{id:'jiwon',name:'이지원',color:'#2468d8',hp:230,speed:150,img:IMAGES.jiwon,role:'누적 방어막·공격 약화형',skills:'피해망상 · 전화하기 · 열등감'},
   doyun:{id:'doyun',name:'이도윤',color:'#6553d9',hp:180,speed:300,img:IMAGES.doyun,role:'지뢰 설치·테두리 돌진·반감 방어형',skills:'표독함 · 발작 · 사랑꾼'},
@@ -2517,10 +2517,11 @@ const SKILL_INFO={
         '같은 대상 재적중 대기시간: 0.28초',
         '적중한 적을 바깥 방향으로 멀리 튕겨냄'
       ]},
-      {kind:'벽 충돌 회복 스킬',type:'defense',name:'다사랑먹기',desc:'벽에 3번 부딪힐 때마다 경기장 무작위 위치에 다사랑 글자를 생성한다.',points:[
+      {kind:'벽 충돌 회복·함정 스킬',type:'defense',name:'다사랑먹기',desc:'벽에 3번 부딪힐 때마다 경기장 무작위 위치에 다사랑 글자를 생성한다.',points:[
         '벽 충돌 3회마다 다사랑 1개 생성',
-        '오해원이 다사랑에 닿으면 즉시 소모',
-        '다사랑 획득 시 HP 30 회복',
+        '오해원이 다사랑에 닿으면 즉시 소모하고 HP 30 회복',
+        '오해원이 아닌 다른 캐릭터가 먹으면 다사랑은 즉시 사라짐',
+        '타인이 먹은 경우 2초 동안 1초마다 2 피해 (총 4 피해)',
         '획득되지 않은 다사랑은 경기장에 유지'
       ]},
       {kind:'특정 대상 강화 패시브',type:'passive',name:'유수영을이긴남자',desc:'상대방에 유수영이 있다면 유수영에게만 모든 공격 피해가 3배가 된다.',points:[
@@ -2813,7 +2814,7 @@ const SKILL_INFO={
   },
   min:{
     summary:'영역전개·추적 발화형',
-    hp:'170',speed:'80',
+    hp:'170',speed:'200',
     skills:[
       {kind:'영역전개',type:'attack',name:'선상고백',desc:'체력이 최대 체력의 2/3·1/3 분기점 아래로 넘어갈 때 가장 가까운 적을 따로 끌고 가 3초 동안 일방적으로 하트를 퍼붓는다.',points:[
         'HP가 정확히 분기점에 닿는 것만으로는 발동하지 않음',
@@ -3582,8 +3583,8 @@ chaewon:{
     summary:'성우진 연계·더미 요새·반사 녹차·장기 생존형',hp:'200 / 성우진 존재 시 250',speed:'200',skills:[
       {kind:'전장 조건 패시브',type:'passive',name:'성우진 갈구기',desc:'전장에 성우진이 있으면 최대 체력과 현재 체력을 50 올린다.',points:['아군·적군 여부와 무관','전투 시작 시 1회 적용']},
       {kind:'6회 피격 요새',type:'defense',name:'안산의 왕',desc:'6번 공격당하면 주변에 더미 2개를 만들고 제한된 회복 요새를 연다.',points:['더미 HP 40','생성 2초 후 초당 HP 8 감소','더미가 모두 사라질 때까지 이동 불가','요새 동안 초당 HP 3 회복','공격 1회는 더미 1개가 남은 HP만큼만 흡수','더미 HP를 넘는 초과 피해는 양채원에게 적용','요새 종료 후 8초 재사용 대기시간']},
-      {kind:'벽 3회 반사 투사체',type:'attack',name:'녹차던지기',desc:'벽에 3번 튕길 때마다 녹차를 얻는다.',points:['50% 확률로 직접 마시고 HP 20 회복','나머지 50%는 녹차 3개 발사','녹차 1개당 12 피해','벽에 닿으면 반사','적중할 때까지 경기장 안에서 이동']},
-      {kind:'장기 생존 보너스',type:'passive',name:'장기연애',desc:'HP 100 이상을 누적 40초 유지하면 추가 HP 40을 얻는다.',points:['조건이 깨지면 유지 시간이 초기화','성공 시 최대 HP와 현재 HP +40','한 경기 1회']}
+      {kind:'벽 3회 반사 투사체',type:'attack',name:'녹차던지기',desc:'벽에 3번 튕길 때마다 녹차를 얻는다.',points:['50% 확률로 직접 마시고 HP 20 회복','나머지 50%는 녹차 3개 발사','녹차 1개당 25 피해','벽에 닿으면 반사','적중할 때까지 경기장 안에서 이동']},
+      {kind:'장기 생존 보너스',type:'passive',name:'장기연애',desc:'HP 100 이상을 누적 20초 유지하면 추가 HP 80을 얻는다.',points:['조건이 깨지면 유지 시간이 초기화','성공 시 최대 HP와 현재 HP +80','한 경기 1회']}
     ]
   },
   james:{
@@ -5497,7 +5498,7 @@ function statusText(p){
   if(p.id==='yangchaewon'){
     a.push(`🧍 더미 ${game.yangDummies.filter(d=>d.owner===p&&!d.dead).length}/2 · 요새쿨 ${Math.max(0,p.data.fortressCooldown||0).toFixed(1)}s`);
     a.push(`🍵 녹차 벽 ${p.data.teaWalls}/3`);
-    a.push(`💞 장기연애 ${Math.min(40,p.data.longLoveTimer).toFixed(1)}/40s`);
+    a.push(`💞 장기연애 ${Math.min(20,p.data.longLoveTimer).toFixed(1)}/20s`);
   }
   if(p.id==='junghoon'){
     if(p.data.npcTimer>0){
@@ -15682,15 +15683,15 @@ function updateYang(yang,dt){
 
   if(yang.hp>=100&&!yang.data.longLoveUsed){
     yang.data.longLoveTimer+=dt;
-    if(yang.data.longLoveTimer>=40){
+    if(yang.data.longLoveTimer>=20){
       yang.data.longLoveUsed=true;
-      yang.maxHp+=40;
-      if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))yang.hp+=40;
+      yang.maxHp+=80;
+      if(!(currentConfig?.randomMode&&currentConfig.randomRule==='noHealing'))yang.hp+=80;
       spawnAttackFx(yang.x,yang.y,'#ef5da8','장기연애',1.8);
       floater(
         yang.x,
         yang.y-55,
-        '💞 장기연애 · 추가 HP +40',
+        '💞 장기연애 · 추가 HP +80',
         '#d72f85',
         20,
         1.1
@@ -15708,7 +15709,7 @@ function fireYangTea(yang){
 function updateYangObjects(dt){
   for(const d of game.yangDummies){if(d.dead)continue;d.age+=dt;if(d.age>2){d.hp-=8*dt;if(d.hp<=0)d.dead=true;}for(const k of Object.keys(d.hitCd))d.hitCd[k]=Math.max(0,d.hitCd[k]-dt);for(const e of enemies(d.owner)){if(dist(d,e)>d.r+e.r)continue;if((d.hitCd[e.id]||0)>0)continue;d.hitCd[e.id]=.6;d.hp-=10;spawnAttackFx(d.x,d.y,'#6b7280','더미 피격',.7);if(d.hp<=0)d.dead=true;}}
   game.yangDummies=game.yangDummies.filter(d=>!d.dead&&d.owner?.alive);
-  for(const t of game.yangTeas){if(t.dead)continue;t.life-=dt;t.x+=t.vx*dt;t.y+=t.vy*dt;if(t.x<t.r){t.x=t.r;t.vx=Math.abs(t.vx)}if(t.x>W-t.r){t.x=W-t.r;t.vx=-Math.abs(t.vx)}if(t.y<t.r){t.y=t.r;t.vy=Math.abs(t.vy)}if(t.y>H-t.r){t.y=H-t.r;t.vy=-Math.abs(t.vy)}for(const e of enemies(t.owner)){if(dist(t,e)>t.r+e.r)continue;t.dead=true;damage(e,12,t.owner,'녹차던지기');floater(e.x,e.y-e.r-12,'🍵 12','#3f8a35',14,.75);break;}if(t.life<=0)t.dead=true;}
+  for(const t of game.yangTeas){if(t.dead)continue;t.life-=dt;t.x+=t.vx*dt;t.y+=t.vy*dt;if(t.x<t.r){t.x=t.r;t.vx=Math.abs(t.vx)}if(t.x>W-t.r){t.x=W-t.r;t.vx=-Math.abs(t.vx)}if(t.y<t.r){t.y=t.r;t.vy=Math.abs(t.vy)}if(t.y>H-t.r){t.y=H-t.r;t.vy=-Math.abs(t.vy)}for(const e of enemies(t.owner)){if(dist(t,e)>t.r+e.r)continue;t.dead=true;damage(e,25,t.owner,'녹차던지기');floater(e.x,e.y-e.r-12,'🍵 25','#3f8a35',14,.75);break;}if(t.life<=0)t.dead=true;}
   game.yangTeas=game.yangTeas.filter(t=>!t.dead&&t.owner?.alive);
 }
 
@@ -15994,7 +15995,21 @@ function spawnDasarang(haewon){
   floater(x,y-28,'다사랑','#d33a3a',16,.9);
 }
 
-function updateDasarangDrops(){
+function updateDasarangDrops(dt=0){
+  // 타인이 다사랑을 먹었을 때 생기는 2초 DoT도 이 함수에서 함께 관리한다.
+  for(const target of game.players||[]){
+    const dots=Array.isArray(target.data?.dasarangDots)?target.data.dasarangDots:[];
+    if(target.data&&!Array.isArray(target.data.dasarangDots))target.data.dasarangDots=dots;
+    for(const dot of dots){
+      dot.remaining-=dt;dot.tick-=dt;
+      while(dot.tick<=0&&(dot.ticks||0)>0&&target.alive){
+        dot.tick+=1;dot.ticks--;
+        damage(target,2,dot.owner,'다사랑먹기 · 타인 섭취',{allowDeadSource:true,visualFx:false});
+        floater(target.x,target.y-target.r-12,'🍗 -2','#c93434',12,.55);
+      }
+    }
+    if(target.data)target.data.dasarangDots=dots.filter(dot=>(dot.ticks||0)>0&&dot.remaining>0&&target.alive);
+  }
   for(const drop of game.dasarangDrops){
     if(drop.dead||!drop.owner?.alive){drop.dead=true;continue;}
     if(dist(drop,drop.owner)<=drop.r+drop.owner.r){
@@ -16002,6 +16017,17 @@ function updateDasarangDrops(){
       const healed=heal(drop.owner,30,drop.owner,'다사랑먹기',true);
       spawnAttackFx(drop.x,drop.y,'#e24949','다사랑먹기',1.35);
       floater(drop.owner.x,drop.owner.y-drop.owner.r-18,`🍗 다사랑 +${healed.toFixed(1)}`,'#c93434',16,.9);
+      continue;
+    }
+    for(const target of game.players||[]){
+      if(!target?.alive||target.hidden||target===drop.owner)continue;
+      if(dist(drop,target)>drop.r+target.r)continue;
+      drop.dead=true;
+      target.data.dasarangDots=Array.isArray(target.data.dasarangDots)?target.data.dasarangDots:[];
+      target.data.dasarangDots.push({owner:drop.owner,remaining:2.001,tick:1,ticks:2});
+      spawnAttackFx(drop.x,drop.y,'#e24949','다사랑 타인 섭취',1.15);
+      floater(target.x,target.y-target.r-18,'🍗 다사랑 역효과 · 2초','#c93434',14,.85);
+      break;
     }
   }
   game.dasarangDrops=game.dasarangDrops.filter(drop=>!drop.dead&&drop.owner?.alive);
@@ -17878,7 +17904,7 @@ function tick(dt){
   updateSiaSprouts(dt);
   updateHyobinSneezes(dt);
   updateNahyunEggplants(dt);
-  updateDasarangDrops();
+  updateDasarangDrops(dt);
   updateShionLasers(dt);
   updateShots(dt);
   updateYoominTrails(dt);
@@ -21517,6 +21543,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V307','김민재·이은채·박한울·오해원·양채원 밸런스 상향 · 캐릭터 설명창 반복 DOM 감시 제거 및 흔들림 안정화'],
   ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회 충돌로 상향'],
   ['V305','커스텀 칭호 구매 안내에 관리자 Instagram @vol_404_ 추가 · UID 해시형 수동 승인 명단 도입'],
   ['V304','7,000원 수동 커스텀 칭호 상점 · 신청문 복사 · 운영자 승인 후 장착 기능 추가'],
@@ -21525,8 +21552,7 @@ const V302_PATCH_NOTES=[
   ['V301','경쟁전에 2단/3단 특별승급과 일일 임무 올클리어 강등 방어막 시스템 추가'],
   ['V300','캐릭터 도감 삭제 · 업적/칭호 유지 · 사진과 글씨 겹침을 화면 멈춤 없이 CSS 중심으로 수정'],
   ['V299','모바일/PWA 홈 화면 오른쪽에 남던 공백과 가로 오버플로우 수정'],
-  ['V298','업적 삭제를 롤백하고 전체 UI가 멈추던 무한 DOM 감시 문제 긴급 복구'],
-  ['V297','업적 삭제를 시도했던 버전 · 이후 V298에서 전부 롤백됨']
+  ['V298','업적 삭제를 롤백하고 전체 UI가 멈추던 무한 DOM 감시 문제 긴급 복구']
 ];
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -26163,7 +26189,7 @@ Object.assign(SKILL_INFO,{
   park_hanul:{summary:'부채꼴 탄막·문자 연사·확률 누적 강화형',hp:'170',speed:'210',skills:[
     {kind:'공격 스킬',type:'attack',name:'마라탕발사',desc:'벽 3회마다 가장 가까운 적 방향으로 마라탕 20개를 부채꼴로 분사한다.',points:['개당 4 피해','적 또는 벽 충돌 시 제거','팀전 아군 제외']},
     {kind:'공격 스킬',type:'attack',name:'중국어로 욕하기',desc:'적 직접 충돌 3회마다 1초 뒤 두 문장 중 하나를 50% 확률로 골라 한 글자씩 발사한다.',points:['傻逼 또는 操你祖宗十八代','글자당 8 피해','짧은 간격 순차 발사','과도한 유도 없음']},
-    {kind:'확률 스킬',type:'passive',name:'정병폭발',desc:'벽 10회마다 40%는 실패 연출 후 즉시 탈락하고, 60%는 모든 공격 피해가 영구적으로 2배가 된다.',points:['실패는 공격자 킬로 처리하지 않음','실패 시 보랏빛 균열·회전·소멸 연출','성공할 때마다 현재 배율에 다시 ×2 누적']}
+    {kind:'확률 스킬',type:'passive',name:'정병폭발',desc:'벽 10회마다 10%는 실패 연출 후 즉시 탈락하고, 90%는 모든 공격 피해가 영구적으로 2배가 된다.',points:['실패는 공격자 킬로 처리하지 않음','실패 시 보랏빛 균열·회전·소멸 연출','성공할 때마다 현재 배율에 다시 ×2 누적']}
   ]},
   jo_sohyun:{summary:'한교동 소환·확률 완전 회복·누적 소환 강화·검도형',hp:'180',speed:'220',skills:[
     {kind:'패시브',type:'passive',name:'한교동과함께',desc:'전투 시작 시 작은 한교동이 함께 움직이며 적 충돌 시 피해와 감속을 준다.',points:['한교동 속도 300','일반 공 반지름의 2/3','별도 HP 없음','충돌 3 피해 + 5초 50% 감속','조소현 사망 시 즉시 제거','피해·킬은 조소현에게 귀속']},
@@ -26206,7 +26232,7 @@ function v174EliminateParkFailure(p){
   game.pendingEndCheck=true;if(!game.deferEndCheck){game.pendingEndCheck=false;checkEnd();}updateUI();return true;
 }
 function v174TriggerExplosion(p,forcedSuccess=null){
-  if(!p?.alive)return null;const success=forcedSuccess===null?Math.random()<.60:!!forcedSuccess;
+  if(!p?.alive)return null;const success=forcedSuccess===null?Math.random()<.90:!!forcedSuccess;
   if(!success){v174EliminateParkFailure(p);return {success:false,mult:p.data.v174ExplosionMult||1};}
   p.data.v174ExplosionMult=v174Finite((p.data.v174ExplosionMult||1)*2,1,1048576);p.data.v174ExplosionSuccesses=(p.data.v174ExplosionSuccesses||0)+1;
   spawnSkillBanner(`💥 정병폭발 성공 · 공격 ×${p.data.v174ExplosionMult}`,'#d74831');spawnAttackFx(p.x,p.y,'#d74831','정병폭발 성공',1.8);floater(p.x,p.y-p.r-24,`공격 ×${p.data.v174ExplosionMult}`,'#d74831',20,1.2);return {success:true,mult:p.data.v174ExplosionMult};
@@ -27449,7 +27475,7 @@ Object.assign(SKILL_INFO,{
     {kind:'벽 충돌 투사체',type:'attack',name:'귀여워하기',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 느린 하트 3개를 던진다.',points:['하트는 벽에서 계속 튕김','적중 전까지 사라지지 않음','적중 시 1초마다 1 피해를 4초 동안 부여']}
   ]},
   leeeunchae:{summary:'벽 공격 성장·확률 다리걸기·피격 확정 강화형',hp:'200',speed:'240',skills:[
-    {kind:'패시브',type:'passive',name:'은채는 참지 않아',desc:'벽에 3번 튕길 때마다 모든 공격력이 1.5배씩 누적된다.',points:['공격력 배율은 경기 종료까지 유지']},
+    {kind:'패시브',type:'passive',name:'은채는 참지 않아',desc:'벽에 2번 튕길 때마다 모든 공격력이 1.5배씩 누적된다.',points:['공격력 배율은 경기 종료까지 유지']},
     {kind:'충돌 공격',type:'attack',name:'다리걸기',desc:'적과 3번 부딪힐 때마다 60% 확률로 다리걸기를 시도한다.',points:['성공 피해 15','성공한 적을 멀리 날림']},
     {kind:'피격 강화',type:'special',name:'시비걸기',desc:'한 번에 피해 30 이상을 받으면 다음 다리걸기가 강화된다.',points:['다음 다리걸기 성공 확률 100%','다음 다리걸기 기본 피해 ×1.4','발동 후 강화 소모']}
   ]},
@@ -27591,7 +27617,7 @@ onWallHit=function(p){const result=_v191OnWallHit(p);if(!p?.alive)return result;
   if(p.id==='leesangeun'){p.speed=Math.min(1400,p.speed*1.2);normalizeSpeed(p,normalSpeed(p));p.data.v191FreeWalls=(p.data.v191FreeWalls||0)+1;floater(p.x,p.y-p.r-13,`📚 속도 ${Math.round(p.speed)}`,'#626d7b',12,.6);if(Math.random()<.15)v191Lightning(p,'자유로운학습실 벼락');}
   if(p.id==='kimseonghun'){p.data.v191D2Walls=(p.data.v191D2Walls||0)+1;if(p.data.v191D2Walls>=3){p.data.v191D2Walls=0;heal(p,5,p,'드투');}}
   if(p.id==='parkgarim'){p.data.v191HeartWalls=(p.data.v191HeartWalls||0)+1;if(p.data.v191HeartWalls>=3){p.data.v191HeartWalls=0;v191SpawnHearts(p);}}
-  if(p.id==='leeeunchae'){p.data.v191EunchaeWalls=(p.data.v191EunchaeWalls||0)+1;if(p.data.v191EunchaeWalls>=3){p.data.v191EunchaeWalls=0;p.data.v191AttackMult=Math.min(6,(p.data.v191AttackMult||1)*1.5);floater(p.x,p.y-p.r-12,`🔥 공격 ×${p.data.v191AttackMult.toFixed(2)}`,'#344d73',13,.7);}}
+  if(p.id==='leeeunchae'){p.data.v191EunchaeWalls=(p.data.v191EunchaeWalls||0)+1;if(p.data.v191EunchaeWalls>=2){p.data.v191EunchaeWalls=0;p.data.v191AttackMult=Math.min(6,(p.data.v191AttackMult||1)*1.5);floater(p.x,p.y-p.r-12,`🔥 공격 ×${p.data.v191AttackMult.toFixed(2)}`,'#344d73',13,.7);}}
   if(p.id==='nahyeongju'){p.data.v191IgnoreWalls=(p.data.v191IgnoreWalls||0)+1;p.data.v191StarWalls=(p.data.v191StarWalls||0)+1;if(p.data.v191IgnoreWalls>=3){p.data.v191IgnoreWalls=0;p.data.v191IgnoreShields=Math.min(1,(p.data.v191IgnoreShields||0)+1);floater(p.x,p.y-p.r-12,`🛡 무시 ${p.data.v191IgnoreShields}`,'#2f6976',13,.7);}if(p.data.v191StarWalls>=2){p.data.v191StarWalls=0;v191SpawnStar(p);}}
   if(p.id==='leegeonwoo'){p.data.v191BigMacWalls=(p.data.v191BigMacWalls||0)+1;p.data.v191AppleWalls=(p.data.v191AppleWalls||0)+1;if(p.data.v191BigMacWalls>=3){p.data.v191BigMacWalls=0;v191SpawnBigMac(p);}if(p.data.v191AppleWalls>=7&&!(p.data.v191AppleCast>0)){p.data.v191AppleWalls=0;p.data.v191AppleCast=2;p.data.v191AppleX=p.x;p.data.v191AppleY=p.y;p.frozen=Math.max(p.frozen||0,2);spawnAttackFx(p.x,p.y,'#e9b83f','황금사과 섭취',1.3);}}
   return result;};
@@ -27649,7 +27675,7 @@ statusText=function(p){const base=_v191StatusText(p),a=[];
   if(p?.id==='leesangeun')a.push(`⚡ ${(p.data.v191LightningTimer||0).toFixed(1)}s · 속도 ${Math.round(p.speed)}`);
   if(p?.id==='kimseonghun')a.push(`🀄 반사 ${(p.data.v191ReflectTimer||0).toFixed(1)}s · 다음 강화 ${p.data.v191NextReflectBoost?'ON':'OFF'}`);
   if(p?.id==='parkgarim')a.push(`${p.data.v191NickPhase?'🦊 닉':'📺 박가림'} · 🐞 ${(p.data.v191LadybugTimer||0).toFixed(1)}s · 저장 ${Math.round(p.data.v191LadybugStored||0)}`);
-  if(p?.id==='leeeunchae')a.push(`🔥 공격 ×${(p.data.v191AttackMult||1).toFixed(2)} · 확정 ${p.data.v191TripForced?'ON':'OFF'}`);
+  if(p?.id==='leeeunchae')a.push(`🔥 공격 ×${(p.data.v191AttackMult||1).toFixed(2)} · 벽 ${p.data.v191EunchaeWalls||0}/2 · 확정 ${p.data.v191TripForced?'ON':'OFF'}`);
   if(p?.id==='nahyeongju')a.push(`🛡 무시 ${p.data.v191IgnoreShields||0}개 · 잉쭈 ×${v191OutgoingMult(p).toFixed(2)}`);
   if(p?.id==='leegeonwoo')a.push(`🍔 벽 ${p.data.v191BigMacWalls||0}/3 · 🍎 ${p.data.v191AppleWalls||0}/7 · 🏃 ${(p.data.v191SpeedrunTimer||0).toFixed(1)}s`);
   return a.length?((base&&base!=='정상'?base+' · ':'')+a.join(' · ')):base;};
@@ -27751,7 +27777,7 @@ statusText=function(p){
   if(p?.id==='leesangeun')base+=` · ⚡스택 ${v192LightningStackTotal(p)} · 속도배율 ×${Math.min(5,(p.speed||280)/280).toFixed(2)}/5`;
   if(p?.id==='kimseonghun')base+=` · 🪞무피격 ${(p.data.v191NoHitTimer||0).toFixed(1)}/3.0 · 드투벽 ${p.data.v191D2Walls||0}/3`;
   if(p?.id==='parkgarim')base+=` · 충돌 ${p.data.v191LadybugHits||0}/3 · 하트벽 ${p.data.v191HeartWalls||0}/3`;
-  if(p?.id==='leeeunchae')base+=` · 벽 ${p.data.v191EunchaeWalls||0}/3 · 다리 ${p.data.v191TripHits||0}/3 · 최대 ×6`;
+  if(p?.id==='leeeunchae')base+=` · 벽 ${p.data.v191EunchaeWalls||0}/2 · 다리 ${p.data.v191TripHits||0}/3 · 최대 ×6`;
   if(p?.id==='nahyeongju')base+=` · 무시벽 ${p.data.v191IgnoreWalls||0}/3 · 별벽 ${p.data.v191StarWalls||0}/2`;
   if(p?.id==='leegeonwoo')base+=` · 스피드런 쿨 ${(p.data.v191SpeedrunCd||0).toFixed(1)}s${p.data.v191SwallowTarget?' · 먹뱉 중':''}`;
   return base;
@@ -37259,14 +37285,9 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
     stripLegacyRoleText(root);
   }
   function install(){
+    // V307: 코어 렌더가 이미 역할 문구 없이 HP/속도 2줄을 직접 만든다.
+    // 설명창/실시간 통계 DOM을 감시하며 반복 정리하던 V295 observer는 레이아웃 떨림의 원인이 될 수 있어 제거한다.
     clean(document);
-    const targets=[document.getElementById('setup'),document.getElementById('skillBody'),document.getElementById('v260Modal'),document.getElementById('tournamentScreen'),document.getElementById('draftScreen')].filter(Boolean);
-    targets.forEach(target=>new MutationObserver(mutations=>{
-      let relevant=false;
-      for(const m of mutations){if(m.type==='childList'){relevant=true;break}}
-      if(relevant)queueMicrotask(()=>clean(target));
-    }).observe(target,{childList:true,subtree:true}));
-    document.addEventListener('click',()=>setTimeout(()=>clean(document),0),true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
   window.__GONG_V295__={build:BUILD,clean,verify(){
@@ -37617,5 +37638,32 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 })();
 </script>
 
+
+<style id="v307SkillModalStabilityStyle">
+/* V307 · 캐릭터 설명창: 비동기 통계/랭킹 갱신에도 레이아웃이 튀지 않도록 안정화. */
+#skillBody{overflow-anchor:none!important;contain:layout paint!important}
+#skillBody .v228-community-body{min-height:118px}
+#skillBody .v290-rank-list{min-height:168px}
+#skillModal .skill-modal-card{will-change:auto!important}
+@media(max-width:640px){
+  #skillBody .v228-community-body{min-height:126px}
+  #skillBody .v290-rank-list{min-height:158px}
+}
+</style>
+<script id="v307BalanceSkillModalStabilityScript">
+(()=>{
+  'use strict';
+  const BUILD='V307_BALANCE_BUFFS_SKILL_MODAL_STABILITY';
+  window.__GONG_V307__={build:BUILD,verify(){
+    const defs=window.__GONG_V134_DEBUG__?.defs||{},skills=window.__GONG_V134_DEBUG__?.skillInfo||{};
+    const hanul=skills.park_hanul?.skills?.find?.(x=>x.name==='정병폭발');
+    const eun=skills.leeeunchae?.skills?.find?.(x=>x.name==='은채는 참지 않아');
+    const yang=skills.yangchaewon?.skills||[];
+    return {build:BUILD,minSpeed:defs.min?.speed,eunchae:eun?.desc||'',hanul:hanul?.desc||'',yangTea:yang.find(x=>x.name==='녹차던지기')?.points||[],yangLove:yang.find(x=>x.name==='장기연애')?.desc||'',patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__};
+  }};
+  window.__GONG_V307_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V307] 김민재/이은채/박한울/오해원/양채원 버프 · 캐릭터 설명창 잔존 DOM 감시 제거/레이아웃 안정화');
+})();
+</script>
 </body>
 </html>
