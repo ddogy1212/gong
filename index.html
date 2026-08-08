@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V308_FRIENDS_V1_DIRECT_CHALLENGE_PROFILE_COMPACT -->
+<!-- V309_FRIEND_REQUEST_DELIVERY_INPUT_STABILITY -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -21544,6 +21544,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V309','친구 신청 수신 권한 수정 · 친구코드 입력값/포커스 유지 · 친구창 불필요 재렌더 제거'],
   ['V308','4자리 친구코드 · 친구 신청/수락/거절 · 랭킹 친구추가 · 친구끼리 코드 없는 친선전 요청 추가'],
   ['V307','김민재·이은채·박한울·오해원·양채원 밸런스 상향 · 캐릭터 설명창 반복 DOM 감시 제거 및 흔들림 안정화'],
   ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회 충돌로 상향'],
@@ -21552,8 +21553,7 @@ const V302_PATCH_NOTES=[
   ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정'],
   ['V302','경쟁전 개편 공지 · 모든 이용자 강등 방어막 +1 지급 · 문의하기를 패치노트로 교체'],
   ['V301','경쟁전에 2단/3단 특별승급과 일일 임무 올클리어 강등 방어막 시스템 추가'],
-  ['V300','캐릭터 도감 삭제 · 업적/칭호 유지 · 사진과 글씨 겹침을 화면 멈춤 없이 CSS 중심으로 수정'],
-  ['V299','모바일/PWA 홈 화면 오른쪽에 남던 공백과 가로 오버플로우 수정']
+  ['V300','캐릭터 도감 삭제 · 업적/칭호 유지 · 사진과 글씨 겹침을 화면 멈춤 없이 CSS 중심으로 수정']
 ];
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -37684,7 +37684,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   const BUILD='V308_FRIENDS_V1_DIRECT_CHALLENGE_PROFILE_COMPACT';
   const CODE_LEN=4,CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',MAX_FRIENDS=50;
   const ROOT={users:'friendUsers/v1',codes:'friendCodes/v1',requests:'friendRequests/v1',friends:'friends/v1',invites:'friendBattleInvites/v1',profiles:'publicPlayerProfiles/v1'};
-  const state={uid:'',code:'',friends:{},requests:{},invites:{},profiles:new Map(),profileLoads:new Map(),offs:[],friendModalOpen:false,lastInviteSig:'',lastError:'',busy:false};
+  const state={uid:'',code:'',friends:{},requests:{},invites:{},profiles:new Map(),profileLoads:new Map(),offs:[],friendModalOpen:false,lastInviteSig:'',lastError:'',busy:false,friendCodeDraft:'',modalRenderSeq:0};
   const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const backend=()=>window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null;
   const logged=()=>{const b=backend();return !!(b?.user?.uid&&!b.user.isAnonymous)};
@@ -37713,7 +37713,31 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   function ensureFriendModal(){let modal=$('v308FriendModal');if(modal)return modal;modal=document.createElement('div');modal.id='v308FriendModal';modal.className='v308-friend-modal hidden';modal.setAttribute('aria-hidden','true');modal.innerHTML='<section class="v308-friend-card" role="dialog" aria-modal="true" aria-labelledby="v308FriendTitle"><header class="v308-friend-head"><strong id="v308FriendTitle">👥 친구</strong><button type="button" class="v308-friend-close" aria-label="친구창 닫기">×</button></header><main class="v308-friend-body"></main></section>';document.body.appendChild(modal);const close=closeFriendModal;modal.querySelector('.v308-friend-close')?.addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close()});return modal}
   async function friendRowsHtml(){const entries=Object.keys(state.friends||{});if(!entries.length)return'<div class="v308-empty">아직 친구가 없어.<br>4자리 친구코드를 입력하거나 경쟁전 랭킹에서 친구를 추가해봐.</div>';const profiles=await Promise.all(entries.map(uid=>profile(uid)));return entries.map((uid,i)=>{const p=profiles[i]||{},name=String(p.nickname||'친구'),tier=Number(p.rankIndex)||0,points=Number(p.points)||0,title=String(p.representativeTitle||'');return `<div class="v308-friend-row"><span class="v308-avatar">${esc((name.replace(/\s/g,'')[0]||'F').toUpperCase())}</span><span class="v308-row-copy"><b>${esc(name)}${title?` · ${esc(title)}`:''}</b><small>경쟁전 단계 ${tier+1} · ${points}점</small></span><span class="v308-row-actions"><button type="button" class="battle" data-v308-battle="${esc(uid)}">⚔️ 친선전</button></span></div>`}).join('')}
   function requestRowsHtml(){const rows=Object.entries(state.requests||{});if(!rows.length)return'<div class="v308-empty">받은 친구 신청이 없어.</div>';return rows.map(([uid,row])=>{const name=String(row?.senderName||'플레이어');return `<div class="v308-request-row"><span class="v308-avatar">${esc((name.replace(/\s/g,'')[0]||'F').toUpperCase())}</span><span class="v308-row-copy"><b>${esc(name)}</b><small>친구 신청 · ${esc(String(row?.senderCode||'----'))}</small></span><span class="v308-row-actions"><button type="button" class="accept" data-v308-accept="${esc(uid)}">수락</button><button type="button" class="reject" data-v308-reject="${esc(uid)}">거절</button></span></div>`}).join('')}
-  async function renderFriendModal(){const modal=ensureFriendModal(),body=modal.querySelector('.v308-friend-body');if(!logged()){body.innerHTML='<div class="v308-empty">Google 로그인 후 친구 기능을 사용할 수 있어.</div>';return false}const friendsHtml=await friendRowsHtml();if(!state.friendModalOpen)return false;body.innerHTML=`<section class="v308-code-card"><div><small>내 친구코드</small><b>${esc(state.code||'----')}</b></div><button type="button" class="v308-copy-code">코드 복사</button></section><section class="v308-section"><div class="v308-section-title"><strong>➕ 친구 추가</strong><span>4자리 코드</span></div><div class="v308-add-row"><input id="v308FriendCodeInput" maxlength="4" autocomplete="off" spellcheck="false" placeholder="A7K2"><button type="button" data-v308-send-code>친구 신청</button></div></section><section class="v308-section"><div class="v308-section-title"><strong>📩 받은 친구 신청</strong><span>${requestCount()}개</span></div><div class="v308-list">${requestRowsHtml()}</div></section><section class="v308-section"><div class="v308-section-title"><strong>👥 친구 목록</strong><span>${friendCount()}/${MAX_FRIENDS}명</span></div><div class="v308-list">${friendsHtml}</div></section>`;body.querySelector('.v308-copy-code')?.addEventListener('click',copyCode);const input=body.querySelector('#v308FriendCodeInput');input?.addEventListener('input',()=>{const v=normalizeCode(input.value);if(input.value!==v)input.value=v});input?.addEventListener('keydown',e=>{if(e.key==='Enter')sendByCode(input.value)});body.querySelector('[data-v308-send-code]')?.addEventListener('click',()=>sendByCode(input?.value));body.querySelectorAll('[data-v308-accept]').forEach(btn=>btn.addEventListener('click',()=>acceptRequest(btn.dataset.v308Accept)));body.querySelectorAll('[data-v308-reject]').forEach(btn=>btn.addEventListener('click',()=>rejectRequest(btn.dataset.v308Reject)));body.querySelectorAll('[data-v308-battle]').forEach(btn=>btn.addEventListener('click',()=>challengeFriend(btn.dataset.v308Battle)));return true}
+  async function renderFriendModal(){
+    const modal=ensureFriendModal(),body=modal.querySelector('.v308-friend-body');
+    if(!logged()){body.innerHTML='<div class="v308-empty">Google 로그인 후 친구 기능을 사용할 수 있어.</div>';return false}
+    const renderSeq=++state.modalRenderSeq;
+    const oldInput=body.querySelector('#v308FriendCodeInput');
+    if(oldInput)state.friendCodeDraft=normalizeCode(oldInput.value||state.friendCodeDraft);
+    const inputWasFocused=document.activeElement===oldInput;
+    const cursor=oldInput?.selectionStart??state.friendCodeDraft.length;
+    const card=modal.querySelector('.v308-friend-card'),scrollTop=card?.scrollTop||0;
+    const friendsHtml=await friendRowsHtml();
+    if(!state.friendModalOpen||renderSeq!==state.modalRenderSeq)return false;
+    body.innerHTML=`<section class="v308-code-card"><div><small>내 친구코드</small><b>${esc(state.code||'----')}</b></div><button type="button" class="v308-copy-code">코드 복사</button></section><section class="v308-section"><div class="v308-section-title"><strong>➕ 친구 추가</strong><span>4자리 코드</span></div><div class="v308-add-row"><input id="v308FriendCodeInput" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="A7K2" value="${esc(state.friendCodeDraft)}"><button type="button" data-v308-send-code>친구 신청</button></div></section><section class="v308-section"><div class="v308-section-title"><strong>📩 받은 친구 신청</strong><span>${requestCount()}개</span></div><div class="v308-list">${requestRowsHtml()}</div></section><section class="v308-section"><div class="v308-section-title"><strong>👥 친구 목록</strong><span>${friendCount()}/${MAX_FRIENDS}명</span></div><div class="v308-list">${friendsHtml}</div></section>`;
+    body.querySelector('.v308-copy-code')?.addEventListener('click',copyCode);
+    const input=body.querySelector('#v308FriendCodeInput');
+    input?.addEventListener('input',()=>{const v=normalizeCode(input.value);state.friendCodeDraft=v;if(input.value!==v)input.value=v});
+    const submit=async()=>{const code=normalizeCode(input?.value||state.friendCodeDraft);state.friendCodeDraft=code;const ok=await sendByCode(code);if(ok){state.friendCodeDraft='';if(input)input.value=''}};
+    input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submit()}});
+    body.querySelector('[data-v308-send-code]')?.addEventListener('click',submit);
+    body.querySelectorAll('[data-v308-accept]').forEach(btn=>btn.addEventListener('click',()=>acceptRequest(btn.dataset.v308Accept)));
+    body.querySelectorAll('[data-v308-reject]').forEach(btn=>btn.addEventListener('click',()=>rejectRequest(btn.dataset.v308Reject)));
+    body.querySelectorAll('[data-v308-battle]').forEach(btn=>btn.addEventListener('click',()=>challengeFriend(btn.dataset.v308Battle)));
+    if(card)card.scrollTop=scrollTop;
+    if(inputWasFocused&&input){try{input.focus({preventScroll:true});const at=Math.min(cursor,input.value.length);input.setSelectionRange(at,at)}catch(_){}}
+    return true
+  }
   async function openFriendModal(){if(!logged()){prioritizeLogin();toast('친구 기능은 Google 로그인 후 사용할 수 있어.');return false}state.friendModalOpen=true;const modal=ensureFriendModal();modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');$('v289FloatingPlay')?.classList.remove('show');await ensureCode();renderFriendModal();return true}
   function closeFriendModal(){state.friendModalOpen=false;const modal=$('v308FriendModal');modal?.classList.add('hidden');modal?.setAttribute('aria-hidden','true');window.__GONG_V289__?.updateFloatingPlay?.()}
   async function copyCode(){if(!state.code)return false;try{await navigator.clipboard.writeText(state.code);toast(`친구코드 ${state.code} 복사 완료`);return true}catch(_){toast(`내 친구코드: ${state.code}`);return false}}
@@ -37729,9 +37753,19 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   function startListeners(){clearListeners();const b=backend();if(!logged()||!b){renderPanel();renderBattleInvite();return false}const uid=b.user.uid;state.uid=uid;const listen=(path,assign)=>{const off=b.dbmod.onValue(b.dbmod.ref(b.db,path),snap=>{assign(snap.val()||{});renderPanel();if(state.friendModalOpen)renderFriendModal();renderBattleInvite()},error=>{state.lastError=String(error?.code||error?.message||error)});state.offs.push(off)};listen(`${ROOT.friends}/${uid}`,v=>state.friends=v);listen(`${ROOT.requests}/${uid}`,v=>state.requests=v);listen(`${ROOT.invites}/${uid}`,v=>state.invites=v);ensureCode().then(()=>{renderPanel();if(state.friendModalOpen)renderFriendModal()});return true}
   function installRankHandler(){document.addEventListener('click',e=>{const btn=e.target.closest?.('[data-v308-rank-friend]');if(!btn)return;e.preventDefault();e.stopImmediatePropagation();sendRequest(btn.dataset.v308RankFriend).then(ok=>{if(ok){btn.classList.add('sent');btn.textContent='신청됨'}})},true);document.addEventListener('keydown',e=>{if(e.target.closest?.('[data-v308-rank-friend]'))e.stopPropagation()},true)}
   function installLoginFirst(){prioritizeLogin();$('v232ProfileButton')?.addEventListener('click',()=>{prioritizeLogin();if(!logged())setTimeout(()=>{$('v232ProfileModal')?.querySelector('.v232-profile-card')?.scrollTo?.({top:0,behavior:'smooth'});$('v232GoogleLogin')?.focus?.()},30)},true)}
-  function install(){ensureFriendModal();ensureBattleInvite();installRankHandler();installLoginFirst();renderPanel();startListeners();window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>{prioritizeLogin();startListeners()},200));window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>startListeners(),300));window.addEventListener('gong-v232-nickname-ready',()=>setTimeout(()=>ensureCode(),100));window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>{window.__GONG_V254__?.renderOwnShowcase?.()},40));document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged())setTimeout(()=>{ensureCode();renderPanel()},120)});setInterval(()=>{prioritizeLogin();renderPanel();if(state.friendModalOpen)renderFriendModal();renderBattleInvite()},4000)}
+  function install(){ensureFriendModal();ensureBattleInvite();installRankHandler();installLoginFirst();renderPanel();startListeners();window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>{prioritizeLogin();startListeners()},200));window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>startListeners(),300));window.addEventListener('gong-v232-nickname-ready',()=>setTimeout(()=>ensureCode(),100));window.addEventListener('gong-v255-recent-change',()=>setTimeout(()=>{window.__GONG_V254__?.renderOwnShowcase?.()},40));document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged())setTimeout(()=>{ensureCode();renderPanel()},120)});setInterval(()=>{prioritizeLogin();renderPanel();renderBattleInvite()},4000)}
   window.__GONG_V308__={build:BUILD,codeLength:CODE_LEN,ensureCode,sendRequest,sendByCode,acceptRequest,rejectRequest,challengeFriend,acceptBattleInvite,rejectBattleInvite,open:openFriendModal,close:closeFriendModal,refresh(){prioritizeLogin();renderPanel();if(state.friendModalOpen)renderFriendModal();renderBattleInvite();return true},codeCandidates:uid=>candidates(String(uid||'')),normalizeCode,state:()=>({uid:state.uid,code:state.code,friends:friendCount(),requests:requestCount(),invites:inviteRows().length,lastError:state.lastError}),verify(){return {build:BUILD,codeLength:CODE_LEN,code:state.code,friendPanel:!!$('v308FriendPanel'),friendModal:!!$('v308FriendModal'),rankButtons:document.querySelectorAll('[data-v308-rank-friend]').length,recentVisible:document.querySelectorAll('#v255RecentMatches .v255-match').length,masteryVisible:document.querySelectorAll('#v254OwnMasteries .v254-mastery-row').length,patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V308_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();console.info('[V308] 4자리 친구코드 · 신청/수락/거절 · 랭킹 친구추가 · 친구 직접 친선전 · 프로필 5개 접기');
+})();
+</script>
+
+<script id="v309FriendRequestInputFix">
+(()=>{
+  'use strict';
+  const BUILD='V309_FRIEND_REQUEST_DELIVERY_INPUT_STABILITY';
+  window.__GONG_V309__={build:BUILD,verify(){const api=window.__GONG_V308__;return {build:BUILD,friendState:api?.state?.()||null,inputValue:document.getElementById('v308FriendCodeInput')?.value||'',patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V309_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V309] 친구 요청 수신 권한 · 친구코드 입력값/포커스 유지 · 불필요한 친구창 전체 재렌더 제거');
 })();
 </script>
 
