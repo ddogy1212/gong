@@ -1,4 +1,4 @@
-const CACHE_NAME='gonggame-v317-seoyeonseo-tuning-scroll-unified-battle-view';
+const CACHE_NAME='gonggame-v318-daeun-sleep100-cross1400-yuinsung-gen20';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png','./characters/lee_eunho.jpeg','./characters/yoon_juhyeong.jpg','./characters/lee_seohyun_v277.png','./characters/kang_yeonwoo_v311.png','./characters/choi_daeun_v311.png','./characters/seoyeonseo_v316.png'];
 
 self.addEventListener('install',event=>{

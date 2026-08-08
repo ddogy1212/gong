@@ -3565,7 +3565,7 @@ chaewon:{
       {kind:'박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'윤현딸 크로스를 가진 최다은과 박혜음이 같은 팀이면 공유 HP 2000을 사용한다. 같은 팀 윤현이 있으면 윤현까지 공유하며 HP가 3000이 된다.',points:['최다은+박혜음 같은 팀: 공유 HP 2000','같은 팀 윤현 포함: 공유 HP 3000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락']},
       {kind:'적 충돌 공격·강한 넉백',type:'passive',name:'소심하게걸어다니기',desc:'적과 부딪힐 때마다 13 피해를 주고 최다은에게서 멀어지는 방향으로 강하게 튕겨낸다.',points:['적 충돌 1회당 피해: 13','적을 최다은 반대 방향으로 멀리 튕겨냄','같은 접촉이 프레임마다 중복 발동하지 않도록 충돌 중복 방지 적용']},
       {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 10%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.9','감속은 계속 중첩','최종 이동속도 최소 1']},
-      {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 모든 아군을 각자 최대 HP의 70%만큼 회복하고 모든 적에게 졸림을 부여한다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 모든 아군: 각자 최대 HP의 70% 회복','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
+      {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 살아 있는 모든 아군을 각각 100 HP 회복하고 모든 적에게 졸림을 부여한다. 발동 횟수 제한은 없다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 살아 있는 아군 1명당 발동 1회마다 HP 100 회복','여러 번 발동 가능 · 별도 누적 회복 한도 없음','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
       {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받으면 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다. 발동 후 2초의 재사용 대기시간이 있다.',points:['실제 피해를 받은 경우에만 발동','발동 후 재사용 대기시간 2초','모든 적 무력화 0.4초','자신 HP +3']},
       {kind:'모든 공 충돌 7회 광역 취약',type:'attack',name:'친구사귀기!!!!!!!',desc:'자신을 제외한 어떤 공과든 7번 부딪힐 때마다 모든 적에게 취약 7초와 3초 지속피해를 부여한다.',points:['아군·적군·소환 공 충돌 모두 카운트','7회마다 모든 적 취약 7초','3초 동안 0.1초마다 1 피해 · 기본 총 30 피해']}
     ]
@@ -21599,6 +21599,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V318','최다은 늦게자기 아군 1명당 100 회복·반복 가능 · 윤현멘티크로스 공유 HP 1400 · 유인성 20기 분류 수정'],
   ['V317','서연서 조정 · 6반반장 15 피해 · 블쉴요정 춤 2초/무력화 1초 · 캐릭터 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일'],
   ['V316','서연서(20기) 추가 · 이도윤담당일진 · 서씨집안 · 6반반장 · 블쉴요정 · 토마토'],
   ['V315','최다은 소심하게걸어다니기 패시브 추가 · 적 충돌 13 피해 + 강한 넉백'],
@@ -24854,12 +24855,12 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
 
 
   /* =========================================================
-     V158 · 윤현멘티크로스 · 최유진·김예원·임서윤 동일 팀 공유 HP 1500
+     V158 · 윤현멘티크로스 · 최유진·김예원·임서윤 동일 팀 공유 HP 1400
      ========================================================= */
   const V158_BUILD='V158_YOON_MENTEE_CROSS_SHARED_HP1200';
   window.__GONG_V158_BUILD__=V158_BUILD;
   const V158_CROSS_IDS=['choiyujin','yewon','limseoyoon'];
-  const V158_CROSS_MAX_HP=1500;
+  const V158_CROSS_MAX_HP=1400;
 
   for(const id of V158_CROSS_IDS){
     const def=DEFS[id];
@@ -24868,7 +24869,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     const info=SKILL_INFO[id];
     if(info){
       if(!String(info.summary||'').includes('3인 공유 체력'))info.summary=`3인 공유 체력·${info.summary||''}`;
-      info.hp=id==='limseoyoon'?'210 / 크로스 1500':'200 / 크로스 1500';
+      info.hp=id==='limseoyoon'?'210 / 크로스 1400':'200 / 크로스 1400';
     }
     if(info&&Array.isArray(info.skills)&&!info.skills.some(skill=>skill?.name==='윤현멘티크로스')){
       info.skills.unshift({
@@ -24878,7 +24879,7 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
         desc:'최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 세 명이 하나의 체력을 공유한다.',
         points:[
           '세 명이 모두 같은 팀일 때만 전투 시작과 동시에 활성화',
-          '공유 최대 체력과 시작 체력: 1500',
+          '공유 최대 체력과 시작 체력: 1400',
           '세 명 중 누구든 받은 실제 피해가 공유 체력에서 차감',
           '세 명 중 누구든 받은 회복이 공유 체력에 반영',
           '공유 체력이 0이 되면 세 명이 동시에 탈락'
@@ -24923,9 +24924,9 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
     v158SyncCross(group,group.maxHp);
     for(const member of members){
       spawnAttackFx(member.x,member.y,'#7b6fe3','윤현멘티크로스',1.7);
-      floater(member.x,member.y-member.r-28,'🔗 공유 HP 1200','#6758c1',15,1.15);
+      floater(member.x,member.y-member.r-28,'🔗 공유 HP 1400','#6758c1',15,1.15);
     }
-    log('<b>윤현멘티크로스 발동!</b> 최유진·김예원·임서윤이 공유 체력 1200으로 연결되었다.');
+    log('<b>윤현멘티크로스 발동!</b> 최유진·김예원·임서윤이 공유 체력 1400으로 연결되었다.');
     return group;
   }
   function v158EliminateCrossMember(member,source,skill){
@@ -25762,22 +25763,22 @@ window.__GONG_V138_TEST__.enableFast=()=>{updateUI=()=>{};floater=()=>{};spawnAt
   if(setup&&!setup.classList.contains('hidden'))renderSetup();
 
   /* =========================================================
-     V164 · 윤현멘티크로스 HP 1500 · 벽/적 충돌 횟수 공유
+     V164 · 윤현멘티크로스 HP 1400 · 벽/적 충돌 횟수 공유
      ========================================================= */
-  const V164_BUILD='V164_MENTEE_CROSS_HP1500_SHARED_COLLISIONS';
-  const V164_CROSS_MAX_HP=1500;
+  const V164_BUILD='V164_MENTEE_CROSS_HP1400_SHARED_COLLISIONS';
+  const V164_CROSS_MAX_HP=1400;
   window.__GONG_V164_BUILD__=V164_BUILD;
 
   // 카드 설명을 최신 크로스 규칙으로 통일한다.
   for(const id of V158_CROSS_IDS){
     const info=SKILL_INFO[id];
-    if(info)info.hp=id==='limseoyoon'?'210 / 크로스 1500':'200 / 크로스 1500';
+    if(info)info.hp=id==='limseoyoon'?'210 / 크로스 1400':'200 / 크로스 1400';
     const skill=info?.skills?.find(s=>s?.name==='윤현멘티크로스');
     if(skill){
-      skill.desc='최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 체력 1500과 벽·적 충돌 횟수를 공유하고 공격력이 1.4배가 된다.';
+      skill.desc='최유진·김예원·임서윤 세 명이 모두 같은 팀으로 참가하면 체력 1400과 벽·적 충돌 횟수를 공유하고 공격력이 1.4배가 된다.';
       skill.points=[
         '세 명이 모두 같은 팀일 때만 전투 시작과 동시에 활성화',
-        '공유 최대 체력과 시작 체력: 1500',
+        '공유 최대 체력과 시작 체력: 1400',
         '세 명 중 누구든 받은 실제 피해와 회복이 공유 체력에 반영',
         '한 명이 벽에 부딪히면 세 명 모두 벽 충돌 1회로 처리',
         '한 명이 적과 부딪히면 세 명 모두 적 충돌 횟수를 공유',
@@ -29038,21 +29039,21 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     let group=game.v158MentorCross;
     if(reset)game.v205MentorCrossInitialized=false;
     if(!group?.active&&!game.v205MentorCrossInitialized){
-      group=game.v158MentorCross={active:true,members:[...members],team,hp:1500,maxHp:1500,transactionDepth:0,cascading:false};
+      group=game.v158MentorCross={active:true,members:[...members],team,hp:1400,maxHp:1400,transactionDepth:0,cascading:false};
       game.v205MentorCrossInitialized=true;
       group.v164SharedWallHits=0;group.v164SharedEnemyHits=0;group.v164EnemyByTarget={};group.v164EnemyContactCd={};
-      for(const p of members){p.maxHp=1500;p.hp=1500;p.alive=true;p.hidden=false;p.data.v158MentorCross=true;p.data.v158MentorCrossTeam=team;spawnAttackFx(p.x,p.y,'#7b6fe3','윤현멘티크로스',1.65);floater(p.x,p.y-p.r-26,'🔗 공유 HP 1500','#6758c1',14,.95);}
+      for(const p of members){p.maxHp=1400;p.hp=1400;p.alive=true;p.hidden=false;p.data.v158MentorCross=true;p.data.v158MentorCrossTeam=team;spawnAttackFx(p.x,p.y,'#7b6fe3','윤현멘티크로스',1.65);floater(p.x,p.y-p.r-26,'🔗 공유 HP 1400','#6758c1',14,.95);}
     }
     if(group?.active)game.v205MentorCrossInitialized=true;
     if(!group?.active)return group||null;
-    group.members=[...members];group.team=team;group.maxHp=1500;group.hp=clamp(Number(group.hp)||0,0,1500);
+    group.members=[...members];group.team=team;group.maxHp=1400;group.hp=clamp(Number(group.hp)||0,0,1400);
     const unexpectedlyDead=members.some(p=>!p.alive);
     if(unexpectedlyDead&&!reset){
       group.hp=0;group.cascading=true;
       for(const p of members){if(p.alive)recordElimination(p);p.hp=0;p.alive=false;p.hidden=false;p.vx=0;p.vy=0;}
       group.active=false;group.cascading=false;return group;
     }
-    for(const p of members){p.maxHp=1500;if(group.hp>0){p.hp=group.hp;p.alive=true;p.hidden=false;}p.data.v158MentorCross=true;p.data.v158MentorCrossTeam=team;p.data.v164CrossWallHits=group.v164SharedWallHits||0;p.data.v164CrossEnemyHits=group.v164SharedEnemyHits||0;}
+    for(const p of members){p.maxHp=1400;if(group.hp>0){p.hp=group.hp;p.alive=true;p.hidden=false;}p.data.v158MentorCross=true;p.data.v158MentorCrossTeam=team;p.data.v164CrossWallHits=group.v164SharedWallHits||0;p.data.v164CrossEnemyHits=group.v164SharedEnemyHits||0;}
     return group;
   }
 
@@ -29066,7 +29067,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   window.__GONG_V205_CHANGES__=Object.freeze({
     build:V205_BUILD,juliaHpCentered:true,lifeChoice:{instantDeath:.5,halfHp:.5,recovery:0},raidTargetCount:70,
     juliaRaidDamageTakenMult70:1.20,juliaHazardMult60:1.05,juliaHazardMult70:1.15,juliaFinalPhaseDamageTakenMult:1.00,phoneBoxCountdown:true,phoneBoxLightning:true,
-    leesangeunLightningFx:'multi-bolt-flash-ring',mentorCrossSharedHp:1500,mentorCrossRepair:true
+    leesangeunLightningFx:'multi-bolt-flash-ring',mentorCrossSharedHp:1400,mentorCrossRepair:true
   });
   window.__GONG_V205_TEST__={
     normalIds(){return window.__GONG_V204_TEST__.normalIds();},
@@ -29297,7 +29298,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
   /* ---------- 5. V262 character search + compact classification filter ---------- */
   const V272_GEN20_IDS=new Set([
-    'yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo'
+    'yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo','yuinsung'
   ]);
   for(const [id,d] of Object.entries(DEFS)){
     if(!BOSS_IDS.has(id))d.generation=V272_GEN20_IDS.has(id)?20:21;
@@ -33362,7 +33363,7 @@ window.__GONG_V266_RUNTIME__={
     }
   }
   function v311DaeunLateSleep(p){
-    for(const a of alliedList(p))if(a!==p)heal(a,a.maxHp*.7,p,'늦게자기');
+    for(const a of alliedList(p))if(a!==p)heal(a,100,p,'늦게자기');
     for(const e of enemyList(p)){e.data=e.data||{};e.data.v311SleepSlowTimer=Math.max(e.data.v311SleepSlowTimer||0,10);e.data.v311SleepDot={owner:p,ticksLeft:20,acc:0};normalizeSpeed(e,normalSpeed(e));floater(e.x,e.y-e.r-20,'😴 졸림 20초','#8256a8',13,.7);}
     spawnAttackFx(p.x,p.y,'#8256a8','늦게자기',1.5);
   }
@@ -36737,7 +36738,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 (()=>{
   'use strict';
   const BUILD='V272_GENERATION_CLASSIFICATION_FIX';
-  const GEN20=new Set(['yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo']);
+  const GEN20=new Set(['yesung','gow','kimgaeun','kim','gyumin','geun','nahyun','dong','min','kimseonghun','kimeunwoo','jongyeop','na','doyejin','juyeong','moon','jihyun','parkgarim','sia','seominji','seo','chaeun','mingyu','woo','shin_jimin','ansua','yangchaewon','oseoyoon','junghoon','ochaeun','yoo','yoonseoyoung','songhyeon','jiyeon','yoon','nakyung','doyun','ira','sungmin','yoomin','yoonho','leeeunchae','jiwon','chaewon','hyeon','dawon','yoona','jungdayeon','rua','jungsua','jungyoona','subin','subinnew','jaewook','kimminseo','leeseohyun','seoyeonseo','yuinsung']);
   window.__GONG_V272__={
     build:BUILD,
     generationOf(id){if(GEN20.has(id))return 20;return (typeof DEFS!=='undefined'&&DEFS[id]&&!(typeof BOSS_IDS!=='undefined'&&BOSS_IDS.has(id)))?21:null},
@@ -36779,7 +36780,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
 (()=>{
   'use strict';
   const BUILD='V273_TOURNAMENT_VARIANTS_SKILLS_SUBIN_JIO_MINSEO';
-  const GEN20_EXTRA=new Set(['subin','subinnew','kimminseo','leeseohyun','seoyeonseo']);
+  const GEN20_EXTRA=new Set(['subin','subinnew','kimminseo','leeseohyun','seoyeonseo','yuinsung']);
   window.__GONG_V273__={
     build:BUILD,
     core:window.__GONG_V273_CORE__||null,
@@ -38629,6 +38630,25 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     }
   };
   console.info('[V317] 서연서 15 피해 · 춤 2초/무력화 1초 · 설명 스크롤 유지 · 전 기종 전투창 모바일형 통일');
+})();</script>
+
+<script id="v318LatestBuildScript">(()=>{
+  const BUILD='V318_DAEUN_SLEEP100_CROSS1400_YUINSUNG_GEN20';
+  window.__GONG_V318_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V318__={
+    build:BUILD,
+    daeunLateSleep:{healPerAllyPerCast:100,repeatable:true,selfExcluded:true},
+    mentorCross:{sharedHp:1400,ids:['choiyujin','yewon','limseoyoon']},
+    generationFix:{yuinsung:20},
+    verify(){
+      const dbg=window.__GONG_V134_DEBUG__;
+      const late=(dbg?.skillInfo?.choidaeun?.skills||[]).find(s=>s.name==='늦게자기');
+      const cross=(dbg?.skillInfo?.choiyujin?.skills||[]).find(s=>s.name==='윤현멘티크로스');
+      const g=dbg?.game?.v158MentorCross;
+      return {build:BUILD,lateSleep:late?.points||[],mentorCross:cross?.points||[],activeCross:g?.active?{hp:g.hp,maxHp:g.maxHp}:null,yuinsung:{generation:dbg?.defs?.yuinsung?.generation,v272:window.__GONG_V272__?.generationOf?.('yuinsung')},latest:window.__GONG_LATEST_BUILD__};
+    }
+  };
+  console.info('[V318] 최다은 늦게자기 아군 1명당 100 회복 · 반복 가능 · 윤현멘티크로스 공유 HP 1400 · 유인성 20기 분류 수정');
 })();</script>
 
 </body>
