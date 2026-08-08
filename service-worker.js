@@ -1,4 +1,4 @@
-const CACHE_NAME='gonggame-v303-rank-shield-cloud-consume-fix';
+const CACHE_NAME='gonggame-v304-manual-custom-title-7000';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png','./characters/lee_eunho.jpeg','./characters/yoon_juhyeong.jpg','./characters/lee_seohyun_v277.png'];
 
 self.addEventListener('install',event=>{
