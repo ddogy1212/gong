@@ -38651,5 +38651,138 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   console.info('[V318] 최다은 늦게자기 아군 1명당 100 회복 · 반복 가능 · 윤현멘티크로스 공유 HP 1400 · 유인성 20기 분류 수정');
 })();</script>
 
+
+<style id="v319CompactLeaderboardStyle">
+/* V319 · 경쟁전 TOP10을 모든 기기에서 한눈에 보이는 1줄 카드형으로 통일 */
+#v231Leaderboard.v231-leaderboard{
+  padding:8px 9px!important;
+  margin-top:8px!important;
+  border-radius:15px!important;
+}
+#v231Leaderboard .v231-leaderboard-head{
+  align-items:center!important;
+  margin-bottom:5px!important;
+  min-height:28px!important;
+}
+#v231Leaderboard .v231-leaderboard-head strong{
+  font-size:13px!important;
+  line-height:1.1!important;
+}
+#v231Leaderboard .v231-leaderboard-head span{
+  font-size:7px!important;
+  line-height:1.15!important;
+  text-align:right!important;
+}
+#v231Leaderboard #v279RankRewardNote{
+  margin:3px 0 6px!important;
+  padding:5px 7px!important;
+  border-radius:8px!important;
+  font-size:6.5px!important;
+  line-height:1.2!important;
+  min-height:0!important;
+}
+#v231Leaderboard .v231-leaderboard-list{
+  gap:4px!important;
+}
+#v231Leaderboard .v231-rank-row{
+  grid-template-columns:26px minmax(0,1fr) 53px!important;
+  gap:5px!important;
+  min-height:45px!important;
+  padding:4px 6px!important;
+  border-radius:9px!important;
+}
+#v231Leaderboard .v231-rank-row.v319-has-friend{
+  grid-template-columns:26px minmax(0,1fr) 53px 45px!important;
+}
+#v231Leaderboard .v231-rank-no{
+  width:25px!important;
+  height:25px!important;
+  font-size:9px!important;
+}
+#v231Leaderboard .v231-rank-name{
+  font-size:10px!important;
+  line-height:1.08!important;
+}
+#v231Leaderboard .v231-rank-name small{
+  margin-top:2px!important;
+  font-size:7px!important;
+  line-height:1.05!important;
+}
+#v231Leaderboard .v231-rank-tier{
+  font-size:9px!important;
+  line-height:1.05!important;
+}
+#v231Leaderboard .v231-rank-tier small{
+  margin-top:2px!important;
+  font-size:7px!important;
+  line-height:1.05!important;
+}
+#v231Leaderboard .v308-rank-friend{
+  grid-column:auto!important;
+  width:45px!important;
+  min-width:45px!important;
+  height:31px!important;
+  min-height:31px!important;
+  margin:0!important;
+  padding:0 2px!important;
+  border-radius:7px!important;
+  font-size:6.6px!important;
+  line-height:1!important;
+  align-self:center!important;
+}
+#v231Leaderboard .v231-empty{
+  padding:6px 7px!important;
+  border-radius:8px!important;
+  font-size:7.5px!important;
+  line-height:1.2!important;
+}
+@media(max-width:380px){
+  #v231Leaderboard.v231-leaderboard{padding:7px!important}
+  #v231Leaderboard .v231-rank-row{grid-template-columns:24px minmax(0,1fr) 49px!important;gap:4px!important;min-height:43px!important;padding:4px 5px!important}
+  #v231Leaderboard .v231-rank-row.v319-has-friend{grid-template-columns:24px minmax(0,1fr) 49px 41px!important}
+  #v231Leaderboard .v231-rank-no{width:23px!important;height:23px!important;font-size:8px!important}
+  #v231Leaderboard .v231-rank-name{font-size:9px!important}
+  #v231Leaderboard .v231-rank-name small{font-size:6.4px!important}
+  #v231Leaderboard .v231-rank-tier{font-size:8px!important}
+  #v231Leaderboard .v231-rank-tier small{font-size:6.4px!important}
+  #v231Leaderboard .v308-rank-friend{width:41px!important;min-width:41px!important;height:29px!important;min-height:29px!important;font-size:6.2px!important}
+}
+</style>
+<script id="v319CompactLeaderboardScript">(()=>{
+  'use strict';
+  const BUILD='V319_COMPACT_TOP10_ONE_LINE_RANKING';
+  function decorateRows(root=document){
+    const rows=[...root.querySelectorAll?.('#v231Leaderboard .v231-rank-row')||[]];
+    rows.forEach(row=>row.classList.toggle('v319-has-friend',!!row.querySelector('.v308-rank-friend')));
+    return rows.length;
+  }
+  function install(){
+    const board=document.getElementById('v231Leaderboard');
+    if(!board)return false;
+    decorateRows(board);
+    const body=document.getElementById('v231LeaderboardBody');
+    if(body&&!body.__v319Observer){
+      const obs=new MutationObserver(()=>requestAnimationFrame(()=>decorateRows(body)));
+      obs.observe(body,{childList:true,subtree:true});
+      body.__v319Observer=obs;
+    }
+    return true;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{install();setTimeout(install,700);},{once:true});else{install();setTimeout(install,700)}
+  window.addEventListener('gong-v230-online-ready',()=>setTimeout(install,120));
+  window.addEventListener('gong-v232-auth-changed',()=>setTimeout(install,120));
+  window.__GONG_V319_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V319__={
+    build:BUILD,decorateRows,install,
+    verify(){
+      const board=document.getElementById('v231Leaderboard'),rows=[...document.querySelectorAll('#v231Leaderboard .v231-rank-row')];
+      const sample=rows[0]?.getBoundingClientRect();
+      const friend=rows.find(r=>r.querySelector('.v308-rank-friend'))?.querySelector('.v308-rank-friend')?.getBoundingClientRect();
+      return {build:BUILD,rows:rows.length,compactRows:rows.filter(r=>r.classList.contains('v319-has-friend')).length,rowHeight:sample?.height||0,friendWidth:friend?.width||0,friendHeight:friend?.height||0,latest:window.__GONG_LATEST_BUILD__};
+    }
+  };
+  console.info('[V319] 경쟁전 TOP10 한 줄 압축 랭킹 · 모바일 친구 버튼 하단 전체폭 문제 제거');
+})();</script>
+
 </body>
 </html>
