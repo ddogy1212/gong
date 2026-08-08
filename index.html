@@ -37252,5 +37252,99 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 })();
 </script>
 
+
+<style id="v296SkillProfileLayoutStyle">
+/* V296 · skill modal profile header layout polish: no image/name/stat overlap on any viewport. */
+.skill-profile{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:12px!important;
+  row-gap:0!important;
+}
+.skill-profile img{align-self:start!important}
+.skill-profile > div:last-child{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding-top:1px!important;
+}
+.skill-profile .skill-profile-name{
+  display:block!important;
+  min-width:0!important;
+  line-height:1.08!important;
+  letter-spacing:-0.01em!important;
+  word-break:keep-all!important;
+  overflow-wrap:anywhere!important;
+}
+.skill-profile .skill-profile-meta{
+  margin-top:0!important;
+  gap:3px!important;
+  line-height:1.34!important;
+  font-size:12px!important;
+}
+.skill-profile .skill-profile-meta .v295-stat-line{
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:640px){
+  .skill-profile{
+    grid-template-columns:50px minmax(0,1fr)!important;
+    column-gap:10px!important;
+    align-items:start!important;
+  }
+  .skill-profile > div:last-child{gap:3px!important;padding-top:2px!important}
+  .skill-profile .skill-profile-name{font-size:17px!important}
+  .skill-profile .skill-profile-meta{font-size:11px!important;line-height:1.38!important}
+}
+</style>
+<script id="v296SkillProfileLayoutScript">
+(()=>{
+  'use strict';
+  const BUILD='V296_SKILL_PROFILE_LAYOUT_POLISH';
+  function normalizeProfileCard(root=document){
+    const scope=root?.querySelectorAll?root:document;
+    const profiles=root?.matches?.('.skill-profile')?[root]:scope.querySelectorAll('.skill-profile');
+    profiles.forEach(profile=>{
+      const infoWrap=profile.querySelector(':scope > div:last-child');
+      if(infoWrap)infoWrap.classList.add('v296-skill-profile-info');
+      const name=profile.querySelector('.skill-profile-name');
+      if(name)name.textContent=String(name.textContent||'').trim();
+      const meta=profile.querySelector('.skill-profile-meta');
+      if(meta){
+        meta.querySelectorAll('.v295-stat-line').forEach(line=>{line.textContent=String(line.textContent||'').replace(/\s+/g,' ').trim();});
+      }
+    });
+  }
+  function install(){
+    normalizeProfileCard(document);
+    const body=document.getElementById('skillBody');
+    if(body){
+      new MutationObserver(()=>queueMicrotask(()=>normalizeProfileCard(body))).observe(body,{childList:true,subtree:true});
+    }
+    document.addEventListener('click',()=>setTimeout(()=>normalizeProfileCard(document.getElementById('skillBody')||document),0),true);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  window.__GONG_V296__={build:BUILD,verify(){
+    normalizeProfileCard(document);
+    const profile=document.querySelector('.skill-profile');
+    const meta=profile?.querySelector('.skill-profile-meta');
+    return {
+      build:BUILD,
+      infoWrapTagged:!!profile?.querySelector('.v296-skill-profile-info'),
+      statLineCount:meta?.querySelectorAll('.v295-stat-line').length||0,
+      nameText:(profile?.querySelector('.skill-profile-name')?.textContent||'').trim(),
+      latest:window.__GONG_LATEST_BUILD__
+    };
+  }};
+  window.__GONG_V296_BUILD__=BUILD;
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V296] 캐릭터 스킬 설명 상단 프로필 레이아웃 정리 · 사진/이름/체력/속도 겹침 방지');
+})();
+</script>
+
 </body>
 </html>
