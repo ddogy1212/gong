@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-08T08:28:00Z",
+  "entries": {
+    "105eb6e358350a5379dc9899f1d82076565f3802098e98b283b4533e759bb021": {
+      "active": true,
+      "title": "관리자",
+      "approvedAt": 1786177680000,
+      "test": true
+    }
+  }
+}
