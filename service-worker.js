@@ -1,4 +1,4 @@
-const CACHE_NAME='gonggame-v296-skill-profile-layout-polish';
+const CACHE_NAME='gonggame-v298-achievements-rollback-ui-freeze-recovery';
 const CORE=['./','./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png','./characters/lee_eunho.jpeg','./characters/yoon_juhyeong.jpg','./characters/lee_seohyun_v277.png'];
 
 self.addEventListener('install',event=>{

@@ -34812,7 +34812,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=295',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=298',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -37301,48 +37301,25 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   .skill-profile .skill-profile-meta{font-size:11px!important;line-height:1.38!important}
 }
 </style>
-<script id="v296SkillProfileLayoutScript">
+<script id="v298UiFreezeRecoveryScript">
 (()=>{
   'use strict';
-  const BUILD='V296_SKILL_PROFILE_LAYOUT_POLISH';
-  function normalizeProfileCard(root=document){
-    const scope=root?.querySelectorAll?root:document;
-    const profiles=root?.matches?.('.skill-profile')?[root]:scope.querySelectorAll('.skill-profile');
-    profiles.forEach(profile=>{
-      const infoWrap=profile.querySelector(':scope > div:last-child');
-      if(infoWrap)infoWrap.classList.add('v296-skill-profile-info');
-      const name=profile.querySelector('.skill-profile-name');
-      if(name)name.textContent=String(name.textContent||'').trim();
-      const meta=profile.querySelector('.skill-profile-meta');
-      if(meta){
-        meta.querySelectorAll('.v295-stat-line').forEach(line=>{line.textContent=String(line.textContent||'').replace(/\s+/g,' ').trim();});
-      }
-    });
-  }
-  function install(){
-    normalizeProfileCard(document);
-    const body=document.getElementById('skillBody');
-    if(body){
-      new MutationObserver(()=>queueMicrotask(()=>normalizeProfileCard(body))).observe(body,{childList:true,subtree:true});
-    }
-    document.addEventListener('click',()=>setTimeout(()=>normalizeProfileCard(document.getElementById('skillBody')||document),0),true);
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
-  window.__GONG_V296__={build:BUILD,verify(){
-    normalizeProfileCard(document);
-    const profile=document.querySelector('.skill-profile');
-    const meta=profile?.querySelector('.skill-profile-meta');
+  const BUILD='V298_ACHIEVEMENTS_ROLLBACK_UI_FREEZE_RECOVERY';
+  // V296의 레이아웃 보정은 CSS만으로 충분하다. DOM을 다시 쓰는 MutationObserver는 제거한다.
+  function verify(){
+    const ach=window.__GONG_V260__;
     return {
       build:BUILD,
-      infoWrapTagged:!!profile?.querySelector('.v296-skill-profile-info'),
-      statLineCount:meta?.querySelectorAll('.v295-stat-line').length||0,
-      nameText:(profile?.querySelector('.skill-profile-name')?.textContent||'').trim(),
+      achievementCount:ach?.achievements?.().length??null,
+      achievementApiPresent:!!ach,
+      v297Removed:!window.__GONG_V297__,
       latest:window.__GONG_LATEST_BUILD__
     };
-  }};
-  window.__GONG_V296_BUILD__=BUILD;
+  }
+  window.__GONG_V298__={build:BUILD,verify};
+  window.__GONG_V298_BUILD__=BUILD;
   window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V296] 캐릭터 스킬 설명 상단 프로필 레이아웃 정리 · 사진/이름/체력/속도 겹침 방지');
+  console.info('[V298] V297 업적 삭제 롤백 · 무한 DOM 감시 제거 · UI 프리즈 복구');
 })();
 </script>
 
