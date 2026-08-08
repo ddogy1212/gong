@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V311_YEONWOO_DAEUN_DAUGHTER_CROSS -->
+<!-- V312_FRIEND_PRESENCE_DAEUN_COOLDOWN -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -3564,8 +3564,8 @@ chaewon:{
     skills:[
       {kind:'박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'윤현딸 크로스를 가진 최다은과 박혜음이 같은 팀이면 공유 HP 2000을 사용한다. 같은 팀 윤현이 있으면 윤현까지 공유하며 HP가 3000이 된다.',points:['최다은+박혜음 같은 팀: 공유 HP 2000','같은 팀 윤현 포함: 공유 HP 3000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락']},
       {kind:'적 충돌 영구 감속',type:'control',name:'아스트 면접 1등',desc:'적과 부딪힐 때마다 그 적의 이동속도를 영구적으로 10%씩 감소시킨다.',points:['충돌 1회마다 현재 기준 속도 ×0.9','감속은 계속 중첩','최종 이동속도 최소 1']},
-      {kind:'벽 7회 광역 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 모든 아군을 각자 최대 HP의 70%만큼 회복하고 모든 적에게 졸림을 부여한다.',points:['모든 아군: 각자 최대 HP의 70% 회복','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
-      {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받을 때마다 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다.',points:['실제 피해를 받은 경우에만 발동','모든 적 무력화 0.4초','자신 HP +3']},
+      {kind:'벽 7회 아군 회복·졸림',type:'heal',name:'늦게자기',desc:'벽에 7번 부딪힐 때마다 자신을 제외한 모든 아군을 각자 최대 HP의 70%만큼 회복하고 모든 적에게 졸림을 부여한다.',points:['최다은 본인은 회복 대상에서 제외','자신을 제외한 모든 아군: 각자 최대 HP의 70% 회복','모든 적: 10초 동안 이동속도 20% 감소','모든 적: 20초 동안 총 30 피해','재발동 시 졸림 지속시간 갱신']},
+      {kind:'피격 반응 광역 무력화',type:'defense',name:'재밌는거보기',desc:'적에게 실제 피해를 받으면 모든 적을 0.4초 동안 무력화하고 자신의 HP를 3 회복한다. 발동 후 2초의 재사용 대기시간이 있다.',points:['실제 피해를 받은 경우에만 발동','발동 후 재사용 대기시간 2초','모든 적 무력화 0.4초','자신 HP +3']},
       {kind:'모든 공 충돌 7회 광역 취약',type:'attack',name:'친구사귀기!!!!!!!',desc:'자신을 제외한 어떤 공과든 7번 부딪힐 때마다 모든 적에게 취약 7초와 3초 지속피해를 부여한다.',points:['아군·적군·소환 공 충돌 모두 카운트','7회마다 모든 적 취약 7초','3초 동안 0.1초마다 1 피해 · 기본 총 30 피해']}
     ]
   },
@@ -21566,6 +21566,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const V302_PATCH_NOTES=[
+  ['V312','친구 온라인·마지막 접속 시간 표시 · 최다은 늦게자기/재밌는거보기 조정'],
   ['V311','강연우·최다은 신규 캐릭터 추가 · 박혜음 윤현딸 크로스 연계 추가'],
   ['V310','친구 친선전 요청을 중앙 수락/거절 팝업으로 변경 · 첫 모드 가이드 자동 팝업은 1회만 표시'],
   ['V309','친구 신청 수신 권한 수정 · 친구코드 입력값/포커스 유지 · 친구창 불필요 재렌더 제거'],
@@ -21574,8 +21575,7 @@ const V302_PATCH_NOTES=[
   ['V306','김지오 음표 발동 조건을 벽 4회에서 벽 2회 충돌로 상향'],
   ['V305','커스텀 칭호 구매 안내에 관리자 Instagram @vol_404_ 추가 · UID 해시형 수동 승인 명단 도입'],
   ['V304','7,000원 수동 커스텀 칭호 상점 · 신청문 복사 · 운영자 승인 후 장착 기능 추가'],
-  ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정'],
-  ['V302','경쟁전 개편 공지 · 모든 이용자 강등 방어막 +1 지급 · 문의하기를 패치노트로 교체']
+  ['V303','강등 방어막 소모 후 Firebase 동기화가 이전 개수를 되살리던 버그 긴급 수정']
 ]
 window.__GONG_V302_PATCH_NOTES__=V302_PATCH_NOTES.map(row=>[...row]);
 const patchNotesModal=$('patchNotesModal');
@@ -33326,7 +33326,7 @@ window.__GONG_V266_RUNTIME__={
     }
   }
   function v311DaeunLateSleep(p){
-    for(const a of alliedList(p))heal(a,a.maxHp*.7,p,'늦게자기');
+    for(const a of alliedList(p))if(a!==p)heal(a,a.maxHp*.7,p,'늦게자기');
     for(const e of enemyList(p)){e.data=e.data||{};e.data.v311SleepSlowTimer=Math.max(e.data.v311SleepSlowTimer||0,10);e.data.v311SleepDot={owner:p,ticksLeft:20,acc:0};normalizeSpeed(e,normalSpeed(e));floater(e.x,e.y-e.r-20,'😴 졸림 20초','#8256a8',13,.7);}
     spawnAttackFx(p.x,p.y,'#8256a8','늦게자기',1.5);
   }
@@ -33351,7 +33351,7 @@ window.__GONG_V266_RUNTIME__={
     const hasYoon=(game.players||[]).some(p=>realId(p)===YOON);
     for(const p of game.players||[]){p.data=p.data||{};const id=realId(p);
       if(id===YEON){p.data.v311EnemyContacts=0;p.data.v311ContactCd={};p.data.v311WallHits=0;p.data.v311PinCooldown=10;if(hasYoon){p.speed=100;p.maxHp=400;p.hp=400;normalizeSpeed(p,100);}else{p.speed=300;p.maxHp=250;p.hp=250;normalizeSpeed(p,300);}}
-      if(id===DAEUN){p.data.v311WallHits=0;p.data.v311AnyContacts=0;p.data.v311ContactCd={};p.data.v311PermanentSpeedMult=1;}
+      if(id===DAEUN){p.data.v311WallHits=0;p.data.v311AnyContacts=0;p.data.v311ContactCd={};p.data.v311PermanentSpeedMult=1;p.data.v312FunnyReadyAt=0;}
     }
     v311BuildCross();renderScores();updateUI();return result;
   };
@@ -33400,7 +33400,7 @@ window.__GONG_V266_RUNTIME__={
       if(vulnState&&target?.data){target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,vulnState.timer);target.data.v151VulnerableSource=vulnState.source;}
     }
     if(g&&dealt>0){g.hp=Math.max(0,g.hp-dealt);v311SyncGroup(g);if(g.hp<=0)v311EliminateCross(g,source,skill);}
-    if(dealt>0&&realId(target)===DAEUN&&target.alive&&!opts.selfDamage){v311ApplyAllPowerless(target,.4,'재밌는거보기');heal(target,3,target,'재밌는거보기');}
+    if(dealt>0&&realId(target)===DAEUN&&target.alive&&!opts.selfDamage){const t=Math.max(0,Number(game?.t)||0);if((target.data?.v312FunnyReadyAt||0)<=t){target.data=target.data||{};target.data.v312FunnyReadyAt=t+2;v311ApplyAllPowerless(target,.4,'재밌는거보기');heal(target,3,target,'재밌는거보기');}}
     return dealt;
   };
 
@@ -37948,7 +37948,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   function renderPanel(){const panel=ensureProfilePanel();if(!panel)return false;if(!logged()){panel.innerHTML='<div class="v308-friend-panel-head"><strong>👥 친구</strong><span class="v308-friend-code">LOGIN</span></div><div class="v308-friend-panel-copy">Google 로그인 후 4자리 친구코드와 친구 신청 기능을 사용할 수 있어.</div><button class="v308-friend-open" type="button" disabled>로그인 후 친구 기능 사용</button>';return true}panel.innerHTML=`<div class="v308-friend-panel-head"><strong>👥 친구</strong><span class="v308-friend-code">${esc(state.code||'----')}</span></div><div class="v308-friend-panel-copy">친구코드는 4자리 · 친구끼리는 방 코드 입력 없이 바로 친선전을 요청할 수 있어.</div><div class="v308-friend-panel-meta"><span class="v308-friend-pill">친구 ${friendCount()}명</span><span class="v308-friend-pill">받은 요청 ${requestCount()}개</span>${inviteRows().length?`<span class="v308-friend-pill">⚔️ 친선 요청 ${inviteRows().length}</span>`:''}</div><button class="v308-friend-open" type="button">친구창 열기</button>`;panel.querySelector('.v308-friend-open')?.addEventListener('click',openFriendModal);return true}
   function prioritizeLogin(){const modal=$('v232ProfileModal'),card=modal?.querySelector('.v232-profile-card'),head=modal?.querySelector('.v232-profile-head'),login=$('v232GoogleLogin');if(!card||!head||!login)return false;let nudge=$('v308LoginNudge');if(!nudge){nudge=document.createElement('div');nudge.id='v308LoginNudge';nudge.className='v308-login-nudge';nudge.textContent='👤 Google 로그인하면 친구·랭킹·마스터리·진척도를 계정에 저장할 수 있어.';head.insertAdjacentElement('afterend',nudge)}const anon=!logged();nudge.hidden=!anon;login.classList.toggle('v308-login-first',anon);if(anon&&nudge.nextElementSibling!==login)nudge.insertAdjacentElement('afterend',login);return true}
   function ensureFriendModal(){let modal=$('v308FriendModal');if(modal)return modal;modal=document.createElement('div');modal.id='v308FriendModal';modal.className='v308-friend-modal hidden';modal.setAttribute('aria-hidden','true');modal.innerHTML='<section class="v308-friend-card" role="dialog" aria-modal="true" aria-labelledby="v308FriendTitle"><header class="v308-friend-head"><strong id="v308FriendTitle">👥 친구</strong><button type="button" class="v308-friend-close" aria-label="친구창 닫기">×</button></header><main class="v308-friend-body"></main></section>';document.body.appendChild(modal);const close=closeFriendModal;modal.querySelector('.v308-friend-close')?.addEventListener('click',close);modal.addEventListener('click',e=>{if(e.target===modal)close()});return modal}
-  async function friendRowsHtml(){const entries=Object.keys(state.friends||{});if(!entries.length)return'<div class="v308-empty">아직 친구가 없어.<br>4자리 친구코드를 입력하거나 경쟁전 랭킹에서 친구를 추가해봐.</div>';const profiles=await Promise.all(entries.map(uid=>profile(uid)));return entries.map((uid,i)=>{const p=profiles[i]||{},name=String(p.nickname||'친구'),tier=Number(p.rankIndex)||0,points=Number(p.points)||0,title=String(p.representativeTitle||'');return `<div class="v308-friend-row"><span class="v308-avatar">${esc((name.replace(/\s/g,'')[0]||'F').toUpperCase())}</span><span class="v308-row-copy"><b>${esc(name)}${title?` · ${esc(title)}`:''}</b><small>경쟁전 단계 ${tier+1} · ${points}점</small></span><span class="v308-row-actions"><button type="button" class="battle" data-v308-battle="${esc(uid)}">⚔️ 친선전</button></span></div>`}).join('')}
+  async function friendRowsHtml(){const entries=Object.keys(state.friends||{});if(!entries.length)return'<div class="v308-empty">아직 친구가 없어.<br>4자리 친구코드를 입력하거나 경쟁전 랭킹에서 친구를 추가해봐.</div>';const profiles=await Promise.all(entries.map(uid=>profile(uid)));return entries.map((uid,i)=>{const p=profiles[i]||{},name=String(p.nickname||'친구'),tier=Number(p.rankIndex)||0,points=Number(p.points)||0,title=String(p.representativeTitle||'');return `<div class="v308-friend-row"><span class="v308-avatar">${esc((name.replace(/\s/g,'')[0]||'F').toUpperCase())}</span><span class="v308-row-copy"><b>${esc(name)}${title?` · ${esc(title)}`:''}</b><small>경쟁전 단계 ${tier+1} · ${points}점</small><small class="v312-friend-presence pending" data-v312-presence="${esc(uid)}">접속 상태 확인 중</small></span><span class="v308-row-actions"><button type="button" class="battle" data-v308-battle="${esc(uid)}">⚔️ 친선전</button></span></div>`}).join('')}
   function requestRowsHtml(){const rows=Object.entries(state.requests||{});if(!rows.length)return'<div class="v308-empty">받은 친구 신청이 없어.</div>';return rows.map(([uid,row])=>{const name=String(row?.senderName||'플레이어');return `<div class="v308-request-row"><span class="v308-avatar">${esc((name.replace(/\s/g,'')[0]||'F').toUpperCase())}</span><span class="v308-row-copy"><b>${esc(name)}</b><small>친구 신청 · ${esc(String(row?.senderCode||'----'))}</small></span><span class="v308-row-actions"><button type="button" class="accept" data-v308-accept="${esc(uid)}">수락</button><button type="button" class="reject" data-v308-reject="${esc(uid)}">거절</button></span></div>`}).join('')}
   async function renderFriendModal(){
     const modal=ensureFriendModal(),body=modal.querySelector('.v308-friend-body');
@@ -37973,6 +37973,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
     body.querySelectorAll('[data-v308-battle]').forEach(btn=>btn.addEventListener('click',()=>challengeFriend(btn.dataset.v308Battle)));
     if(card)card.scrollTop=scrollTop;
     if(inputWasFocused&&input){try{input.focus({preventScroll:true});const at=Math.min(cursor,input.value.length);input.setSelectionRange(at,at)}catch(_){}}
+    window.dispatchEvent(new CustomEvent('gong-v308-friend-modal-rendered'));
     return true
   }
   async function openFriendModal(){if(!logged()){prioritizeLogin();toast('친구 기능은 Google 로그인 후 사용할 수 있어.');return false}state.friendModalOpen=true;const modal=ensureFriendModal();modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');$('v289FloatingPlay')?.classList.remove('show');await ensureCode();renderFriendModal();return true}
@@ -38020,8 +38021,54 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 
 
 
-<script id="v311FinalBuildMarker">
-(()=>{const BUILD='V311_YEONWOO_DAEUN_DAUGHTER_CROSS';window.__GONG_V311_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V311] 최신 빌드 활성화 · 강연우/최다은/윤현딸 크로스');})();
+
+<style id="v312FriendPresenceStyle">
+/* V312 · friend presence text updates in place; friend list/input DOM is not rebuilt. */
+.v312-friend-presence{display:flex!important;align-items:center;gap:5px;margin-top:4px!important;font-size:7.5px!important;font-weight:1000!important;color:#747985!important;line-height:1.3}
+.v312-friend-presence::before{content:"";display:inline-block;flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#9ca3af;box-shadow:0 0 0 2px #9ca3af22}
+.v312-friend-presence.online{color:#17813c!important}.v312-friend-presence.online::before{background:#22c55e;box-shadow:0 0 0 2px #22c55e22,0 0 8px #22c55e88}
+.v312-friend-presence.offline{color:#737986!important}.v312-friend-presence.offline::before{background:#9ca3af;box-shadow:0 0 0 2px #9ca3af22}
+</style>
+<script id="v312FriendPresenceAndDaeunFix">
+(()=>{
+  'use strict';
+  const BUILD='V312_FRIEND_PRESENCE_DAEUN_COOLDOWN',ROOT='friendPresence/v1',STALE_MS=105000,HEARTBEAT_MS=45000;
+  const state={uid:'',selfRef:null,selfStartedAt:0,selfOnline:false,heartbeatTimer:null,friendRows:new Map(),friendOffs:new Map(),lastError:''};
+  const backend=()=>window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null;
+  const logged=()=>{const b=backend();return !!(b?.user?.uid&&!b.user.isAnonymous)};
+  const now=()=>Date.now();
+  const n=v=>Math.max(0,Number(v)||0);
+  function durationText(ms){const mins=Math.max(0,Math.floor(n(ms)/60000)),h=Math.floor(mins/60),m=mins%60;return `${h}시간 ${m}분`}
+  function presenceView(row){row=row&&typeof row==='object'?row:{};const heartbeat=n(row.heartbeatAt),last=n(row.lastSeenAt),started=n(row.sessionStartedAt),fresh=heartbeat>0&&(now()-heartbeat)<=STALE_MS,online=row.online===true&&fresh;if(online)return {online:true,text:`온라인 · ${durationText(now()-(started||heartbeat))} 동안 온라인`};const seen=Math.max(last,heartbeat);return {online:false,text:seen?`오프라인 · ${durationText(now()-seen)} 전에 온라인`:'오프라인 · 최근 접속 기록 없음'}}
+  function updatePresenceDom(uid){const row=state.friendRows.get(String(uid))||{},view=presenceView(row);document.querySelectorAll(`[data-v312-presence="${CSS.escape(String(uid))}"]`).forEach(el=>{el.classList.remove('pending','online','offline');el.classList.add(view.online?'online':'offline');if(el.textContent!==view.text)el.textContent=view.text})}
+  function updateAllPresenceDom(){for(const uid of state.friendRows.keys())updatePresenceDom(uid)}
+  function clearFriendListeners(){for(const off of state.friendOffs.values())try{off?.()}catch(_){}state.friendOffs.clear();state.friendRows.clear()}
+  function reconcileFriendListeners(){const modal=document.getElementById('v308FriendModal');if(!modal||modal.classList.contains('hidden')||!logged()){clearFriendListeners();return false}const b=backend();if(!b)return false;const wanted=new Set([...modal.querySelectorAll('[data-v312-presence]')].map(el=>String(el.dataset.v312Presence||'')).filter(Boolean));for(const [uid,off] of [...state.friendOffs])if(!wanted.has(uid)){try{off?.()}catch(_){}state.friendOffs.delete(uid);state.friendRows.delete(uid)}for(const uid of wanted){if(state.friendOffs.has(uid)){updatePresenceDom(uid);continue}const off=b.dbmod.onValue(b.dbmod.ref(b.db,`${ROOT}/${uid}`),snap=>{state.friendRows.set(uid,snap.val()||{});updatePresenceDom(uid)},error=>{state.lastError=String(error?.code||error?.message||error);state.friendRows.set(uid,{});updatePresenceDom(uid)});state.friendOffs.set(uid,off)}return true}
+  function clearHeartbeat(){if(state.heartbeatTimer){clearInterval(state.heartbeatTimer);state.heartbeatTimer=null}}
+  async function writeHeartbeat(){const b=backend();if(!logged()||!b||!state.selfRef||document.hidden||!state.selfOnline)return false;try{await b.dbmod.update(state.selfRef,{online:true,heartbeatAt:b.dbmod.serverTimestamp(),lastSeenAt:b.dbmod.serverTimestamp()});return true}catch(error){state.lastError=String(error?.code||error?.message||error);return false}}
+  function scheduleHeartbeat(){clearHeartbeat();state.heartbeatTimer=setInterval(writeHeartbeat,HEARTBEAT_MS)}
+  async function markOnline({newSession=false}={}){const b=backend();if(!logged()||!b||document.hidden)return false;const uid=b.user.uid;if(state.uid!==uid){clearHeartbeat();state.selfRef=null;state.selfOnline=false;state.selfStartedAt=0;state.uid=uid;newSession=true}if(newSession||!state.selfStartedAt)state.selfStartedAt=now();const ref=b.dbmod.ref(b.db,`${ROOT}/${uid}`);state.selfRef=ref;try{const offlinePayload={online:false,sessionStartedAt:state.selfStartedAt,lastSeenAt:b.dbmod.serverTimestamp(),heartbeatAt:b.dbmod.serverTimestamp(),version:1};const od=b.dbmod.onDisconnect?.(ref);if(od?.set)await od.set(offlinePayload);await b.dbmod.set(ref,{online:true,sessionStartedAt:state.selfStartedAt,lastSeenAt:b.dbmod.serverTimestamp(),heartbeatAt:b.dbmod.serverTimestamp(),version:1});state.selfOnline=true;scheduleHeartbeat();return true}catch(error){state.lastError=String(error?.code||error?.message||error);state.selfOnline=false;clearHeartbeat();return false}}
+  async function markOffline({cancelDisconnect=false}={}){clearHeartbeat();const b=backend(),ref=state.selfRef;if(!b||!ref){state.selfOnline=false;return false}try{await b.dbmod.update(ref,{online:false,lastSeenAt:b.dbmod.serverTimestamp(),heartbeatAt:b.dbmod.serverTimestamp()});if(cancelDisconnect){try{await b.dbmod.onDisconnect?.(ref)?.cancel?.()}catch(_){}}state.selfOnline=false;return true}catch(error){state.lastError=String(error?.code||error?.message||error);state.selfOnline=false;return false}}
+  async function restartSelfPresence(){clearFriendListeners();if(!logged()){clearHeartbeat();state.uid='';state.selfRef=null;state.selfStartedAt=0;state.selfOnline=false;return false}return markOnline({newSession:true})}
+  function install(){
+    window.addEventListener('gong-v308-friend-modal-rendered',()=>setTimeout(reconcileFriendListeners,0));
+    window.addEventListener('gong-v232-auth-changed',()=>setTimeout(restartSelfPresence,120));
+    window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{if(logged())markOnline({newSession:state.uid!==backend()?.user?.uid})},180));
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){markOffline()}else if(logged()){markOnline({newSession:!state.selfOnline});setTimeout(reconcileFriendListeners,80)}});
+    window.addEventListener('pagehide',()=>{markOffline()});
+    setInterval(()=>{const modal=document.getElementById('v308FriendModal');if(modal&&!modal.classList.contains('hidden')){reconcileFriendListeners();updateAllPresenceDom()}else if(state.friendOffs.size)clearFriendListeners()},30000);
+    setInterval(updateAllPresenceDom,30000);
+    setTimeout(()=>{if(logged())markOnline({newSession:true});reconcileFriendListeners()},900);
+  }
+  window.__GONG_V312__={build:BUILD,markOnline,markOffline,reconcileFriendListeners,presenceView,durationText,state:()=>({uid:state.uid,selfOnline:state.selfOnline,selfStartedAt:state.selfStartedAt,friendListeners:state.friendOffs.size,lastError:state.lastError}),verify(){return {build:BUILD,presenceRows:document.querySelectorAll('[data-v312-presence]').length,onlineRows:document.querySelectorAll('.v312-friend-presence.online').length,daeunSleepSelfExcluded:/a!==p/.test(String(window.__GONG_V311__?.build?document.getElementById('v312FriendPresenceAndDaeunFix')?.previousSibling?.textContent||'':'')),patchCount:(window.__GONG_V302_PATCH_NOTES__||[]).length,latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V312_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  console.info('[V312] 친구 온라인/마지막 접속 표시 · 최다은 늦게자기 자신 제외 · 재밌는거보기 2초 쿨타임');
+})();
+</script>
+
+<script id="v312FinalBuildMarker">
+(()=>{const BUILD='V312_FRIEND_PRESENCE_DAEUN_COOLDOWN';window.__GONG_V312_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V312] 최신 빌드 활성화 · 친구 접속 상태 · 최다은 스킬 조정');})();
 </script>
 
 </body>
