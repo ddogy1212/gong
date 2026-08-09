@@ -38948,7 +38948,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   SKILL_INFO[ID]={
     summary:'윤현딸 공유 HP·분열 하트·누적 공격/속도 성장·피격 시전 회복형',hp:'250 (윤현딸 크로스 공유)',speed:'180',
     skills:[
-      {kind:'최다은·박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'윤현딸 크로스를 가진 최다은·박혜음·김태린 중 같은 팀에 2명 이상이 있으면 크로스 보유자들이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['크로스 보유자 1명당 공유 HP +1000','발동 최소 조건: 크로스 보유자 2명 이상 같은 팀','최다은+박혜음 기존 조합은 공유 HP 2000 그대로 유지','크로스 보유자 3명이 같은 팀이면 공유 HP 3000','같은 팀 윤현이 있으면 공유 HP +1000 및 공유 대상 합류','공유 대상의 피해·회복은 하나의 HP로 동기화','공유 HP 0 시 공유 대상 전원 탈락']},
+      {kind:'최다은·박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현이 있으면 윤현도 합류하고 공유 HP 4000','공유 대상의 피해·회복은 하나의 HP로 동기화','공유 HP 0 시 공유 대상 전원 탈락']},
       {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 20 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
       {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 영구적으로 증가하며 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 영구 누적','4회마다 이동속도 ×1.4 영구 누적','발동 횟수 제한 없음']},
       {kind:'30 이상 실제 피해 시전 회복',type:'heal',name:'고쿠미',desc:'한 번에 실제 HP가 30 이상 감소하면 제자리에서 2초간 시전한다. 시전을 끝내면 HP 40을 회복하지만 시전 중 다시 피해를 받으면 취소된다.',points:['한 번의 실제 피해량이 30 이상일 때 발동','시전 시간: 2초 · 시전 중 제자리 고정','시전 성공: HP +40','시전 중 실제 피해를 받으면 즉시 취소','취소를 일으킨 피해로는 즉시 재시전하지 않음','취소 후 새로 한 번에 30 이상 실제 피해를 받아야 다시 발동']}
@@ -38960,8 +38960,8 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     const info=SKILL_INFO[cid];if(!info?.skills)continue;
     const s=info.skills.find(x=>x.name==='윤현딸 크로스');if(!s)continue;
     s.kind='김태린 포함 윤현딸 공유 패시브';
-    s.desc='윤현딸 크로스를 가진 최다은·박혜음·김태린 중 같은 팀에 2명 이상이 있으면 크로스 보유자들이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.';
-    s.points=['크로스 보유자 1명당 공유 HP +1000','발동 최소 조건: 크로스 보유자 2명 이상 같은 팀','최다은+박혜음 기존 조합은 공유 HP 2000 그대로 유지','크로스 보유자 3명 같은 팀: 공유 HP 3000','같은 팀 윤현 포함 시 공유 HP +1000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락'];
+    s.desc='최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.';
+    s.points=['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현 포함 시 윤현도 합류하고 공유 HP 4000','공유 대상의 피해·회복을 하나의 HP로 동기화','공유 HP 0 시 전원 탈락'];
   }
   if(DEFS[DAEUN])DEFS[DAEUN].skills='윤현딸 크로스 · 소심하게걸어다니기 · 아스트 면접 1등 · 늦게자기 · 재밌는거보기 · 친구사귀기!!!!!!!';
   if(DEFS[HYEEUM])DEFS[HYEEUM].skills='윤현딸 크로스 · 딸 · 부성애자극 · 멘헤라발동';
@@ -38974,10 +38974,11 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     const byTeam=new Map();
     for(const p of game.players){const rid=realId(p);if(!CROSS_IDS.has(rid))continue;const key=String(p.team??'');if(!byTeam.has(key))byTeam.set(key,[]);byTeam.get(key).push(p);}
     for(const [team,holders] of byTeam){
-      if(holders.length<2)continue;
+      const holderIds=new Set(holders.map(realId));
+      if(![DAEUN,HYEEUM,ID].every(cid=>holderIds.has(cid)))continue;
       const members=[...holders],yoon=game.players.find(p=>realId(p)===YOON&&String(p.team??'')===team);
       if(yoon)members.push(yoon);
-      const maxHp=holders.length*1000+(yoon?1000:0),group={id:`v323DaughterCross_${team}`,members,maxHp,hp:maxHp};
+      const maxHp=3000+(yoon?1000:0),group={id:`v323DaughterCross_${team}`,members,maxHp,hp:maxHp};
       for(const p of members){p.data=p.data||{};p.data.v311CrossGroup=group.id;p.maxHp=maxHp;p.hp=maxHp;}
       game.v311CrossGroups.push(group);
       const lead=holders[0];spawnAttackFx(lead.x,lead.y,'#d84c82','윤현딸 크로스',1.45);floater(lead.x,lead.y-lead.r-28,`💞 공유 HP ${maxHp}`,'#b13b76',16,.95);
@@ -39068,6 +39069,17 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   window.__GONG_PATCH_NOTES__?.register?.('V323','김태린(21기) 신규 · 윤현딸 크로스 확장 · 숙련도 TOP5 프로필/친구추가 · 서연서 6반반장 10 피해/공격 반감 2초 · 토마토 14 피해');
   window.__GONG_V323__={build:BUILD,id:ID,image:IMG,player(){return game?.players?.find(p=>realId(p)===ID)||null},shots(){return (game?.v323LoveShots||[]).map(s=>({kind:s.kind,x:s.x,y:s.y,life:s.life}))},forceBigHeart(){const p=this.player();return p?spawnBigHeart(p):false},cross(){return (game?.v311CrossGroups||[]).map(g=>({hp:g.hp,maxHp:g.maxHp,members:g.members.map(realId)}))},verify(){return {build:BUILD,taerin:DEFS[ID],generation:window.__GONG_V272__?.generationOf?.(ID),skillNames:(SKILL_INFO[ID]?.skills||[]).map(s=>s.name),masteryProfileRows:document.querySelectorAll('.v290-rank-row[data-v323-mastery-profile-uid]').length,friendProfileApi:typeof window.__GONG_V314__?.decoratePublicProfile==='function',patchLatest:window.__GONG_PATCH_NOTES__?.latest?.(),latest:window.__GONG_LATEST_BUILD__}}};
   window.__GONG_V323_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V323] 김태린 신규 · 윤현딸 크로스 확장 · 숙련도 TOP5 프로필/친구추가 · 서연서 6반반장/토마토 조정');
+})();
+</script>
+<script id="v324DaughterCrossRequirementFix">
+(()=>{
+  'use strict';
+  const BUILD='V324_DAUGHTER_CROSS_ALL_THREE_REQUIRED';
+  window.__GONG_PATCH_NOTES__?.register?.('V324','윤현딸 크로스 발동 조건 수정 · 최다은·박혜음·김태린 3명이 모두 같은 팀일 때만 발동 · 셋 공유 HP 3000 / 윤현 포함 4000');
+  window.__GONG_V324_BUILD__=BUILD;
+  window.__GONG_V324__={build:BUILD,rule:'최다은·박혜음·김태린 세 명 모두 같은 팀일 때만 윤현딸 크로스 발동',verify(){const infos=['choidaeun','hyeeum','kimtaerin'].map(id=>SKILL_INFO?.[id]?.skills?.find(s=>s?.name==='윤현딸 크로스')?.desc||'');return {build:BUILD,allDescriptionsRequireThree:infos.every(x=>x.includes('세 명이 모두 같은 팀')),latest:window.__GONG_LATEST_BUILD__};}};
+  window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V324] 윤현딸 크로스 · 최다은+박혜음+김태린 세 명 모두 같은 팀일 때만 발동');
 })();
 </script>
 
