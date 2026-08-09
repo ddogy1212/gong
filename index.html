@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V327_TAERIN_LOVE_ATTACK_RELIABILITY -->
+<!-- V328_FULL_ROSTER_ATTACK_AUDIT_CORE_BRIDGE -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -33957,6 +33957,33 @@ window.__GONG_V266_RUNTIME__={
 })();
 
 
+/* V328 · post-core patch bridge
+   The legacy engine is intentionally enclosed in this outer IIFE. Later classic scripts need
+   controlled access to the live lexical bindings, not stale copies. Getters/setters below make
+   bare global names resolve to the CURRENT engine binding and let later wrappers replace it. */
+(()=>{
+  const readOnly={DEFS:()=>DEFS,SKILL_INFO:()=>SKILL_INFO,assignments:()=>assignments,W:()=>W,H:()=>H,ctx:()=>ctx,currentConfig:()=>currentConfig};
+  const live={
+    game:[()=>game,v=>{game=v}],
+    resetBattle:[()=>resetBattle,v=>{resetBattle=v}],onWallHit:[()=>onWallHit,v=>{onWallHit=v}],collide:[()=>collide,v=>{collide=v}],
+    damage:[()=>damage,v=>{damage=v}],heal:[()=>heal,v=>{heal=v}],tick:[()=>tick,v=>{tick=v}],draw:[()=>draw,v=>{draw=v}],
+    statusText:[()=>statusText,v=>{statusText=v}],normalSpeed:[()=>normalSpeed,v=>{normalSpeed=v}],
+    normalizeSpeed:[()=>normalizeSpeed,v=>{normalizeSpeed=v}],isEnemy:[()=>isEnemy,v=>{isEnemy=v}],dist:[()=>dist,v=>{dist=v}],
+    spawnAttackFx:[()=>spawnAttackFx,v=>{spawnAttackFx=v}],floater:[()=>floater,v=>{floater=v}],recordElimination:[()=>recordElimination,v=>{recordElimination=v}],
+    showKill:[()=>showKill,v=>{showKill=v}],checkEnd:[()=>checkEnd,v=>{checkEnd=v}],updateUI:[()=>updateUI,v=>{updateUI=v}],renderScores:[()=>renderScores,v=>{renderScores=v}],
+    renderBossAllies:[()=>renderBossAllies,v=>{renderBossAllies=v}],syncCharacterAssignments:[()=>syncCharacterAssignments,v=>{syncCharacterAssignments=v}],
+    orderedCharacterIds:[()=>orderedCharacterIds,v=>{orderedCharacterIds=v}],renderSkillModal:[()=>renderSkillModal,v=>{renderSkillModal=v}]
+  };
+  const define=(name,get,set)=>{for(const root of [window,globalThis]){try{Object.defineProperty(root,name,{configurable:true,enumerable:false,get,set});}catch(_){}}};
+  for(const [name,get] of Object.entries(readOnly))define(name,get,undefined);
+  for(const [name,pair] of Object.entries(live))define(name,pair[0],pair[1]);
+  window.__GONG_V328_CORE_BRIDGE__={
+    version:'V328',names:[...Object.keys(readOnly),...Object.keys(live)],
+    verify(){return {defs:Object.keys(DEFS).length,skills:Object.keys(SKILL_INFO).length,players:game?.players?.length||0,onWallHit:typeof onWallHit,damage:typeof damage,resetBattle:typeof resetBattle};}
+  };
+})();
+
+
 })();
 </script>
 
@@ -39315,6 +39342,17 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     verify(){return {build:BUILD,managed:!!window.__GONG_V327_TAERIN_WALL_MANAGED__,forceApi:typeof window.__GONG_V323__?.forceBigHeart==='function',state:this.state(),latest:window.__GONG_LATEST_BUILD__}}
   };
   console.info('[V327] 김태린 커다란사랑 발동 경로 안정화 · 공유 벽 3회 직접 카운트');
+})();
+</script>
+
+
+<script id="v328FullRosterAttackAudit">
+(()=>{
+  const BUILD='V328_FULL_ROSTER_ATTACK_AUDIT_CORE_BRIDGE';
+  window.__GONG_PATCH_NOTES__?.register?.('V328','전체 캐릭터 공격 발동 전수 감사 · V323+ 전투 패치 Core Bridge 연결 · 김태린 커다란사랑/윤현딸 크로스 실제 엔진 연결 복구');
+  window.__GONG_V328_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V328__={build:BUILD,bridge:()=>window.__GONG_V328_CORE_BRIDGE__?.verify?.(),verify(){return {build:BUILD,bridge:!!window.__GONG_V328_CORE_BRIDGE__,v323:!!window.__GONG_V323__,v326:!!window.__GONG_V326__,v327:!!window.__GONG_V327__,latest:window.__GONG_LATEST_BUILD__};}};
+  console.info('[V328] 전체 캐릭터 공격 전수 감사 · Core Bridge · 김태린 후속 전투 패치 실제 연결 복구');
 })();
 </script>
 
