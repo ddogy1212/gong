@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V328_FULL_ROSTER_ATTACK_AUDIT_CORE_BRIDGE -->
+<!-- V329_TAERIN_ATTACK_CAP_X5 -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -3556,7 +3556,7 @@ chaewon:{
     skills:[
       {kind:'최다은·박혜음 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현이 있으면 윤현도 합류하고 공유 HP 4000','세 딸 중 누구든 받은 피해·회복은 하나의 HP로 즉시 동기화','세 딸 중 누구든 벽에 부딪히면 세 딸의 벽 충돌 횟수가 함께 1회 증가','세 딸 중 누구든 적과 충돌하면 충돌 횟수 기반 스킬 카운트가 함께 증가','세 딸을 경기장에서 연결선으로 표시','공유 HP 0 시 공유 대상 전원 탈락']},
       {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 20 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
-      {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 영구적으로 증가하며 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 영구 누적','4회마다 이동속도 ×1.4 영구 누적','발동 횟수 제한 없음']},
+      {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 증가한다. 공격력 누적은 최대 ×5까지이며 이동속도는 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 누적 · 최대 ×5','4회마다 이동속도 ×1.4 영구 누적 · 제한 없음','공격력이 ×5에 도달한 뒤에도 속도 증가는 계속 발동']},
       {kind:'30 이상 실제 피해 시전 회복',type:'heal',name:'고쿠미',desc:'한 번에 실제 HP가 30 이상 감소하면 제자리에서 2초간 시전한다. 시전을 끝내면 HP 40을 회복하지만 시전 중 다시 피해를 받으면 취소된다.',points:['한 번의 실제 피해량이 30 이상일 때 발동','시전 시간: 2초 · 시전 중 제자리 고정','시전 성공: HP +40','시전 중 실제 피해를 받으면 즉시 취소','취소를 일으킨 피해로는 즉시 재시전하지 않음','취소 후 새로 한 번에 30 이상 실제 피해를 받아야 다시 발동']}
     ]
   },
@@ -21615,6 +21615,12 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const GONG_PATCH_NOTES=[
+  ['V329','김태린 선거도우미 공격력 누적 최대 ×5 제한 · V328 정상 공격 구조 유지 · 이동속도 ×1.4 누적은 계속 유지'],
+  ['V328','전체 캐릭터 공격 발동 전수 감사 · V323+ 전투 패치 Core Bridge 연결 · 김태린 커다란사랑/윤현딸 크로스 실제 엔진 연결 복구'],
+  ['V327','김태린 커다란사랑 실제 발동 경로 복구 · V326 공유 벽 엔진에서 3회 카운트를 직접 관리해 큰 하트 발사가 누락되지 않도록 수정'],
+  ['V326','캐릭터별 숙련도 TOP5 슬림 UI · 프로필에서 친구요청 · 벽 카운터 원형 표시 복구 · 윤현딸 크로스 공유 엔진 재구축'],
+  ['V325','서연서 블쉴요정 벽 6회 · 김태린 캐릭터/스킬창 노출 복구 · 캐릭터/스킬창 스크롤 흔들림 제거 · 숙련도 TOP5 프로필 연결'],
+  ['V324','윤현딸 크로스 발동 조건 수정 · 최다은·박혜음·김태린 3명이 모두 같은 팀일 때만 발동 · 셋 공유 HP 3000 / 윤현 포함 4000'],
   ['V323','김태린(21기) 신규 · 윤현딸 크로스 확장 · 숙련도 TOP5 프로필/친구추가 · 서연서 6반반장 10 피해/공격 반감 2초 · 토마토 14 피해'],
   ['V322','V219 이후 패치노트 전체 복구 · V302 고정 문구 제거 · 최다은 아스트 면접 1등 누적 30% 감속 · 소심하게걸어다니기 20 피해'],
   ['V321','아군 friendly-fire 차단 · 최다은 친구사귀기와 이서현 번개는 적에게만 적용'],
@@ -35601,7 +35607,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=310',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=329',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -38998,7 +39004,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     skills:[
       {kind:'최다은·박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현이 있으면 윤현도 합류하고 공유 HP 4000','세 딸 중 누구든 받은 피해·회복은 하나의 HP로 즉시 동기화','세 딸 중 누구든 벽에 부딪히면 세 딸의 벽 충돌 횟수가 함께 1회 증가','세 딸 중 누구든 적과 충돌하면 충돌 횟수 기반 스킬 카운트가 함께 증가','세 딸을 경기장에서 연결선으로 표시','공유 HP 0 시 공유 대상 전원 탈락']},
       {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 20 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
-      {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 영구적으로 증가하며 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 영구 누적','4회마다 이동속도 ×1.4 영구 누적','발동 횟수 제한 없음']},
+      {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 증가한다. 공격력 누적은 최대 ×5까지이며 이동속도는 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 누적 · 최대 ×5','4회마다 이동속도 ×1.4 영구 누적 · 제한 없음','공격력이 ×5에 도달한 뒤에도 속도 증가는 계속 발동']},
       {kind:'30 이상 실제 피해 시전 회복',type:'heal',name:'고쿠미',desc:'한 번에 실제 HP가 30 이상 감소하면 제자리에서 2초간 시전한다. 시전을 끝내면 HP 40을 회복하지만 시전 중 다시 피해를 받으면 취소된다.',points:['한 번의 실제 피해량이 30 이상일 때 발동','시전 시간: 2초 · 시전 중 제자리 고정','시전 성공: HP +40','시전 중 실제 피해를 받으면 즉시 취소','취소를 일으킨 피해로는 즉시 재시전하지 않음','취소 후 새로 한 번에 30 이상 실제 피해를 받아야 다시 발동']}
     ]
   };
@@ -39090,7 +39096,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
 
   function touchTaerin(owner,target){
     if(realId(owner)!==ID||!alive(owner)||!alive(target)||owner===target||powerless(owner))return false;owner.data=owner.data||{};owner.data.v323ContactCd=owner.data.v323ContactCd||{};const key=uid(target),now=Number(game?.t)||0;if((owner.data.v323ContactCd[key]||0)>now)return false;owner.data.v323ContactCd[key]=now+.18;owner.data.v323AnyContacts=(owner.data.v323AnyContacts||0)+1;
-    if(owner.data.v323AnyContacts>=4){owner.data.v323AnyContacts=0;owner.data.v323AttackMult=Math.max(.0001,(owner.data.v323AttackMult||1)*1.2);owner.data.v323SpeedMult=Math.max(.0001,(owner.data.v323SpeedMult||1)*1.4);normalizeSpeed(owner,normalSpeed(owner));spawnAttackFx(owner.x,owner.y,'#d84c82','선거도우미',1.3);floater(owner.x,owner.y-owner.r-20,`🗳 공격 ×${owner.data.v323AttackMult.toFixed(2)} · 속도 ×${owner.data.v323SpeedMult.toFixed(2)}`,'#b12f70',13,.75);}
+    if(owner.data.v323AnyContacts>=4){owner.data.v323AnyContacts=0;owner.data.v323AttackMult=Math.min(5,Math.max(.0001,(owner.data.v323AttackMult||1)*1.2));owner.data.v323SpeedMult=Math.max(.0001,(owner.data.v323SpeedMult||1)*1.4);normalizeSpeed(owner,normalSpeed(owner));spawnAttackFx(owner.x,owner.y,'#d84c82','선거도우미',1.3);floater(owner.x,owner.y-owner.r-20,`🗳 공격 ×${owner.data.v323AttackMult.toFixed(2)} · 속도 ×${owner.data.v323SpeedMult.toFixed(2)}`,'#b12f70',13,.75);}
     return true;
   }
   const oldCollide=collide;collide=function(a,b){const touching=!!(a&&b&&alive(a)&&alive(b)&&a!==b&&dist(a,b)<a.r+b.r);const r=oldCollide.apply(this,arguments);if(touching){touchTaerin(a,b);touchTaerin(b,a);}return r;};
@@ -39214,7 +39220,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     }else{g.members=members;g.maxHp=maxHp;g.hp=Math.max(0,Math.min(maxHp,g.hp));}
     game.v311CrossGroups=[g];syncGroup(g,g.hp);return g;
   }
-  function advanceTaerinShared(p){if(!p||powerless(p))return;p.data=p.data||{};p.data.v323AnyContacts=(p.data.v323AnyContacts||0)+1;if(p.data.v323AnyContacts>=4){p.data.v323AnyContacts=0;p.data.v323AttackMult=Math.max(.0001,(p.data.v323AttackMult||1)*1.2);p.data.v323SpeedMult=Math.max(.0001,(p.data.v323SpeedMult||1)*1.4);try{normalizeSpeed(p,normalSpeed(p))}catch(_){}spawnAttackFx(p.x,p.y,'#d84c82','선거도우미 · 공유 충돌',1.2);floater(p.x,p.y-p.r-18,`🗳 공격 ×${p.data.v323AttackMult.toFixed(2)} · 속도 ×${p.data.v323SpeedMult.toFixed(2)}`,'#b12f70',12,.65);}}
+  function advanceTaerinShared(p){if(!p||powerless(p))return;p.data=p.data||{};p.data.v323AnyContacts=(p.data.v323AnyContacts||0)+1;if(p.data.v323AnyContacts>=4){p.data.v323AnyContacts=0;p.data.v323AttackMult=Math.min(5,Math.max(.0001,(p.data.v323AttackMult||1)*1.2));p.data.v323SpeedMult=Math.max(.0001,(p.data.v323SpeedMult||1)*1.4);try{normalizeSpeed(p,normalSpeed(p))}catch(_){}spawnAttackFx(p.x,p.y,'#d84c82','선거도우미 · 공유 충돌',1.2);floater(p.x,p.y-p.r-18,`🗳 공격 ×${p.data.v323AttackMult.toFixed(2)} · 속도 ×${p.data.v323SpeedMult.toFixed(2)}`,'#b12f70',12,.65);}}
   function advanceDaeunShared(p){if(!p||powerless(p))return;p.data=p.data||{};p.data.v311AnyContacts=(p.data.v311AnyContacts||0)+1;if(p.data.v311AnyContacts>=7){p.data.v311AnyContacts=0;try{window.__GONG_V311__?.friendSkill?.()}catch(_){}}}
   function shareCrossContact(actor,target){
     // 윤현멘티크로스의 공유 충돌처럼, 세 딸 중 누구든 다른 공과 실제 충돌하면
@@ -39353,6 +39359,17 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   window.__GONG_V328_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   window.__GONG_V328__={build:BUILD,bridge:()=>window.__GONG_V328_CORE_BRIDGE__?.verify?.(),verify(){return {build:BUILD,bridge:!!window.__GONG_V328_CORE_BRIDGE__,v323:!!window.__GONG_V323__,v326:!!window.__GONG_V326__,v327:!!window.__GONG_V327__,latest:window.__GONG_LATEST_BUILD__};}};
   console.info('[V328] 전체 캐릭터 공격 전수 감사 · Core Bridge · 김태린 후속 전투 패치 실제 연결 복구');
+})();
+</script>
+
+
+<script id="v329TaerinAttackCapX5">
+(()=>{
+  const BUILD='V329_TAERIN_ATTACK_CAP_X5';
+  window.__GONG_PATCH_NOTES__?.register?.('V329','김태린 선거도우미 공격력 누적 최대 ×5 제한 · V328 정상 공격 구조 유지 · 이동속도 ×1.4 누적은 계속 유지');
+  window.__GONG_V329_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V329__={build:BUILD,maxAttackMult:5,verify(){const skill=(window.__GONG_V323__&&typeof SKILL_INFO!=='undefined')?SKILL_INFO?.kimtaerin?.skills?.find(s=>s?.name==='선거도우미'):null;return {build:BUILD,maxAttackMult:5,skill:skill?.points||[],latest:window.__GONG_LATEST_BUILD__};}};
+  console.info('[V329] 김태린 선거도우미 공격력 누적 최대 ×5 · V328 전투 구조 유지');
 })();
 </script>
 
