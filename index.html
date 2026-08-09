@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<!-- V317_SEOYEONSEO_TUNING_SCROLL_UNIFIED_BATTLE_VIEW -->
+<!-- V327_TAERIN_LOVE_ATTACK_RELIABILITY -->
 <!-- BUILD: V251_APP_INSTALL_AND_TRAINING_WAKE_LOCK -->
 <meta charset="utf-8">
 <meta name="gong-mobile-single-file" content="V196; embedded-thumbnails=88">
@@ -39059,7 +39059,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
 
   const oldReset=resetBattle;resetBattle=function(){const r=oldReset.apply(this,arguments);game.v323LoveShots=[];const p=(game.players||[]).find(q=>realId(q)===ID);if(p){p.data=p.data||{};p.data.v323WallHits=0;p.data.v323AnyContacts=0;p.data.v323ContactCd={};p.data.v323AttackMult=1;p.data.v323SpeedMult=1;p.data.v323GokumiCast=0;p.data.v323GokumiX=p.x;p.data.v323GokumiY=p.y;}buildExpandedCross();renderScores();updateUI();return r;};
 
-  const oldWall=onWallHit;onWallHit=function(p){const r=oldWall.apply(this,arguments);if(realId(p)===ID&&alive(p)&&!powerless(p)){p.data=p.data||{};p.data.v323WallHits=(p.data.v323WallHits||0)+1;floater(p.x,p.y-p.r-14,`💖 사랑 ${p.data.v323WallHits}/3`,'#d84c82',11,.4);if(p.data.v323WallHits>=3){p.data.v323WallHits=0;spawnBigHeart(p);}}return r;};
+  const oldWall=onWallHit;onWallHit=function(p){const r=oldWall.apply(this,arguments);if(realId(p)===ID&&alive(p)&&!powerless(p)&&!window.__GONG_V327_TAERIN_WALL_MANAGED__){p.data=p.data||{};p.data.v323WallHits=(p.data.v323WallHits||0)+1;floater(p.x,p.y-p.r-14,`💖 사랑 ${p.data.v323WallHits}/3`,'#d84c82',11,.4);if(p.data.v323WallHits>=3){p.data.v323WallHits=0;spawnBigHeart(p);}}return r;};
 
   function touchTaerin(owner,target){
     if(realId(owner)!==ID||!alive(owner)||!alive(target)||owner===target||powerless(owner))return false;owner.data=owner.data||{};owner.data.v323ContactCd=owner.data.v323ContactCd||{};const key=uid(target),now=Number(game?.t)||0;if((owner.data.v323ContactCd[key]||0)>now)return false;owner.data.v323ContactCd[key]=now+.18;owner.data.v323AnyContacts=(owner.data.v323AnyContacts||0)+1;
@@ -39241,6 +39241,80 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   window.__GONG_V326_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   window.__GONG_V326__={build:BUILD,ensureCross:ensureGroup,cross(){const g=game?.v326DaughterCross;return g?{active:g.active,ended:!!game?.v326DaughterCrossEnded,hp:g.hp,maxHp:g.maxHp,wallHits:g.sharedWallHits||0,collisionHits:g.sharedEnemyHits||0,members:(g.members||[]).map(realId)}:null},wallRings(id){const p=(game?.players||[]).find(x=>realId(x)===id);return p&&window.__GONG_V195_TEST__?.progressRings?.(p.id)},verify(){return {build:BUILD,masteryFriendButtons:document.querySelectorAll('.v290-mastery-ranking [data-v308-rank-friend]').length,masteryRows:document.querySelectorAll('.v290-mastery-ranking .v290-rank-row').length,seoyeonseoRingStatus:/\/6/.test(String(statusText((game?.players||[]).find(p=>realId(p)==='seoyeonseo')||{}))),daughterCross:this.cross(),latest:window.__GONG_LATEST_BUILD__}}};
   console.info('[V326] 슬림 숙련도 랭킹 · 프로필 내 친구요청 · 벽 원형 카운터 누락 복구 · 윤현딸 크로스 멘티형 공유 엔진');
+})();
+</script>
+
+<script id="v327TaerinLoveAttackReliabilityFix">
+(()=>{
+  'use strict';
+  const BUILD='V327_TAERIN_LOVE_ATTACK_RELIABILITY';
+  const TAERIN='kimtaerin',DAUGHTERS=new Set(['choidaeun','hyeeum',TAERIN]);
+  const realId=p=>p?.data?.v160RealId||p?.id||'';
+  const alive=p=>!!p?.alive&&!p?.hidden;
+  window.__GONG_V327_TAERIN_WALL_MANAGED__=true;
+
+  function taerin(){return (game?.players||[]).find(p=>realId(p)===TAERIN)||null}
+  function crossSharesActor(actor){
+    const g=game?.v326DaughterCross;
+    return !!(g?.active&&DAUGHTERS.has(realId(actor))&&g.members?.some(p=>realId(p)===TAERIN));
+  }
+  function advanceLoveWall(reason='벽 충돌'){
+    const p=taerin();
+    if(!p||!alive(p)||(p.data?.v160PowerlessTimer||0)>1e-9)return false;
+    p.data=p.data||{};
+    p.data.v323WallHits=Math.min(3,(Number(p.data.v323WallHits)||0)+1);
+    floater(p.x,p.y-p.r-14,`💖 사랑 ${p.data.v323WallHits}/3`,'#d84c82',11,.4);
+    if(p.data.v323WallHits<3)return true;
+    const fired=window.__GONG_V323__?.forceBigHeart?.()===true;
+    if(fired){
+      p.data.v323WallHits=0;
+      p.data.v327LoveLaunches=(p.data.v327LoveLaunches||0)+1;
+      p.data.v327LastLoveLaunchAt=Number(game?.t)||0;
+    }else{
+      // 적이 잠깐 없는 특수 전환 프레임이면 다음 정상 벽 충돌에서 즉시 다시 시도한다.
+      p.data.v323WallHits=2;
+      p.data.v327LoveRetry=(p.data.v327LoveRetry||0)+1;
+    }
+    return fired;
+  }
+
+  // V323의 벽 카운터를 V326 공유 벽 엔진 바깥에서 직접 관리한다.
+  // 실제 벽 충돌 1회당 정확히 한 번만 진행되며, 크로스 중에는 세 딸 누구의 벽 충돌도 김태린에게 공유된다.
+  const prevWall=onWallHit;
+  onWallHit=function(p){
+    const wasGate=Math.max(0,Number(p?.data?.v138WallGate)||0);
+    const shouldShare=crossSharesActor(p);
+    const isTaerin=realId(p)===TAERIN;
+    const r=prevWall.apply(this,arguments);
+    if(wasGate>1e-9)return r;
+    if(shouldShare||isTaerin)advanceLoveWall(shouldShare?'윤현딸 공유 벽':'김태린 벽');
+    return r;
+  };
+
+  // 전투 재시작 시 진단값까지 초기화한다. 기존 V323 reset은 실제 스킬 카운터를 0으로 만든다.
+  const prevReset=resetBattle;
+  resetBattle=function(){
+    const r=prevReset.apply(this,arguments),p=taerin();
+    if(p){p.data=p.data||{};p.data.v323WallHits=0;p.data.v327LoveLaunches=0;p.data.v327LoveRetry=0;p.data.v327LastLoveLaunchAt=-1;}
+    return r;
+  };
+
+  const skill=SKILL_INFO?.[TAERIN]?.skills?.find(s=>s?.name==='커다란사랑');
+  if(skill){
+    skill.desc='벽에 3번 부딪힐 때마다 큰 하트 1개를 반드시 발사한다. 윤현딸 크로스가 발동 중이면 최다은·박혜음·김태린 중 누구의 벽 충돌도 같은 벽 카운트로 공유된다. 큰 하트가 적 또는 벽에 맞으면 작은 하트로 분열한다.';
+    skill.points=['벽 충돌 3회마다 큰 하트 1개 발사','윤현딸 크로스 중 세 딸의 벽 충돌을 공유 카운트','큰 하트 적중: 20 피해 후 작은 하트 5개 부채꼴 분열','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트 벽 적중: 작은 하트 10개 분열','벽 분열 작은 하트는 벽 반사 · 적중 전까지 유지','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/80% 감속/정지 중 무작위 1개'];
+  }
+
+  window.__GONG_PATCH_NOTES__?.register?.('V327','김태린 커다란사랑 실제 발동 경로 복구 · V326 공유 벽 엔진에서 3회 카운트를 직접 관리해 큰 하트 발사가 누락되지 않도록 수정');
+  window.__GONG_V327_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V327__={
+    build:BUILD,
+    advanceLoveWall,
+    state(){const p=taerin();return p?{wallHits:p.data?.v323WallHits||0,launches:p.data?.v327LoveLaunches||0,retries:p.data?.v327LoveRetry||0,shots:(game?.v323LoveShots||[]).map(s=>s.kind)}:null},
+    force3(){const p=taerin();if(!p)return null;p.data.v323WallHits=0;for(let i=0;i<3;i++)advanceLoveWall('V327 테스트');return this.state()},
+    verify(){return {build:BUILD,managed:!!window.__GONG_V327_TAERIN_WALL_MANAGED__,forceApi:typeof window.__GONG_V323__?.forceBigHeart==='function',state:this.state(),latest:window.__GONG_LATEST_BUILD__}}
+  };
+  console.info('[V327] 김태린 커다란사랑 발동 경로 안정화 · 공유 벽 3회 직접 카운트');
 })();
 </script>
 
