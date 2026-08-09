@@ -2325,7 +2325,7 @@ const DEFS={
   min:{id:'min',name:'김민재',color:'#ff5f93',hp:170,speed:200,img:IMAGES.min,role:'영역전개·추적 발화형',skills:'선상고백 · 나도 대화에 껴줘 · 7초 회복'},
   geun:{id:'geun',name:'김근수',color:'#d52b2b',hp:220,speed:120,img:IMAGES.geun,role:'자해 성장·피격 분노형',skills:'유리멘탈 · 분노 · 지랄발광'},
   jiwon:{id:'jiwon',name:'이지원',color:'#2468d8',hp:230,speed:150,img:IMAGES.jiwon,role:'누적 방어막·공격 약화형',skills:'피해망상 · 전화하기 · 열등감'},
-  doyun:{id:'doyun',name:'이도윤',color:'#6553d9',hp:180,speed:300,img:IMAGES.doyun,role:'지뢰 설치·테두리 돌진·반감 방어형',skills:'표독함 · 발작 · 사랑꾼'},
+  doyun:{id:'doyun',name:'이도윤',color:'#6553d9',hp:370,speed:300,img:IMAGES.doyun,role:'지뢰 설치·테두리 돌진·반감 방어형',skills:'표독함 · 발작 · 사랑꾼'},
   sungmin:{id:'sungmin',name:'이성민',color:'#0f9f8f',hp:180,speed:100,img:IMAGES.sungmin,role:'랜덤 숫자 설치·후궁 방어형',skills:'수학 뿌리기 · 의자왕'},
   junghoon:{id:'junghoon',name:'오정훈',color:'#8a6239',hp:300,speed:50,img:IMAGES.junghoon,role:'피격 조건 정지·지속 피해 장판형',skills:'NPC처럼 서있기 · 중국냄새 풍기기'},
   mingyu:{id:'mingyu',name:'성민규',color:'#2d66f4',hp:200,speed:180,img:IMAGES.mingyu,role:'충돌 누적 방어막·라면 증식·저체력 각성형',skills:'망삼삼 · 라면 배달 · 머리깎기 · 가오잡기'},
@@ -21615,6 +21615,7 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const GONG_PATCH_NOTES=[
+  ['V337','친선전 코드 참가 원자 재검증 · 차가운 Firebase 캐시에서도 참가 안정화 · 동시 참가 충돌 차단 · 이도윤 HP 370'],
   ['V336','온라인 유령 접속 제거 · 접속 heartbeat 8초/25초 freshness · Firebase 서버시계 기준 LIVE 관전 판정 · 관전 끊김 watchdog'],
   ['V335','온라인 목록에 LIVE 관전 가능한 플레이어의 초소형 👁 관전 칩을 직접 표시 · 프로필 관전 버튼도 얇은 칩 UI로 축소 · LIVE 판정 지연 허용시간 보강'],
   ['V334','자동 전투 자가진단 · 시즌 최종 랭킹 스냅샷/명예의 전당/중복방지 영수증 · 경쟁전 연승/TOP10/시즌 최고 기록 · 온라인/프로필 실시간 관전 · 명장면 아카이브는 성능 보호를 위해 제외'],
@@ -30765,6 +30766,14 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const b=backend();if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 방을 만들 수 있어.','error');return false}if(live.roomCode)return false;setFriendlyStatus('사용 가능한 방 코드를 만들고 있어.');
       for(let attempt=0;attempt<6;attempt++){const code=roomCode(),room=makeRoom(code,size,b.user.uid);try{const result=await b.dbmod.runTransaction(b.dbmod.ref(b.db,`friendlyRooms/v1/${code}`),current=>current==null?room:undefined,{applyLocally:false});if(result.committed){await attachRoom(code,'host');return code}}catch(error){live.lastError=String(error?.code||error?.message||error)}}setFriendlyStatus(`방 생성 실패 · ${live.lastError||'잠시 후 다시 시도해.'}`,'error');return false
     }
+    function buildFriendlyJoinRoom(current,preflightRoom,uid,now=serverNow()){
+      const room=current&&typeof current==='object'?current:(preflightRoom&&typeof preflightRoom==='object'?preflightRoom:null);
+      if(!room||room.hostUid===uid||Number(room.expiresAt)<now)return null;
+      if(room.guestUid===uid&&room.status==='draft'&&room.phase==='ban')return {...room};
+      if(room.guestUid||room.status!=='waiting'||room.phase!=='waiting')return null;
+      const first=(Number(room.roomSeed)&1)?'host':'guest';
+      return {...room,guestUid:uid,status:'draft',phase:'ban',banFirst:first,pickFirst:first==='host'?'guest':'host',turn:first,actionCount:0,deadline:now+TURN_MS,battleSeed:0,updatedAt:now};
+    }
     async function joinRoom(input){
       const b=backend(),code=normalizeCode(input);if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 참가할 수 있어.','error');return false}if(code.length!==ROOM_CODE_LENGTH){setFriendlyStatus('6자리 방 코드를 정확히 입력해.','error');return false}if(live.roomCode)return false;setFriendlyStatus(`방 ${code}을 찾고 있어.`);
       live.lastJoinPreflightVerified=false;
@@ -30773,18 +30782,29 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
         if(!preflight.exists()||!serverRoom){setFriendlyStatus('존재하지 않는 코드야. 방장 화면의 코드를 다시 확인해.','error');return false}
         live.lastJoinPreflightVerified=true;
         if(serverRoom.hostUid===b.user.uid){setFriendlyStatus('내가 만든 방에는 다시 참가할 수 없어.','error');return false}
-        if(serverRoom.guestUid||serverRoom.status!=='waiting'){setFriendlyStatus('이미 두 명이 들어갔거나 시작된 방이야.','error');return false}
+        if(serverRoom.guestUid&&serverRoom.guestUid!==b.user.uid){setFriendlyStatus('이미 다른 참가자가 들어간 방이야.','error');return false}
+        if(!serverRoom.guestUid&&(serverRoom.status!=='waiting'||serverRoom.phase!=='waiting')){setFriendlyStatus('이미 시작된 방이야. 새 코드를 받아 줘.','error');return false}
         if(Number(serverRoom.expiresAt)<now){setFriendlyStatus('만료된 방이야. 방을 새로 만들어 줘.','error');return false}
-        const first=(Number(serverRoom.roomSeed)&1)?'host':'guest',joinedAt=serverNow();
-        // V237: runTransaction()의 첫 콜백은 원격 방이 있어도 로컬 캐시가 비어 있으면 null을 받을 수 있다.
-        // 서버 선조회 뒤 조건부 atomic update를 사용하고, 보안 규칙이 waiting -> draft 단일 참가 전환을 보장한다.
-        await b.dbmod.update(target,{guestUid:b.user.uid,status:'draft',phase:'ban',banFirst:first,pickFirst:first==='host'?'guest':'host',turn:first,actionCount:0,deadline:joinedAt+TURN_MS,battleSeed:0,updatedAt:joinedAt});
-        const verify=await b.dbmod.get(target),joined=verify.val();
-        if(!verify.exists()||joined?.guestUid!==b.user.uid||joined?.status!=='draft'||joined?.phase!=='ban')throw new Error('friendly-room-join-verification-failed');
+        const joinedAt=serverNow();
+        // V337: preflight 값을 transaction의 cold-cache fallback으로 사용한다.
+        // 첫 transaction callback이 null이어도 참가를 즉시 중단하지 않고, 서버 충돌 시 Firebase가 최신 원격값으로 재실행하게 한다.
+        const result=await b.dbmod.runTransaction(target,current=>buildFriendlyJoinRoom(current,serverRoom,b.user.uid,joinedAt)||undefined,{applyLocally:false});
+        if(!result.committed)throw new Error('friendly-room-join-conflict');
+        const joined=result.snapshot.val();
+        if(!joined||joined.guestUid!==b.user.uid||joined.status!=='draft'||joined.phase!=='ban')throw new Error('friendly-room-join-verification-failed');
+        const verify=await b.dbmod.get(target),verified=verify.val();
+        if(!verify.exists()||verified?.guestUid!==b.user.uid||verified?.status!=='draft'||verified?.phase!=='ban')throw new Error('friendly-room-join-server-verification-failed');
         const attached=await attachRoom(code,'guest');if(!attached)return false;return true;
       }catch(error){
         const codeText=String(error?.code||error?.message||error);
-        if(/permission[-_ ]denied/i.test(codeText)){try{const current=(await b.dbmod.get(b.dbmod.ref(b.db,`friendlyRooms/v1/${code}`))).val();if(!current)setFriendlyStatus('방이 실제로 종료됐어. 방장에게 새 코드를 받아 줘.','error');else if(current.guestUid&&current.guestUid!==b.user.uid)setFriendlyStatus('다른 참가자가 먼저 입장했어. 새 방을 만들어 줘.','error');else setFriendlyStatus('입장 권한 확인 실패 · V237 Firebase 규칙을 게시해.','error')}catch(_){setFriendlyStatus('입장 권한 확인 실패 · V237 Firebase 규칙을 게시해.','error')}return false}
+        try{
+          const current=(await b.dbmod.get(b.dbmod.ref(b.db,`friendlyRooms/v1/${code}`))).val();
+          if(!current){setFriendlyStatus('방이 실제로 종료됐어. 방장에게 새 코드를 받아 줘.','error');return false}
+          if(current.guestUid===b.user.uid&&current.status==='draft'){const attached=await attachRoom(code,'guest');if(attached)return true}
+          if(current.guestUid&&current.guestUid!==b.user.uid){setFriendlyStatus('다른 참가자가 먼저 입장했어. 새 방을 만들어 줘.','error');return false}
+          if(Number(current.expiresAt)<serverNow()){setFriendlyStatus('만료된 방이야. 방을 새로 만들어 줘.','error');return false}
+          if(/permission[-_ ]denied/i.test(codeText)){setFriendlyStatus('입장 권한 확인 실패 · Firebase 친선전 규칙을 확인해.','error');return false}
+        }catch(_){}
         setFriendlyStatus(`입장 실패 · ${codeText}`,'error');return false;
       }
     }
@@ -30816,7 +30836,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
     window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{live.lastProfileSignature='';onlineReady();syncLeaderboard({force:true})},0));window.addEventListener('gong-v232-auth-changed',event=>{live.lastProfileSignature='';live.ownRow=null;if(live.roomCode&&event.detail?.initial!==true)cleanupRoomState(true);setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});window.addEventListener('gong-competitive-profile-change',()=>setTimeout(syncLeaderboard,0));window.addEventListener('gong-v232-nickname-ready',()=>{live.lastProfileSignature='';setTimeout(()=>syncLeaderboard({force:true}),0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden){onlineReady();syncLeaderboard({force:true})}});window.addEventListener('pagehide',()=>{live.leaderboardOff?.();live.leaderboardOff=null;live.roomOff?.();live.roomOff=null;live.serverOffsetOff?.();live.serverOffsetOff=null});window.addEventListener('pageshow',()=>{live.lastProfileSignature='';setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});setInterval(()=>{if(backend()){onlineReady();syncLeaderboard();if(!live.roomCode)setFriendlyStatus('방 만들기 또는 6자리 코드로 참가할 수 있어.','connected')}},12000);
     discardStoredRoomSession();installUi();onlineReady();
-    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,leaveRoom,restoreRoom,discardStoredRoomSession,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,storedSessionDiscarded:live.storedSessionDiscarded,autoRestoreBlocked:live.autoRestoreBlocked,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
+    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,buildFriendlyJoinRoom,leaveRoom,restoreRoom,discardStoredRoomSession,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,storedSessionDiscarded:live.storedSessionDiscarded,autoRestoreBlocked:live.autoRestoreBlocked,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
     window.__GONG_V231_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V242] 친선 경쟁전은 방 만들기 또는 코드 입장 이후에만 열림 · 현재 화면 재연결 유지');
   })();
 
@@ -32034,7 +32054,7 @@ window.__GONG_V266_RUNTIME__={
   IMAGES.kimjio=V273_IMG_JIO;
   IMAGES.kimminseo=V273_IMG_MINSEO;
 
-  Object.assign(DEFS.doyun,{hp:240,role:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',skills:'표독함 · 발작 · 사랑꾼 · 바코드머리'});
+  Object.assign(DEFS.doyun,{hp:370,role:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',skills:'표독함 · 발작 · 사랑꾼 · 바코드머리'});
   Object.assign(DEFS.yoo,{role:'초고속 폭딜·고정·빙결 투사체형',skills:'개지랄 · 잠깨우기 · 얼음뱉기'});
   Object.assign(DEFS.gyumin,{role:'나선 투사체·위험 보상·무피격 영구 성장형',skills:'입술 · 비틱 · 하늘에맹세하기'});
   Object.assign(DEFS.dong,{role:'벽 성장·잡기·회피·넉백 투사체형',skills:'스피드 · 덩크슛 · 회피 · 케찹뿌리기'});
@@ -32043,7 +32063,7 @@ window.__GONG_V266_RUNTIME__={
   DEFS.kimminseo={id:'kimminseo',name:'김민서',generation:20,color:'#39465a',hp:210,speed:210,img:V273_IMG_MINSEO,role:'3초 붙잡기 콤보·광역 채찍·취약·무력화형',skills:'원투잽훅 · DNA에 각인된 채찍질'};
 
   SKILL_INFO.doyun={
-    ...(SKILL_INFO.doyun||{}),hp:'240',speed:String(DEFS.doyun.speed),summary:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',
+    ...(SKILL_INFO.doyun||{}),hp:'370',speed:String(DEFS.doyun.speed),summary:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',
     skills:[...(SKILL_INFO.doyun?.skills||[]).filter(s=>s?.name!=='바코드머리'),
       {kind:'충돌 누적 설치',type:'attack',name:'바코드머리',desc:'적과 4번 직접 충돌할 때마다 경기장 무작위 위치에 바코드를 생성한다.',points:['적과 직접 충돌 4회마다 바코드 1개 생성','바코드는 경기 종료 전까지 필드에 유지','적이 바코드에 닿으면 5초 동안 1초마다 1 피해(총 5회)','같은 대상이 다시 닿으면 지속시간 갱신']}
     ]
@@ -39671,6 +39691,17 @@ window.__GONG_PATCH_NOTES__?.register?.('V336','유령 온라인 제거: onlineD
 window.__GONG_V336__={build:BUILD,refreshVerifiedOnlineCount,status:()=>({online:lastVerifiedCount,lastRefreshAt,freshMs:FRESH_MS}),verify(){return {build:BUILD,verifiedOnline:lastVerifiedCount,lastRefreshAt,freshMs:FRESH_MS,hasServerClock:typeof window.__GONG_V334__?.syncLiveServerClock==='function',latest:window.__GONG_LATEST_BUILD__}}};
 window.__GONG_V336_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 console.info('[V336] 유령 접속 제거 · 서버시계 LIVE 판정 · 관전 연결 신뢰성 보강');
+})();
+</script>
+
+<script id="v337FriendlyJoinDoyun370">
+(()=>{
+'use strict';
+const BUILD='V337_FRIENDLY_ATOMIC_REJOIN_DOYUN370';
+window.__GONG_PATCH_NOTES__?.register?.('V337','친선전 참가를 서버 선조회 + cold-cache fallback transaction + 서버 재검증으로 강화 · 동시 참가 충돌 차단 · 이도윤 HP 370');
+window.__GONG_V337__={build:BUILD,verify(){const api=window.__GONG_V231__,d=window.DEFS?.doyun||DEFS?.doyun;return {build:BUILD,doyunHp:d?.hp,friendlyJoinReducer:typeof api?.buildFriendlyJoinRoom==='function',roomApi:!!api?.joinRoom,latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V337_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V337] 친선전 참가 원자 재검증 · 이도윤 HP 370');
 })();
 </script>
 
