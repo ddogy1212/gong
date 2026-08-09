@@ -39469,10 +39469,42 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   document.addEventListener('keydown',e=>{const row=e.target.closest?.('.v290-rank-row[data-v323-mastery-profile-uid]');if(!row||!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopImmediatePropagation();openPublicProfile(row.dataset.v323MasteryProfileUid,row.dataset.v323MasteryProfileName||row.querySelector('.v290-rank-name b')?.textContent||'플레이어',row);},true);
 
   // ---- online directory (banner itself is the trigger; no new banner button) ----
-  let onlineDisconnect=null,onlineDisconnectUid='';
+  let onlineDisconnect=null,onlineDisconnectUid='',onlineReadLastError='',onlineReadLastSource='';
+  async function readOnlineSnapshot(b,dbRef,timeoutMs=4200){
+    if(!b?.dbmod||!dbRef)throw new Error('firebase-not-ready');
+    const errors=[];
+    const ms=Math.max(1000,Number(timeoutMs)||4200);
+    try{
+      const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('firebase-get-timeout')),ms));
+      const snap=await Promise.race([b.dbmod.get(dbRef),timeout]);
+      onlineReadLastError='';onlineReadLastSource='sdk-get';return snap;
+    }catch(error){errors.push(`get:${String(error?.code||error?.message||error)}`);}
+    try{
+      const snap=await new Promise((resolve,reject)=>{
+        let done=false,off=null;
+        const finish=(error,value)=>{if(done)return;done=true;clearTimeout(timer);try{off?.()}catch(_){}error?reject(error):resolve(value)};
+        const timer=setTimeout(()=>finish(new Error('firebase-listener-timeout')),ms);
+        try{off=b.dbmod.onValue(dbRef,value=>finish(null,value),error=>finish(error),{onlyOnce:true})}catch(error){finish(error)}
+      });
+      onlineReadLastError='';onlineReadLastSource='sdk-onValue';return snap;
+    }catch(error){errors.push(`onValue:${String(error?.code||error?.message||error)}`);}
+    try{
+      const base=String(window.__GONG_V230__?.config?.databaseURL||'').replace(/\/$/,'');
+      if(!base)throw new Error('firebase-rest-url-missing');
+      const path=String(dbRef?.toString?.()||'').startsWith(base)?String(dbRef.toString()).slice(base.length).replace(/^\//,''):ONLINE_ROOT;
+      const cleanPath=(path||ONLINE_ROOT).replace(/\?.*$/,'').replace(/\.json$/,'').split('/').filter(Boolean).map(encodeURIComponent).join('/');
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms+1000);
+      let response;
+      try{response=await fetch(`${base}/${cleanPath}.json`,{method:'GET',cache:'no-store',mode:'cors',signal:controller.signal,headers:{'Accept':'application/json'}})}finally{clearTimeout(timer)}
+      if(!response.ok){const err=new Error(`firebase-rest-http-${response.status}`);err.code=response.status===401||response.status===403?'PERMISSION_DENIED':`HTTP_${response.status}`;throw err;}
+      const value=await response.json();
+      const snap={val:()=>value,exists:()=>value!==null&&value!==undefined,forEach(fn){if(!value||typeof value!=='object')return false;for(const [key,val] of Object.entries(value)){const child={key,val:()=>val,exists:()=>val!==null&&val!==undefined};if(fn(child)===true)return true;}return false;}};
+      onlineReadLastError='';onlineReadLastSource='rest-fallback';return snap;
+    }catch(error){errors.push(`rest:${String(error?.code||error?.message||error)}`);onlineReadLastError=errors.join(' | ');onlineReadLastSource='failed';const finalError=new Error(onlineReadLastError);finalError.code=/PERMISSION|403|401/i.test(onlineReadLastError)?'PERMISSION_DENIED':'ONLINE_DIRECTORY_READ_FAILED';throw finalError;}
+  }
   async function publishOnline(active=true){const b=backend();if(!b?.user?.uid)return false;const uid=String(b.user.uid),guest=b.user.isAnonymous===true,mode=window.__GONG_V312__?.currentModeView?.()||{key:'home',label:'홈화면'};const ref=b.dbmod.ref(b.db,`${ONLINE_ROOT}/${uid}`);try{if(onlineDisconnectUid!==uid){onlineDisconnect=null;onlineDisconnectUid=uid;}if(active){const offlinePayload={online:false,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:'home',currentModeLabel:'홈화면',guest,version:1};if(!onlineDisconnect){onlineDisconnect=b.dbmod.onDisconnect?.(ref);await onlineDisconnect?.set?.(offlinePayload);}await b.dbmod.set(ref,{online:true,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:String(mode.key||'home').slice(0,24),currentModeLabel:String(mode.label||'홈화면').slice(0,24),guest,version:1});}else await b.dbmod.update(ref,{online:false,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:'home',currentModeLabel:'홈화면',guest});return true}catch(err){console.warn('[V333 온라인 디렉터리]',err);return false}}
   function ensureOnlineModal(){let modal=$('v330OnlineModal');if(modal)return modal;modal=document.createElement('div');modal.id='v330OnlineModal';modal.className='v330-online-modal hidden';modal.innerHTML=`<section class="v330-online-card" role="dialog" aria-modal="true"><header class="v330-online-head"><div><strong>🟢 지금 온라인</strong><small>로그인 플레이어는 누르면 프로필 · 게스트도 함께 표시</small></div><button class="v330-online-close" aria-label="닫기">×</button></header><div class="v330-online-list"><div class="v330-online-empty">불러오는 중...</div></div><div class="v330-online-foot">게스트는 계정 프로필이 없어 목록에서 보기만 가능해.</div></section>`;document.body.appendChild(modal);const close=()=>modal.classList.add('hidden');modal.querySelector('.v330-online-close').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});return modal;}
-  async function openOnlineDirectory(){const modal=ensureOnlineModal(),list=modal.querySelector('.v330-online-list');modal.classList.remove('hidden');list.innerHTML='<div class="v330-online-empty">온라인 플레이어를 불러오는 중...</div>';const b=backend();if(!b){list.innerHTML='<div class="v330-online-empty">온라인 연결을 준비 중이야. 잠시 후 다시 눌러줘.</div>';return false}try{const [dirSnap,offsetSnap]=await Promise.all([b.dbmod.get(b.dbmod.ref(b.db,ONLINE_ROOT)),b.dbmod.get(b.dbmod.ref(b.db,'.info/serverTimeOffset'))]),raw=dirSnap.val()||{},now=Date.now()+(Number(offsetSnap.val())||0),uids=Object.entries(raw).filter(([,v])=>v?.online===true&&now-(Number(v?.heartbeatAt)||0)>=-3000&&now-(Number(v?.heartbeatAt)||0)<=25000).map(([uid])=>uid).slice(0,60);const rows=await Promise.all(uids.map(async uid=>{const d=raw[uid]&&typeof raw[uid]==='object'?raw[uid]:{},fresh=d.online===true&&now-(Number(d.heartbeatAt)||0)>=-3000&&now-(Number(d.heartbeatAt)||0)<=25000;let profile=null;try{const p=await b.dbmod.get(b.dbmod.ref(b.db,`${PUBLIC_ROOT}/${uid}`));profile=p.exists()?p.val():null}catch(_){}return {uid,profile,guest:d.guest===true||!profile,currentModeLabel:fresh?String(d.currentModeLabel||'게임 이용 중'):'게임 이용 중',fresh}}));rows.sort((a,b)=>{const ag=a.profile?0:1,bg=b.profile?0:1;if(ag!==bg)return ag-bg;return String(a.profile?.nickname||a.uid).localeCompare(String(b.profile?.nickname||b.uid),'ko')});let guestNo=0;list.innerHTML=rows.length?rows.map(r=>{if(r.profile){const name=String(r.profile.nickname||'플레이어');return `<button type="button" class="v330-online-row" data-v330-online-profile="${esc(r.uid)}" data-v330-online-name="${esc(name)}"><span class="v330-online-dot"></span><span class="v330-online-name">${esc(name)}</span><span class="v330-online-mode">${esc(r.currentModeLabel||'홈화면')}</span></button>`;}guestNo++;return `<div class="v330-online-row v333-online-guest" data-v333-online-uid="${esc(r.uid)}" aria-label="비로그인 게스트 온라인"><span class="v330-online-dot"></span><span class="v330-online-name">게스트 ${guestNo}</span><span class="v330-online-mode">${esc(r.currentModeLabel||'게임 이용 중')}</span></div>`}).join(''):'<div class="v330-online-empty">지금 온라인 플레이어가 없어.</div>';return true}catch(err){console.warn('[V336 온라인 목록]',err);list.innerHTML='<div class="v330-online-empty">온라인 목록을 불러오지 못했어.<br>Firebase 연결 상태를 확인해.</div>';return false}}
+  async function openOnlineDirectory(){const modal=ensureOnlineModal(),list=modal.querySelector('.v330-online-list');modal.classList.remove('hidden');list.innerHTML='<div class="v330-online-empty">온라인 플레이어를 불러오는 중...</div>';const b=backend();if(!b){list.innerHTML='<div class="v330-online-empty">온라인 연결을 준비 중이야. 잠시 후 다시 눌러줘.</div>';return false}try{const dirSnap=await readOnlineSnapshot(b,b.dbmod.ref(b.db,ONLINE_ROOT)),raw=dirSnap.val()||{};let serverOffset=Number(window.__GONG_V231__?.status?.()?.serverOffset)||0;try{const offsetSnap=await Promise.race([b.dbmod.get(b.dbmod.ref(b.db,'.info/serverTimeOffset')),new Promise((_,reject)=>setTimeout(()=>reject(new Error('server-clock-timeout')),1400))]);const freshOffset=Number(offsetSnap.val());if(Number.isFinite(freshOffset))serverOffset=freshOffset}catch(clockError){console.warn('[V339 온라인 서버시계 fallback]',clockError)}const now=Date.now()+serverOffset,uids=Object.entries(raw).filter(([,v])=>v?.online===true&&now-(Number(v?.heartbeatAt)||0)>=-3000&&now-(Number(v?.heartbeatAt)||0)<=25000).map(([uid])=>uid).slice(0,60);const rows=await Promise.all(uids.map(async uid=>{const d=raw[uid]&&typeof raw[uid]==='object'?raw[uid]:{},fresh=d.online===true&&now-(Number(d.heartbeatAt)||0)>=-3000&&now-(Number(d.heartbeatAt)||0)<=25000;let profile=null;try{const p=await b.dbmod.get(b.dbmod.ref(b.db,`${PUBLIC_ROOT}/${uid}`));profile=p.exists()?p.val():null}catch(_){}return {uid,profile,guest:d.guest===true||!profile,currentModeLabel:fresh?String(d.currentModeLabel||'게임 이용 중'):'게임 이용 중',fresh}}));rows.sort((a,b)=>{const ag=a.profile?0:1,bg=b.profile?0:1;if(ag!==bg)return ag-bg;return String(a.profile?.nickname||a.uid).localeCompare(String(b.profile?.nickname||b.uid),'ko')});let guestNo=0;list.innerHTML=rows.length?rows.map(r=>{if(r.profile){const name=String(r.profile.nickname||'플레이어');return `<button type="button" class="v330-online-row" data-v330-online-profile="${esc(r.uid)}" data-v330-online-name="${esc(name)}"><span class="v330-online-dot"></span><span class="v330-online-name">${esc(name)}</span><span class="v330-online-mode">${esc(r.currentModeLabel||'홈화면')}</span></button>`;}guestNo++;return `<div class="v330-online-row v333-online-guest" data-v333-online-uid="${esc(r.uid)}" aria-label="비로그인 게스트 온라인"><span class="v330-online-dot"></span><span class="v330-online-name">게스트 ${guestNo}</span><span class="v330-online-mode">${esc(r.currentModeLabel||'게임 이용 중')}</span></div>`}).join(''):'<div class="v330-online-empty">지금 온라인 플레이어가 없어.</div>';return true}catch(err){onlineReadLastError=String(err?.code||err?.message||err);console.warn('[V339 온라인 목록]',err);const denied=/permission|denied|403|401/i.test(onlineReadLastError),message=denied?'Firebase가 온라인 목록 읽기를 거부했어.<br>현재 코드의 Firebase 프로젝트/Realtime Database 연결 대상을 확인해줘.':'Firebase SDK와 REST 읽기를 모두 시도했지만 응답을 받지 못했어.<br>재연결 후 다시 불러올 수 있어.';list.innerHTML=`<div class="v330-online-empty">${message}<br><button type="button" class="v339-online-retry">다시 불러오기</button><small class="v339-online-error">${esc(onlineReadLastError||'unknown')}</small></div>`;list.querySelector('.v339-online-retry')?.addEventListener('click',openOnlineDirectory);return false}}
   function armOnlineBanner(){const el=$('v232OnlineCount');if(!el||el.dataset.v330Armed)return false;el.dataset.v330Armed='1';el.classList.add('v330-online-directory-trigger');el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','온라인 플레이어 목록 보기');el.addEventListener('click',openOnlineDirectory);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openOnlineDirectory()}});return true}
   document.addEventListener('click',e=>{const row=e.target.closest?.('[data-v330-online-profile]');if(!row)return;ensureOnlineModal().classList.add('hidden');openPublicProfile(row.dataset.v330OnlineProfile,row.dataset.v330OnlineName,row);});
   window.addEventListener('gong-v230-online-ready',()=>{setTimeout(()=>{armOnlineBanner();publishOnline(true)},300)});window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>publishOnline(true),400));document.addEventListener('visibilitychange',()=>publishOnline(!document.hidden));window.addEventListener('pagehide',()=>publishOnline(false));setInterval(()=>{armOnlineBanner();if(!document.hidden)publishOnline(true)},8000);setTimeout(armOnlineBanner,300);
@@ -39508,7 +39540,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
 
   window.__GONG_PATCH_NOTES__?.register?.('V330','경쟁전 시즌 정산 22시·23시 다음 시즌 시작 · 정산 XP 10,000 쿠폰 단위 · 시즌 참가 티어 + TOP10 순위 칭호 · 시즌2 홍보 · 랭킹 방어막 최대5/3연속 하락 지급 · 골드 미만 AI 대폭 완화/연패 적응 · 인스타 명장면 공유 · 숙련도 랭킹 프로필 복구 · 온라인 배너 플레이어 목록 · 김태린 큰하트16/벽분열2');
   window.__GONG_V330_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  window.__GONG_V330__={build:BUILD,openOnlineDirectory,openPublicProfile,scanSeasonAwards,captureMoment,resetMoment,momentState:()=>({...moment}),storyBlob,handicap,season2Promo:showSeason2Promo,verify(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;return {build:BUILD,season:api?.season?.(),shield:api?.shieldStatus?.(),masteryRows:document.querySelectorAll('.v290-rank-row[data-v323-mastery-profile-uid]').length,onlineTrigger:!!$('v232OnlineCount')?.classList.contains('v330-online-directory-trigger'),latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V330__={build:BUILD,openOnlineDirectory,openPublicProfile,readOnlineSnapshot,onlineReadState:()=>({source:onlineReadLastSource,lastError:onlineReadLastError}),scanSeasonAwards,captureMoment,resetMoment,momentState:()=>({...moment}),storyBlob,handicap,season2Promo:showSeason2Promo,verify(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;return {build:BUILD,season:api?.season?.(),shield:api?.shieldStatus?.(),masteryRows:document.querySelectorAll('.v290-rank-row[data-v323-mastery-profile-uid]').length,onlineTrigger:!!$('v232OnlineCount')?.classList.contains('v330-online-directory-trigger'),onlineReadSource:onlineReadLastSource,onlineReadLastError,latest:window.__GONG_LATEST_BUILD__}}};
   console.info('[V330] 시즌 정산/보상/칭호 · 시즌2 홍보 · 방어막 · 저티어 AI · 명장면 공유 · 온라인 디렉터리 · 숙련도 프로필 · 김태린 밸런스');
 })();
 
@@ -39687,7 +39719,7 @@ console.info('[V335] 온라인/프로필에 보이는 초소형 LIVE 관전 버�
 const BUILD='V336_PRESENCE_SPECTATE_RELIABILITY',ONLINE_ROOT='onlineDirectory/v1',FRESH_MS=25000;
 const backend=()=>window.__GONG_V230__?.backend?.()||null;
 let lastVerifiedCount=0,lastRefreshAt=0;
-async function refreshVerifiedOnlineCount(){const b=backend();if(!b)return null;try{const [dirSnap,offsetSnap]=await Promise.all([b.dbmod.get(b.dbmod.ref(b.db,ONLINE_ROOT)),b.dbmod.get(b.dbmod.ref(b.db,'.info/serverTimeOffset'))]),raw=dirSnap.val()||{},now=Date.now()+(Number(offsetSnap.val())||0);lastVerifiedCount=Object.values(raw).filter(v=>{const age=now-(Number(v?.heartbeatAt)||0);return v?.online===true&&age>=-3000&&age<=FRESH_MS}).length;window.__GONG_V336_VERIFIED_ONLINE__=lastVerifiedCount;lastRefreshAt=Date.now();document.querySelectorAll('.v228-live-count-text').forEach(el=>el.textContent=`현재 ${lastVerifiedCount}명 접속 중`);window.dispatchEvent(new CustomEvent('gong-v336-verified-online',{detail:{online:lastVerifiedCount,at:lastRefreshAt}}));return lastVerifiedCount}catch(e){console.warn('[V336 verified online]',e);return null}}
+async function refreshVerifiedOnlineCount(){const b=backend();if(!b)return null;try{const read=window.__GONG_V330__?.readOnlineSnapshot,dirSnap=read?await read(b,b.dbmod.ref(b.db,ONLINE_ROOT),3500):await b.dbmod.get(b.dbmod.ref(b.db,ONLINE_ROOT)),raw=dirSnap.val()||{};let serverOffset=Number(window.__GONG_V231__?.status?.()?.serverOffset)||0;try{const offsetSnap=await Promise.race([b.dbmod.get(b.dbmod.ref(b.db,'.info/serverTimeOffset')),new Promise((_,reject)=>setTimeout(()=>reject(new Error('server-clock-timeout')),1200))]);const freshOffset=Number(offsetSnap.val());if(Number.isFinite(freshOffset))serverOffset=freshOffset}catch(_){}const now=Date.now()+serverOffset;lastVerifiedCount=Object.values(raw).filter(v=>{const age=now-(Number(v?.heartbeatAt)||0);return v?.online===true&&age>=-3000&&age<=FRESH_MS}).length;window.__GONG_V336_VERIFIED_ONLINE__=lastVerifiedCount;lastRefreshAt=Date.now();document.querySelectorAll('.v228-live-count-text').forEach(el=>el.textContent=`현재 ${lastVerifiedCount}명 접속 중`);window.dispatchEvent(new CustomEvent('gong-v336-verified-online',{detail:{online:lastVerifiedCount,at:lastRefreshAt}}));return lastVerifiedCount}catch(e){console.warn('[V339 verified online]',e);return null}}
 addEventListener('gong-v230-online-ready',()=>setTimeout(refreshVerifiedOnlineCount,700));addEventListener('gong-v232-auth-changed',()=>setTimeout(refreshVerifiedOnlineCount,900));document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(refreshVerifiedOnlineCount,300)});setInterval(()=>{if(!document.hidden)refreshVerifiedOnlineCount()},8000);setTimeout(refreshVerifiedOnlineCount,1600);
 window.__GONG_PATCH_NOTES__?.register?.('V336','유령 온라인 제거: onlineDirectory heartbeat만 실제 접속 기준으로 사용 · 8초 heartbeat/25초 freshness · Firebase 서버시계 기준 LIVE 관전 · 관전 끊김 watchdog');
 window.__GONG_V336__={build:BUILD,refreshVerifiedOnlineCount,status:()=>({online:lastVerifiedCount,lastRefreshAt,freshMs:FRESH_MS}),verify(){return {build:BUILD,verifiedOnline:lastVerifiedCount,lastRefreshAt,freshMs:FRESH_MS,hasServerClock:typeof window.__GONG_V334__?.syncLiveServerClock==='function',latest:window.__GONG_LATEST_BUILD__}}};
@@ -39719,5 +39751,33 @@ console.info('[V338] 경쟁전 AI 밴픽/전투 난이도 상향 · 친선/일�
 })();
 </script>
 
+
+<style id="v339OnlineDirectoryRecoveryStyle">
+.v339-online-retry{margin-top:9px;border:2px solid #111;border-radius:9px;background:#111;color:#fff;padding:7px 11px;font-size:9px;font-weight:1000;cursor:pointer}.v339-online-error{display:block;margin-top:7px;color:#9a8fa0;font-size:6.5px;word-break:break-all}
+</style>
+<script id="v339OnlineDirectoryRecovery">
+(()=>{
+'use strict';
+const BUILD='V339_ONLINE_DIRECTORY_RECOVERY_RULES_SYNC';
+window.__GONG_PATCH_NOTES__?.register?.('V339','온라인 목록 Firebase 로딩 복구 · 서버시계 조회 실패를 목록 실패와 분리 · get 실패 시 onValue 1회 fallback · permission-denied 원인 안내/재시도 · V339 Rules 동봉');
+window.__GONG_V339__={build:BUILD,verify(){return {build:BUILD,reader:typeof window.__GONG_V330__?.readOnlineSnapshot==='function',readState:window.__GONG_V330__?.onlineReadState?.(),verifiedCountApi:typeof window.__GONG_V336__?.refreshVerifiedOnlineCount==='function',latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V339_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V339] 온라인 목록 Firebase 복구 · Rules 동기화');
+})();
+</script>
+
+<style id="v340OnlineDirectoryRestFallbackStyle">
+.v340-online-source{display:block;margin-top:4px;color:#736a7a;font-size:6.5px;font-weight:850}
+</style>
+<script id="v340OnlineDirectoryRestFallback">
+(()=>{
+'use strict';
+const BUILD='V340_ONLINE_DIRECTORY_TRIPLE_FALLBACK';
+window.__GONG_PATCH_NOTES__?.register?.('V340','온라인 목록 재수정 · V334/V339 Rules가 동일함을 정정 · SDK get → onValue → REST 3단계 읽기 · 잘못된 Rules 재적용 안내 제거');
+window.__GONG_V340__={build:BUILD,verify(){return {build:BUILD,reader:typeof window.__GONG_V330__?.readOnlineSnapshot==='function',readState:window.__GONG_V330__?.onlineReadState?.(),databaseURL:window.__GONG_V230__?.config?.databaseURL||'',latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V340_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V340] 온라인 목록 3단계 읽기 복구 · Rules 중복 정정');
+})();
+</script>
 </body>
 </html>
