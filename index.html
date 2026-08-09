@@ -2015,7 +2015,7 @@ body.competitive-battle #restart{display:none!important}
         <div class="competitive-rank-meta"><span id="competitiveRankPoints">0 / 50점</span><span id="competitiveAiLevel">상대 AI · 솔리언 1</span></div>
         <div id="competitiveRankRecord" class="competitive-rank-record">0승 0패 · 0경기</div>
         <div id="competitiveRankShield" class="competitive-rank-shield">🛡️ 강등 방어막 없음 · 일일 임무 올클리어로 획득</div>
-        <div id="competitiveSeasonMeta" class="competitive-season-meta">주간 시즌 · 일요일 23:00(KST) 정산</div>
+        <div id="competitiveSeasonMeta" class="competitive-season-meta">주간 시즌 · 일요일 22:00(KST) 정산 · 23:00 다음 시즌 시작</div>
       </div>
       <div id="competitiveTierRoad" class="competitive-tier-road" aria-label="경쟁전 티어 순서"></div>
     </div>
@@ -3555,7 +3555,7 @@ chaewon:{
     summary:'윤현딸 공유 HP·분열 하트·누적 공격/속도 성장·피격 시전 회복형',hp:'250 (윤현딸 크로스 공유)',speed:'180',
     skills:[
       {kind:'최다은·박혜음 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현이 있으면 윤현도 합류하고 공유 HP 4000','세 딸 중 누구든 받은 피해·회복은 하나의 HP로 즉시 동기화','세 딸 중 누구든 벽에 부딪히면 세 딸의 벽 충돌 횟수가 함께 1회 증가','세 딸 중 누구든 적과 충돌하면 충돌 횟수 기반 스킬 카운트가 함께 증가','세 딸을 경기장에서 연결선으로 표시','공유 HP 0 시 공유 대상 전원 탈락']},
-      {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 20 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
+      {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 16 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 2 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
       {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 증가한다. 공격력 누적은 최대 ×5까지이며 이동속도는 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 누적 · 최대 ×5','4회마다 이동속도 ×1.4 영구 누적 · 제한 없음','공격력이 ×5에 도달한 뒤에도 속도 증가는 계속 발동']},
       {kind:'30 이상 실제 피해 시전 회복',type:'heal',name:'고쿠미',desc:'한 번에 실제 HP가 30 이상 감소하면 제자리에서 2초간 시전한다. 시전을 끝내면 HP 40을 회복하지만 시전 중 다시 피해를 받으면 취소된다.',points:['한 번의 실제 피해량이 30 이상일 때 발동','시전 시간: 2초 · 시전 중 제자리 고정','시전 성공: HP +40','시전 중 실제 피해를 받으면 즉시 취소','취소를 일으킨 피해로는 즉시 재시전하지 않음','취소 후 새로 한 번에 30 이상 실제 피해를 받아야 다시 발동']}
     ]
@@ -21615,6 +21615,8 @@ autoBattleObserver.observe(resultModal,{attributes:true,attributeFilter:['class'
 setInterval(syncAutoBattleUI,200);
 
 const GONG_PATCH_NOTES=[
+  ['V331','V330 배포 전 안정화 · 기존 미수령 시즌 XP 전부 10K 쿠폰 변환 · TOP3 랭킹 조회 지연 시 재시도 · 경기별 명장면 캡처 초기화 · 시즌 경계 즉시 전환 · 시즌1 22시 서버 랭킹 쓰기 동결'],
+  ['V330','경쟁전 시즌 정산 22시·23시 다음 시즌 시작 · 정산 XP 10,000 쿠폰 단위 · 시즌 참가 티어 + TOP10 순위 칭호 · 시즌2 홍보 · 랭킹 방어막 최대5/3연속 하락 지급 · 저티어 AI 완화 · 인스타 명장면 공유 · 숙련도 프로필/온라인 목록 · 김태린 하트 밸런스'],
   ['V329','김태린 선거도우미 공격력 누적 최대 ×5 제한 · V328 정상 공격 구조 유지 · 이동속도 ×1.4 누적은 계속 유지'],
   ['V328','전체 캐릭터 공격 발동 전수 감사 · V323+ 전투 패치 Core Bridge 연결 · 김태린 커다란사랑/윤현딸 크로스 실제 엔진 연결 복구'],
   ['V327','김태린 커다란사랑 실제 발동 경로 복구 · V326 공유 벽 엔진에서 3회 카운트를 직접 관리해 큰 하트 발사가 누락되지 않도록 수정'],
@@ -29636,6 +29638,10 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const SCORE_BOUNDS=Object.freeze({winMin:16,winMax:40,lossMin:20,lossMax:45});
   const KST_OFFSET_MS=9*60*60*1000;
   const WEEK_MS=7*24*60*60*1000;
+  // V330: 시즌1은 2026-08-09 일요일 22:00(KST)에 확정. 이후 매주 일요일 22:00 정산, 23:00 다음 시즌 시작.
+  const V330_FIRST_SEASON_START_MS=Date.UTC(2026,7,2,15,0,0); // 2026-08-03 00:00 KST
+  const V330_FIRST_SETTLEMENT_MS=Date.UTC(2026,7,9,13,0,0);   // 2026-08-09 22:00 KST
+  const V330_LOCK_MS=60*60*1000;
   const FAMILY_META=[
     {family:'솔리언',short:'SAWL',c1:'#5b708f',c2:'#b8c8dc'},
     {family:'브론즈',short:'B',c1:'#7a3f1e',c2:'#d58a52'},
@@ -29652,13 +29658,22 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   const kstCivilDate=ms=>new Date(ms+KST_OFFSET_MS);
   const kstStamp=(ms,withTime=false)=>{const d=kstCivilDate(ms),date=`${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;return withTime?`${date}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}+09:00`:date};
   function seasonInfo(date=new Date()){
-    const nowMs=date instanceof Date?date.getTime():Number(date)||Date.now(),civil=kstCivilDate(nowMs),daysSinceMonday=(civil.getUTCDay()+6)%7;
-    const mondayCivilMs=Date.UTC(civil.getUTCFullYear(),civil.getUTCMonth(),civil.getUTCDate()-daysSinceMonday,0,0,0),startsAtMs=mondayCivilMs-KST_OFFSET_MS,nextStartsAtMs=startsAtMs+WEEK_MS,settlementStartsAtMs=nextStartsAtMs-60*60*1000,endsAtMs=settlementStartsAtMs-1000;
-    const start=kstCivilDate(startsAtMs),end=kstCivilDate(endsAtMs),locked=nowMs>=settlementStartsAtMs&&nowMs<nextStartsAtMs;
-    return {id:kstStamp(startsAtMs),year:start.getUTCFullYear(),month:start.getUTCMonth()+1,day:start.getUTCDate(),label:`${start.getUTCMonth()+1}월 ${start.getUTCDate()}일~${end.getUTCMonth()+1}월 ${end.getUTCDate()}일 주간 시즌`,endLabel:`일요일 오후 11시까지`,startsAt:kstStamp(startsAtMs,true),endsAt:kstStamp(endsAtMs,true),settlementStartsAt:kstStamp(settlementStartsAtMs,true),nextStartsAt:kstStamp(nextStartsAtMs,true),startsAtMs,endsAtMs,settlementStartsAtMs,nextStartsAtMs,locked};
+    const nowMs=date instanceof Date?date.getTime():Number(date)||Date.now();
+    let seasonNumber,startsAtMs,endsAtMs,settlementStartsAtMs,nextStartsAtMs,locked,id;
+    if(nowMs<V330_FIRST_SETTLEMENT_MS){
+      seasonNumber=1;startsAtMs=V330_FIRST_SEASON_START_MS;settlementStartsAtMs=V330_FIRST_SETTLEMENT_MS;endsAtMs=settlementStartsAtMs-1000;nextStartsAtMs=settlementStartsAtMs+V330_LOCK_MS;locked=false;id='2026-08-03';
+    }else{
+      const cycle=Math.floor((nowMs-V330_FIRST_SETTLEMENT_MS)/WEEK_MS),lockStart=V330_FIRST_SETTLEMENT_MS+cycle*WEEK_MS;
+      seasonNumber=cycle+2;startsAtMs=lockStart+V330_LOCK_MS;settlementStartsAtMs=lockStart+WEEK_MS;endsAtMs=settlementStartsAtMs-1000;nextStartsAtMs=settlementStartsAtMs+V330_LOCK_MS;locked=nowMs<startsAtMs;
+      // Firebase 시즌 ID는 다음 월요일 날짜를 계속 사용해 기존 랭킹 경로와 호환한다.
+      id=kstStamp(startsAtMs+V330_LOCK_MS);
+    }
+    const start=kstCivilDate(startsAtMs),end=kstCivilDate(endsAtMs),month=start.getUTCMonth()+1,day=start.getUTCDate();
+    const label=`시즌 ${seasonNumber} · ${month}월 ${day}일~${end.getUTCMonth()+1}월 ${end.getUTCDate()}일`;
+    return {id,seasonNumber,year:start.getUTCFullYear(),month,day,label,endLabel:'일요일 오후 10시 정산',startsAt:kstStamp(startsAtMs,true),endsAt:kstStamp(endsAtMs,true),settlementStartsAt:kstStamp(settlementStartsAtMs,true),nextStartsAt:kstStamp(nextStartsAtMs,true),startsAtMs,endsAtMs,settlementStartsAtMs,nextStartsAtMs,locked};
   }
   function defaultProfile(info=seasonInfo()){
-    return {rankIndex:0,points:0,wins:0,losses:0,matches:0,winStreak:0,bestWinStreak:0,lastSkipPromotionMatch:-99,rankShield:0,rankShieldAwardDate:'',rankShieldUsedAt:'',v302GlobalShieldGranted:false,v302GlobalShieldGrantedAt:'',lastChange:0,lastPerformance:0,settlementRevision:0,seasonId:info.id,seasonLabel:info.label,seasonEndsAt:info.endsAt,seasonStartedAt:info.startsAt,pointUnit:POINTS_PER_TIER,scoringVersion:SCORING_VERSION,seasonCycle:'weekly',updatedAt:new Date().toISOString()};
+    return {rankIndex:0,points:0,wins:0,losses:0,matches:0,winStreak:0,bestWinStreak:0,lastSkipPromotionMatch:-99,rankShield:0,rankDropStreak:0,lossStreak:0,rankShieldAwardDate:'',rankShieldUsedAt:'',v302GlobalShieldGranted:false,v302GlobalShieldGrantedAt:'',lastChange:0,lastPerformance:0,settlementRevision:0,seasonId:info.id,seasonLabel:info.label,seasonEndsAt:info.endsAt,seasonStartedAt:info.startsAt,pointUnit:POINTS_PER_TIER,scoringVersion:SCORING_VERSION,seasonCycle:'weekly',updatedAt:new Date().toISOString()};
   }
   function readJson(key,fallback=null){try{const v=localStorage.getItem(key);return v==null?fallback:JSON.parse(v)}catch(_){return fallback}}
   function writeJson(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}}
@@ -29669,7 +29684,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     p.points=Math.max(0,Math.floor((Number(p.points)||0)*(needsPointMigration?POINTS_PER_TIER/oldUnit:1)));
     if(p.rankIndex<RANKS.length-1)p.points=Math.min(POINTS_PER_TIER-1,p.points);else p.points=Math.max(0,Math.floor(p.points));
     p.pointUnit=POINTS_PER_TIER;p.scoringVersion=SCORING_VERSION;p.seasonCycle='weekly';if(needsPointMigration)p.scoreMigratedAt=new Date().toISOString();
-    p.wins=Math.max(0,Number(p.wins)||0);p.losses=Math.max(0,Number(p.losses)||0);p.matches=Math.max(0,Number(p.matches)||0);p.winStreak=Math.max(0,Math.floor(Number(p.winStreak)||0));p.bestWinStreak=Math.max(p.winStreak,Math.floor(Number(p.bestWinStreak)||0));p.lastSkipPromotionMatch=Math.floor(Number.isFinite(Number(p.lastSkipPromotionMatch))?Number(p.lastSkipPromotionMatch):-99);p.rankShield=Math.max(0,Math.min(2,Math.floor(Number(p.rankShield)||0)));p.rankShieldAwardDate=String(p.rankShieldAwardDate||'');p.rankShieldUsedAt=String(p.rankShieldUsedAt||'');p.v302GlobalShieldGranted=!!p.v302GlobalShieldGranted;p.v302GlobalShieldGrantedAt=String(p.v302GlobalShieldGrantedAt||'');p.settlementRevision=Math.max(0,Number(p.settlementRevision)||p.matches||0);
+    p.wins=Math.max(0,Number(p.wins)||0);p.losses=Math.max(0,Number(p.losses)||0);p.matches=Math.max(0,Number(p.matches)||0);p.winStreak=Math.max(0,Math.floor(Number(p.winStreak)||0));p.bestWinStreak=Math.max(p.winStreak,Math.floor(Number(p.bestWinStreak)||0));p.lastSkipPromotionMatch=Math.floor(Number.isFinite(Number(p.lastSkipPromotionMatch))?Number(p.lastSkipPromotionMatch):-99);p.rankShield=Math.max(0,Math.min(5,Math.floor(Number(p.rankShield)||0)));p.rankDropStreak=Math.max(0,Math.min(2,Math.floor(Number(p.rankDropStreak)||0)));p.lossStreak=Math.max(0,Math.floor(Number(p.lossStreak)||0));p.rankShieldAwardDate=String(p.rankShieldAwardDate||'');p.rankShieldUsedAt=String(p.rankShieldUsedAt||'');p.v302GlobalShieldGranted=!!p.v302GlobalShieldGranted;p.v302GlobalShieldGrantedAt=String(p.v302GlobalShieldGrantedAt||'');p.settlementRevision=Math.max(0,Number(p.settlementRevision)||p.matches||0);
     return p;
   }
   function archiveSeason(oldProfile){
@@ -29684,7 +29699,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     let p=normalizeProfile(raw,info);
     if(!raw){p=defaultProfile(info)}
     else if(!raw.seasonId||/^\d{4}-\d{2}$/.test(String(raw.seasonId))){p.seasonId=info.id;p.seasonLabel=info.label;p.seasonEndsAt=info.endsAt;p.seasonStartedAt=info.startsAt;p.pointUnit=POINTS_PER_TIER;p.scoringVersion=SCORING_VERSION;p.seasonCycle='weekly';migrated=true}
-    else if(raw.seasonId!==info.id){const carryShield=Math.max(0,Math.min(2,Number(p.rankShield)||0)),awardDate=String(p.rankShieldAwardDate||''),usedAt=String(p.rankShieldUsedAt||''),grant=!!p.v302GlobalShieldGranted,grantAt=String(p.v302GlobalShieldGrantedAt||'');archiveSeason(p);p={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt}}
+    else if(raw.seasonId!==info.id){const carryShield=Math.max(0,Math.min(5,Number(p.rankShield)||0)),awardDate=String(p.rankShieldAwardDate||''),usedAt=String(p.rankShieldUsedAt||''),grant=!!p.v302GlobalShieldGranted,grantAt=String(p.v302GlobalShieldGrantedAt||'');archiveSeason(p);p={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt}}
     p.updatedAt=new Date().toISOString();writeJson(STORAGE_KEY,p);
     return p;
   }
@@ -29694,7 +29709,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const info=seasonInfo();
     if(!profile.seasonId){profile={...normalizeProfile(profile,info),seasonId:info.id,seasonLabel:info.label,seasonEndsAt:info.endsAt,seasonStartedAt:info.startsAt};save();return false}
     if(profile.seasonId===info.id){if(profile.seasonEndsAt!==info.endsAt||profile.pointUnit!==POINTS_PER_TIER||profile.scoringVersion!==SCORING_VERSION){profile={...normalizeProfile(profile,info),seasonLabel:info.label,seasonEndsAt:info.endsAt,seasonStartedAt:profile.seasonStartedAt||info.startsAt};save()}return false}
-    const carryShield=Math.max(0,Math.min(2,Number(profile.rankShield)||0)),awardDate=String(profile.rankShieldAwardDate||''),usedAt=String(profile.rankShieldUsedAt||''),grant=!!profile.v302GlobalShieldGranted,grantAt=String(profile.v302GlobalShieldGrantedAt||'');archiveSeason(profile);profile={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt};save();return true;
+    const carryShield=Math.max(0,Math.min(5,Number(profile.rankShield)||0)),awardDate=String(profile.rankShieldAwardDate||''),usedAt=String(profile.rankShieldUsedAt||''),grant=!!profile.v302GlobalShieldGranted,grantAt=String(profile.v302GlobalShieldGrantedAt||'');archiveSeason(profile);profile={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt};save();return true;
   }
   function rank(){ensureCurrentSeason();return RANKS[Math.max(0,Math.min(RANKS.length-1,profile.rankIndex))]}
   function familyMeta(r=rank()){return FAMILY_META[r.familyIndex]||FAMILY_META[0]}
@@ -29706,9 +29721,10 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   }
   function aiProfile(){
     const i=Math.max(0,Math.min(18,profile.rankIndex));
-    if(i<=2)return {rankIndex:i,label:RANKS[i].name,topChoices:8-i,randomness:.52-i*.08,lookahead:0};
-    if(i<=5)return {rankIndex:i,label:RANKS[i].name,topChoices:6-(i-3),randomness:.32-(i-3)*.07,lookahead:0};
-    if(i<=8)return {rankIndex:i,label:RANKS[i].name,topChoices:3,randomness:.16-(i-6)*.05,lookahead:.04*(i-6)};
+    // V330: 골드 미만은 입문자가 충분히 이길 수 있도록 밴픽 AI를 크게 완화한다. 골드부터는 기존 난이도를 그대로 유지한다.
+    if(i<=2)return {rankIndex:i,label:`매우 쉬움 · ${RANKS[i].name}`,topChoices:18,randomness:.94,lookahead:0};
+    if(i<=5)return {rankIndex:i,label:`매우 쉬움 · ${RANKS[i].name}`,topChoices:16,randomness:.90,lookahead:0};
+    if(i<=8)return {rankIndex:i,label:`쉬움 · ${RANKS[i].name}`,topChoices:12,randomness:.82,lookahead:0};
     if(i===9)return {rankIndex:i,label:RANKS[i].name,topChoices:2,randomness:.07,lookahead:0};
     if(i===10)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:0};
     if(i===11)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:.16};
@@ -29719,8 +29735,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function renderRank(){
     ensureCurrentSeason();
     const info=seasonInfo(),r=rank(),icon=document.getElementById('competitiveRankIcon'),name=document.getElementById('competitiveRankName'),points=document.getElementById('competitiveRankPoints'),bar=document.getElementById('competitiveRankProgress'),ai=document.getElementById('competitiveAiLevel'),record=document.getElementById('competitiveRankRecord'),shield=document.getElementById('competitiveRankShield'),season=document.getElementById('competitiveSeasonMeta'),road=document.getElementById('competitiveTierRoad'),startButton=document.getElementById('draftStartBtn');
-    if(icon)icon.innerHTML=iconSvg(r);if(name)name.textContent=r.name;if(points)points.textContent=r.familyIndex===6?`${profile.points}점`:`${profile.points} / ${POINTS_PER_TIER}점`;if(bar)bar.style.width=`${r.familyIndex===6?100:Math.max(0,Math.min(100,profile.points/POINTS_PER_TIER*100))}%`;if(ai)ai.textContent=`상대 AI · ${aiProfile().label}`;if(record)record.textContent=`${profile.wins}승 ${profile.losses}패 · ${profile.matches}경기 · 현재 ${profile.winStreak}연승`;if(shield){const ready=profile.rankShield>0;shield.classList.toggle('ready',ready);shield.classList.toggle('used',!ready&&!!profile.rankShieldUsedAt);shield.textContent=ready?`🛡️ 강등 방어막 ${profile.rankShield}개 보유 · 강등 시 1개 자동 소모`:'🛡️ 강등 방어막 없음 · 하루 1회 일일 임무 올클리어로 획득'}if(season)season.textContent=info.locked?`${info.label} 정산 중 · 월요일 00:00(KST) 새 시즌 시작`:`${info.label} · 일요일 23:00(KST) 정산`;
-    if(startButton){startButton.disabled=info.locked;startButton.textContent=info.locked?'경쟁전 정산 중 · 00:00 입장 가능':'시작'}
+    if(icon)icon.innerHTML=iconSvg(r);if(name)name.textContent=r.name;if(points)points.textContent=r.familyIndex===6?`${profile.points}점`:`${profile.points} / ${POINTS_PER_TIER}점`;if(bar)bar.style.width=`${r.familyIndex===6?100:Math.max(0,Math.min(100,profile.points/POINTS_PER_TIER*100))}%`;if(ai)ai.textContent=`상대 AI · ${aiProfile().label}`;if(record)record.textContent=`${profile.wins}승 ${profile.losses}패 · ${profile.matches}경기 · 현재 ${profile.winStreak}연승`;if(shield){const ready=profile.rankShield>0;shield.classList.toggle('ready',ready);shield.classList.toggle('used',!ready&&!!profile.rankShieldUsedAt);shield.textContent=`🛡️ 랭킹 방어막 ${profile.rankShield}/5 · 연속 하락 ${profile.rankDropStreak||0}/3${ready?' · 강등 시 자동 소모':''}`}if(season)season.textContent=info.locked?`${info.label} 준비 중 · 22:00 정산 완료 · 23:00 경쟁전 시작`:`${info.label} · 일요일 22:00 정산 · 23:00 다음 시즌 시작`;
+    if(startButton){startButton.disabled=info.locked;startButton.textContent=info.locked?'시즌 정산 완료 · 23:00 입장 가능':'시작'}
     if(road)road.innerHTML=FAMILY_META.map((m,i)=>{const rr=RANKS.find(x=>x.familyIndex===i)||RANKS.at(-1);return `<span class="competitive-tier-chip ${i===r.familyIndex?'active':''}">${iconSvg(rr,true)}${m.family}</span>`}).join('');
   }
   function rankedTeamPlayers(players=game?.players||[]){
@@ -29788,13 +29804,13 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function grantDailyShield(date=kstStamp(Date.now())){
     ensureCurrentSeason();const day=String(date||kstStamp(Date.now())).slice(0,10);
     if(profile.rankShieldAwardDate===day)return {granted:false,reason:'already-today',shield:profile.rankShield,date:day};
-    profile.rankShieldAwardDate=day;const had=profile.rankShield>0;if(!had)profile.rankShield=1;save();renderRank();
-    return {granted:!had,reason:had?'already-held':'granted',shield:profile.rankShield,date:day};
+    profile.rankShieldAwardDate=day;const before=profile.rankShield;profile.rankShield=Math.min(5,profile.rankShield+1);save();renderRank();
+    return {granted:profile.rankShield>before,reason:profile.rankShield>before?'granted':'cap-reached',before,shield:profile.rankShield,date:day};
   }
   function grantV302GlobalShield(){
     ensureCurrentSeason();
     if(profile.v302GlobalShieldGranted)return {granted:false,reason:'already-granted',shield:profile.rankShield,at:profile.v302GlobalShieldGrantedAt||''};
-    const before=Math.max(0,Number(profile.rankShield)||0);profile.rankShield=Math.min(2,before+1);profile.v302GlobalShieldGranted=true;profile.v302GlobalShieldGrantedAt=new Date().toISOString();save();renderRank();
+    const before=Math.max(0,Number(profile.rankShield)||0);profile.rankShield=Math.min(5,before+1);profile.v302GlobalShieldGranted=true;profile.v302GlobalShieldGrantedAt=new Date().toISOString();save();renderRank();
     return {granted:profile.rankShield>before,reason:profile.rankShield>before?'granted':'cap-reached',before,shield:profile.rankShield,at:profile.v302GlobalShieldGrantedAt};
   }
   function applyPoints(delta){
@@ -29812,21 +29828,41 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function settleMatch(){
     ensureCurrentSeason();const draft=game?.v212Draft||currentConfig?.draft;if(!draft||draft.friendly||draft.competitive===false||document.body.classList.contains('friendly-battle')||game?.v215RankSettled)return null;game.v215RankSettled=true;
     const resolution=resolveCompetitiveWinner(),win=resolution.winnerTeam==='T1',perf=teamPerformance(),delta=scoreDelta(win,perf),outcome=win?'win':'loss';
-    if(win){profile.wins++;profile.winStreak=Math.max(0,Number(profile.winStreak)||0)+1;profile.bestWinStreak=Math.max(Number(profile.bestWinStreak)||0,profile.winStreak)}else{profile.losses++;profile.winStreak=0}
+    const beforeScore=(Number(profile.rankIndex)||0)*POINTS_PER_TIER+(Number(profile.points)||0);
+    if(win){profile.wins++;profile.winStreak=Math.max(0,Number(profile.winStreak)||0)+1;profile.bestWinStreak=Math.max(Number(profile.bestWinStreak)||0,profile.winStreak);profile.lossStreak=0}else{profile.losses++;profile.winStreak=0;profile.lossStreak=Math.max(0,Number(profile.lossStreak)||0)+1}
     profile.matches++;profile.settlementRevision=Math.max(Number(profile.settlementRevision)||0,profile.matches-1)+1;profile.lastPerformance=perf;const movement=applyPoints(delta);const shieldUsed=applyDemotionShield(win,movement);
     const special=applySpecialPromotion(specialPromotionTiers(win,perf),movement.beforeIndex);if(special.tiers>=2){movement.afterIndex=profile.rankIndex;movement.afterPoints=profile.points;movement.promoted=true;movement.demoted=false}
+    const afterScore=(Number(profile.rankIndex)||0)*POINTS_PER_TIER+(Number(profile.points)||0),rankDropped=afterScore<beforeScore;
+    profile.rankDropStreak=rankDropped?Math.max(0,Number(profile.rankDropStreak)||0)+1:0;
+    let shieldAwarded=false;if(profile.rankDropStreak>=3){const beforeShield=profile.rankShield;profile.rankShield=Math.min(5,profile.rankShield+1);shieldAwarded=profile.rankShield>beforeShield;profile.rankDropStreak=0;}
     profile.lastChange=delta;save();renderRank();
-    const before=RANKS[movement.beforeIndex],after=RANKS[movement.afterIndex];game.v215RankResult={outcome,delta,performance:perf,before:before.name,after:after.name,points:profile.points,promoted:movement.promoted,demoted:movement.demoted,specialPromotionTiers:special.tiers,shieldUsed,winStreak:profile.winStreak,seasonId:profile.seasonId,winnerTeam:resolution.winnerTeam,decidedBy:resolution.decidedBy};return game.v215RankResult;
+    const before=RANKS[movement.beforeIndex],after=RANKS[movement.afterIndex];game.v215RankResult={outcome,delta,performance:perf,before:before.name,after:after.name,points:profile.points,promoted:movement.promoted,demoted:movement.demoted,specialPromotionTiers:special.tiers,shieldUsed,shieldAwarded,rankDropStreak:profile.rankDropStreak,lossStreak:profile.lossStreak,winStreak:profile.winStreak,seasonId:profile.seasonId,winnerTeam:resolution.winnerTeam,decidedBy:resolution.decidedBy};return game.v215RankResult;
   }
   const originalCheckEnd=checkEnd;checkEnd=function(){const wasOver=!!game?.over,result=originalCheckEnd();if(!wasOver&&game?.over&&game?.v212Draft)settleMatch();return result};
-  const originalRenderResultModal=renderResultModal;renderResultModal=function(){originalRenderResultModal();const rr=game?.v215RankResult;if(!rr)return;const card=document.createElement('div');card.className='competitive-result-card';const cls=rr.delta>0?'positive':rr.delta<0?'negative':'draw',move=rr.specialPromotionTiers>=3?' · ⚡ 3단 특별승급!':rr.specialPromotionTiers>=2?' · 🔥 2단 특별승급!':rr.promoted?' · 승급!':rr.demoted?' · 강등':'',info=seasonInfo(),shieldNote=rr.shieldUsed?' · 🛡️ 강등 방어막 발동!':'';card.innerHTML=`<div style="font-size:11px;font-weight:1000;color:#6b7280">${info.label} 경쟁전 점수</div><div class="rank-change ${cls}">${rr.delta>0?'+':''}${rr.delta}점</div><div class="rank-after">${rr.after}${move}</div><div class="rank-detail">활약도 ${Math.round(rr.performance*100)}% · ${rr.winStreak||0}연승 · 현재 ${rr.points}${rr.after==='신'?'':` / ${POINTS_PER_TIER}`}점${shieldNote}</div>`;resultBody.prepend(card)};
+  const originalRenderResultModal=renderResultModal;renderResultModal=function(){originalRenderResultModal();const rr=game?.v215RankResult;if(!rr)return;const card=document.createElement('div');card.className='competitive-result-card';const cls=rr.delta>0?'positive':rr.delta<0?'negative':'draw',move=rr.specialPromotionTiers>=3?' · ⚡ 3단 특별승급!':rr.specialPromotionTiers>=2?' · 🔥 2단 특별승급!':rr.promoted?' · 승급!':rr.demoted?' · 강등':'',info=seasonInfo(),shieldNote=rr.shieldUsed?' · 🛡️ 방어막 발동!':rr.shieldAwarded?' · 🛡️ 3연속 하락 보상 +1!':'';card.innerHTML=`<div style="font-size:11px;font-weight:1000;color:#6b7280">${info.label} 경쟁전 점수</div><div class="rank-change ${cls}">${rr.delta>0?'+':''}${rr.delta}점</div><div class="rank-after">${rr.after}${move}</div><div class="rank-detail">활약도 ${Math.round(rr.performance*100)}% · ${rr.winStreak||0}연승 · 현재 ${rr.points}${rr.after==='신'?'':` / ${POINTS_PER_TIER}`}점${shieldNote}</div>`;resultBody.prepend(card)};
   const draftBtn=document.getElementById('draftModeBtn');draftBtn?.addEventListener('click',()=>requestAnimationFrame(renderRank));document.getElementById('draftStartBtn')?.addEventListener('click',renderRank);
   addEventListener('beforeunload',save);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save();else renderRank()});setInterval(()=>{const before=profile.seasonId,wasLocked=!!seasonInfo(new Date(Date.now()-60000)).locked;ensureCurrentSeason();const info=seasonInfo();if(before!==profile.seasonId||wasLocked!==info.locked)renderRank()},30000);
+  // V331: 활성 탭에서는 30초 폴링을 기다리지 않고 22:00 정산/23:00 개방 경계에 즉시 시즌 상태를 전환한다.
+  let v331SeasonBoundaryTimer=0;
+  function v331ScheduleSeasonBoundary(){
+    clearTimeout(v331SeasonBoundaryTimer);
+    const info=seasonInfo(),target=info.locked?info.nextStartsAtMs:info.settlementStartsAtMs;
+    if(!Number.isFinite(target))return false;
+    const delay=Math.max(80,target-Date.now()+80);
+    v331SeasonBoundaryTimer=setTimeout(()=>{
+      const before=profile.seasonId,changed=ensureCurrentSeason(),after=profile.seasonId,nextInfo=seasonInfo();
+      renderRank();
+      window.dispatchEvent(new CustomEvent('gong-v331-season-boundary',{detail:{before,after,changed,locked:nextInfo.locked,at:Date.now()}}));
+      v331ScheduleSeasonBoundary();
+    },Math.min(delay,2147483000));
+    return true;
+  }
+  v331ScheduleSeasonBoundary();
   renderRank();
-  const api={build:BUILD,profile:()=>{ensureCurrentSeason();return JSON.parse(JSON.stringify(profile))},rank:()=>rank().name,aiProfile,render:renderRank,iconSvg,season:(date)=>seasonInfo(date),isLocked:(date)=>seasonInfo(date).locked,lockMessage:()=>`${seasonInfo().label} 정산 중이야. 월요일 00:00(KST)에 새 시즌이 시작돼.`,history:()=>readJson(HISTORY_KEY,[]),grantDailyShield,grantV302GlobalShield,shieldStatus:()=>({count:profile.rankShield,date:profile.rankShieldAwardDate,usedAt:profile.rankShieldUsedAt,globalGranted:profile.v302GlobalShieldGranted,globalGrantedAt:profile.v302GlobalShieldGrantedAt}),specialPromotionRules:{two:{streak:3,performance:.84,cooldownMatches:3},three:{streak:6,performance:.94,perfectSweep:true,cooldownMatches:3}},_debugSettleMatch:settleMatch,_debugSpecialPromotionTiers:specialPromotionTiers,_debugSpecialPromotionSnapshot:specialPromotionFromSnapshot,_debugApplyPoints:applyPoints,_debugApplyDemotionShield:applyDemotionShield,reset(){profile=defaultProfile();save();renderRank();return this.profile()},setRank(index,points=0){ensureCurrentSeason();profile.rankIndex=Math.max(0,Math.min(RANKS.length-1,Number(index)||0));profile.points=Math.max(0,profile.rankIndex<RANKS.length-1?Math.min(POINTS_PER_TIER-1,Number(points)||0):Math.floor(Number(points)||0));profile.pointUnit=POINTS_PER_TIER;profile.scoringVersion=SCORING_VERSION;save();renderRank();return this.profile()},importProfile(raw,{emit=false}={}){const info=seasonInfo(),value=typeof raw==='string'?(()=>{try{return JSON.parse(raw)}catch(_){return null}})():raw;if(!value||typeof value!=='object')return this.profile();profile=normalizeProfile(value,info);if(profile.seasonId!==info.id){const carryShield=Math.max(0,Math.min(2,Number(profile.rankShield)||0)),awardDate=String(profile.rankShieldAwardDate||''),usedAt=String(profile.rankShieldUsedAt||''),grant=!!profile.v302GlobalShieldGranted,grantAt=String(profile.v302GlobalShieldGrantedAt||'');profile={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt}}profile.seasonLabel=info.label;profile.seasonEndsAt=info.endsAt;profile.seasonStartedAt=profile.seasonStartedAt||info.startsAt;profile.updatedAt=new Date().toISOString();writeJson(STORAGE_KEY,profile);renderRank();if(emit)window.dispatchEvent(new CustomEvent('gong-competitive-profile-change',{detail:{seasonId:profile.seasonId,rankIndex:profile.rankIndex,points:profile.points,wins:profile.wins,losses:profile.losses,matches:profile.matches}}));return this.profile()},preview(win=true,performance=.5){return scoreDelta(!!win,performance)},resolveWinnerForTest(players,title=''){return resolveCompetitiveWinner(players,title)},settlementForTest(players,title=''){const resolution=resolveCompetitiveWinner(players,title),performance=teamPerformance(players),win=resolution.winnerTeam==='T1';return {...resolution,performance,outcome:win?'win':'loss',delta:scoreDelta(win,performance)}},scoreBounds:{...SCORE_BOUNDS},ranks:RANKS.map(r=>r.name),pointsPerTier:POINTS_PER_TIER,testSeasonReset(){profile={...profile,seasonId:'2000-01-03',seasonLabel:'테스트 이전 주간 시즌'};const changed=ensureCurrentSeason();renderRank();return {changed,profile:this.profile(),history:this.history()}},testMigrate(raw){return normalizeProfile(raw,seasonInfo(new Date('2026-08-05T03:00:00Z')))}};
+  const api={build:BUILD,profile:()=>{ensureCurrentSeason();return JSON.parse(JSON.stringify(profile))},rank:()=>rank().name,aiProfile,render:renderRank,iconSvg,season:(date)=>seasonInfo(date),isLocked:(date)=>seasonInfo(date).locked,lockMessage:()=>`${seasonInfo().label} 정산은 끝났어. 일요일 23:00(KST)에 다음 시즌 경쟁전이 열려.`,history:()=>readJson(HISTORY_KEY,[]),grantDailyShield,grantV302GlobalShield,shieldStatus:()=>({count:profile.rankShield,max:5,rankDropStreak:profile.rankDropStreak||0,lossStreak:profile.lossStreak||0,date:profile.rankShieldAwardDate,usedAt:profile.rankShieldUsedAt,globalGranted:profile.v302GlobalShieldGranted,globalGrantedAt:profile.v302GlobalShieldGrantedAt}),specialPromotionRules:{two:{streak:3,performance:.84,cooldownMatches:3},three:{streak:6,performance:.94,perfectSweep:true,cooldownMatches:3}},_debugSettleMatch:settleMatch,_debugSpecialPromotionTiers:specialPromotionTiers,_debugSpecialPromotionSnapshot:specialPromotionFromSnapshot,_debugApplyPoints:applyPoints,_debugApplyDemotionShield:applyDemotionShield,reset(){profile=defaultProfile();save();renderRank();return this.profile()},setRank(index,points=0){ensureCurrentSeason();profile.rankIndex=Math.max(0,Math.min(RANKS.length-1,Number(index)||0));profile.points=Math.max(0,profile.rankIndex<RANKS.length-1?Math.min(POINTS_PER_TIER-1,Number(points)||0):Math.floor(Number(points)||0));profile.pointUnit=POINTS_PER_TIER;profile.scoringVersion=SCORING_VERSION;save();renderRank();return this.profile()},importProfile(raw,{emit=false}={}){const info=seasonInfo(),value=typeof raw==='string'?(()=>{try{return JSON.parse(raw)}catch(_){return null}})():raw;if(!value||typeof value!=='object')return this.profile();profile=normalizeProfile(value,info);if(profile.seasonId!==info.id){const carryShield=Math.max(0,Math.min(5,Number(profile.rankShield)||0)),awardDate=String(profile.rankShieldAwardDate||''),usedAt=String(profile.rankShieldUsedAt||''),grant=!!profile.v302GlobalShieldGranted,grantAt=String(profile.v302GlobalShieldGrantedAt||'');profile={...defaultProfile(info),rankShield:carryShield,rankShieldAwardDate:awardDate,rankShieldUsedAt:usedAt,v302GlobalShieldGranted:grant,v302GlobalShieldGrantedAt:grantAt}}profile.seasonLabel=info.label;profile.seasonEndsAt=info.endsAt;profile.seasonStartedAt=profile.seasonStartedAt||info.startsAt;profile.updatedAt=new Date().toISOString();writeJson(STORAGE_KEY,profile);renderRank();if(emit)window.dispatchEvent(new CustomEvent('gong-competitive-profile-change',{detail:{seasonId:profile.seasonId,rankIndex:profile.rankIndex,points:profile.points,wins:profile.wins,losses:profile.losses,matches:profile.matches}}));return this.profile()},preview(win=true,performance=.5){return scoreDelta(!!win,performance)},resolveWinnerForTest(players,title=''){return resolveCompetitiveWinner(players,title)},settlementForTest(players,title=''){const resolution=resolveCompetitiveWinner(players,title),performance=teamPerformance(players),win=resolution.winnerTeam==='T1';return {...resolution,performance,outcome:win?'win':'loss',delta:scoreDelta(win,performance)}},scoreBounds:{...SCORE_BOUNDS},ranks:RANKS.map(r=>r.name),pointsPerTier:POINTS_PER_TIER,testSeasonReset(){profile={...profile,seasonId:'2000-01-03',seasonLabel:'테스트 이전 주간 시즌'};const changed=ensureCurrentSeason();renderRank();return {changed,profile:this.profile(),history:this.history()}},testMigrate(raw){return normalizeProfile(raw,seasonInfo(new Date('2026-08-05T03:00:00Z')))}};
   window.__GONG_V215_COMPETITIVE__=api;window.__GONG_V216_COMPETITIVE__=api;
   document.body.classList.toggle('competitive-battle',document.body.classList.contains('draft-battle'));window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V234] KST 주간 시즌 · 일요일 23시 정산 잠금 · 월요일 00시 시작 · 티어당 50점 · 기존 점수 1/2 환산');
+  console.info('[V330] KST 주간 시즌 · 일요일 22시 정산 · 22~23시 잠금 · 23시 다음 시즌 시작 · 티어당 50점');
 })();
 
   /* ---------- V217 · competitive return flow and tournament cleanup ---------- */
@@ -29976,7 +30012,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     if(v219Daily.claimed.all&&!v219Daily.masteryRewardQueued){v219Daily.masteryRewardQueued=true;v219Store.set(DAILY_KEY,v219Daily)}
     const v219DailyDefs=[{id:'battles',label:'전투 3회 완료',target:3,reward:3,get:()=>v219Daily.battles},{id:'damage',label:'누적 피해 2,000 기록',target:2000,reward:3,get:()=>v219Daily.damage},{id:'competitive',label:'경쟁전 1회 완료',target:1,reward:3,get:()=>v219Daily.competitive}];
     function v219AddRankPoints(amount){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;if(!api?.profile||!api?.setRank)return false;const p=api.profile(),ranks=api.ranks||[],unit=Math.max(1,Number(api.pointsPerTier)||50);let index=Math.max(0,Number(p.rankIndex)||0),points=Math.max(0,Number(p.points)||0)+amount;while(points>=unit&&index<ranks.length-1){points-=unit;index++}api.setRank(index,points);api.render?.();return true}
-    function v219AwardDaily(){let awarded=0,allClearedNow=false,shieldResult=null;for(const m of v219DailyDefs)if(!v219Daily.claimed[m.id]&&m.get()>=m.target){v219Daily.claimed[m.id]=true;v219Daily.earned+=m.reward;awarded+=m.reward}if(v219DailyDefs.every(m=>v219Daily.claimed[m.id])&&!v219Daily.claimed.all){v219Daily.claimed.all=true;allClearedNow=true;v226QueueMasteryReward(v219Daily.slot);shieldResult=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.grantDailyShield?.(v219Daily.date)||null}if(awarded){v219AddRankPoints(awarded);v219Toast(`임무 보상 +${awarded} 경쟁전 점수`)}v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();if(allClearedNow){const shieldText=shieldResult?.granted?' · 🛡️ 강등 방어막 1개 획득':shieldResult?.reason==='already-held'?' · 🛡️ 방어막은 이미 보유 중':' · 🛡️ 오늘 방어막 지급 완료';v219Toast(`올클리어! 🎟️ 숙련도 +200 XP 쿠폰${shieldText}`)}return awarded}
+    function v219AwardDaily(){let awarded=0,allClearedNow=false,shieldResult=null;for(const m of v219DailyDefs)if(!v219Daily.claimed[m.id]&&m.get()>=m.target){v219Daily.claimed[m.id]=true;v219Daily.earned+=m.reward;awarded+=m.reward}if(v219DailyDefs.every(m=>v219Daily.claimed[m.id])&&!v219Daily.claimed.all){v219Daily.claimed.all=true;allClearedNow=true;v226QueueMasteryReward(v219Daily.slot);shieldResult=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.grantDailyShield?.(v219Daily.date)||null}if(awarded){v219AddRankPoints(awarded);v219Toast(`임무 보상 +${awarded} 경쟁전 점수`)}v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();if(allClearedNow){const shieldText=shieldResult?.granted?' · 🛡️ 강등 방어막 1개 획득':shieldResult?.reason==='cap-reached'?' · 🛡️ 방어막 5/5 최대':' · 🛡️ 오늘 방어막 지급 완료';v219Toast(`올클리어! 🎟️ 숙련도 +200 XP 쿠폰${shieldText}`)}return awarded}
     function v219SettleDaily(){if(!game||game.v219DailySettled)return;game.v219DailySettled=true;if(v219Daily.slot!==v226DailySlot())v219Daily=v219NewDaily();v219Daily.battles++;v219Daily.damage+=v219MainPlayers().reduce((s,p)=>s+(Number(p.damageDealt)||0),0);const draft=game.v212Draft||currentConfig?.draft;if(draft?.competitive===true&&!draft.friendly&&!document.body.classList.contains('friendly-battle'))v219Daily.competitive++;v219AwardDaily()}
     function v219DailyPanel(){let panel=document.getElementById('v219DailyPanel');if(panel)return panel;panel=document.createElement('section');panel.id='v219DailyPanel';panel.className='v219-daily-panel';document.querySelector('#setup .panel')?.insertAdjacentElement('afterend',panel);return panel}
     function v219RenderDaily(){
@@ -29986,7 +30022,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       panel.hidden=cleared;panel.setAttribute('aria-hidden',cleared?'true':'false');
       if(cleared){panel.innerHTML='';return}
       const complete=v219DailyDefs.filter(m=>v219Daily.claimed[m.id]).length;
-      panel.innerHTML=`<div class="v219-daily-head"><strong>🎁 오늘의 임무</strong><span>${v226DailySlotLabel()} · 다음 초기화 ${v226KstParts().next}</span></div><div class="v219-daily-list">${v219DailyDefs.map(m=>{const value=Math.min(m.target,m.get()),pct=Math.min(100,value/m.target*100);return `<div class="v219-daily-task ${v219Daily.claimed[m.id]?'done':''}"><div class="v219-daily-task-top"><span>${v219Daily.claimed[m.id]?'✅':'○'} ${m.label}</span><span>${Math.round(value).toLocaleString()} / ${m.target.toLocaleString()} · +${m.reward}점</span></div><div class="v219-daily-progress"><span style="width:${pct}%"></span></div></div>`}).join('')}</div><div class="v219-daily-foot">각 임무 완료 시 경쟁전 +3점 · 모두 완료하면 숙련도 +200 XP 쿠폰 · 하루 첫 올클리어 시 🛡️ 강등 방어막 1개(최대 1개) · 현재 ${v219Daily.earned}점 획득${complete===3?' · 올클리어!':''}</div>`
+      panel.innerHTML=`<div class="v219-daily-head"><strong>🎁 오늘의 임무</strong><span>${v226DailySlotLabel()} · 다음 초기화 ${v226KstParts().next}</span></div><div class="v219-daily-list">${v219DailyDefs.map(m=>{const value=Math.min(m.target,m.get()),pct=Math.min(100,value/m.target*100);return `<div class="v219-daily-task ${v219Daily.claimed[m.id]?'done':''}"><div class="v219-daily-task-top"><span>${v219Daily.claimed[m.id]?'✅':'○'} ${m.label}</span><span>${Math.round(value).toLocaleString()} / ${m.target.toLocaleString()} · +${m.reward}점</span></div><div class="v219-daily-progress"><span style="width:${pct}%"></span></div></div>`}).join('')}</div><div class="v219-daily-foot">각 임무 완료 시 경쟁전 +3점 · 모두 완료하면 숙련도 +200 XP 쿠폰 · 하루 첫 올클리어 시 🛡️ 랭킹 방어막 +1(최대 5개) · 현재 ${v219Daily.earned}점 획득${complete===3?' · 올클리어!':''}</div>`
     }
     function v220CheckDailyRollover(){if(v219Daily.slot!==v226DailySlot()){v219Daily=v219NewDaily();v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily()}}
     setInterval(v220CheckDailyRollover,60000);
@@ -30265,7 +30301,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const defs=()=>window.__GONG_V134_DEBUG__?.defs||{};
     const RANK_NAMES=['솔리언 1','솔리언 2','솔리언 3','브론즈 1','브론즈 2','브론즈 3','실버 1','실버 2','실버 3','골드 1','골드 2','골드 3','플래티넘 1','플래티넘 2','플래티넘 3','졸업생 1','졸업생 2','졸업생 3','신'];
     const clampRank=index=>Math.max(0,Math.min(18,Math.floor(Number(index)||0)));
-    const rewardForRank=index=>Math.min(100000,10000+clampRank(index)*5000);
+    const rewardForRank=index=>Math.min(100000,Math.max(10000,Math.round((10000+clampRank(index)*5000)/10000)*10000));
     const read=(key,fallback)=>{try{const raw=localStorage.getItem(key);return raw==null?fallback:JSON.parse(raw)}catch(_){return fallback}};
     const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}};
     let state=read(STORE_KEY,{version:1,initialized:false,seenSeasons:[],rewards:[]});
@@ -30286,12 +30322,12 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const pendingRows=state.rewards.filter(r=>r&&!r.claimed&&(!allow||allow.has(String(r.seasonId))));if(!pendingRows.length)return 0;
       const inv=itemInventory(),now=new Date().toISOString();let created=0;
       for(const reward of pendingRows){
-        const receipt=`competitive:${reward.seasonId}:base-coupon`;
-        if(!inv.earned[receipt]){inv.earned[receipt]={id:receipt,type:'masteryXpCoupon',xp:Math.max(1,Math.floor(Number(reward.xp)||1)),source:'competitive-season',seasonId:reward.seasonId,rankIndex:reward.rankIndex,rankName:reward.rankName,awardedAt:now};created++;}
-        reward.claimed=true;reward.claimMode='coupon';reward.couponCount=1;reward.couponReceipts=[receipt];reward.claimedAt=now;reward.characterId=null;
+        const totalXp=Math.max(10000,Math.round((Number(reward.xp)||10000)/10000)*10000),units=Math.max(1,Math.round(totalXp/10000)),receipts=[];
+        for(let i=1;i<=units;i++){const receipt=`competitive:${reward.seasonId}:base-coupon:${i}`;receipts.push(receipt);if(!inv.earned[receipt]){inv.earned[receipt]={id:receipt,type:'masteryXpCoupon',xp:10000,source:'competitive-season',seasonId:reward.seasonId,rankIndex:reward.rankIndex,rankName:reward.rankName,couponIndex:i,couponCount:units,awardedAt:now};created++;}}
+        reward.xp=totalXp;reward.claimed=true;reward.claimMode='coupon';reward.couponCount=units;reward.couponReceipts=receipts;reward.claimedAt=now;reward.characterId=null;
       }
       if(!write(ITEM_KEY,inv)){for(const reward of pendingRows){reward.claimed=false;delete reward.claimMode;delete reward.couponCount;delete reward.couponReceipts;reward.claimedAt=null;}return 0;}
-      save();window.dispatchEvent(new CustomEvent('gong-v239-item-progress-change',{detail:{reason:'competitive-season-coupon',count:pendingRows.length,version:2}}));return pendingRows.length;
+      save();window.dispatchEvent(new CustomEvent('gong-v239-item-progress-change',{detail:{reason:'competitive-season-coupon',count:created,version:2}}));return created;
     }
     function currentProfile(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;try{return api?.profile?.()||read(PROFILE_KEY,null)}catch(_){return read(PROFILE_KEY,null)}}
     function validSeasonId(id){return /^\d{4}-\d{2}(?:-\d{2})?$/.test(String(id||''))}
@@ -30311,7 +30347,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(state.initialized)return;
       state.initialized=true;
       state.activatedSeasonId=currentProfile()?.seasonId||null;
-      state.seenSeasons=[...new Set(history().map(r=>String(r?.seasonId||'')).filter(validSeasonId))];
+      state.seenSeasons=[...new Set(history().map(r=>String(r?.seasonId||'')).filter(id=>validSeasonId(id)&&id<'2026-08-03'))];
       save();
     }
     function scan(){
@@ -30325,7 +30361,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
         if(queueFromRow(row,{force:true})){queued++;queuedSeasonIds.push(id)}
       }
       state.seenSeasons=[...new Set(state.seenSeasons)].slice(-48);save();
-      const couponCount=queuedSeasonIds.length?issuePendingSeasonCoupons(queuedSeasonIds):0;
+      const couponCount=issuePendingSeasonCoupons(); // V331: 기존 미수령 시즌 보상까지 전부 10,000 XP 쿠폰으로 안전 변환
       updateRankMeta();
       if(couponCount)seasonToast(`경쟁전 시즌 XP 쿠폰 ${couponCount}개가 지급됐어!`);
       return queued;
@@ -30375,7 +30411,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const seasonMeta=document.getElementById('competitiveSeasonMeta');if(!seasonMeta)return;
       let el=document.getElementById('v227CompetitiveSeasonRewardMeta');if(!el){el=document.createElement('div');el.id='v227CompetitiveSeasonRewardMeta';el.className='v227-season-reward-meta';seasonMeta.insertAdjacentElement('afterend',el)}
       const profile=currentProfile(),index=clampRank(profile?.rankIndex),xp=rewardForRank(index),count=state.rewards.filter(r=>!r.claimed).length;
-      el.textContent=`시즌 종료 예상 보상 · ${RANK_NAMES[index]} 기준 ${xp.toLocaleString()} XP 쿠폰 1개 · 랭킹 TOP3는 총 5/3/2개`
+      el.textContent=`시즌 종료 예상 보상 · ${RANK_NAMES[index]} 기준 10,000 XP 쿠폰 ${Math.max(1,Math.round(xp/10000))}개 · TOP3 총 ×5/×4/×3`
     }
     initialize();updateRankMeta();setTimeout(scan,180);setInterval(scan,30000);setInterval(maybeOpen,1200);
     document.addEventListener('visibilitychange',()=>{if(!document.hidden)scan()});
@@ -30823,9 +30859,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(field==='competitive'&&cloud?.seasonId&&local?.seasonId){
         cloud=migrateLegacyCompetitive(cloud,local);local=migrateLegacyCompetitive(local,cloud);
         if(cloud.seasonId!==local.seasonId)return JSON.stringify(String(cloud.seasonId)>String(local.seasonId)?cloud:local);
-        const authoritative=newerCompetitive(cloud,local),combined=mergeDeep(cloud,local,field),coreKeys=['rankIndex','points','wins','losses','matches','winStreak','lastChange','lastPerformance','settlementRevision','rankShield','seasonId','seasonLabel','seasonEndsAt','seasonStartedAt','updatedAt','scoreMigratedAt'];
+        const authoritative=newerCompetitive(cloud,local),combined=mergeDeep(cloud,local,field),coreKeys=['rankIndex','points','wins','losses','matches','winStreak','lossStreak','rankDropStreak','lastChange','lastPerformance','settlementRevision','rankShield','seasonId','seasonLabel','seasonEndsAt','seasonStartedAt','updatedAt','scoreMigratedAt'];
         for(const key of coreKeys)if(Object.prototype.hasOwnProperty.call(authoritative,key))combined[key]=clone(authoritative[key]);
-        combined.rankIndex=Math.max(0,Number(authoritative.rankIndex)||0);combined.points=Math.max(0,Number(authoritative.points)||0);combined.wins=Math.max(0,Number(authoritative.wins)||0);combined.losses=Math.max(0,Number(authoritative.losses)||0);combined.matches=Math.max(0,Number(authoritative.matches)||0);combined.winStreak=Math.max(0,Math.floor(Number(authoritative.winStreak)||0));combined.bestWinStreak=Math.max(Number(cloud.bestWinStreak)||0,Number(local.bestWinStreak)||0,combined.winStreak);combined.lastSkipPromotionMatch=Math.max(-99,Math.floor(Number(cloud.lastSkipPromotionMatch)||-99),Math.floor(Number(local.lastSkipPromotionMatch)||-99));combined.rankShield=Math.max(0,Math.min(2,Math.floor(Number(authoritative.rankShield)||0)));combined.rankShieldAwardDate=[String(cloud.rankShieldAwardDate||''),String(local.rankShieldAwardDate||'')].sort().at(-1)||'';combined.rankShieldUsedAt=[String(cloud.rankShieldUsedAt||''),String(local.rankShieldUsedAt||'')].sort().at(-1)||'';combined.v302GlobalShieldGranted=!!(cloud.v302GlobalShieldGranted||local.v302GlobalShieldGranted);combined.v302GlobalShieldGrantedAt=[String(cloud.v302GlobalShieldGrantedAt||''),String(local.v302GlobalShieldGrantedAt||'')].sort().at(-1)||'';combined.settlementRevision=Math.max(0,Number(authoritative.settlementRevision)||combined.matches||0);combined.seasonId=authoritative.seasonId;combined.pointUnit=50;combined.scoringVersion=Math.max(3,Number(authoritative.scoringVersion)||0);combined.seasonCycle='weekly';
+        combined.rankIndex=Math.max(0,Number(authoritative.rankIndex)||0);combined.points=Math.max(0,Number(authoritative.points)||0);combined.wins=Math.max(0,Number(authoritative.wins)||0);combined.losses=Math.max(0,Number(authoritative.losses)||0);combined.matches=Math.max(0,Number(authoritative.matches)||0);combined.winStreak=Math.max(0,Math.floor(Number(authoritative.winStreak)||0));combined.bestWinStreak=Math.max(Number(cloud.bestWinStreak)||0,Number(local.bestWinStreak)||0,combined.winStreak);combined.lastSkipPromotionMatch=Math.max(-99,Math.floor(Number(cloud.lastSkipPromotionMatch)||-99),Math.floor(Number(local.lastSkipPromotionMatch)||-99));combined.rankShield=Math.max(0,Math.min(5,Math.floor(Number(authoritative.rankShield)||0)));combined.rankDropStreak=Math.max(0,Math.min(2,Math.floor(Number(authoritative.rankDropStreak)||0)));combined.lossStreak=Math.max(0,Math.floor(Number(authoritative.lossStreak)||0));combined.rankShieldAwardDate=[String(cloud.rankShieldAwardDate||''),String(local.rankShieldAwardDate||'')].sort().at(-1)||'';combined.rankShieldUsedAt=[String(cloud.rankShieldUsedAt||''),String(local.rankShieldUsedAt||'')].sort().at(-1)||'';combined.v302GlobalShieldGranted=!!(cloud.v302GlobalShieldGranted||local.v302GlobalShieldGranted);combined.v302GlobalShieldGrantedAt=[String(cloud.v302GlobalShieldGrantedAt||''),String(local.v302GlobalShieldGrantedAt||'')].sort().at(-1)||'';combined.settlementRevision=Math.max(0,Number(authoritative.settlementRevision)||combined.matches||0);combined.seasonId=authoritative.seasonId;combined.pointUnit=50;combined.scoringVersion=Math.max(3,Number(authoritative.scoringVersion)||0);combined.seasonCycle='weekly';
         return JSON.stringify(combined)
       }
       if(field==='daily'&&cloud?.slot&&local?.slot&&cloud.slot!==local.slot)return JSON.stringify(String(cloud.slot)>String(local.slot)?cloud:local);
@@ -35607,7 +35643,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=329',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=331',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V252] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -36496,7 +36532,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     body.querySelector('.v304-custom-copy')?.addEventListener('click',copyCustomTitleRequest);
     body.querySelector('.v304-custom-refresh')?.addEventListener('click',async e=>{const btn=e.currentTarget,old=btn.textContent;btn.disabled=true;btn.textContent='확인 중...';await syncCustomTitleEntitlement({rerender:true});if(document.body.contains(btn)){btn.disabled=false;btn.textContent=old}});
   }
-  function renderTitles(body,data,ctx){const rows=titleRows(data),equipped=data.equippedTitle;body.innerHTML=customPurchaseHtml()+summaryHtml(ctx,data)+`<div class="v260-title-list"><div class="v260-title-row ${!equipped?'equipped':''}"><div><b>칭호 없음</b><span>프로필에서 대표 칭호를 숨겨.</span></div><button data-v260-title="" ${!equipped?'disabled':''}>${!equipped?'장착 중':'해제'}</button></div>${rows.map(row=>`<div class="v260-title-row ${row.source==='custom'?'v304-custom-owned':''} ${equipped===row.id?'equipped':''}"><div><b>${row.source==='custom'?'💎':'🏷️'} ${esc(row.title)}</b><span>${row.source==='custom'?'7,000원 커스텀 칭호 · 운영자 승인 완료':row.source==='attendance'?'50일 출석 보상':'업적 보상으로 획득'}</span></div><button data-v260-title="${esc(row.id)}" ${equipped===row.id?'disabled':''}>${equipped===row.id?'장착 중':'대표로 장착'}</button></div>`).join('')||'<div class="v260-empty">업적 보상을 수령하면 칭호가 이곳에 나타나.</div>'}</div>`;bindCustomPurchase(body);body.querySelectorAll('[data-v260-title]').forEach(btn=>btn.addEventListener('click',()=>equipTitle(btn.dataset.v260Title)))}
+  function renderTitles(body,data,ctx){const rows=titleRows(data),equipped=data.equippedTitle;body.innerHTML=customPurchaseHtml()+summaryHtml(ctx,data)+`<div class="v260-title-list"><div class="v260-title-row ${!equipped?'equipped':''}"><div><b>칭호 없음</b><span>프로필에서 대표 칭호를 숨겨.</span></div><button data-v260-title="" ${!equipped?'disabled':''}>${!equipped?'장착 중':'해제'}</button></div>${rows.map(row=>`<div class="v260-title-row ${row.source==='custom'?'v304-custom-owned':''} ${equipped===row.id?'equipped':''}"><div><b>${row.source==='custom'?'💎':'🏷️'} ${esc(row.title)}</b><span>${row.source==='custom'?'7,000원 커스텀 칭호 · 운영자 승인 완료':row.source==='attendance'?'50일 출석 보상':row.source==='season'?'경쟁전 시즌 보상':'업적 보상으로 획득'}</span></div><button data-v260-title="${esc(row.id)}" ${equipped===row.id?'disabled':''}>${equipped===row.id?'장착 중':'대표로 장착'}</button></div>`).join('')||'<div class="v260-empty">업적 보상을 수령하면 칭호가 이곳에 나타나.</div>'}</div>`;bindCustomPurchase(body);body.querySelectorAll('[data-v260-title]').forEach(btn=>btn.addEventListener('click',()=>equipTitle(btn.dataset.v260Title)))}
   function renderModal(){const modal=ensureModal(),body=modal.querySelector('.v260-body'),data=read(),{ctx}=evaluate(data,{save:false});modal.querySelectorAll('[data-v260-tab]').forEach(btn=>btn.classList.toggle('active',btn.dataset.v260Tab===state.tab));if(state.tab==='titles')renderTitles(body,data,ctx);else renderAchievements(body,data,ctx);renderProfile();return true}
   function open(tab='achievements'){state.tab=tab==='titles'?'titles':'achievements';state.query='';const modal=ensureModal();ingestRecent();renderModal();modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');if(state.tab==='titles')setTimeout(()=>syncCustomTitleEntitlement({rerender:true}),0);return true}
   function close(){const modal=document.getElementById('v260Modal');modal?.classList.add('hidden');modal?.setAttribute('aria-hidden','true')}
@@ -37145,8 +37181,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
   const BONUS_KEY='gonggame_v279_leaderboard_settlement_bonus_v1';
   const HISTORY_KEY='gonggame_competitive_season_history';
   const ITEM_KEY='gonggame_v239_items_v1';
-  const PLACEMENT_MULTIPLIER={1:5,2:3,3:2};
-  const PLACEMENT_EXTRA={1:4,2:2,3:1};
+  const PLACEMENT_MULTIPLIER={1:5,2:4,3:3};
   const clone=v=>JSON.parse(JSON.stringify(v));
   const read=(key,fallback)=>{try{const raw=localStorage.getItem(key);return raw==null?fallback:JSON.parse(raw)}catch(_){return fallback}};
   const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(_){return false}};
@@ -37193,26 +37228,26 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
     const api=window.__GONG_V227__;
     if(typeof api?.rewardForRank==='function')return Math.max(1,Math.floor(api.rewardForRank(rankIndex)));
     const idx=Math.max(0,Math.min(18,Math.floor(Number(rankIndex)||0)));
-    return Math.min(100000,10000+idx*5000);
+    return Math.min(100000,Math.max(10000,Math.round((10000+idx*5000)/10000)*10000));
   }
   function scoreOf(row){const rank=Math.max(0,Math.min(18,Number(row?.rankIndex)||0)),points=Math.max(0,Math.floor(Number(row?.points)||0));return rank*100000000+points;}
   function sortRows(rows){return rows.filter(r=>r&&r.uid).sort((a,b)=>scoreOf(b)-scoreOf(a)||(Number(b.wins)||0)-(Number(a.wins)||0)||(Number(a.matches)||0)-(Number(b.matches)||0)||String(a.uid).localeCompare(String(b.uid)));}
   function awardCoupons({seasonId,placement,rankIndex,uid,force=false}){
-    const totalCount=PLACEMENT_MULTIPLIER[placement]||1,extraCount=PLACEMENT_EXTRA[placement]||0;if(!extraCount)return {awarded:0,count:totalCount,extraCount:0,xp:rewardXp(rankIndex)};
-    const xp=rewardXp(rankIndex),inv=inventory();let awarded=0;
+    const multiplier=PLACEMENT_MULTIPLIER[placement]||1,xpTotal=rewardXp(rankIndex),baseUnits=Math.max(1,Math.round(xpTotal/10000)),totalCount=baseUnits*multiplier,extraCount=baseUnits*Math.max(0,multiplier-1);
+    if(!extraCount)return {awarded:0,count:totalCount,extraCount:0,xp:10000,totalXp:xpTotal};
+    const inv=inventory();let awarded=0;
     for(let i=1;i<=extraCount;i++){
       const id=`ranking-extra:${seasonId}:${uid}:${placement}:${i}`;
       if(inv.earned[id]&&!force)continue;
-      inv.earned[id]={id,type:'masteryXpCoupon',xp,source:'leaderboard-settlement',seasonId,placement,couponIndex:i,couponCount:totalCount,extraCouponCount:extraCount,awardedAt:new Date().toISOString()};
-      awarded++;
+      inv.earned[id]={id,type:'masteryXpCoupon',xp:10000,source:'leaderboard-settlement',seasonId,placement,couponIndex:i,couponCount:totalCount,extraCouponCount:extraCount,awardedAt:new Date().toISOString()};awarded++;
     }
     if(awarded)saveInventory(inv,'leaderboard-settlement');
-    return {awarded,count:totalCount,extraCount,xp};
+    return {awarded,count:totalCount,extraCount,xp:10000,totalXp:xpTotal};
   }
   function initBaseline(){
     if(state.initialized)return;
     state.initialized=true;state.activatedAt=new Date().toISOString();
-    for(const row of history())if(row?.seasonId)state.processed[String(row.seasonId)]={status:'baseline',at:state.activatedAt};
+    for(const row of history())if(row?.seasonId&&String(row.seasonId)<'2026-08-03')state.processed[String(row.seasonId)]={status:'baseline',at:state.activatedAt};
     write(BONUS_KEY,state);
   }
   async function scanSettlementBonuses(){
@@ -37227,8 +37262,10 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
         const snap=await backend.dbmod.get(backend.dbmod.ref(backend.db,`competitiveLeaderboard/v1/${seasonId}`));
         const raw=snap?.val?.()||{},ranked=sortRows(Object.entries(raw).map(([key,value])=>value&&typeof value==='object'?{...value,uid:String(value.uid||key)}:null));
         const index=ranked.findIndex(r=>r.uid===user.uid),placement=index>=0?index+1:null;
+        // V331: 정산 직후 Firebase 랭킹 반영이 늦으면 완료 처리하지 말고 다음 스캔에서 다시 확인한다.
+        if(!placement)continue;
         let bonus={awarded:0,count:1,extraCount:0,xp:rewardXp(season.rankIndex)};
-        if(placement&&placement<=3)bonus=awardCoupons({seasonId,placement,rankIndex:season.rankIndex,uid:user.uid});
+        if(placement<=3)bonus=awardCoupons({seasonId,placement,rankIndex:season.rankIndex,uid:user.uid});
         state.processed[seasonId]={status:'done',placement,rankIndex:Math.max(0,Number(season.rankIndex)||0),xp:bonus.xp,couponCount:bonus.count,extraCouponCount:bonus.extraCount||0,awarded:bonus.awarded,at:new Date().toISOString()};
         processed++;awarded+=bonus.awarded;write(BONUS_KEY,state);
       }catch(error){console.warn('[V279 랭킹 정산 보너스]',seasonId,error);}
@@ -37244,7 +37281,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
     const board=document.getElementById('v231Leaderboard');if(!board)return false;
     let note=document.getElementById('v279RankRewardNote');
     if(!note){note=document.createElement('div');note.id='v279RankRewardNote';note.style.cssText='margin:4px 0 8px;border:1px solid #ffdf6588;border-radius:9px;background:#ffdf6514;padding:6px 8px;color:#fff0a7;font-size:8px;font-weight:1000;line-height:1.4';board.querySelector('.v231-leaderboard-head')?.insertAdjacentElement('afterend',note);}
-    note.textContent='시즌 랭킹 정산 · 기본 XP 쿠폰 1개 · 1위 총 ×5 · 2위 총 ×3 · 3위 총 ×2 · 신은 점수 상한 없음';
+    note.textContent='시즌 정산 · 모든 보상은 10,000 XP 쿠폰 · 1위 총 ×5 · 2위 총 ×4 · 3위 총 ×3 · TOP10 시즌 칭호';
     return true;
   }
   function repairTournamentLabels(){
@@ -37273,7 +37310,7 @@ button,.mode-btn,.mode-hub-btn,.start-btn,.ctrl{min-height:44px}
     },
     verify(){
       const seo=window.__GONG_V173_TEST__?.character?.('leeseohyun')||null;
-      return {build:BUILD,seoHyunExists:!!seo,seoHyunSpeed:seo?.speed,seoHyunCard:!!document.querySelector('[data-char="leeseohyun"]'),godUncapped:true,rankBonus:{1:5,2:3,3:2},fastTournament:'lightweight-instant-simulation',soloNumberIconsRemoved:true,latest:window.__GONG_LATEST_BUILD__};
+      return {build:BUILD,seoHyunExists:!!seo,seoHyunSpeed:seo?.speed,seoHyunCard:!!document.querySelector('[data-char="leeseohyun"]'),godUncapped:true,rankBonus:{1:5,2:4,3:3},fastTournament:'lightweight-instant-simulation',soloNumberIconsRemoved:true,latest:window.__GONG_LATEST_BUILD__};
     }
   };
   window.__GONG_V279_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
@@ -39003,7 +39040,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
     summary:'윤현딸 공유 HP·분열 하트·누적 공격/속도 성장·피격 시전 회복형',hp:'250 (윤현딸 크로스 공유)',speed:'180',
     skills:[
       {kind:'최다은·박혜음·윤현 연계 공유 패시브',type:'passive',name:'윤현딸 크로스',desc:'최다은·박혜음·김태린 세 명이 모두 같은 팀에 있을 때만 윤현딸 크로스가 발동해 세 명이 공유 HP를 사용한다. 같은 팀 윤현이 있으면 윤현도 공유에 합류한다.',points:['발동 조건: 최다은·박혜음·김태린 세 명 모두 같은 팀','세 명 중 1명이라도 없거나 다른 팀이면 발동하지 않음','세 명 공유 HP: 3000','같은 팀 윤현이 있으면 윤현도 합류하고 공유 HP 4000','세 딸 중 누구든 받은 피해·회복은 하나의 HP로 즉시 동기화','세 딸 중 누구든 벽에 부딪히면 세 딸의 벽 충돌 횟수가 함께 1회 증가','세 딸 중 누구든 적과 충돌하면 충돌 횟수 기반 스킬 카운트가 함께 증가','세 딸을 경기장에서 연결선으로 표시','공유 HP 0 시 공유 대상 전원 탈락']},
-      {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 20 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
+      {kind:'벽 3회 분열 하트',type:'attack',name:'커다란사랑',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 큰 하트 1개를 발사한다. 큰 하트가 적 또는 벽에 맞으면 서로 다른 방식의 작은 하트로 분열한다.',points:['큰 하트가 적에게 적중: 16 피해','적 적중 후 적에게서 김태린 반대쪽 방향으로 작은 하트 5개를 부채꼴 발사','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트가 벽에 적중: 작은 하트 10개로 분열','벽 분열 작은 하트는 벽에서 반사하며 누군가 맞을 때까지 사라지지 않음','벽 분열 작은 하트 적중: 2 피해 + 1초간 취약/무력화/속도 80% 감소/정지 중 무작위 1개']},
       {kind:'다른 공 충돌 4회 영구 성장',type:'growth',name:'선거도우미',desc:'자신을 제외한 다른 공과 4번 부딪힐 때마다 공격력과 이동속도가 증가한다. 공격력 누적은 최대 ×5까지이며 이동속도는 계속 누적된다.',points:['자신을 제외한 다른 공과의 충돌을 모두 카운트','4회마다 공격력 ×1.2 누적 · 최대 ×5','4회마다 이동속도 ×1.4 영구 누적 · 제한 없음','공격력이 ×5에 도달한 뒤에도 속도 증가는 계속 발동']},
       {kind:'30 이상 실제 피해 시전 회복',type:'heal',name:'고쿠미',desc:'한 번에 실제 HP가 30 이상 감소하면 제자리에서 2초간 시전한다. 시전을 끝내면 HP 40을 회복하지만 시전 중 다시 피해를 받으면 취소된다.',points:['한 번의 실제 피해량이 30 이상일 때 발동','시전 시간: 2초 · 시전 중 제자리 고정','시전 성공: HP +40','시전 중 실제 피해를 받으면 즉시 취소','취소를 일으킨 피해로는 즉시 재시전하지 않음','취소 후 새로 한 번에 30 이상 실제 피해를 받아야 다시 발동']}
     ]
@@ -39075,9 +39112,9 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
       }else if(s.x<-25||s.x>W+25||s.y<-25||s.y>H+25){s.dead=true;continue;}
       for(const t of enemyList(s.owner)){
         if(s.ignoreTimer>0&&s.ignoreTarget===t)continue;if(s.ignoreTimer>0&&s.ignoreTarget===t)continue;if(Math.hypot(t.x-s.x,t.y-s.y)>t.r+s.r)continue;
-        if(s.kind==='big'){damage(t,20,s.owner,'커다란사랑 · 큰 하트',{allowDeadSource:true});fanFromEnemy(s.owner,s.x,s.y,t);s.dead=true;break;}
+        if(s.kind==='big'){damage(t,16,s.owner,'커다란사랑 · 큰 하트',{allowDeadSource:true});fanFromEnemy(s.owner,s.x,s.y,t);s.dead=true;break;}
         if(s.kind==='enemySmall'){const dealt=damage(t,10,s.owner,'커다란사랑 · 작은 하트',{allowDeadSource:true});if(dealt>0&&alive(t)){t.data=t.data||{};t.data.v151VulnerableTimer=Math.max(t.data.v151VulnerableTimer||0,5);t.data.v151VulnerableSource=s.owner;floater(t.x,t.y-t.r-18,'💔 취약 5초','#df3d73',12,.55);}s.dead=true;break;}
-        if(s.kind==='wallSmall'){const dealt=damage(t,5,s.owner,'커다란사랑 · 벽 분열 하트',{allowDeadSource:true});if(dealt>0&&alive(t))applyWallHeartDebuff(t,s.owner);s.dead=true;break;}
+        if(s.kind==='wallSmall'){const dealt=damage(t,2,s.owner,'커다란사랑 · 벽 분열 하트',{allowDeadSource:true});if(dealt>0&&alive(t))applyWallHeartDebuff(t,s.owner);s.dead=true;break;}
       }
     }
     game.v323LoveShots=shots.filter(s=>!s.dead&&s.life>0);
@@ -39335,7 +39372,7 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   const skill=SKILL_INFO?.[TAERIN]?.skills?.find(s=>s?.name==='커다란사랑');
   if(skill){
     skill.desc='벽에 3번 부딪힐 때마다 큰 하트 1개를 반드시 발사한다. 윤현딸 크로스가 발동 중이면 최다은·박혜음·김태린 중 누구의 벽 충돌도 같은 벽 카운트로 공유된다. 큰 하트가 적 또는 벽에 맞으면 작은 하트로 분열한다.';
-    skill.points=['벽 충돌 3회마다 큰 하트 1개 발사','윤현딸 크로스 중 세 딸의 벽 충돌을 공유 카운트','큰 하트 적중: 20 피해 후 작은 하트 5개 부채꼴 분열','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트 벽 적중: 작은 하트 10개 분열','벽 분열 작은 하트는 벽 반사 · 적중 전까지 유지','벽 분열 작은 하트 적중: 5 피해 + 1초간 취약/무력화/80% 감속/정지 중 무작위 1개'];
+    skill.points=['벽 충돌 3회마다 큰 하트 1개 발사','윤현딸 크로스 중 세 딸의 벽 충돌을 공유 카운트','큰 하트 적중: 16 피해 후 작은 하트 5개 부채꼴 분열','적 분열 작은 하트: 10 피해 + 취약 5초','큰 하트 벽 적중: 작은 하트 10개 분열','벽 분열 작은 하트는 벽 반사 · 적중 전까지 유지','벽 분열 작은 하트 적중: 2 피해 + 1초간 취약/무력화/80% 감속/정지 중 무작위 1개'];
   }
 
   window.__GONG_PATCH_NOTES__?.register?.('V327','김태린 커다란사랑 실제 발동 경로 복구 · V326 공유 벽 엔진에서 3회 카운트를 직접 관리해 큰 하트 발사가 누락되지 않도록 수정');
@@ -39370,6 +39407,101 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   window.__GONG_V329_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   window.__GONG_V329__={build:BUILD,maxAttackMult:5,verify(){const skill=(window.__GONG_V323__&&typeof SKILL_INFO!=='undefined')?SKILL_INFO?.kimtaerin?.skills?.find(s=>s?.name==='선거도우미'):null;return {build:BUILD,maxAttackMult:5,skill:skill?.points||[],latest:window.__GONG_LATEST_BUILD__};}};
   console.info('[V329] 김태린 선거도우미 공격력 누적 최대 ×5 · V328 전투 구조 유지');
+})();
+</script>
+
+
+<style id="v330SeasonOnlineShareStyle">
+/* V330 · compact-by-default. No extra buttons on the online banner itself. */
+#v232OnlineCount.v330-online-directory-trigger{cursor:pointer;user-select:none;transition:transform .12s ease,box-shadow .12s ease}
+#v232OnlineCount.v330-online-directory-trigger:active{transform:scale(.99)}
+#v232OnlineCount.v330-online-directory-trigger:focus-visible{outline:3px solid #7c3aed66;outline-offset:2px}
+.v330-online-modal,.v330-season2-promo{position:fixed;inset:0;z-index:190000;background:#090914b8;display:grid;place-items:center;padding:12px}.v330-online-modal.hidden,.v330-season2-promo.hidden{display:none!important}
+.v330-online-card{width:min(430px,100%);max-height:min(76vh,620px);display:flex;flex-direction:column;background:#fff;border:2px solid #111;border-radius:16px;overflow:hidden;box-shadow:0 18px 55px #0007}.v330-online-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#17131d;color:#fff}.v330-online-head strong{font-size:14px;font-weight:1000}.v330-online-head small{display:block;margin-top:1px;color:#c7becf;font-size:8px;font-weight:850}.v330-online-close{width:30px;height:30px;border:0;border-radius:8px;background:#fff;color:#111;font-size:18px;font-weight:1000}.v330-online-list{overflow:auto;padding:7px;display:grid;gap:4px}.v330-online-row{width:100%;display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:7px;border:1px solid #e0dbe6;border-radius:9px;background:#fff;padding:6px 8px;text-align:left;cursor:pointer}.v330-online-row:hover{background:#faf7ff;border-color:#bda8db}.v330-online-dot{width:8px;height:8px;border-radius:50%;background:#20b36b;box-shadow:0 0 0 3px #20b36b1b}.v330-online-name{min-width:0;font-size:10px;font-weight:1000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v330-online-mode{font-size:8px;font-weight:950;color:#6d28d9;white-space:nowrap}.v330-online-empty{padding:18px 10px;text-align:center;font-size:10px;font-weight:900;color:#6d6572;line-height:1.6}.v330-online-foot{padding:6px 10px 9px;border-top:1px solid #eee8f2;text-align:center;font-size:7.5px;font-weight:850;color:#817889}
+.v330-season2-card{width:min(400px,100%);border:2px solid #111;border-radius:18px;background:linear-gradient(145deg,#17131f,#3a1763);color:#fff;padding:14px;box-shadow:0 18px 60px #0009}.v330-season2-kicker{font-size:9px;font-weight:1000;color:#f8df6c;letter-spacing:.12em}.v330-season2-card h2{margin:4px 0 5px;font-size:24px;line-height:1.05}.v330-season2-card p{margin:0;color:#e8def2;font-size:10px;font-weight:850;line-height:1.55}.v330-season2-pills{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.v330-season2-pills span{border:1px solid #ffffff33;border-radius:999px;background:#ffffff12;padding:5px 7px;font-size:8px;font-weight:1000}.v330-season2-actions{display:grid;grid-template-columns:1fr auto;gap:6px}.v330-season2-go,.v330-season2-close{min-height:38px;border:2px solid #111;border-radius:10px;font-weight:1000}.v330-season2-go{background:#f8df6c;color:#241238}.v330-season2-close{background:#fff;color:#111;padding:0 12px}
+</style>
+<script id="v330SeasonSocialSharePatch">
+(()=>{
+  'use strict';
+  const BUILD='V330_SEASON2_SETTLEMENT_SOCIAL_MOMENT_ONLINE_AI_SHIELD';
+  const KST=9*60*60*1000,ONLINE_ROOT='onlineDirectory/v1',PUBLIC_ROOT='publicPlayerProfiles/v1',ACH_KEY='gonggame_v260_achievements_v1',AWARD_KEY='gonggame_v330_season_awards_v1',PROMO_KEY='gonggame_v330_season2_promo_day';
+  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const backend=()=>window.__GONG_V230__?.backend?.()||null,logged=()=>{const b=backend();return !!(b?.user?.uid&&!b.user.isAnonymous&&b.user.email)};
+  const kstDay=(ms=Date.now())=>{const d=new Date(ms+KST);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`};
+  const seasonNo=id=>{if(String(id)==='2026-08-03')return 1;const t=Date.parse(`${String(id)}T00:00:00+09:00`),base=Date.parse('2026-08-10T00:00:00+09:00');return Number.isFinite(t)?Math.max(2,2+Math.round((t-base)/(7*86400000))):0};
+
+  // ---- low-rank adaptive battle AI: Gold(9) and above are untouched ----
+  const competitiveBattle=()=>!!(game?.v212Draft?.competitive||currentConfig?.draft?.competitive)&&!game?.v212Draft?.friendly&&!document.body.classList.contains('friendly-battle');
+  const handicap=()=>{const p=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.profile?.()||{},rank=Math.max(0,Number(p.rankIndex)||0),loss=Math.max(0,Number(p.lossStreak)||0);if(rank>=9)return {damage:1,speed:1};if(loss>=3)return {damage:.42,speed:.58};if(loss>=2)return {damage:.50,speed:.63};return rank<=5?{damage:.56,speed:.68}:{damage:.64,speed:.74}};
+  if(typeof damage==='function'&&!damage.__v330AiWrapped){const prev=damage;const wrapped=function(target,amount,source,skill,opts){let a=amount;if(competitiveBattle()&&source?.team==='T2'&&target?.team==='T1'){const h=handicap();a=(Number(amount)||0)*h.damage;}return prev.call(this,target,a,source,skill,opts)};wrapped.__v330AiWrapped=true;damage=wrapped;}
+  if(typeof normalSpeed==='function'&&!normalSpeed.__v330AiWrapped){const prev=normalSpeed;const wrapped=function(p){const base=prev.apply(this,arguments);if(competitiveBattle()&&p?.team==='T2'){const h=handicap();return base*h.speed}return base};wrapped.__v330AiWrapped=true;normalSpeed=wrapped;}
+
+  // ---- robust character mastery rank -> public profile (friend request stays inside profile) ----
+  async function openPublicProfile(uid,name,row=null){uid=String(uid||'');if(!uid)return false;let anchor=row;if(!anchor){anchor=document.createElement('div');anchor.dataset.v323MasteryProfileName=String(name||'플레이어');anchor.innerHTML=`<span class="v290-rank-name"><b>${esc(name||'플레이어')}</b></span>`;}const ok=await window.__GONG_V254__?.openRankProfile?.(uid,anchor);setTimeout(()=>window.__GONG_V314__?.decoratePublicProfile?.(uid,String(name||'플레이어')),60);return ok!==false;}
+  document.addEventListener('click',e=>{const row=e.target.closest?.('.v290-rank-row[data-v323-mastery-profile-uid]');if(!row)return;e.preventDefault();e.stopImmediatePropagation();openPublicProfile(row.dataset.v323MasteryProfileUid,row.dataset.v323MasteryProfileName||row.querySelector('.v290-rank-name b')?.textContent||'플레이어',row);},true);
+  document.addEventListener('keydown',e=>{const row=e.target.closest?.('.v290-rank-row[data-v323-mastery-profile-uid]');if(!row||!['Enter',' '].includes(e.key))return;e.preventDefault();e.stopImmediatePropagation();openPublicProfile(row.dataset.v323MasteryProfileUid,row.dataset.v323MasteryProfileName||row.querySelector('.v290-rank-name b')?.textContent||'플레이어',row);},true);
+
+  // ---- online directory (banner itself is the trigger; no new banner button) ----
+  let onlineDisconnect=null;
+  async function publishOnline(active=true){const b=backend();if(!logged()||!b)return false;const mode=window.__GONG_V312__?.currentModeView?.()||{key:'home',label:'홈화면'};const ref=b.dbmod.ref(b.db,`${ONLINE_ROOT}/${b.user.uid}`);try{if(active){if(!onlineDisconnect){onlineDisconnect=b.dbmod.onDisconnect?.(ref);await onlineDisconnect?.set?.({online:false,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:'home',currentModeLabel:'홈화면',version:1});}await b.dbmod.set(ref,{online:true,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:String(mode.key||'home').slice(0,24),currentModeLabel:String(mode.label||'홈화면').slice(0,24),version:1});}else await b.dbmod.update(ref,{online:false,heartbeatAt:b.dbmod.serverTimestamp(),currentMode:'home',currentModeLabel:'홈화면'});return true}catch(err){console.warn('[V330 온라인 디렉터리]',err);return false}}
+  function ensureOnlineModal(){let modal=$('v330OnlineModal');if(modal)return modal;modal=document.createElement('div');modal.id='v330OnlineModal';modal.className='v330-online-modal hidden';modal.innerHTML=`<section class="v330-online-card" role="dialog" aria-modal="true"><header class="v330-online-head"><div><strong>🟢 지금 온라인</strong><small>행을 누르면 프로필 · 친구요청은 프로필 안에서</small></div><button class="v330-online-close" aria-label="닫기">×</button></header><div class="v330-online-list"><div class="v330-online-empty">불러오는 중...</div></div><div class="v330-online-foot">게스트 접속자는 닉네임/프로필이 없어 목록에 따로 표시되지 않을 수 있어.</div></section>`;document.body.appendChild(modal);const close=()=>modal.classList.add('hidden');modal.querySelector('.v330-online-close').onclick=close;modal.addEventListener('click',e=>{if(e.target===modal)close()});return modal;}
+  async function openOnlineDirectory(){const modal=ensureOnlineModal(),list=modal.querySelector('.v330-online-list');modal.classList.remove('hidden');if(!logged()){list.innerHTML='<div class="v330-online-empty">Google 로그인하면 현재 온라인 플레이어와 플레이 중인 모드를 볼 수 있어.<br>프로필에서 친구요청도 가능해.</div>';return false}list.innerHTML='<div class="v330-online-empty">온라인 플레이어를 불러오는 중...</div>';const b=backend();try{const snap=await b.dbmod.get(b.dbmod.ref(b.db,ONLINE_ROOT)),raw=snap.val()||{},now=Date.now(),rows=Object.entries(raw).map(([uid,v])=>({uid,...(v||{})})).filter(r=>r.online===true&&now-(Number(r.heartbeatAt)||0)<=120000).slice(0,60);const profiles=await Promise.all(rows.map(async r=>{try{const p=await b.dbmod.get(b.dbmod.ref(b.db,`${PUBLIC_ROOT}/${r.uid}`));return {...r,profile:p.exists()?p.val():null}}catch(_){return {...r,profile:null}}}));profiles.sort((a,b)=>String(a.profile?.nickname||a.uid).localeCompare(String(b.profile?.nickname||b.uid),'ko'));list.innerHTML=profiles.length?profiles.map(r=>`<button type="button" class="v330-online-row" data-v330-online-profile="${esc(r.uid)}" data-v330-online-name="${esc(r.profile?.nickname||'솔리언')}"><span class="v330-online-dot"></span><span class="v330-online-name">${esc(r.profile?.nickname||'솔리언')}</span><span class="v330-online-mode">${esc(r.currentModeLabel||'홈화면')}</span></button>`).join(''):'<div class="v330-online-empty">지금 프로필이 공개된 온라인 플레이어가 없어.</div>';return true}catch(err){list.innerHTML='<div class="v330-online-empty">온라인 목록을 불러오지 못했어.<br>Firebase V331 규칙을 적용했는지 확인해.</div>';return false}}
+  function armOnlineBanner(){const el=$('v232OnlineCount');if(!el||el.dataset.v330Armed)return false;el.dataset.v330Armed='1';el.classList.add('v330-online-directory-trigger');el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','온라인 플레이어 목록 보기');el.addEventListener('click',openOnlineDirectory);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openOnlineDirectory()}});return true}
+  document.addEventListener('click',e=>{const row=e.target.closest?.('[data-v330-online-profile]');if(!row)return;ensureOnlineModal().classList.add('hidden');openPublicProfile(row.dataset.v330OnlineProfile,row.dataset.v330OnlineName,row);});
+  window.addEventListener('gong-v230-online-ready',()=>{setTimeout(()=>{armOnlineBanner();publishOnline(true)},300)});window.addEventListener('gong-v232-auth-changed',()=>setTimeout(()=>publishOnline(true),400));document.addEventListener('visibilitychange',()=>publishOnline(!document.hidden));setInterval(()=>{armOnlineBanner();if(!document.hidden)publishOnline(true)},30000);setTimeout(armOnlineBanner,300);
+
+  // ---- season TOP10 permanent titles ----
+  function readJson(k,f){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch(_){return f}}function writeJson(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(_){return false}}
+  function score(row){return Math.max(0,Number(row?.rankIndex)||0)*1000000+Math.max(0,Number(row?.points)||0)}
+  function seasonTierMeta(season){const n=seasonNo(season?.seasonId);if(!n)return null;const ranks=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.ranks||[],idx=Math.max(0,Math.min(ranks.length-1,Number(season?.rankIndex)||0)),tier=ranks[idx]||'솔리언 1';return {n,idx,tier};}
+  function saveSeasonTitle(id,title){const data=readJson(ACH_KEY,{version:1,titles:{}});data.titles=data.titles&&typeof data.titles==='object'?data.titles:{};if(data.titles[id]?.title===title)return false;data.titles[id]={title,source:'season',unlockedAt:Date.now()};data.updatedAt=Date.now();if(!writeJson(ACH_KEY,data))return false;window.__GONG_V260__?.refresh?.();window.__GONG_V260__?.syncCloud?.();window.__GONG_V254__?.syncPublicProfile?.({force:true});return true;}
+  function grantSeasonTier(season){if((Number(season?.matches)||0)<=0)return false;const meta=seasonTierMeta(season);return meta?saveSeasonTitle(`season${meta.n}_tier_${meta.idx}`,`시즌${meta.n} ${meta.tier}`):false;}
+  function grantSeasonRankTitle(season,placement){placement=Math.floor(Number(placement)||0);if(placement<1||placement>10)return false;const meta=seasonTierMeta(season);return meta?saveSeasonTitle(`season${meta.n}_rank_${placement}`,`시즌${meta.n} 랭킹 ${placement}등`):false;}
+  async function scanSeasonAwards(){if(!logged())return {ready:false};const b=backend(),history=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.history?.()||[],state=readJson(AWARD_KEY,{processed:{}});state.processed=state.processed||{};let granted=0;for(const season of history){const id=String(season?.seasonId||'');if(!id||(Number(season?.matches)||0)<=0)continue;const prior=state.processed[id]&&typeof state.processed[id]==='object'?state.processed[id]:{};if(!prior.tierGranted){if(grantSeasonTier(season))granted++;prior.tierGranted=true;prior.seasonNumber=seasonNo(id);prior.at=Date.now();state.processed[id]=prior;writeJson(AWARD_KEY,state);}if(prior.rankingResolved)continue;try{const snap=await b.dbmod.get(b.dbmod.ref(b.db,`competitiveLeaderboard/v1/${id}`)),raw=snap.val()||{},ranked=Object.entries(raw).map(([uid,row])=>row&&typeof row==='object'?{uid,...row}:null).filter(Boolean).sort((a,b)=>score(b)-score(a)||(Number(b.wins)||0)-(Number(a.wins)||0)||String(a.uid).localeCompare(String(b.uid))),idx=ranked.findIndex(r=>r.uid===b.user.uid),placement=idx>=0?idx+1:null;if(!placement){state.processed[id]=prior;writeJson(AWARD_KEY,state);continue;}if(placement<=10&&grantSeasonRankTitle(season,placement))granted++;prior.placement=placement;prior.rankGranted=placement<=10;prior.rankingResolved=true;prior.seasonNumber=seasonNo(id);prior.at=Date.now();state.processed[id]=prior;writeJson(AWARD_KEY,state);}catch(err){console.warn('[V330 시즌 칭호 정산]',id,err)}}if(granted){const t=document.createElement('div');t.className='v219-toast show';t.textContent='🏆 시즌 티어/순위 칭호가 지급됐어!';document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}return {ready:true,granted}}
+  window.addEventListener('gong-v230-online-ready',()=>setTimeout(scanSeasonAwards,1500));window.addEventListener('gong-v232-auth-changed',()=>setTimeout(scanSeasonAwards,1700));setInterval(scanSeasonAwards,60000);
+
+  // ---- Season 2 in-game promotion, from 2026-08-10 00:00 KST; once per KST day ----
+  const SEASON2_PROMO_AT=Date.parse('2026-08-10T00:00:00+09:00'),SEASON2_PROMO_END=Date.parse('2026-08-16T22:00:00+09:00');
+  function showSeason2Promo(){if(Date.now()<SEASON2_PROMO_AT||Date.now()>=SEASON2_PROMO_END||document.body.classList.contains('draft-battle')||document.body.classList.contains('competitive-battle'))return false;const day=kstDay();if(localStorage.getItem(PROMO_KEY)===day)return false;let modal=$('v330Season2Promo');if(!modal){modal=document.createElement('div');modal.id='v330Season2Promo';modal.className='v330-season2-promo hidden';modal.innerHTML=`<section class="v330-season2-card"><div class="v330-season2-kicker">RANKED · SEASON 2</div><h2>시즌2, 이제 진짜 경쟁전.</h2><p>TOP10 시즌 한정 칭호 · 3연속 랭킹 하락 시 방어막 · 일요일 22시 정산. 23시부터 다음 시즌이 바로 이어져.</p><div class="v330-season2-pills"><span>🏆 TOP10 칭호</span><span>🛡️ 랭킹 방어막</span><span>🎟️ 10K XP 쿠폰</span></div><div class="v330-season2-actions"><button class="v330-season2-go">경쟁전 바로 가기</button><button class="v330-season2-close">닫기</button></div></section>`;document.body.appendChild(modal);const close=()=>{localStorage.setItem(PROMO_KEY,day);modal.classList.add('hidden')};modal.querySelector('.v330-season2-close').onclick=close;modal.querySelector('.v330-season2-go').onclick=()=>{close();$('draftModeBtn')?.click()};modal.addEventListener('click',e=>{if(e.target===modal)close()});}modal.classList.remove('hidden');return true}
+  setTimeout(showSeason2Promo,1800);document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(showSeason2Promo,500)});
+
+  // ---- Best-moment Instagram Story: capture a real battle frame on kills/end, then overlay final standings ----
+  const moment={url:'',at:0,reason:''};
+  function resetMoment(){moment.url='';moment.at=0;moment.reason='';return true}
+  if(typeof resetBattle==='function'&&!resetBattle.__v331MomentReset){const prev=resetBattle;const wrapped=function(){resetMoment();return prev.apply(this,arguments)};wrapped.__v331MomentReset=true;resetBattle=wrapped;}
+  function captureMoment(reason='battle'){try{const canvas=ctx?.canvas;if(!canvas||!canvas.width||!canvas.height)return false;moment.url=canvas.toDataURL('image/jpeg',.86);moment.at=Date.now();moment.reason=reason;return true}catch(_){return false}}
+  if(typeof showKill==='function'&&!showKill.__v330Moment){const prev=showKill;const wrapped=function(){const r=prev.apply(this,arguments);captureMoment('kill');return r};wrapped.__v330Moment=true;showKill=wrapped;}
+  if(typeof checkEnd==='function'&&!checkEnd.__v330Moment){const prev=checkEnd;const wrapped=function(){const before=!!game?.over,r=prev.apply(this,arguments);if(!before&&game?.over&&!moment.url)captureMoment('final');return r};wrapped.__v330Moment=true;checkEnd=wrapped;}
+  function standings(){return (game?.players||[]).filter(p=>!p.isBoss&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo).slice().sort((a,b)=>{const as=a.eliminationOrder==null,bs=b.eliminationOrder==null;if(as!==bs)return bs-as;if(as&&bs)return (b.hp/Math.max(1,b.maxHp))-(a.hp/Math.max(1,a.maxHp))||b.hp-a.hp;return (b.eliminationOrder||0)-(a.eliminationOrder||0)});}
+  function loadImage(src){return new Promise(resolve=>{if(!src)return resolve(null);const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>resolve(null);im.src=src})}
+  function roundRect(c,x,y,w,h,r){c.beginPath();c.roundRect?c.roundRect(x,y,w,h,r):(c.rect(x,y,w,h));c.fill()}
+  async function storyBlob(){const out=document.createElement('canvas');out.width=1080;out.height=1920;const c=out.getContext('2d'),im=await loadImage(moment.url);c.fillStyle='#100b18';c.fillRect(0,0,1080,1920);if(im){const scale=Math.max(1080/im.width,1300/im.height),w=im.width*scale,h=im.height*scale;c.drawImage(im,(1080-w)/2,(1260-h)/2,w,h)}const grad=c.createLinearGradient(0,350,0,1450);grad.addColorStop(0,'rgba(8,5,15,.05)');grad.addColorStop(.55,'rgba(8,5,15,.32)');grad.addColorStop(1,'rgba(8,5,15,.98)');c.fillStyle=grad;c.fillRect(0,0,1080,1500);const rows=standings(),winner=rows[0]?.name||String(document.querySelector('.result-winner-name')?.textContent||'공게임'),winnerText=`${winner} 승리`;c.textAlign='left';c.fillStyle='#f8df6c';c.font='1000 30px system-ui,sans-serif';c.fillText('GONGGAME · BEST MOMENT',60,100);c.fillStyle='#fff';c.font='1000 92px system-ui,sans-serif';let size=92;while(c.measureText(winnerText).width>950&&size>50){size-=4;c.font=`1000 ${size}px system-ui,sans-serif`}c.fillText(winnerText,60,1180);c.fillStyle='#cfc7d8';c.font='900 26px system-ui,sans-serif';c.fillText('오늘 경기에서 건진 한 장.',64,1230);c.fillStyle='rgba(18,13,26,.88)';roundRect(c,48,1290,984,455,34);c.fillStyle='#fff';c.font='1000 31px system-ui,sans-serif';c.fillText('FINAL RANK',78,1350);rows.slice(1,6).forEach((p,i)=>{const y=1425+i*58;c.fillStyle=i===0?'#e7e2ec':'#cfc7d8';c.font=i===0?'1000 29px system-ui,sans-serif':'900 25px system-ui,sans-serif';c.fillText(`${i+2}  ${p.name}`,82,y);c.textAlign='right';c.fillStyle='#a998b8';c.font='850 21px system-ui,sans-serif';c.fillText(`${Math.round(p.damageDealt||0).toLocaleString()} DMG`,990,y);c.textAlign='left'});c.fillStyle='#fff';c.font='1000 34px system-ui,sans-serif';c.fillText('공게임',60,1830);c.textAlign='right';c.fillStyle='#bdb1c9';c.font='850 20px system-ui,sans-serif';c.fillText(`${kstDay()} · #공게임`,1020,1830);return new Promise(resolve=>out.toBlob(resolve,'image/png'))}
+  async function shareStory(){const blob=await storyBlob();if(!blob)return;const file=new File([blob],`공게임_명장면_${kstDay()}.png`,{type:'image/png'});try{if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({files:[file],title:'공게임 명장면',text:'공게임 승부의 순간'});return}}catch(e){if(e?.name==='AbortError')return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+  document.addEventListener('click',e=>{const btn=e.target.closest?.('.v219-story-share');if(!btn)return;e.preventDefault();e.stopImmediatePropagation();shareStory()},true);
+
+  window.__GONG_PATCH_NOTES__?.register?.('V330','경쟁전 시즌 정산 22시·23시 다음 시즌 시작 · 정산 XP 10,000 쿠폰 단위 · 시즌 참가 티어 + TOP10 순위 칭호 · 시즌2 홍보 · 랭킹 방어막 최대5/3연속 하락 지급 · 골드 미만 AI 대폭 완화/연패 적응 · 인스타 명장면 공유 · 숙련도 랭킹 프로필 복구 · 온라인 배너 플레이어 목록 · 김태린 큰하트16/벽분열2');
+  window.__GONG_V330_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  window.__GONG_V330__={build:BUILD,openOnlineDirectory,openPublicProfile,scanSeasonAwards,captureMoment,resetMoment,momentState:()=>({...moment}),storyBlob,handicap,season2Promo:showSeason2Promo,verify(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;return {build:BUILD,season:api?.season?.(),shield:api?.shieldStatus?.(),masteryRows:document.querySelectorAll('.v290-rank-row[data-v323-mastery-profile-uid]').length,onlineTrigger:!!$('v232OnlineCount')?.classList.contains('v330-online-directory-trigger'),latest:window.__GONG_LATEST_BUILD__}}};
+  console.info('[V330] 시즌 정산/보상/칭호 · 시즌2 홍보 · 방어막 · 저티어 AI · 명장면 공유 · 온라인 디렉터리 · 숙련도 프로필 · 김태린 밸런스');
+})();
+
+// V331 · pre-deploy settlement safety hardening.
+(()=>{
+  const BUILD='V331_PREDEPLOY_SETTLEMENT_SAFETY_AUDIT';
+  function rescanAfterBoundary(event){
+    const locked=!!event?.detail?.locked;
+    setTimeout(()=>{
+      try{window.__GONG_V227__?.scan?.()}catch(e){console.warn('[V331 시즌쿠폰 재검사]',e)}
+      try{window.__GONG_V279__?.scanSettlementBonuses?.()}catch(e){console.warn('[V331 TOP3 재검사]',e)}
+      try{window.__GONG_V330__?.scanSeasonAwards?.()}catch(e){console.warn('[V331 시즌칭호 재검사]',e)}
+      if(!locked)try{window.__GONG_V231__?.syncLeaderboard?.({force:true})}catch(e){console.warn('[V331 새시즌 랭킹 동기화]',e)}
+    },220);
+  }
+  window.addEventListener('gong-v331-season-boundary',rescanAfterBoundary);
+  window.__GONG_PATCH_NOTES__?.register?.('V331','V330 배포 전 안정화 · 기존 미수령 시즌 XP 전부 10K 쿠폰 변환 · TOP3 랭킹 조회 지연 시 재시도 · 경기별 명장면 캡처 초기화 · 시즌 경계 즉시 전환 · 시즌1 22시 서버 랭킹 쓰기 동결');
+  window.__GONG_V331__={build:BUILD,verify(){const competitive=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;return {build:BUILD,season:competitive?.season?.(),patchLatest:window.__GONG_PATCH_NOTES__?.latest?.(),legacyCouponMigration:typeof window.__GONG_V227__?.issuePendingSeasonCoupons==='function',top3Retry:typeof window.__GONG_V279__?.scanSettlementBonuses==='function',latest:window.__GONG_LATEST_BUILD__}}};
+  window.__GONG_V331_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+  console.info('[V331] V330 배포 전 감사 수정 · 정산/쿠폰/랭킹 재시도/명장면 초기화/시즌 경계 안전화');
 })();
 </script>
 
