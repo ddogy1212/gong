@@ -29565,7 +29565,9 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function weightedTopChoice(scored,count,randomness){
     const top=scored.slice(0,Math.max(1,Math.min(count,scored.length)));
     if(top.length===1||randomness<=0)return top[0].id;
-    const weights=top.map((_,i)=>Math.pow(top.length-i,1.7));
+    // V338: randomness 값을 실제 선택 분포에 반영한다. 낮을수록 1순위 선택 확률이 크게 올라간다.
+    const r=Math.max(0,Math.min(1,Number(randomness)||0)),sharpness=1.6+(1-r)*2.4;
+    const weights=top.map((_,i)=>Math.pow(top.length-i,sharpness));
     const total=weights.reduce((a,b)=>a+b,0),roll=Math.random()*total;
     let sum=0;
     for(let i=0;i<top.length;i++){sum+=weights[i];if(roll<=sum)return top[i].id}
@@ -29727,16 +29729,16 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   }
   function aiProfile(){
     const i=Math.max(0,Math.min(18,profile.rankIndex));
-    // V330: 골드 미만은 입문자가 충분히 이길 수 있도록 밴픽 AI를 크게 완화한다. 골드부터는 기존 난이도를 그대로 유지한다.
-    if(i<=2)return {rankIndex:i,label:`매우 쉬움 · ${RANKS[i].name}`,topChoices:18,randomness:.94,lookahead:0};
-    if(i<=5)return {rankIndex:i,label:`매우 쉬움 · ${RANKS[i].name}`,topChoices:16,randomness:.90,lookahead:0};
-    if(i<=8)return {rankIndex:i,label:`쉬움 · ${RANKS[i].name}`,topChoices:12,randomness:.82,lookahead:0};
-    if(i===9)return {rankIndex:i,label:RANKS[i].name,topChoices:2,randomness:.07,lookahead:0};
-    if(i===10)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:0};
-    if(i===11)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:.16};
-    if(i<=14)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:.32+(i-12)*.15};
-    if(i<=17)return {rankIndex:i,label:RANKS[i].name,topChoices:1,randomness:0,lookahead:.82+(i-15)*.22};
-    return {rankIndex:i,label:'신',topChoices:1,randomness:0,lookahead:1.55};
+    // V338: 경쟁전 전 구간 난이도 상향. 저티어도 후보 압축/카운터 판단을 사용하고, 상위 티어는 더 깊게 미래 픽을 본다.
+    if(i<=2)return {rankIndex:i,label:`보통 · ${RANKS[i].name}`,topChoices:10,randomness:.72,lookahead:.08};
+    if(i<=5)return {rankIndex:i,label:`보통+ · ${RANKS[i].name}`,topChoices:7,randomness:.52,lookahead:.18};
+    if(i<=8)return {rankIndex:i,label:`어려움 · ${RANKS[i].name}`,topChoices:4,randomness:.28,lookahead:.32};
+    if(i===9)return {rankIndex:i,label:`어려움 · ${RANKS[i].name}`,topChoices:2,randomness:.04,lookahead:.45};
+    if(i===10)return {rankIndex:i,label:`어려움+ · ${RANKS[i].name}`,topChoices:1,randomness:0,lookahead:.60};
+    if(i===11)return {rankIndex:i,label:`매우 어려움 · ${RANKS[i].name}`,topChoices:1,randomness:0,lookahead:.75};
+    if(i<=14)return {rankIndex:i,label:`매우 어려움 · ${RANKS[i].name}`,topChoices:1,randomness:0,lookahead:.90+(i-12)*.15};
+    if(i<=17)return {rankIndex:i,label:`최상급 · ${RANKS[i].name}`,topChoices:1,randomness:0,lookahead:1.35+(i-15)*.20};
+    return {rankIndex:i,label:'극한 · 신',topChoices:1,randomness:0,lookahead:2.05};
   }
   function renderRank(){
     ensureCurrentSeason();
@@ -39455,9 +39457,9 @@ body.v317-battle-normalized #battle .arena-wrap{width:100%!important;max-width:n
   const kstDay=(ms=Date.now())=>{const d=new Date(ms+KST);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`};
   const seasonNo=id=>{if(String(id)==='2026-08-03')return 1;const t=Date.parse(`${String(id)}T00:00:00+09:00`),base=Date.parse('2026-08-10T00:00:00+09:00');return Number.isFinite(t)?Math.max(2,2+Math.round((t-base)/(7*86400000))):0};
 
-  // ---- low-rank adaptive battle AI: Gold(9) and above are untouched ----
+  // ---- V338 competitive battle AI: 전 구간 난이도 상향 + 과도했던 저티어 감쇠 축소 ----
   const competitiveBattle=()=>!!(game?.v212Draft?.competitive||currentConfig?.draft?.competitive)&&!game?.v212Draft?.friendly&&!document.body.classList.contains('friendly-battle');
-  const handicap=()=>{const p=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.profile?.()||{},rank=Math.max(0,Number(p.rankIndex)||0),loss=Math.max(0,Number(p.lossStreak)||0);if(rank>=9)return {damage:1,speed:1};if(loss>=3)return {damage:.42,speed:.58};if(loss>=2)return {damage:.50,speed:.63};return rank<=5?{damage:.56,speed:.68}:{damage:.64,speed:.74}};
+  const handicap=()=>{const p=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.profile?.()||{},rank=Math.max(0,Number(p.rankIndex)||0),loss=Math.max(0,Number(p.lossStreak)||0);let base=rank>=18?{damage:1.15,speed:1.12}:rank>=15?{damage:1.12,speed:1.10}:rank>=12?{damage:1.09,speed:1.08}:rank>=9?{damage:1.06,speed:1.05}:rank>=6?{damage:.90,speed:.94}:rank>=3?{damage:.82,speed:.87}:{damage:.75,speed:.82};if(rank<9&&loss>=3)base={damage:base.damage*.88,speed:base.speed*.92};else if(rank<9&&loss>=2)base={damage:base.damage*.94,speed:base.speed*.96};return base};
   if(typeof damage==='function'&&!damage.__v330AiWrapped){const prev=damage;const wrapped=function(target,amount,source,skill,opts){let a=amount;if(competitiveBattle()&&source?.team==='T2'&&target?.team==='T1'){const h=handicap();a=(Number(amount)||0)*h.damage;}return prev.call(this,target,a,source,skill,opts)};wrapped.__v330AiWrapped=true;damage=wrapped;}
   if(typeof normalSpeed==='function'&&!normalSpeed.__v330AiWrapped){const prev=normalSpeed;const wrapped=function(p){const base=prev.apply(this,arguments);if(competitiveBattle()&&p?.team==='T2'){const h=handicap();return base*h.speed}return base};wrapped.__v330AiWrapped=true;normalSpeed=wrapped;}
 
@@ -39702,6 +39704,18 @@ window.__GONG_PATCH_NOTES__?.register?.('V337','친선전 참가를 서버 선�
 window.__GONG_V337__={build:BUILD,verify(){const api=window.__GONG_V231__,d=window.DEFS?.doyun||DEFS?.doyun;return {build:BUILD,doyunHp:d?.hp,friendlyJoinReducer:typeof api?.buildFriendlyJoinRoom==='function',roomApi:!!api?.joinRoom,latest:window.__GONG_LATEST_BUILD__}}};
 window.__GONG_V337_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 console.info('[V337] 친선전 참가 원자 재검증 · 이도윤 HP 370');
+})();
+</script>
+
+
+<script id="v338CompetitiveDifficultyUp">
+(()=>{
+'use strict';
+const BUILD='V338_COMPETITIVE_DIFFICULTY_UP';
+window.__GONG_PATCH_NOTES__?.register?.('V338','경쟁전 난이도 상향 · 저티어 AI 밴픽 랜덤성 감소/카운터 판단 강화 · 과도한 AI 공격력·속도 감쇠 축소 · 골드 이상 전투 AI 5~12% 강화 · 친선전/일반전 영향 없음');
+window.__GONG_V338__={build:BUILD,verify(){const api=window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__;return {build:BUILD,ai:api?.aiProfile?.(),battleHandicap:window.__GONG_V330__?.handicap?.(),friendlyUnaffected:true,latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V338_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V338] 경쟁전 AI 밴픽/전투 난이도 상향 · 친선/일반전 무영향');
 })();
 </script>
 
