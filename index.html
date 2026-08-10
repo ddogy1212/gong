@@ -2923,8 +2923,8 @@ const SKILL_INFO={
         '설치 후 15초가 지나면 자동 소멸',
         '검은 지뢰덩어리와 깜빡이는 경고등으로 표시'
       ]},
-      {kind:'돌진 공격',type:'attack',name:'발작',desc:'13초마다 경기장 테두리로 이동해 엄청난 속도로 7초 동안 계속 회전한다.',points:[
-        '발동 주기: 13초',
+      {kind:'돌진 공격',type:'attack',name:'발작',desc:'벽에 5번 부딪힐 때마다 경기장 테두리로 이동해 엄청난 속도로 7초 동안 계속 회전한다.',points:[
+        '발동 조건: 벽 충돌 5회',
         '지속 시간: 7초',
         '발작 중 테두리 이동속도: 760',
         '충돌한 적에게 기본 45 피해',
@@ -4952,7 +4952,7 @@ function resetBattle(){
     if(p.id==='min'){p.cool={talk:0,regen:7};p.data={contactCd:{},trackTarget:null,trackTime:0,trackFire:0,confessionStage:0,pendingConfessions:0}}
     if(p.id==='geun'){p.cool={glass:3};p.data={attackMult:1,hitCount:0,rageTimer:0,rageContactCd:{},rageTrail:0,tantrumUsed:false}}
     if(p.id==='jiwon'){p.cool={paranoia:12,phone:rand(4,5),inferiority:0};p.data={shields:0,inferiorityCount:0}}
-    if(p.id==='doyun'){p.cool={mine:9,fit:13};p.data={loveShields:0,loveCd:{},fitTimer:0,fitProgress:0,fitHitCd:{},fitTrail:0,fitHitCount:0}}
+    if(p.id==='doyun'){p.cool={mine:9};p.data={loveShields:0,loveCd:{},fitTimer:0,fitProgress:0,fitHitCd:{},fitTrail:0,fitHitCount:0,fitWallHits:0}}
     if(p.id==='sungmin'){p.cool={math:rand(4/3,10/3),chair:0};p.data={chairCount:0}}
   if(p.id==='junghoon'){p.cool={};p.data={hitCount:0,npcTimer:0,smellDelay:0,smellActive:false,smellTick:0,smellRadius:120,smellTargets:{}}}
     if(p.id==='mingyu'){p.cool={ramen:rand(2,7),gao:rand(3,10)};p.data={mangsamCount:0,shields:0,contactCd:{},gaoHitCd:{},gaoTimer:0,haircutUsed:false,haircutActive:false,haircutBurstTimer:0,haircutTrail:0}}
@@ -5490,7 +5490,7 @@ function statusText(p){
     a.push(`💗 반감 보호막 ${p.data.loveShields}개`);
     a.push(`지뢰 ${Math.max(0,p.cool.mine).toFixed(1)}s`);
     a.push(`설치 지뢰 ${game.mines.filter(m=>m.owner===p).length}개`);
-    a.push(p.data.fitTimer>0?`⚡ 발작 ${p.data.fitTimer.toFixed(1)}s`:`발작 ${Math.max(0,p.cool.fit).toFixed(1)}s`);
+    a.push(p.data.fitTimer>0?`⚡ 발작 ${p.data.fitTimer.toFixed(1)}s`:`🧱 발작 벽 ${p.data.fitWallHits||0}/5`);
   }
   if(p.id==='sungmin'){
     a.push(`🪑 의자왕 ${p.data.chairCount}/3`);
@@ -7576,6 +7576,15 @@ function updateNaSpeed(){
 
 function onWallHit(p){
   if(!p.alive)return;
+
+  if(p.id==='doyun'&&(p.data?.fitTimer||0)<=0){
+    p.data.fitWallHits=(p.data.fitWallHits||0)+1;
+    floater(p.x,p.y-p.r-10,`⚡ 발작 ${p.data.fitWallHits}/5`,'#6553d9',12,.55);
+    if(p.data.fitWallHits>=5){
+      p.data.fitWallHits=0;
+      startDoyunFit(p);
+    }
+  }
   if((p.data?.youngsikEssayTimer||0)>0){
     p.data.youngsikEssayWalls=(p.data.youngsikEssayWalls||0)+1;
     floater(p.x,p.y-p.r-13,`📝 작문 ${p.data.youngsikEssayWalls}/3`,'#3f7f63',13,.6);
@@ -8114,7 +8123,6 @@ function startDoyunFit(doyun){
     doyun.data.fitTimer>0
   )return;
 
-  doyun.cool.fit=13;
   doyun.data.fitTimer=7;
   doyun.data.fitProgress=
     nearestDoyunPerimeterProgress(doyun);
@@ -8271,14 +8279,6 @@ function updateDoyun(doyun,dt){
     doyun.cool.mine<=0
   ){
     placeDoyunMine(doyun);
-  }
-
-  if(
-    !doyun.hidden&&
-    doyun.data.fitTimer<=0&&
-    doyun.cool.fit<=0
-  ){
-    startDoyunFit(doyun);
   }
 
   updateDoyunFit(doyun,dt);
@@ -39786,6 +39786,14 @@ window.__GONG_PATCH_NOTES__?.register?.('V341','이도윤 발작 충돌 피해 3
 window.__GONG_V341__={build:BUILD,verify(){const d=DEFS?.doyun,info=SKILL_INFO?.doyun,barcode=info?.skills?.find?.(s=>s?.name==='바코드머리'),fit=info?.skills?.find?.(s=>s?.name==='발작');return {build:BUILD,doyunHp:d?.hp,skillInfoHp:info?.hp,fitPoints:fit?.points||[],barcodePoints:barcode?.points||[],latest:window.__GONG_LATEST_BUILD__};}};
 window.__GONG_V341_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 console.info('[V341] 이도윤 발작 충돌 45 · 바코드머리 초당 2 피해');
+})();</script>
+
+<script id="v342DoyunFitWallTrigger">(()=>{
+const BUILD='V342_DOYUN_FIT_WALL5';
+window.__GONG_PATCH_NOTES__?.register?.('V342','이도윤 발작 발동 조건 13초 주기 → 벽 충돌 5회로 변경 · 발작 효과/45 충돌 피해/바코드 초당 2 피해 유지');
+window.__GONG_V342__={build:BUILD,verify(){const info=SKILL_INFO?.doyun,fit=info?.skills?.find?.(s=>s?.name==='발작');return {build:BUILD,doyunHp:DEFS?.doyun?.hp,fitDescription:fit?.desc,fitPoints:fit?.points||[],latest:window.__GONG_LATEST_BUILD__};}};
+window.__GONG_V342_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V342] 이도윤 발작: 13초 타이머 제거 · 벽 충돌 5회 발동');
 })();</script>
 </body>
 </html>
