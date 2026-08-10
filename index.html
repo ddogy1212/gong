@@ -39921,5 +39921,156 @@ window.__GONG_V344_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 console.info('[V344] 엄해인 돈 9 · 서연서 블쉴요정 1초 · 이윤호 상시 파란 트레일 제거 / Lv30 트레일 유지');
 })();</script>
 
+
+
+<script id="v345BattleFreezeGuard">(()=>{
+'use strict';
+/* =========================================================
+   V345 · full battle freeze guard / all-roster hardening
+   ========================================================= */
+const BUILD='V345_BATTLE_FREEZE_GUARD_FULL_AUDIT';
+const runtimeErrors=window.__GONG_V345_RUNTIME_ERRORS__=window.__GONG_V345_RUNTIME_ERRORS__||[];
+const errorCounts=new Map();
+let lastSanitizeAt=-999;
+
+const finite=(v,f=0)=>Number.isFinite(Number(v))?Number(v):f;
+const bound=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const signature=(phase,error)=>`${phase}:${String(error?.message||error||'unknown').slice(0,180)}`;
+function reportRuntimeError(phase,error){
+  const sig=signature(phase,error), count=(errorCounts.get(sig)||0)+1;
+  errorCounts.set(sig,count);
+  runtimeErrors.push({at:Date.now(),battleTime:finite(game?.t,0),phase,message:String(error?.message||error||'unknown'),stack:String(error?.stack||'').slice(0,1600),count});
+  if(runtimeErrors.length>30)runtimeErrors.splice(0,runtimeErrors.length-30);
+  if(count<=3)console.error(`[V345 ${phase} recovered #${count}]`,error);
+  else if(count===4)console.warn(`[V345 ${phase}] same error suppressed after 3 logs:`,sig);
+}
+
+// V328의 전역 bridge getter가 후속 스크립트에서 자기 자신으로 다시 해석되며
+// v151ApplyVulnerable -> v151ApplyVulnerable 무한재귀를 만들던 문제를 영구 차단한다.
+const safeApplyVulnerable=(target,seconds,source,label='취약')=>{
+  if(!target?.alive)return false;
+  target.data ||= {};
+  const sec=Math.max(0,finite(seconds,0));
+  target.data.v151VulnerableTimer=Math.max(finite(target.data.v151VulnerableTimer,0),sec);
+  if(source)target.data.v151VulnerableSource=source;
+  try{floater(target.x,target.y-target.r-18,`💥 ${label} ${sec.toFixed(1)}초`,'#df3d73',13,.75);}catch(_){ }
+  return true;
+};
+try{Object.defineProperty(window,'v151ApplyVulnerable',{configurable:true,enumerable:false,get:()=>safeApplyVulnerable});}
+catch(_){try{window.v151ApplyVulnerable=safeApplyVulnerable;}catch(__){}}
+
+function trimArray(key,limit,{spatial=false}={}){
+  const arr=game?.[key];
+  if(!Array.isArray(arr))return;
+  if(spatial){
+    for(let i=arr.length-1;i>=0;i--){
+      const o=arr[i];
+      if(!o||typeof o!=='object'){arr.splice(i,1);continue;}
+      if(('x' in o&&!Number.isFinite(Number(o.x)))||('y' in o&&!Number.isFinite(Number(o.y)))||('life' in o&&!Number.isFinite(Number(o.life))))arr.splice(i,1);
+    }
+  }
+  if(arr.length>limit)arr.splice(0,arr.length-limit);
+}
+function sanitizeBattle(force=false){
+  if(!game)return false;
+  const gt=finite(game.t,0);
+  if(!force&&gt-lastSanitizeAt<.45)return false;
+  lastSanitizeAt=gt;
+  if(!Number.isFinite(Number(game.t)))game.t=0;
+  if('timeLeft' in game&&!Number.isFinite(Number(game.timeLeft)))game.timeLeft=Math.max(0,finite(game.duration,180)-finite(game.t,0));
+  const maxW=Math.max(80,finite(W,430)), maxH=Math.max(80,finite(H,430));
+  for(const p of game.players||[]){
+    if(!p||typeof p!=='object')continue;
+    p.data ||= {}; p.cool ||= {};
+    const defHp=finite(DEFS?.[p.id]?.hp,200);
+    p.maxHp=Math.max(1,finite(p.maxHp,defHp));
+    p.hp=bound(finite(p.hp,p.maxHp),-999999,p.maxHp);
+    p.r=bound(finite(p.r,20),4,180);
+    p.x=bound(finite(p.x,maxW/2),-p.r*3,maxW+p.r*3);
+    p.y=bound(finite(p.y,maxH/2),-p.r*3,maxH+p.r*3);
+    p.vx=bound(finite(p.vx,0),-30000,30000);
+    p.vy=bound(finite(p.vy,0),-30000,30000);
+    for(const k of ['frozen','knockbackTimer','hitFlash'])if(k in p)p[k]=Math.max(0,finite(p[k],0));
+    if('speed' in p)p.speed=bound(finite(p.speed,0),0,30000);
+    for(const k of Object.keys(p.cool))if(!Number.isFinite(Number(p.cool[k])))p.cool[k]=0;
+  }
+  const limits={
+    shots:420,waves:150,particles:500,floaters:180,attackFx:100,bricks:150,lasers:100,slams:100,
+    siaSprouts:90,seoyoonCrows:90,seoyoonHippos:36,jungTorches:16,
+    v146SonghyeonPoops:100,v147PoemBooks:28,v147PoemLetters:220,
+    v151Beams:100,v151Birds:100,v151Footballs:100,v151Rings:100,v151Shots:240,
+    v152Fx:120,v174Discs:200,v174FailureBursts:100,v174Shots:240,v174Summons:100,
+    v185Units:80,v189HiraganaShots:220,v191Dots:150,v191Shots:220,v191Swallows:100,
+    v203NoShots:160,v203Underlines:120,v205LightningFx:120,v233Hearts:180,
+    v259Clipboards:200,v259Snacks:90,v261Teeth:220,v273Barcodes:90,v273Deer:90,v273Shots:220,
+    v274SkillCues:100,v276Shots:240,v286MongShots:220,v287Announcements:40,v287Confessions:90,
+    v287Guitars:90,v287XShots:220,v294DnaWhips:100,v311FarmShots:220,v316DanceShots:220,
+    v316Tomatoes:220,v323LoveShots:220,v343MoneyShots:220,v343PulseFx:120,v343YoonhoFx:220
+  };
+  for(const [key,limit] of Object.entries(limits))trimArray(key,limit,{spatial:true});
+  // 이후 새 버전에서 추가되는 v### 배열도 비정상적으로 무한 성장하지 못하게 최후 제한.
+  for(const [key,value] of Object.entries(game)){
+    if(!/^v\d+/i.test(key)||!Array.isArray(value)||['v219MasteryGains'].includes(key))continue;
+    if(value.length>600)value.splice(0,value.length-600);
+  }
+  return true;
+}
+
+// frame()은 원래 tick/draw 다음에 RAF를 예약한다. 예외가 밖으로 새면 RAF 자체가 끊겨
+// 화면이 영구 정지하므로 최종 실행 바인딩에서 예외를 흡수하고 상태를 복구한다.
+const previousTick=tick;
+tick=function v345GuardedTick(dt){
+  const safeDt=bound(finite(dt,0),0,.12);
+  try{
+    const out=previousTick.call(this,safeDt);
+    sanitizeBattle(false);
+    return out;
+  }catch(error){
+    reportRuntimeError('tick',error);
+    if(game)game.v345RecoveredTickErrors=finite(game.v345RecoveredTickErrors,0)+1;
+    sanitizeBattle(true);
+    return undefined;
+  }
+};
+const previousDraw=draw;
+draw=function v345GuardedDraw(){
+  try{return previousDraw.apply(this,arguments);}
+  catch(error){
+    reportRuntimeError('draw',error);
+    if(game)game.v345RecoveredDrawErrors=finite(game.v345RecoveredDrawErrors,0)+1;
+    sanitizeBattle(true);
+    // save()/restore() 불균형이나 깨진 transform도 다음 프레임에 남기지 않는다.
+    try{if(ctx?.canvas){const w=ctx.canvas.width,h=ctx.canvas.height;ctx.canvas.width=w;ctx.canvas.height=h;}}
+    catch(_){ }
+    return false;
+  }
+};
+const previousResetBattle=resetBattle;
+resetBattle=function v345ResetBattle(){
+  const out=previousResetBattle.apply(this,arguments);
+  if(game){game.v345RecoveredTickErrors=0;game.v345RecoveredDrawErrors=0;}
+  lastSanitizeAt=-999;sanitizeBattle(true);
+  return out;
+};
+
+window.__GONG_V345__={
+  build:BUILD,
+  sanitize:()=>sanitizeBattle(true),
+  errors:()=>runtimeErrors.slice(),
+  clearErrors:()=>{runtimeErrors.length=0;errorCounts.clear();},
+  verify:()=>({
+    build:BUILD,
+    vulnerableBridgeSafe:(()=>{try{return typeof v151ApplyVulnerable==='function'&&v151ApplyVulnerable===safeApplyVulnerable;}catch(_){return false;}})(),
+    guardedTick:tick?.name==='v345GuardedTick',guardedDraw:draw?.name==='v345GuardedDraw',
+    rosterCount:(typeof orderedCharacterIds==='function'?orderedCharacterIds().length:null),
+    latest:window.__GONG_LATEST_BUILD__
+  })
+};
+window.__GONG_V345_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V345','전투 멈춤 수정 · 윤주형 순정순애남 취약 브리지 무한재귀 제거 · tick/draw 예외 복구 · NaN/Infinity 상태 복구 · 전투 오브젝트 폭증 제한 · 전체 92명 런타임 전수검사');
+if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.tick=tick;window.__GONG_V134_DEBUG__.draw=draw;window.__GONG_V134_DEBUG__.resetBattle=resetBattle;}
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.draw=draw;window.__GONG_V138_TEST__.resetBattle=resetBattle;}
+console.info('[V345] freeze guard active · vulnerable recursion fixed · tick/draw recovery · state/object hardening');
+})();</script>
 </body>
 </html>
