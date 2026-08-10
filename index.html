@@ -40072,5 +40072,177 @@ if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.tick=tick;window.__GON
 if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.draw=draw;window.__GONG_V138_TEST__.resetBattle=resetBattle;}
 console.info('[V345] freeze guard active · vulnerable recursion fixed · tick/draw recovery · state/object hardening');
 })();</script>
+
+
+<script id="v346JiwonAlphaMaleAwakening">(()=>{
+'use strict';
+/* =========================================================
+   V346 · 이지원 알파메일 각성
+   - 25초 무사망 생존 시 2페이즈
+   - 시작 최대 HP ×1.2로 현재/최대 HP 재설정
+   - 2페이즈 모든 실제 공격 피해 ×1.2
+   - 공격 성공 시 "너말이야 너"
+   ========================================================= */
+const BUILD='V346_JIWON_ALPHA_MALE_PHASE2';
+const JIWON='jiwon';
+const SURVIVE_SECONDS=25;
+const PHASE2_HP_MULT=1.2;
+const PHASE2_ATTACK_MULT=1.2;
+
+function realId(p){return p?.data?.v160RealId||p?.id||'';}
+function round1(v){return Math.round((Number(v)||0)*10)/10;}
+function jiwonPlayer(){return game?.players?.find?.(p=>realId(p)===JIWON)||null;}
+function ensureAlphaData(p){
+  if(!p)return null;
+  p.data ||= {};
+  const d=p.data;
+  if(!Number.isFinite(d.v346Phase))d.v346Phase=1;
+  if(typeof d.v346AlphaEligible!=='boolean')d.v346AlphaEligible=true;
+  if(!Number.isFinite(d.v346Phase1MaxHp)||d.v346Phase1MaxHp<=0)d.v346Phase1MaxHp=Math.max(1,Number(p.maxHp)||Number(DEFS?.jiwon?.hp)||230);
+  if(!Number.isFinite(d.v346LastLineAt))d.v346LastLineAt=-999;
+  return d;
+}
+function initializeJiwon(p,force=false){
+  if(!p||realId(p)!==JIWON)return false;
+  p.data ||= {};
+  if(force){
+    p.data.v346Phase=1;
+    p.data.v346AlphaEligible=true;
+    p.data.v346Phase1MaxHp=Math.max(1,Number(p.maxHp)||Number(DEFS?.jiwon?.hp)||230);
+    p.data.v346LastLineAt=-999;
+    p.data.v346AwakenedAt=null;
+  }else ensureAlphaData(p);
+  return true;
+}
+function awakenJiwon(p){
+  const d=ensureAlphaData(p);
+  if(!p?.alive||p.hidden||!d?.v346AlphaEligible||d.v346Phase>=2)return false;
+  const base=Math.max(1,Number(d.v346Phase1MaxHp)||Number(p.maxHp)||230);
+  const phaseHp=round1(base*PHASE2_HP_MULT);
+  d.v346Phase=2;
+  d.v346AwakenedAt=Number(game?.t)||SURVIVE_SECONDS;
+  p.maxHp=phaseHp;
+  p.hp=phaseHp;
+  try{spawnAttackFx(p.x,p.y,'#2468d8','알파메일 각성',2.15);}catch(_){ }
+  try{spawnAttackFx(p.x,p.y,'#7fb5ff','2 PHASE',1.65);}catch(_){ }
+  try{floater(p.x,p.y-p.r-42,'⚡ 알파메일 각성 · 2페이즈','#174ea6',20,1.45);}catch(_){ }
+  try{floater(p.x,p.y+p.r+24,`HP ${phaseHp} · 공격 ×1.2`,'#2468d8',14,1.25);}catch(_){ }
+  try{log(`<b>이지원</b>: 25초 생존! <b>알파메일 각성</b> 2페이즈 · HP ${phaseHp} · 모든 공격력 ×1.2`);}catch(_){ }
+  return true;
+}
+function updateAlphaPhase(){
+  if(!game||game.over)return;
+  const p=jiwonPlayer();
+  if(!p)return;
+  const d=ensureAlphaData(p);
+  // 사망/탈락 이력이 한 번이라도 있으면 이번 경기 각성 자격을 잃는다.
+  if(!p.alive||p.eliminationOrder!=null)d.v346AlphaEligible=false;
+  if(d.v346Phase<2&&d.v346AlphaEligible&&p.alive&&!p.hidden&&(Number(game.t)||0)>=SURVIVE_SECONDS)awakenJiwon(p);
+}
+function phase2Source(source){
+  if(!source)return null;
+  if(realId(source)===JIWON)return source;
+  const owner=source.owner||source.data?.owner||source.data?.summonOwner||null;
+  return realId(owner)===JIWON?owner:null;
+}
+function sayAttackLine(p){
+  if(!p?.alive)return;
+  const d=ensureAlphaData(p), now=Number(game?.t)||0;
+  // 다중 타깃 공격은 한 번의 공격 동작으로 보이도록 짧게 묶는다.
+  if(now-(d.v346LastLineAt||-999)<.16)return;
+  d.v346LastLineAt=now;
+  try{floater(p.x,p.y-p.r-34,'너말이야 너','#2468d8',16,.8);}catch(_){ }
+}
+
+// 도감/스킬 설명 동기화
+try{
+  if(DEFS?.jiwon){
+    DEFS.jiwon.role='누적 방어막·공격 약화·생존 각성형';
+    if(!String(DEFS.jiwon.skills||'').includes('알파메일 각성'))DEFS.jiwon.skills=`${DEFS.jiwon.skills||''} · 알파메일 각성`.replace(/^\s*·\s*/, '');
+  }
+  if(SKILL_INFO?.jiwon){
+    SKILL_INFO.jiwon.summary='누적 방어막·공격 약화·생존 각성형';
+    const exists=SKILL_INFO.jiwon.skills?.some?.(x=>x?.name==='알파메일 각성');
+    if(!exists)SKILL_INFO.jiwon.skills.push({
+      kind:'25초 생존 2페이즈',type:'special',name:'알파메일 각성',
+      desc:'경기 시작 후 25초 동안 한 번도 죽지 않고 생존하면 2페이즈로 각성한다.',
+      points:[
+        '조건: 경기 시작 후 25초 동안 사망하지 않고 생존',
+        '25초 전에 한 번이라도 사망하면 그 경기에서는 각성 불가',
+        '2페이즈 진입 시 경기 시작 당시 1페이즈 최대 HP의 1.2배로 최대 HP와 현재 HP를 모두 재설정',
+        '기본 HP 230 경기라면 2페이즈 HP는 276',
+        '2페이즈에서 이지원이 주는 모든 실제 공격 피해 ×1.2',
+        '2페이즈 공격이 실제 피해를 주면 “너말이야 너” 대사 출력'
+      ]
+    });
+  }
+}catch(_){ }
+
+// 최종 피해 레이어에서 2페이즈 배율을 적용한다.
+const previousDamage=damage;
+damage=function v346JiwonPhaseDamage(target,amount,source,skill='공격',opts={}){
+  const p2=phase2Source(source);
+  let finalAmount=amount;
+  if(p2&&p2!==target&&p2.data?.v346Phase===2&&!opts?.selfDamage){
+    finalAmount=(Number(amount)||0)*PHASE2_ATTACK_MULT;
+  }
+  const dealt=previousDamage.call(this,target,finalAmount,source,skill,opts);
+  if(p2&&p2.data?.v346Phase===2&&Number(dealt)>0&&!opts?.selfDamage)sayAttackLine(p2);
+  return dealt;
+};
+
+// 자해를 포함해 어떤 방식으로든 실제 탈락 처리되면 무사망 조건을 영구 실패시킨다.
+const previousRecordElimination=recordElimination;
+recordElimination=function v346RecordElimination(player){
+  if(realId(player)===JIWON){ensureAlphaData(player);player.data.v346AlphaEligible=false;}
+  return previousRecordElimination.apply(this,arguments);
+};
+
+// V345의 freeze-guard tick을 안쪽에 그대로 보존하고 그 뒤 안전하게 생존 시간을 판정한다.
+const previousTick=tick;
+tick=function v346JiwonPhaseTick(dt){
+  const out=previousTick.call(this,dt);
+  try{updateAlphaPhase();}catch(error){try{window.__GONG_V345_RUNTIME_ERRORS__?.push?.({at:Date.now(),battleTime:Number(game?.t)||0,phase:'v346-jiwon',message:String(error?.message||error)});}catch(_){}}
+  return out;
+};
+
+const previousResetBattle=resetBattle;
+resetBattle=function v346ResetBattle(){
+  const out=previousResetBattle.apply(this,arguments);
+  try{const p=jiwonPlayer();if(p)initializeJiwon(p,true);}catch(_){ }
+  return out;
+};
+
+// 이미 생성된 테스트/프리뷰 전투가 있더라도 안전 초기화.
+try{const p=jiwonPlayer();if(p)initializeJiwon(p,false);}catch(_){ }
+
+const previousStatusText=statusText;
+statusText=function v346StatusText(p){
+  const base=previousStatusText.apply(this,arguments);
+  if(realId(p)!==JIWON)return base;
+  const d=ensureAlphaData(p);
+  if(d.v346Phase>=2)return `${base} · ⚡ 2페이즈`;
+  if(!d.v346AlphaEligible)return `${base} · 각성 실패`;
+  const left=Math.max(0,SURVIVE_SECONDS-(Number(game?.t)||0));
+  return `${base} · α ${left.toFixed(1)}s`;
+};
+
+window.__GONG_V346__={
+  build:BUILD,
+  awaken:()=>{const p=jiwonPlayer();return p?awakenJiwon(p):false;},
+  verify:()=>{
+    const p=jiwonPlayer(),d=p?ensureAlphaData(p):null;
+    const skill=SKILL_INFO?.jiwon?.skills?.find?.(x=>x?.name==='알파메일 각성');
+    return {build:BUILD,skillExists:!!skill,baseHp:DEFS?.jiwon?.hp,phase:d?.v346Phase||1,eligible:d?.v346AlphaEligible??true,phase1MaxHp:d?.v346Phase1MaxHp||null,surviveSeconds:SURVIVE_SECONDS,hpMult:PHASE2_HP_MULT,attackMult:PHASE2_ATTACK_MULT,guardedByV345:typeof window.__GONG_V345__==='object',latest:window.__GONG_LATEST_BUILD__};
+  }
+};
+window.__GONG_V346_BUILD__=BUILD;
+window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V346','이지원 알파메일 각성 · 25초 무사망 생존 시 2페이즈 · 시작 최대HP×1.2 풀 재설정 · 모든 공격 피해×1.2 · 공격 성공 시 “너말이야 너”');
+if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.damage=damage;window.__GONG_V134_DEBUG__.tick=tick;window.__GONG_V134_DEBUG__.resetBattle=resetBattle;}
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.damage=damage;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.resetBattle=resetBattle;}
+console.info('[V346] 이지원 알파메일 각성 · 25초 생존 2페이즈 active');
+})();</script>
+
 </body>
 </html>
