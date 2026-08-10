@@ -2325,7 +2325,7 @@ const DEFS={
   min:{id:'min',name:'김민재',color:'#ff5f93',hp:170,speed:200,img:IMAGES.min,role:'영역전개·추적 발화형',skills:'선상고백 · 나도 대화에 껴줘 · 7초 회복'},
   geun:{id:'geun',name:'김근수',color:'#d52b2b',hp:220,speed:120,img:IMAGES.geun,role:'자해 성장·피격 분노형',skills:'유리멘탈 · 분노 · 지랄발광'},
   jiwon:{id:'jiwon',name:'이지원',color:'#2468d8',hp:230,speed:150,img:IMAGES.jiwon,role:'누적 방어막·공격 약화형',skills:'피해망상 · 전화하기 · 열등감'},
-  doyun:{id:'doyun',name:'이도윤',color:'#6553d9',hp:370,speed:300,img:IMAGES.doyun,role:'지뢰 설치·테두리 돌진·반감 방어형',skills:'표독함 · 발작 · 사랑꾼'},
+  doyun:{id:'doyun',name:'이도윤',color:'#6553d9',hp:250,speed:300,img:IMAGES.doyun,role:'지뢰 설치·테두리 돌진·반감 방어형',skills:'표독함 · 발작 · 사랑꾼'},
   sungmin:{id:'sungmin',name:'이성민',color:'#0f9f8f',hp:180,speed:100,img:IMAGES.sungmin,role:'랜덤 숫자 설치·후궁 방어형',skills:'수학 뿌리기 · 의자왕'},
   junghoon:{id:'junghoon',name:'오정훈',color:'#8a6239',hp:300,speed:50,img:IMAGES.junghoon,role:'피격 조건 정지·지속 피해 장판형',skills:'NPC처럼 서있기 · 중국냄새 풍기기'},
   mingyu:{id:'mingyu',name:'성민규',color:'#2d66f4',hp:200,speed:180,img:IMAGES.mingyu,role:'충돌 누적 방어막·라면 증식·저체력 각성형',skills:'망삼삼 · 라면 배달 · 머리깎기 · 가오잡기'},
@@ -2404,7 +2404,7 @@ const SKILL_INFO={
     skills:[
       {kind:'패시브',type:'passive',name:'멘헤라',desc:'공격받으면 2초 동안 속도가 20% 감소하고 공격력이 1.2배가 된다.',points:['피격 시 2초 지속','공격력 1.2배','이동속도 20% 감소']},
       {kind:'성장 시전',type:'special',name:'애니정주행하기',desc:'2초 동안 공격받지 않으면 5초 시전을 시작하며, 성공 시 최대 HP가 50 증가한다.',points:['시전 중 피격 시 즉시 취소','성공 시 최대 HP와 현재 HP +50','조건을 다시 충족하면 재시전 가능']},
-      {kind:'주기 공격',type:'attack',name:'일본어쓰기',desc:'4~8초마다 가장 가까운 적 방향으로 일본어 16글자를 연속 발사한다.',points:['愛してる ×4, 총 16글자','발사 후 추적하지 않음','글자 1개당 피해량 5','가장 가까운 적을 중심으로 넓은 부채꼴로 퍼져 나감']}]
+      {kind:'주기 공격',type:'attack',name:'일본어쓰기',desc:'4~8초마다 가장 가까운 적 방향으로 일본어 16글자를 연속 발사한다.',points:['愛してる ×4, 총 16글자','발사 후 추적하지 않음','글자 1개당 피해량 10','가장 가까운 적을 중심으로 넓은 부채꼴로 퍼져 나감']}]
   },
 
   jungyoona:{
@@ -2913,7 +2913,7 @@ const SKILL_INFO={
   },
   doyun:{
     summary:'지뢰 설치·테두리 돌진·반감 방어형',
-    hp:'370',speed:'300',
+    hp:'250',speed:'300',
     skills:[
       {kind:'설치 공격',type:'attack',name:'표독함',desc:'9초마다 자신의 현재 이동 경로에 지뢰덩어리를 하나 떨어뜨린다.',points:[
         '설치 주기: 9초',
@@ -2923,8 +2923,8 @@ const SKILL_INFO={
         '설치 후 15초가 지나면 자동 소멸',
         '검은 지뢰덩어리와 깜빡이는 경고등으로 표시'
       ]},
-      {kind:'돌진 공격',type:'attack',name:'발작',desc:'벽에 5번 부딪힐 때마다 경기장 테두리로 이동해 엄청난 속도로 7초 동안 계속 회전한다.',points:[
-        '발동 조건: 벽 충돌 5회',
+      {kind:'돌진 공격',type:'attack',name:'발작',desc:'벽에 7번 부딪힐 때마다 경기장 테두리로 이동해 엄청난 속도로 7초 동안 계속 회전한다.',points:[
+        '발동 조건: 벽 충돌 7회',
         '지속 시간: 7초',
         '발작 중 테두리 이동속도: 760',
         '충돌한 적에게 기본 45 피해',
@@ -5490,7 +5490,7 @@ function statusText(p){
     a.push(`💗 반감 보호막 ${p.data.loveShields}개`);
     a.push(`지뢰 ${Math.max(0,p.cool.mine).toFixed(1)}s`);
     a.push(`설치 지뢰 ${game.mines.filter(m=>m.owner===p).length}개`);
-    a.push(p.data.fitTimer>0?`⚡ 발작 ${p.data.fitTimer.toFixed(1)}s`:`🧱 발작 벽 ${p.data.fitWallHits||0}/5`);
+    a.push(p.data.fitTimer>0?`⚡ 발작 ${p.data.fitTimer.toFixed(1)}s`:`🧱 발작 벽 ${p.data.fitWallHits||0}/7`);
   }
   if(p.id==='sungmin'){
     a.push(`🪑 의자왕 ${p.data.chairCount}/3`);
@@ -7579,8 +7579,8 @@ function onWallHit(p){
 
   if(p.id==='doyun'&&(p.data?.fitTimer||0)<=0){
     p.data.fitWallHits=(p.data.fitWallHits||0)+1;
-    floater(p.x,p.y-p.r-10,`⚡ 발작 ${p.data.fitWallHits}/5`,'#6553d9',12,.55);
-    if(p.data.fitWallHits>=5){
+    floater(p.x,p.y-p.r-10,`⚡ 발작 ${p.data.fitWallHits}/7`,'#6553d9',12,.55);
+    if(p.data.fitWallHits>=7){
       p.data.fitWallHits=0;
       startDoyunFit(p);
     }
@@ -16264,7 +16264,7 @@ function fireSeoyoungJapanese(seoyoung){
   seoyoung.cool.japanese=rand(4,8);
   const chars=Array.from('愛してる愛してる愛してる愛してる');
   const base=Math.atan2(target.y-seoyoung.y,target.x-seoyoung.x);
-  chars.forEach((char,i)=>{const fan=-.58+(1.16*i)/(chars.length-1);const a=base+fan+rand(-.035,.035);game.shots.push({type:'seoyoungJapanese',owner:seoyoung,x:seoyoung.x+Math.cos(a)*(seoyoung.r+7),y:seoyoung.y+Math.sin(a)*(seoyoung.r+7),vx:Math.cos(a)*410,vy:Math.sin(a)*410,r:9,life:3,delay:i*.045,rot:a,char,dmg:6});});
+  chars.forEach((char,i)=>{const fan=-.58+(1.16*i)/(chars.length-1);const a=base+fan+rand(-.035,.035);game.shots.push({type:'seoyoungJapanese',owner:seoyoung,x:seoyoung.x+Math.cos(a)*(seoyoung.r+7),y:seoyoung.y+Math.sin(a)*(seoyoung.r+7),vx:Math.cos(a)*410,vy:Math.sin(a)*410,r:9,life:3,delay:i*.045,rot:a,char,dmg:10});});
   floater(seoyoung.x,seoyoung.y-seoyoung.r-18,'愛してる ×16','#704f9a',16,.9);
 }
 function updateSeoyoung(seoyoung,dt){
@@ -32056,7 +32056,7 @@ window.__GONG_V266_RUNTIME__={
   IMAGES.kimjio=V273_IMG_JIO;
   IMAGES.kimminseo=V273_IMG_MINSEO;
 
-  Object.assign(DEFS.doyun,{hp:370,role:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',skills:'표독함 · 발작 · 사랑꾼 · 바코드머리'});
+  Object.assign(DEFS.doyun,{hp:250,role:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',skills:'표독함 · 발작 · 사랑꾼 · 바코드머리'});
   Object.assign(DEFS.yoo,{role:'초고속 폭딜·고정·빙결 투사체형',skills:'개지랄 · 잠깨우기 · 얼음뱉기'});
   Object.assign(DEFS.gyumin,{role:'나선 투사체·위험 보상·무피격 영구 성장형',skills:'입술 · 비틱 · 하늘에맹세하기'});
   Object.assign(DEFS.dong,{role:'벽 성장·잡기·회피·넉백 투사체형',skills:'스피드 · 덩크슛 · 회피 · 케찹뿌리기'});
@@ -32065,7 +32065,7 @@ window.__GONG_V266_RUNTIME__={
   DEFS.kimminseo={id:'kimminseo',name:'김민서',generation:20,color:'#39465a',hp:210,speed:210,img:V273_IMG_MINSEO,role:'3초 붙잡기 콤보·광역 채찍·취약·무력화형',skills:'원투잽훅 · DNA에 각인된 채찍질'};
 
   SKILL_INFO.doyun={
-    ...(SKILL_INFO.doyun||{}),hp:'370',speed:String(DEFS.doyun.speed),summary:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',
+    ...(SKILL_INFO.doyun||{}),hp:'250',speed:String(DEFS.doyun.speed),summary:'지뢰·테두리 돌진·누적 보호막·바코드 지속피해형',
     skills:[...(SKILL_INFO.doyun?.skills||[]).filter(s=>s?.name!=='바코드머리'),
       {kind:'충돌 누적 설치',type:'attack',name:'바코드머리',desc:'적과 4번 직접 충돌할 때마다 경기장 무작위 위치에 바코드를 생성한다.',points:['적과 직접 충돌 4회마다 바코드 1개 생성','바코드는 경기 종료 전까지 필드에 유지','적이 바코드에 닿으면 5초 동안 1초마다 2 피해(총 10 피해)','같은 대상이 다시 닿으면 지속시간 갱신']}
     ]
@@ -34031,7 +34031,7 @@ window.__GONG_V266_RUNTIME__={
    controlled access to the live lexical bindings, not stale copies. Getters/setters below make
    bare global names resolve to the CURRENT engine binding and let later wrappers replace it. */
 (()=>{
-  const readOnly={DEFS:()=>DEFS,SKILL_INFO:()=>SKILL_INFO,assignments:()=>assignments,W:()=>W,H:()=>H,ctx:()=>ctx,currentConfig:()=>currentConfig};
+  const readOnly={DEFS:()=>DEFS,SKILL_INFO:()=>SKILL_INFO,IMAGES:()=>IMAGES,assignments:()=>assignments,W:()=>W,H:()=>H,ctx:()=>ctx,currentConfig:()=>currentConfig,nearest:()=>nearest,rand:()=>rand,clamp:()=>clamp,directSelfDamage:()=>directSelfDamage,v151ApplyVulnerable:()=>v151ApplyVulnerable};
   const live={
     game:[()=>game,v=>{game=v}],
     resetBattle:[()=>resetBattle,v=>{resetBattle=v}],onWallHit:[()=>onWallHit,v=>{onWallHit=v}],collide:[()=>collide,v=>{collide=v}],
@@ -34041,7 +34041,8 @@ window.__GONG_V266_RUNTIME__={
     spawnAttackFx:[()=>spawnAttackFx,v=>{spawnAttackFx=v}],floater:[()=>floater,v=>{floater=v}],recordElimination:[()=>recordElimination,v=>{recordElimination=v}],
     showKill:[()=>showKill,v=>{showKill=v}],checkEnd:[()=>checkEnd,v=>{checkEnd=v}],updateUI:[()=>updateUI,v=>{updateUI=v}],renderScores:[()=>renderScores,v=>{renderScores=v}],
     renderBossAllies:[()=>renderBossAllies,v=>{renderBossAllies=v}],syncCharacterAssignments:[()=>syncCharacterAssignments,v=>{syncCharacterAssignments=v}],
-    orderedCharacterIds:[()=>orderedCharacterIds,v=>{orderedCharacterIds=v}],renderSkillModal:[()=>renderSkillModal,v=>{renderSkillModal=v}]
+    orderedCharacterIds:[()=>orderedCharacterIds,v=>{orderedCharacterIds=v}],renderSkillModal:[()=>renderSkillModal,v=>{renderSkillModal=v}],
+    renderSetup:[()=>renderSetup,v=>{renderSetup=v}],yoonhoCollision:[()=>yoonhoCollision,v=>{yoonhoCollision=v}]
   };
   const define=(name,get,set)=>{for(const root of [window,globalThis]){try{Object.defineProperty(root,name,{configurable:true,enumerable:false,get,set});}catch(_){}}};
   for(const [name,get] of Object.entries(readOnly))define(name,get,undefined);
@@ -39795,5 +39796,116 @@ window.__GONG_V342__={build:BUILD,verify(){const info=SKILL_INFO?.doyun,fit=info
 window.__GONG_V342_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 console.info('[V342] 이도윤 발작: 13초 타이머 제거 · 벽 충돌 5회 발동');
 })();</script>
+
+<style id="v343SettlementAndFxStyle">
+#v343SettlementOverlay{position:fixed;inset:0;z-index:260000;display:grid;place-items:center;padding:16px;background:radial-gradient(circle at 50% 35%,#5b36b8 0,#1c163b 38%,#090914 72%);color:#fff;overflow:hidden}
+#v343SettlementOverlay.hidden{display:none!important}.v343-settle-stars{position:absolute;inset:-20%;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px);background-size:31px 31px;opacity:.24;animation:v343StarDrift 8s linear infinite}.v343-settle-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}.v343-confetti{position:absolute;top:-12vh;width:9px;height:18px;border-radius:3px;background:hsl(var(--h),90%,64%);left:var(--x);animation:v343Confetti var(--d) linear var(--delay) infinite;transform:rotate(var(--r))}
+.v343-settle-card{position:relative;width:min(430px,94vw);border:2px solid #ffffff66;border-radius:28px;background:linear-gradient(145deg,#ffffff18,#ffffff0a);backdrop-filter:blur(18px);box-shadow:0 24px 90px #000b,0 0 80px #a879ff55;padding:24px 18px 18px;text-align:center;animation:v343CardIn .75s cubic-bezier(.17,.89,.32,1.35) both;overflow:hidden}.v343-settle-card:before{content:'';position:absolute;inset:-2px;background:linear-gradient(110deg,transparent 10%,#ffffff55 42%,transparent 65%);transform:translateX(-120%);animation:v343Shine 2.4s ease .5s infinite;pointer-events:none}.v343-settle-kicker{font-size:10px;font-weight:1000;letter-spacing:.18em;color:#ffe879}.v343-settle-trophy{font-size:76px;line-height:1;margin:8px 0;filter:drop-shadow(0 0 22px #ffdb4d99);animation:v343Trophy 1.1s ease-in-out infinite alternate}.v343-settle-card h2{margin:0;font-size:30px;line-height:1.05;text-shadow:0 3px 0 #0005}.v343-settle-sub{margin:7px auto 14px;font-size:11px;font-weight:850;color:#ddd4ff;line-height:1.5}.v343-settle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.v343-settle-stat{border:1px solid #ffffff30;border-radius:14px;background:#09091455;padding:10px 5px}.v343-settle-stat b{display:block;font-size:18px}.v343-settle-stat span{display:block;margin-top:2px;font-size:8px;font-weight:900;color:#c9c1e9}.v343-settle-reward{border:1px solid #ffdf6660;border-radius:14px;background:#ffdf6618;padding:10px;margin:8px 0 13px;font-size:11px;font-weight:1000;color:#fff2a7}.v343-settle-ok{width:100%;min-height:48px;border:2px solid #111;border-radius:14px;background:linear-gradient(135deg,#ffe45d,#ffad32);font-size:14px;font-weight:1000;color:#231a00;box-shadow:0 5px 0 #6b4700;cursor:pointer}.v343-settle-ok:active{transform:translateY(3px);box-shadow:0 2px 0 #6b4700}
+@keyframes v343CardIn{0%{opacity:0;transform:scale(.62) rotate(-5deg)}65%{opacity:1;transform:scale(1.05) rotate(1deg)}100%{transform:scale(1) rotate(0)}}@keyframes v343Trophy{from{transform:translateY(0) rotate(-3deg) scale(1)}to{transform:translateY(-8px) rotate(3deg) scale(1.06)}}@keyframes v343Shine{0%,30%{transform:translateX(-130%)}70%,100%{transform:translateX(130%)}}@keyframes v343StarDrift{to{transform:translate3d(31px,31px,0)}}@keyframes v343Confetti{to{transform:translateY(120vh) rotate(720deg)}}
+@media(max-width:480px){.v343-settle-card{padding:20px 13px 14px;border-radius:22px}.v343-settle-trophy{font-size:64px}.v343-settle-card h2{font-size:25px}.v343-settle-stat b{font-size:15px}}
+</style>
+<script id="v343EomHaeinBalanceSettlementBundle">
+(()=>{
+'use strict';
+const BUILD='V343_EOMHAEIN_SKILLS_BALANCE_SETTLEMENT';
+const HAEIN='eomhaein',WONSEO='choiwonseo',SEOYOUNG='seoyoung',YOONHO='yoonho';
+const HAEIN_BASE_SPEED=280,HAEIN_MAX_SPEED=HAEIN_BASE_SPEED*6,HAEIN_MAX_ATTACK=4;
+const uid=p=>String(p?.data?.v174Uid||p?.data?.v191Uid||p?.data?.v151Uid||p?.id||'unknown');
+const enemy=(a,b)=>!!(a&&b&&a!==b&&a.alive&&b.alive&&!a.hidden&&!b.hidden&&isEnemy(a,b));
+
+// 1) 신규 캐릭터 엄해인(20기)
+IMAGES[HAEIN]='characters/eom_haein_v343.png';
+DEFS[HAEIN]={id:HAEIN,name:'엄해인',generation:20,color:'#d5a63a',hp:200,speed:280,img:IMAGES[HAEIN],role:'벽 충돌 돈 투사체·피격 누적 성장·충돌 광역 수면 제어형',skills:'돈뿌리기 · 아르바이트하기 · 수면욕퍼트리기'};
+SKILL_INFO[HAEIN]={summary:'벽 충돌 돈 투사체·피격 누적 성장·충돌 광역 수면 제어형',hp:'200',speed:'280',skills:[
+ {kind:'벽 3회 투사체',type:'attack',name:'돈뿌리기',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 현재 돈 개수만큼 돈을 표창처럼 뿌린다.',points:['기본 돈 개수: 2개','아르바이트 성공 1회마다 돈 개수 +1','돈 1개당 피해: 15','적중한 적은 3초 동안 취약','돈은 가장 가까운 적 방향을 중심으로 부채꼴 발사']},
+ {kind:'유효 피격 4회 성장 시전',type:'special',name:'아르바이트하기',desc:'유효 공격을 4번 받을 때마다 1초 동안 제자리에 고정되어 아르바이트를 한다. 피격되어도 시전이 취소되지 않는다.',points:['유효 피해 4회마다 1초 시전','시전 중 제자리 고정 · 피격으로 취소되지 않음','성공마다 공격력 ×1.2 누적 · 최대 ×4','성공마다 이동속도 ×1.2 누적 · 최대 ×6','성공마다 돈 개수 +1 · 돈 개수 제한 없음']},
+ {kind:'적 충돌 3회 광역 제어',type:'control',name:'수면욕퍼트리기',desc:'적과 3번 부딪힐 때마다 제자리에 멈춰 커다란 수면 펄스를 방출한다.',points:['적 충돌 3회마다 발동','넓은 펄스 범위 안 모든 적에게 5 피해','맞은 적을 매우 멀리 튕겨낸 뒤 5초간 제자리에 고정','펄스 발동 순간 엄해인도 잠깐 제자리 정지']}
+]};
+try{if(typeof assignments!=='undefined'&&!Object.prototype.hasOwnProperty.call(assignments,HAEIN))assignments[HAEIN]='pool';}catch(_){}
+try{window.GongGameModules?.registerCharacter?.(HAEIN,{id:HAEIN,name:'엄해인',generation:20});}catch(_){}
+
+function ensureHaeinData(p){if(!p?.data)return;const d=p.data;if(!Number.isFinite(d.v343MoneyWalls))d.v343MoneyWalls=0;if(!Number.isFinite(d.v343MoneyCount))d.v343MoneyCount=2;if(!Number.isFinite(d.v343JobHitCount))d.v343JobHitCount=0;if(!Number.isFinite(d.v343JobQueue))d.v343JobQueue=0;if(!Number.isFinite(d.v343JobTimer))d.v343JobTimer=0;if(!Number.isFinite(d.v343JobAttackMult))d.v343JobAttackMult=1;if(!Number.isFinite(d.v343JobSpeedMult))d.v343JobSpeedMult=1;if(!Number.isFinite(d.v343SleepCollisions))d.v343SleepCollisions=0;d.v343ContactUntil ||= {};}
+function haeinOwner(){return game?.players?.find(p=>p.id===HAEIN)||null;}
+function startJob(p){ensureHaeinData(p);if(!p.alive||p.data.v343JobTimer>0)return false;p.data.v343JobTimer=1;p.data.v343JobX=p.x;p.data.v343JobY=p.y;spawnAttackFx(p.x,p.y,'#ffd84b','아르바이트하기',1.45);floater(p.x,p.y-p.r-26,'💼 아르바이트 1초','#a87300',16,1);return true;}
+function finishJob(p){ensureHaeinData(p);p.data.v343JobTimer=0;p.data.v343JobAttackMult=Math.min(HAEIN_MAX_ATTACK,(p.data.v343JobAttackMult||1)*1.2);p.data.v343JobSpeedMult=Math.min(6,(p.data.v343JobSpeedMult||1)*1.2);p.data.v343MoneyCount=(p.data.v343MoneyCount||2)+1;normalizeSpeed(p,normalSpeed(p));spawnAttackFx(p.x,p.y,'#ffbe1f','알바 성공!',1.7);floater(p.x,p.y-p.r-28,`💰 ${p.data.v343MoneyCount}개 · 공격 ×${p.data.v343JobAttackMult.toFixed(2)} · 속도 ×${p.data.v343JobSpeedMult.toFixed(2)}`,'#a87300',13,1.05);if((p.data.v343JobQueue||0)>0){p.data.v343JobQueue--;startJob(p);}}
+function lockJob(p){if((p.data?.v343JobTimer||0)<=0)return;p.x=clamp(p.data.v343JobX,p.r,W-p.r);p.y=clamp(p.data.v343JobY,p.r,H-p.r);p.vx=0;p.vy=0;}
+function fireMoney(p){ensureHaeinData(p);const t=nearest(p);if(!t)return;game.v343MoneyShots ||= [];const n=Math.max(2,Math.floor(p.data.v343MoneyCount||2)),base=Math.atan2(t.y-p.y,t.x-p.x),spread=Math.min(.7,.12*(n-1));for(let i=0;i<n;i++){const off=n===1?0:-spread/2+spread*i/Math.max(1,n-1),a=base+off;game.v343MoneyShots.push({owner:p,x:p.x+Math.cos(a)*(p.r+8),y:p.y+Math.sin(a)*(p.r+8),vx:Math.cos(a)*720,vy:Math.sin(a)*720,r:10,life:3.5,rot:rand(0,Math.PI*2),spin:rand(7,13)*(Math.random()<.5?-1:1)});}spawnAttackFx(p.x,p.y,'#ffe152','돈뿌리기',1.55);floater(p.x,p.y-p.r-24,`💸 돈 ${n}개!`,'#9b7600',16,.85);}
+function applyVuln(q,seconds,p){try{if(typeof v151ApplyVulnerable==='function')return v151ApplyVulnerable(q,seconds,p,'돈뿌리기 취약');}catch(_){}q.data ||= {};q.data.v151VulnerableTimer=Math.max(q.data.v151VulnerableTimer||0,seconds);q.data.v151VulnerableSource=p;}
+function updateMoney(dt){if(!game)return;game.v343MoneyShots ||= [];for(const s of game.v343MoneyShots){s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;if(s.life<=0||s.x<-40||s.y<-40||s.x>W+40||s.y>H+40)continue;for(const q of game.players||[]){if(!enemy(s.owner,q)||Math.hypot(q.x-s.x,q.y-s.y)>=q.r+s.r)continue;const dealt=damage(q,15,s.owner,'돈뿌리기');if(dealt>0){applyVuln(q,3,s.owner);spawnAttackFx(q.x,q.y,'#ffe152','💸 취약',1.15);floater(q.x,q.y-q.r-18,`💸 ${dealt.toFixed(1)} · 취약 3초`,'#a87300',13,.7);}s.life=0;break;}}game.v343MoneyShots=game.v343MoneyShots.filter(s=>s.life>0);}
+function sleepPulse(p){ensureHaeinData(p);const radius=215;game.v343PulseFx ||= [];game.v343PulseFx.push({x:p.x,y:p.y,r:20,max:radius,t:0,d:.55});p.data.v343PulseStop=.45;p.data.v343PulseX=p.x;p.data.v343PulseY=p.y;spawnAttackFx(p.x,p.y,'#7664ff','수면욕퍼트리기',2);floater(p.x,p.y-p.r-28,'😴 수면욕 펄스!','#5541cf',18,1);for(const q of game.players||[]){if(!enemy(p,q)||Math.hypot(q.x-p.x,q.y-p.y)>radius+q.r)continue;const dealt=damage(q,5,p,'수면욕퍼트리기');let dx=q.x-p.x,dy=q.y-p.y,l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;q.vx=dx*1550;q.vy=dy*1550;q.knockbackTimer=Math.max(q.knockbackTimer||0,.3);q.knockbackRestore=normalSpeed(q);q.data ||= {};q.data.v343SleepFreezeDelay=.28;q.data.v343SleepFreezeTime=5;q.data.v343SleepFreezeSource=p;floater(q.x,q.y-q.r-20,`😴 ${dealt.toFixed(1)} · 곧 5초 고정`,'#5541cf',13,.8);}}
+function updateSleep(dt){for(const q of game?.players||[]){if((q.data?.v343SleepFreezeDelay||0)>0){q.data.v343SleepFreezeDelay=Math.max(0,q.data.v343SleepFreezeDelay-dt);if(q.data.v343SleepFreezeDelay<=0&&q.alive){q.data.v343SleepFreezeUntil=Math.max(q.data.v343SleepFreezeUntil||0,5);q.vx=0;q.vy=0;floater(q.x,q.y-q.r-18,'💤 5초 고정','#5541cf',14,.85);}}if((q.data?.v343SleepFreezeUntil||0)>0){q.data.v343SleepFreezeUntil=Math.max(0,q.data.v343SleepFreezeUntil-dt);q.vx=0;q.vy=0;q.frozen=Math.max(q.frozen||0,dt+.08);}}
+ const p=haeinOwner();if(p?.alive&&(p.data.v343PulseStop||0)>0){p.data.v343PulseStop=Math.max(0,p.data.v343PulseStop-dt);p.x=p.data.v343PulseX;p.y=p.data.v343PulseY;p.vx=0;p.vy=0;}}
+function updateHaein(p,dt){if(!p?.alive||p.hidden)return;ensureHaeinData(p);for(const k of Object.keys(p.data.v343ContactUntil||{}))p.data.v343ContactUntil[k]=Math.max(0,p.data.v343ContactUntil[k]-dt);if(p.data.v343JobTimer>0){lockJob(p);p.data.v343JobTimer=Math.max(0,p.data.v343JobTimer-dt);if(p.data.v343JobTimer<=0)finishJob(p);else lockJob(p);}else if((p.data.v343JobQueue||0)>0){p.data.v343JobQueue--;startJob(p);}}
+function drawHaeinFx(){for(const s of game?.v343MoneyShots||[]){ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.rot);ctx.shadowColor='#ffd84b';ctx.shadowBlur=12;ctx.fillStyle='#f9e36a';ctx.strokeStyle='#8f6a00';ctx.lineWidth=2;ctx.fillRect(-12,-6,24,12);ctx.strokeRect(-12,-6,24,12);ctx.fillStyle='#5e8d3a';ctx.font='900 11px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('₩',0,0);ctx.restore();}for(const fx of game?.v343PulseFx||[]){const a=Math.max(0,1-fx.t/fx.d),r=fx.r+(fx.max-fx.r)*(fx.t/fx.d);ctx.save();ctx.globalAlpha=a;ctx.strokeStyle='#8173ff';ctx.shadowColor='#c4bcff';ctx.shadowBlur=25;ctx.lineWidth=10*a+2;ctx.beginPath();ctx.arc(fx.x,fx.y,r,0,Math.PI*2);ctx.stroke();ctx.restore();}}
+function updatePulseFx(dt){if(!game)return;game.v343PulseFx ||= [];for(const f of game.v343PulseFx)f.t+=dt;game.v343PulseFx=game.v343PulseFx.filter(f=>f.t<f.d);}
+
+// 2) 이윤호 전투 효과 강화 (수치 변경 없음)
+function yoonhoBurst(x,y,kind='power',power=1){game.v343YoonhoFx ||= [];const palette=kind==='heal'?['#fff4a8','#44f0bd','#ffffff']:kind==='guide'?['#8ae8ff','#577cff','#ffffff']:kind==='tsun'?['#ff93d0','#ff4c8b','#ffffff']:['#ffe55e','#ff9b21','#ffffff'];for(let i=0;i<Math.min(36,18+Math.floor(power*6));i++){const a=rand(0,Math.PI*2),sp=rand(90,260)*power;game.v343YoonhoFx.push({kind:'p',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:0,d:rand(.35,.75),r:rand(2,5),c:palette[i%palette.length]});}game.v343YoonhoFx.push({kind:'ring',x,y,t:0,d:.5,r:10,max:55+25*power,c:palette[0]});if(game.v343YoonhoFx.length>220)game.v343YoonhoFx.splice(0,game.v343YoonhoFx.length-220);}
+function updateYoonhoFx(dt){if(!game)return;game.v343YoonhoFx ||= [];for(const f of game.v343YoonhoFx){f.t+=dt;if(f.kind==='p'){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=Math.pow(.06,dt);f.vy*=Math.pow(.06,dt);}}game.v343YoonhoFx=game.v343YoonhoFx.filter(f=>f.t<f.d);const y=game?.players?.find(p=>p.id===YOONHO&&p.alive&&!p.hidden);if(y){y.data ||= {};y.data.v343Trail=(y.data.v343Trail||0)-dt;if(y.data.v343Trail<=0){y.data.v343Trail=.055;game.v343YoonhoFx.push({kind:'p',x:y.x,y:y.y,vx:rand(-35,35),vy:rand(-35,35),t:0,d:.4,r:rand(2,4),c:'#8ae8ff'});}}}
+function drawYoonhoFx(){for(const f of game?.v343YoonhoFx||[]){const a=Math.max(0,1-f.t/f.d);ctx.save();ctx.globalAlpha=a;ctx.shadowColor=f.c;ctx.shadowBlur=16;ctx.strokeStyle=f.c;ctx.fillStyle=f.c;if(f.kind==='ring'){const r=f.r+(f.max-f.r)*(f.t/f.d);ctx.lineWidth=4*a+1;ctx.beginPath();ctx.arc(f.x,f.y,r,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(f.x,f.y,f.r*a+.5,0,Math.PI*2);ctx.fill();}ctx.restore();}const y=game?.players?.find(p=>p.id===YOONHO&&p.alive&&!p.hidden);if(y){const m=Math.min(3,y.data?.attackMult||1);ctx.save();ctx.globalAlpha=.18+.12*(m-1);ctx.strokeStyle='#8ae8ff';ctx.shadowColor='#8ae8ff';ctx.shadowBlur=20;ctx.lineWidth=2+2*(m-1);ctx.beginPath();ctx.arc(y.x,y.y,y.r+10+Math.sin((game.t||0)*8)*3,0,Math.PI*2);ctx.stroke();ctx.restore();}}
+
+// 3) 최원서 태현쌤 따라다니기
+if(DEFS[WONSEO]){DEFS[WONSEO].role='벽 충돌 영구 성장·피해누적 태현쌤 가속·주기 피해 반사·영구 하트 지형형';DEFS[WONSEO].skills='학자 · 태현쌤 따라다니기 · 중남보기 · 정병사랑';}
+if(SKILL_INFO[WONSEO]){SKILL_INFO[WONSEO].summary='벽 충돌 영구 성장·피해누적 태현쌤 가속·주기 피해 반사·영구 하트 지형형';if(!SKILL_INFO[WONSEO].skills.some(s=>s.name==='태현쌤 따라다니기'))SKILL_INFO[WONSEO].skills.splice(1,0,{kind:'누적 피해 성장 패시브',type:'passive',name:'태현쌤 따라다니기',desc:'실제로 받은 피해가 누적 30 이상이 될 때마다 “태현쌤!”을 외치며 이동속도가 22% 누적 증가하고 HP를 10 회복한다.',points:['실제 받은 피해 누적 30마다 발동','발동할 때마다 이동속도 ×1.22 영구 누적','발동할 때마다 HP 10 회복','30을 넘긴 초과 누적 피해는 다음 발동으로 이어짐','학자의 속도 증가와 곱연산으로 함께 적용']});}
+function triggerTaehyun(p){p.data.v343TaehyunStacks=(p.data.v343TaehyunStacks||0)+1;heal(p,10,p,'태현쌤 따라다니기');normalizeSpeed(p,normalSpeed(p));spawnAttackFx(p.x,p.y,'#ff65a9','태현쌤!',1.5);floater(p.x,p.y-p.r-27,`📣 태현쌤! · 속도 ×${Math.pow(1.22,p.data.v343TaehyunStacks).toFixed(2)} · HP +10`,'#d83279',13,.95);}
+
+// 4) 박서영 멘헤라: 성공 공격 5회마다 영구 ×2 + HP -20
+if(SKILL_INFO[SEOYOUNG]){const m=SKILL_INFO[SEOYOUNG].skills.find(s=>s.name==='멘헤라');if(m){m.desc='공격받으면 2초 동안 속도가 20% 감소하고 공격력이 1.2배가 된다. 추가로 유효 공격을 5번 성공할 때마다 공격력이 영구적으로 2배 증가하고 HP를 20 잃는다.';m.points=['피격 시 2초 동안 공격력 ×1.2 · 이동속도 20% 감소','유효 공격 5회 성공마다 영구 공격력 ×2 누적','영구 공격력 증가는 횟수 제한 없이 누적','5회 성공 발동 시 HP 20 감소'];}const j=SKILL_INFO[SEOYOUNG].skills.find(s=>s.name==='일본어쓰기');if(j){j.points=j.points.map(x=>String(x).startsWith('글자 1개당 피해량')?'글자 1개당 피해량 10':x);}}
+function triggerSeoyoungSuccess(p){p.data.v343MenheraPermStacks=(p.data.v343MenheraPermStacks||0)+1;const mult=Math.pow(2,p.data.v343MenheraPermStacks);directSelfDamage(p,20,'멘헤라 · 공격성공 5회');spawnAttackFx(p.x,p.y,'#8f41d6','멘헤라 영구 강화',1.65);floater(p.x,p.y-p.r-28,`🖤 공격 성공 5회 · 영구 ×${mult} · HP -20`,'#704f9a',14,1);}
+
+// 5) 공통 속도/피해/피격 훅
+const _v343NormalSpeed=normalSpeed;
+normalSpeed=function(p){let base=_v343NormalSpeed(p);if(p?.id===HAEIN){ensureHaeinData(p);base=Math.min(HAEIN_MAX_SPEED,base*(p.data.v343JobSpeedMult||1));}else if(p?.id===WONSEO){const stacks=Math.max(0,Math.floor(p.data?.v343TaehyunStacks||0));base=Math.min(6000,base*Math.pow(1.22,stacks));}return Number.isFinite(base)?base:0;};
+const _v343Damage=damage;
+damage=function(target,amount,source,skill='공격',opts={}){amount=Math.max(0,Number(amount)||0);if(source?.id===HAEIN&&source!==target&&!opts.selfDamage){ensureHaeinData(source);amount*=Math.min(HAEIN_MAX_ATTACK,source.data.v343JobAttackMult||1);}if(source?.id===SEOYOUNG&&source!==target&&!opts.selfDamage){amount*=Math.pow(2,Math.max(0,Math.floor(source.data?.v343MenheraPermStacks||0)));}const dealt=_v343Damage(target,amount,source,skill,opts);const actual=Math.max(0,Number(dealt)||0);if(actual>0&&target?.id===HAEIN&&source&&source!==target&&isEnemy(source,target)&&!opts.selfDamage){ensureHaeinData(target);target.data.v343JobHitCount++;while(target.data.v343JobHitCount>=4){target.data.v343JobHitCount-=4;if((target.data.v343JobTimer||0)>0)target.data.v343JobQueue=(target.data.v343JobQueue||0)+1;else startJob(target);}}
+if(actual>0&&target?.id===WONSEO&&source&&source!==target&&isEnemy(source,target)&&!opts.selfDamage){target.data.v343TaehyunDamage=(target.data.v343TaehyunDamage||0)+actual;while(target.data.v343TaehyunDamage>=30&&target.alive){target.data.v343TaehyunDamage-=30;triggerTaehyun(target);}}
+if(actual>0&&source?.id===SEOYOUNG&&target&&target!==source&&isEnemy(source,target)&&!opts.selfDamage){source.data.v343MenheraSuccess=(source.data.v343MenheraSuccess||0)+1;while(source.data.v343MenheraSuccess>=5&&source.alive){source.data.v343MenheraSuccess-=5;triggerSeoyoungSuccess(source);}}
+return dealt;};
+
+const _v343OnWallHit=onWallHit;
+onWallHit=function(p){const yHp=p?.id===YOONHO?p.hp:null,yMult=p?.id===YOONHO?(p.data?.attackMult||1):null;const result=_v343OnWallHit(p);if(p?.id===HAEIN&&p.alive){ensureHaeinData(p);p.data.v343MoneyWalls++;floater(p.x,p.y-p.r-12,`💰 돈뿌리기 ${p.data.v343MoneyWalls}/3`,'#a87300',12,.5);if(p.data.v343MoneyWalls>=3){p.data.v343MoneyWalls=0;fireMoney(p);}}if(p?.id===YOONHO&&p.alive){const grew=(p.data?.attackMult||1)>(yMult||1);yoonhoBurst(p.x,p.y,'power',grew?1.35:1);if(yHp!=null&&p.hp>yHp+20)yoonhoBurst(p.x,p.y,'heal',2);}return result;};
+
+const _v343YoonhoCollision=yoonhoCollision;
+yoonhoCollision=function(owner,target){const before=target?.hp??0,beforeCount=owner?.data?.collisionCounts?.[target?.id]||0;const result=_v343YoonhoCollision(owner,target);if(owner?.id===YOONHO&&target?.hp<before){const count=owner.data?.collisionCounts?.[target.id]||beforeCount;if(count>=4)yoonhoBurst(target.x,target.y,'guide',1.8);else if(count===2||count===3)yoonhoBurst(target.x,target.y,'tsun',1.45);else yoonhoBurst(target.x,target.y,'power',1.1);}return result;};
+
+const _v343Collide=collide;
+collide=function(a,b){const contact=!!(a?.alive&&b?.alive&&!a.hidden&&!b.hidden&&Math.hypot((b.x||0)-(a.x||0),(b.y||0)-(a.y||0))<(a.r||0)+(b.r||0));const result=_v343Collide(a,b);if(!contact)return result;const count=(p,q)=>{if(p?.id!==HAEIN||!enemy(p,q))return;ensureHaeinData(p);const k=uid(q);if((p.data.v343ContactUntil[k]||0)>0)return;p.data.v343ContactUntil[k]=.72;p.data.v343SleepCollisions++;if(p.data.v343SleepCollisions>=3){p.data.v343SleepCollisions=0;sleepPulse(p);}else floater(p.x,p.y-p.r-12,`😴 수면욕 ${p.data.v343SleepCollisions}/3`,'#5541cf',12,.5);};count(a,b);count(b,a);return result;};
+
+const _v343Tick=tick;
+tick=function(dt){const h0=haeinOwner();if(h0?.alive&&(h0.data?.v343JobTimer||0)>0)lockJob(h0);const result=_v343Tick(dt);const h=haeinOwner();if(h)updateHaein(h,dt);updateMoney(dt);updateSleep(dt);updatePulseFx(dt);updateYoonhoFx(dt);return result;};
+const _v343Draw=draw;
+draw=function(){const result=_v343Draw();drawHaeinFx();drawYoonhoFx();return result;};
+
+const _v343StatusText=statusText;
+statusText=function(p){const base=_v343StatusText(p);if(p?.id===HAEIN){ensureHaeinData(p);const d=p.data,job=d.v343JobTimer>0?`💼 알바 ${d.v343JobTimer.toFixed(1)}s`:`💼 피격 ${d.v343JobHitCount}/4`;const extra=`💰 벽 ${d.v343MoneyWalls}/3·돈 ${d.v343MoneyCount} · ${job} · 😴 충돌 ${d.v343SleepCollisions}/3 · 공격×${d.v343JobAttackMult.toFixed(2)}·속도×${d.v343JobSpeedMult.toFixed(2)}`;return base&&base!=='정상'?`${base} · ${extra}`:extra;}if(p?.id===WONSEO){const extra=`📣 태현 ${Math.floor(p.data?.v343TaehyunDamage||0).toFixed(0)}/30 · 속도중첩 ${p.data?.v343TaehyunStacks||0}`;return base&&base!=='정상'?`${base} · ${extra}`:extra;}if(p?.id===SEOYOUNG){const extra=`🖤 성공 ${p.data?.v343MenheraSuccess||0}/5 · 영구×${Math.pow(2,p.data?.v343MenheraPermStacks||0)}`;return base&&base!=='정상'?`${base} · ${extra}`:extra;}return base;};
+
+const _v343ResetBattle=resetBattle;
+resetBattle=function(){const result=_v343ResetBattle.apply(this,arguments);game.v343MoneyShots=[];game.v343PulseFx=[];game.v343YoonhoFx=[];const h=haeinOwner();if(h){Object.assign(h.data,{v343MoneyWalls:0,v343MoneyCount:2,v343JobHitCount:0,v343JobQueue:0,v343JobTimer:0,v343JobAttackMult:1,v343JobSpeedMult:1,v343SleepCollisions:0,v343ContactUntil:{},v343PulseStop:0});h.maxHp=200;h.hp=200;h.speed=280;normalizeSpeed(h,280);}const w=game?.players?.find(p=>p.id===WONSEO);if(w)Object.assign(w.data,{v343TaehyunDamage:0,v343TaehyunStacks:0});const s=game?.players?.find(p=>p.id===SEOYOUNG);if(s)Object.assign(s.data,{v343MenheraSuccess:0,v343MenheraPermStacks:0});const d=game?.players?.find(p=>p.id==='doyun');if(d){d.maxHp=250;d.hp=Math.min(d.hp,250);d.data.fitWallHits=0;}try{renderScores();renderBossAllies();updateUI();}catch(_){}return result;};
+
+// 이도윤 최신 값 강제 동기화
+if(DEFS.doyun)DEFS.doyun.hp=250;if(SKILL_INFO.doyun){SKILL_INFO.doyun.hp='250';const fit=SKILL_INFO.doyun.skills.find(s=>s.name==='발작');if(fit){fit.desc='벽에 7번 부딪힐 때마다 경기장 테두리로 이동해 엄청난 속도로 7초 동안 계속 회전한다.';fit.points=fit.points.map(x=>String(x).startsWith('발동 조건:')?'발동 조건: 벽 충돌 7회':x);}}
+
+// 시즌2 이후: 정산 뒤 경쟁전 최초 진입 시 1회 애니메이션
+const SETTLE_SEEN='gonggame_v343_settlement_animation_seen_v1',AWARD_KEY='gonggame_v330_season_awards_v1',BONUS_KEY='gonggame_v279_leaderboard_settlement_bonus_v1';
+const readJson=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(key)||'null');return v&&typeof v==='object'?v:fallback}catch(_){return fallback}};
+const seasonNo=id=>{if(String(id)==='2026-08-03')return 1;const t=Date.parse(`${String(id)}T00:00:00+09:00`),base=Date.parse('2026-08-10T00:00:00+09:00');return Number.isFinite(t)?Math.max(2,2+Math.round((t-base)/(7*86400000))):0};
+function settlementCandidate(){const awards=readJson(AWARD_KEY,{processed:{}}).processed||{},bonus=readJson(BONUS_KEY,{processed:{}}).processed||{},seen=readJson(SETTLE_SEEN,{}),history=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.history?.()||[],hmap=Object.fromEntries(history.map(x=>[String(x?.seasonId||''),x]));const ids=[...new Set([...Object.keys(awards),...Object.keys(bonus)])].filter(id=>seasonNo(id)>=2&&!seen[id]&&(awards[id]?.rankingResolved||bonus[id]?.status==='done')).sort();if(!ids.length)return null;const id=ids[ids.length-1],a=awards[id]||{},b=bonus[id]||{},h=hmap[id]||{},n=Number(a.seasonNumber)||seasonNo(id),rankIndex=Number.isFinite(Number(h.rankIndex))?Number(h.rankIndex):Number(a.rankIndex||b.rankIndex)||0,ranks=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.ranks||[],tier=ranks[Math.max(0,Math.min(ranks.length-1,rankIndex))]||`티어 ${rankIndex+1}`,placement=Number(a.placement||b.placement)||0,coupons=Number(b.couponCount)||0;return {id,n,tier,placement,coupons,matches:Number(h.matches)||0,wins:Number(h.wins)||0,losses:Number(h.losses)||0};}
+function markSettlementSeen(id){const seen=readJson(SETTLE_SEEN,{});seen[id]=Date.now();try{localStorage.setItem(SETTLE_SEEN,JSON.stringify(seen));}catch(_){}}
+function showSettlementAnimation(data){if(!data||document.getElementById('v343SettlementOverlay'))return false;const o=document.createElement('div');o.id='v343SettlementOverlay';const confetti=Array.from({length:34},(_,i)=>`<i class="v343-confetti" style="--x:${(i*37)%100}%;--h:${(i*53)%360};--d:${2.8+(i%7)*.27}s;--delay:-${(i%11)*.24}s;--r:${(i*41)%360}deg"></i>`).join('');o.innerHTML=`<div class="v343-settle-stars"></div><div class="v343-settle-confetti">${confetti}</div><section class="v343-settle-card"><div class="v343-settle-kicker">RANKED · SEASON ${data.n} SETTLEMENT</div><div class="v343-settle-trophy">🏆</div><h2>시즌 ${data.n} 정산 완료!</h2><p class="v343-settle-sub">정산 뒤 처음 경쟁전에 들어왔어.<br>지난 시즌 기록과 보상을 확인해!</p><div class="v343-settle-grid"><div class="v343-settle-stat"><b>${data.tier}</b><span>최종 티어</span></div><div class="v343-settle-stat"><b>${data.placement?data.placement+'위':'-'}</b><span>최종 순위</span></div><div class="v343-settle-stat"><b>${data.wins}승 ${data.losses}패</b><span>${data.matches}경기</span></div></div><div class="v343-settle-reward">🎟️ 정산 XP 쿠폰 ${data.coupons?data.coupons+'개':'지급 내역 확인'} · 시즌 칭호 자동 지급</div><button class="v343-settle-ok">확인하고 시즌 ${data.n+1} 경쟁전 보기</button></section>`;document.body.appendChild(o);o.querySelector('.v343-settle-ok').onclick=()=>{markSettlementSeen(data.id);o.remove();};return true;}
+async function checkSettlementOnCompetitiveEntry(){try{await Promise.allSettled([window.__GONG_V279__?.scanSettlementBonuses?.(),window.__GONG_V330__?.scanSeasonAwards?.()]);setTimeout(()=>{const c=settlementCandidate();if(c)showSettlementAnimation(c);},180);}catch(_){const c=settlementCandidate();if(c)showSettlementAnimation(c);}}
+document.getElementById('draftModeBtn')?.addEventListener('click',()=>setTimeout(checkSettlementOnCompetitiveEntry,220));
+
+function refreshRoster(){try{if(typeof syncCharacterAssignments==='function')syncCharacterAssignments();if(typeof renderSetup==='function')renderSetup();if(typeof renderSkillModal==='function'&&document.getElementById('skillModal')&&!document.getElementById('skillModal').classList.contains('hidden'))renderSkillModal();}catch(e){console.warn('[V343 roster refresh]',e)}}
+setTimeout(refreshRoster,0);setTimeout(refreshRoster,500);
+
+window.__GONG_PATCH_NOTES__?.register?.('V343','신규 엄해인(20기) · 돈뿌리기/아르바이트/수면욕 · 이윤호 스킬 이펙트 강화 · 최원서 태현쌤 따라다니기 · 박서영 일본어 10/멘헤라 성공5회 영구×2 · 시즌2+ 정산 최초진입 애니메이션 · 이도윤 HP250/발작 벽7회');
+window.__GONG_V343__={build:BUILD,verify(){const h=DEFS?.[HAEIN],hi=SKILL_INFO?.[HAEIN],w=SKILL_INFO?.[WONSEO],s=SKILL_INFO?.[SEOYOUNG],d=SKILL_INFO?.doyun;return {build:BUILD,haein:{exists:!!h,hp:h?.hp,speed:h?.speed,generation:h?.generation,skills:hi?.skills?.map(x=>x.name)},wonseoTaehyun:!!w?.skills?.some(x=>x.name==='태현쌤 따라다니기'),seoyoungJapanese:s?.skills?.find(x=>x.name==='일본어쓰기')?.points,seoyoungMenhera:s?.skills?.find(x=>x.name==='멘헤라')?.points,doyun:{hp:DEFS?.doyun?.hp,infoHp:d?.hp,fit:d?.skills?.find(x=>x.name==='발작')?.desc},settlementHook:!!document.getElementById('draftModeBtn'),latest:window.__GONG_LATEST_BUILD__};}};
+window.__GONG_V343_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.damage=damage;window.__GONG_V134_DEBUG__.tick=tick;window.__GONG_V134_DEBUG__.collide=collide;window.__GONG_V134_DEBUG__.resetBattle=resetBattle;}
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.damage=damage;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.collide=collide;window.__GONG_V138_TEST__.resetBattle=resetBattle;window.__GONG_V138_TEST__.onWallHit=onWallHit;}
+console.info('[V343] 엄해인 추가 · 5개 추가 수정 · 이도윤 HP250/발작 벽7');
+})();
+</script>
+
 </body>
 </html>
