@@ -33730,7 +33730,7 @@ window.__GONG_V266_RUNTIME__={
       {kind:'이도윤 한정 피해 증폭',type:'passive',name:'이도윤담당일진',desc:'서연서가 이도윤에게 가하는 모든 피해가 2배가 된다.',points:['대상: 이도윤','서연서가 가하는 모든 기본 피해 ×2','충돌기·춤 연계 후속 공격·토마토 피해에도 동일 적용']},
       {kind:'서민지 연계 패시브',type:'passive',name:'서씨집안',desc:'서민지와 같은 팀인지 다른 팀인지에 따라 두 사람 모두에게 다른 효과를 준다.',points:['같은 팀: 두 사람 모두 10초마다 HP 10 회복','서로 다른 팀: 전투 시작 시 서연서 최대·현재 HP +40','서로 다른 팀: 전투 시작 시 서민지 최대·현재 HP +40']},
       {kind:'적 충돌 약화',type:'control',name:'6반반장',desc:'부딪힌 적에게 권력을 과시해 피해와 다중 약화를 건다.',points:['충돌 피해: 10','“복종하라~ 나는 권력자다~” 말풍선 표시','이동속도 3초 동안 30% 감소','2초 동안 해당 적이 가하는 공격 피해 50% 감소']},
-      {kind:'벽 6회 영구 가속·춤 투사체',type:'control',name:'블쉴요정',desc:'벽에 6번 부딪힐 때마다 춤을 추며 영구적으로 빨라지고 춤 이모티콘 3개를 발사한다.',points:['발동할 때마다 이동속도 ×1.012 영구 누적','춤 이모티콘 총 3개','가장 가까운 적 최대 3명의 방향으로 분배 발사','적중한 적은 2초 동안 제자리에서 360° 회전','춤추는 2초 동안 취약 상태','춤 적중 후 1초 동안 무력화 상태']},
+      {kind:'벽 6회 영구 가속·춤 투사체',type:'control',name:'블쉴요정',desc:'벽에 6번 부딪힐 때마다 춤을 추며 영구적으로 빨라지고 춤 이모티콘 3개를 발사한다.',points:['발동할 때마다 이동속도 ×1.012 영구 누적','춤 이모티콘 총 3개','가장 가까운 적 최대 3명의 방향으로 분배 발사','적중한 적은 1초 동안 제자리에서 360° 회전','춤추는 1초 동안 취약 상태','춤 적중 후 1초 동안 무력화 상태']},
       {kind:'3회 피격 반응 소환',type:'attack',name:'토마토',desc:'실제 피해를 3번 받을 때마다 토마토 공 3개를 소환한다.',points:['실제 피해 3회마다 토마토 3개 생성','토마토는 일반 공처럼 직선 이동하고 벽에서 반사','누군가에게 맞기 전에는 시간으로 사라지지 않음','적중 시 기본 피해 14','적중한 적은 1초 동안 무력화','적중한 토마토만 즉시 사라짐']}
     ]
   };
@@ -33783,13 +33783,13 @@ window.__GONG_V266_RUNTIME__={
     if((target.data.v316DanceTimer||0)<=1e-9){
       target.data.v316DanceRestoreAngle=v>1e-6?Math.atan2(target.vy,target.vx):rand(0,Math.PI*2);
     }
-    target.data.v316DanceTimer=Math.max(target.data.v316DanceTimer||0,2);
-    target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,2);
+    target.data.v316DanceTimer=Math.max(target.data.v316DanceTimer||0,1);
+    target.data.v151VulnerableTimer=Math.max(target.data.v151VulnerableTimer||0,1);
     target.data.v151VulnerableSource=owner||target.data.v151VulnerableSource;
     applyPowerless(target,1,owner);
     target.vx=0;target.vy=0;
     spawnAttackFx(target.x,target.y,'#e53935','블쉴요정 · 춤',1.35);
-    floater(target.x,target.y-target.r-22,'💃 춤 2초 · 취약 · 무력화 1초','#e53935',13,.9);
+    floater(target.x,target.y-target.r-22,'💃 춤 1초 · 취약 · 무력화 1초','#e53935',13,.9);
     return true;
   }
   function fireDanceShots(owner){
@@ -39817,7 +39817,7 @@ const enemy=(a,b)=>!!(a&&b&&a!==b&&a.alive&&b.alive&&!a.hidden&&!b.hidden&&isEne
 IMAGES[HAEIN]='characters/eom_haein_v343.png';
 DEFS[HAEIN]={id:HAEIN,name:'엄해인',generation:20,color:'#d5a63a',hp:200,speed:280,img:IMAGES[HAEIN],role:'벽 충돌 돈 투사체·피격 누적 성장·충돌 광역 수면 제어형',skills:'돈뿌리기 · 아르바이트하기 · 수면욕퍼트리기'};
 SKILL_INFO[HAEIN]={summary:'벽 충돌 돈 투사체·피격 누적 성장·충돌 광역 수면 제어형',hp:'200',speed:'280',skills:[
- {kind:'벽 3회 투사체',type:'attack',name:'돈뿌리기',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 현재 돈 개수만큼 돈을 표창처럼 뿌린다.',points:['기본 돈 개수: 2개','아르바이트 성공 1회마다 돈 개수 +1','돈 1개당 피해: 15','적중한 적은 3초 동안 취약','돈은 가장 가까운 적 방향을 중심으로 부채꼴 발사']},
+ {kind:'벽 3회 투사체',type:'attack',name:'돈뿌리기',desc:'벽에 3번 부딪힐 때마다 가장 가까운 적을 향해 현재 돈 개수만큼 돈을 표창처럼 뿌린다.',points:['기본 돈 개수: 2개','아르바이트 성공 1회마다 돈 개수 +1','돈 1개당 피해: 9','적중한 적은 3초 동안 취약','돈은 가장 가까운 적 방향을 중심으로 부채꼴 발사']},
  {kind:'유효 피격 4회 성장 시전',type:'special',name:'아르바이트하기',desc:'유효 공격을 4번 받을 때마다 1초 동안 제자리에 고정되어 아르바이트를 한다. 피격되어도 시전이 취소되지 않는다.',points:['유효 피해 4회마다 1초 시전','시전 중 제자리 고정 · 피격으로 취소되지 않음','성공마다 공격력 ×1.2 누적 · 최대 ×4','성공마다 이동속도 ×1.2 누적 · 최대 ×6','성공마다 돈 개수 +1 · 돈 개수 제한 없음']},
  {kind:'적 충돌 3회 광역 제어',type:'control',name:'수면욕퍼트리기',desc:'적과 3번 부딪힐 때마다 제자리에 멈춰 커다란 수면 펄스를 방출한다.',points:['적 충돌 3회마다 발동','넓은 펄스 범위 안 모든 적에게 5 피해','맞은 적을 매우 멀리 튕겨낸 뒤 5초간 제자리에 고정','펄스 발동 순간 엄해인도 잠깐 제자리 정지']}
 ]};
@@ -39831,7 +39831,7 @@ function finishJob(p){ensureHaeinData(p);p.data.v343JobTimer=0;p.data.v343JobAtt
 function lockJob(p){if((p.data?.v343JobTimer||0)<=0)return;p.x=clamp(p.data.v343JobX,p.r,W-p.r);p.y=clamp(p.data.v343JobY,p.r,H-p.r);p.vx=0;p.vy=0;}
 function fireMoney(p){ensureHaeinData(p);const t=nearest(p);if(!t)return;game.v343MoneyShots ||= [];const n=Math.max(2,Math.floor(p.data.v343MoneyCount||2)),base=Math.atan2(t.y-p.y,t.x-p.x),spread=Math.min(.7,.12*(n-1));for(let i=0;i<n;i++){const off=n===1?0:-spread/2+spread*i/Math.max(1,n-1),a=base+off;game.v343MoneyShots.push({owner:p,x:p.x+Math.cos(a)*(p.r+8),y:p.y+Math.sin(a)*(p.r+8),vx:Math.cos(a)*720,vy:Math.sin(a)*720,r:10,life:3.5,rot:rand(0,Math.PI*2),spin:rand(7,13)*(Math.random()<.5?-1:1)});}spawnAttackFx(p.x,p.y,'#ffe152','돈뿌리기',1.55);floater(p.x,p.y-p.r-24,`💸 돈 ${n}개!`,'#9b7600',16,.85);}
 function applyVuln(q,seconds,p){try{if(typeof v151ApplyVulnerable==='function')return v151ApplyVulnerable(q,seconds,p,'돈뿌리기 취약');}catch(_){}q.data ||= {};q.data.v151VulnerableTimer=Math.max(q.data.v151VulnerableTimer||0,seconds);q.data.v151VulnerableSource=p;}
-function updateMoney(dt){if(!game)return;game.v343MoneyShots ||= [];for(const s of game.v343MoneyShots){s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;if(s.life<=0||s.x<-40||s.y<-40||s.x>W+40||s.y>H+40)continue;for(const q of game.players||[]){if(!enemy(s.owner,q)||Math.hypot(q.x-s.x,q.y-s.y)>=q.r+s.r)continue;const dealt=damage(q,15,s.owner,'돈뿌리기');if(dealt>0){applyVuln(q,3,s.owner);spawnAttackFx(q.x,q.y,'#ffe152','💸 취약',1.15);floater(q.x,q.y-q.r-18,`💸 ${dealt.toFixed(1)} · 취약 3초`,'#a87300',13,.7);}s.life=0;break;}}game.v343MoneyShots=game.v343MoneyShots.filter(s=>s.life>0);}
+function updateMoney(dt){if(!game)return;game.v343MoneyShots ||= [];for(const s of game.v343MoneyShots){s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=s.spin*dt;if(s.life<=0||s.x<-40||s.y<-40||s.x>W+40||s.y>H+40)continue;for(const q of game.players||[]){if(!enemy(s.owner,q)||Math.hypot(q.x-s.x,q.y-s.y)>=q.r+s.r)continue;const dealt=damage(q,9,s.owner,'돈뿌리기');if(dealt>0){applyVuln(q,3,s.owner);spawnAttackFx(q.x,q.y,'#ffe152','💸 취약',1.15);floater(q.x,q.y-q.r-18,`💸 ${dealt.toFixed(1)} · 취약 3초`,'#a87300',13,.7);}s.life=0;break;}}game.v343MoneyShots=game.v343MoneyShots.filter(s=>s.life>0);}
 function sleepPulse(p){ensureHaeinData(p);const radius=215;game.v343PulseFx ||= [];game.v343PulseFx.push({x:p.x,y:p.y,r:20,max:radius,t:0,d:.55});p.data.v343PulseStop=.45;p.data.v343PulseX=p.x;p.data.v343PulseY=p.y;spawnAttackFx(p.x,p.y,'#7664ff','수면욕퍼트리기',2);floater(p.x,p.y-p.r-28,'😴 수면욕 펄스!','#5541cf',18,1);for(const q of game.players||[]){if(!enemy(p,q)||Math.hypot(q.x-p.x,q.y-p.y)>radius+q.r)continue;const dealt=damage(q,5,p,'수면욕퍼트리기');let dx=q.x-p.x,dy=q.y-p.y,l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;q.vx=dx*1550;q.vy=dy*1550;q.knockbackTimer=Math.max(q.knockbackTimer||0,.3);q.knockbackRestore=normalSpeed(q);q.data ||= {};q.data.v343SleepFreezeDelay=.28;q.data.v343SleepFreezeTime=5;q.data.v343SleepFreezeSource=p;floater(q.x,q.y-q.r-20,`😴 ${dealt.toFixed(1)} · 곧 5초 고정`,'#5541cf',13,.8);}}
 function updateSleep(dt){for(const q of game?.players||[]){if((q.data?.v343SleepFreezeDelay||0)>0){q.data.v343SleepFreezeDelay=Math.max(0,q.data.v343SleepFreezeDelay-dt);if(q.data.v343SleepFreezeDelay<=0&&q.alive){q.data.v343SleepFreezeUntil=Math.max(q.data.v343SleepFreezeUntil||0,5);q.vx=0;q.vy=0;floater(q.x,q.y-q.r-18,'💤 5초 고정','#5541cf',14,.85);}}if((q.data?.v343SleepFreezeUntil||0)>0){q.data.v343SleepFreezeUntil=Math.max(0,q.data.v343SleepFreezeUntil-dt);q.vx=0;q.vy=0;q.frozen=Math.max(q.frozen||0,dt+.08);}}
  const p=haeinOwner();if(p?.alive&&(p.data.v343PulseStop||0)>0){p.data.v343PulseStop=Math.max(0,p.data.v343PulseStop-dt);p.x=p.data.v343PulseX;p.y=p.data.v343PulseY;p.vx=0;p.vy=0;}}
@@ -39841,7 +39841,7 @@ function updatePulseFx(dt){if(!game)return;game.v343PulseFx ||= [];for(const f o
 
 // 2) 이윤호 전투 효과 강화 (수치 변경 없음)
 function yoonhoBurst(x,y,kind='power',power=1){game.v343YoonhoFx ||= [];const palette=kind==='heal'?['#fff4a8','#44f0bd','#ffffff']:kind==='guide'?['#8ae8ff','#577cff','#ffffff']:kind==='tsun'?['#ff93d0','#ff4c8b','#ffffff']:['#ffe55e','#ff9b21','#ffffff'];for(let i=0;i<Math.min(36,18+Math.floor(power*6));i++){const a=rand(0,Math.PI*2),sp=rand(90,260)*power;game.v343YoonhoFx.push({kind:'p',x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:0,d:rand(.35,.75),r:rand(2,5),c:palette[i%palette.length]});}game.v343YoonhoFx.push({kind:'ring',x,y,t:0,d:.5,r:10,max:55+25*power,c:palette[0]});if(game.v343YoonhoFx.length>220)game.v343YoonhoFx.splice(0,game.v343YoonhoFx.length-220);}
-function updateYoonhoFx(dt){if(!game)return;game.v343YoonhoFx ||= [];for(const f of game.v343YoonhoFx){f.t+=dt;if(f.kind==='p'){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=Math.pow(.06,dt);f.vy*=Math.pow(.06,dt);}}game.v343YoonhoFx=game.v343YoonhoFx.filter(f=>f.t<f.d);const y=game?.players?.find(p=>p.id===YOONHO&&p.alive&&!p.hidden);if(y){y.data ||= {};y.data.v343Trail=(y.data.v343Trail||0)-dt;if(y.data.v343Trail<=0){y.data.v343Trail=.055;game.v343YoonhoFx.push({kind:'p',x:y.x,y:y.y,vx:rand(-35,35),vy:rand(-35,35),t:0,d:.4,r:rand(2,4),c:'#8ae8ff'});}}}
+function updateYoonhoFx(dt){if(!game)return;game.v343YoonhoFx ||= [];for(const f of game.v343YoonhoFx){f.t+=dt;if(f.kind==='p'){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vx*=Math.pow(.06,dt);f.vy*=Math.pow(.06,dt);}}game.v343YoonhoFx=game.v343YoonhoFx.filter(f=>f.t<f.d);}
 function drawYoonhoFx(){for(const f of game?.v343YoonhoFx||[]){const a=Math.max(0,1-f.t/f.d);ctx.save();ctx.globalAlpha=a;ctx.shadowColor=f.c;ctx.shadowBlur=16;ctx.strokeStyle=f.c;ctx.fillStyle=f.c;if(f.kind==='ring'){const r=f.r+(f.max-f.r)*(f.t/f.d);ctx.lineWidth=4*a+1;ctx.beginPath();ctx.arc(f.x,f.y,r,0,Math.PI*2);ctx.stroke();}else{ctx.beginPath();ctx.arc(f.x,f.y,f.r*a+.5,0,Math.PI*2);ctx.fill();}ctx.restore();}const y=game?.players?.find(p=>p.id===YOONHO&&p.alive&&!p.hidden);if(y){const m=Math.min(3,y.data?.attackMult||1);ctx.save();ctx.globalAlpha=.18+.12*(m-1);ctx.strokeStyle='#8ae8ff';ctx.shadowColor='#8ae8ff';ctx.shadowBlur=20;ctx.lineWidth=2+2*(m-1);ctx.beginPath();ctx.arc(y.x,y.y,y.r+10+Math.sin((game.t||0)*8)*3,0,Math.PI*2);ctx.stroke();ctx.restore();}}
 
 // 3) 최원서 태현쌤 따라다니기
@@ -39906,6 +39906,20 @@ if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GON
 console.info('[V343] 엄해인 추가 · 5개 추가 수정 · 이도윤 HP250/발작 벽7');
 })();
 </script>
+
+<script id="v344BalanceTrailPatch">(()=>{
+'use strict';
+const BUILD='V344_HAEIN9_SEOYEON_DANCE1_YOONHO_TRAIL_CLEANUP';
+window.__GONG_PATCH_NOTES__?.register?.('V344','엄해인 돈뿌리기 기본 피해 9 · 서연서 블쉴요정 자리 고정/회전 1초 · 이윤호 상시 파란 트레일 제거(Lv30 숙련도 트레일 유지)');
+window.__GONG_V344__={build:BUILD,verify(){
+  const h=SKILL_INFO?.eomhaein?.skills?.find?.(x=>x?.name==='돈뿌리기');
+  const y=SKILL_INFO?.seoyeonseo?.skills?.find?.(x=>x?.name==='블쉴요정');
+  let yoonhoLevel=1;try{yoonhoLevel=Math.max(1,Number((window.__GONG_V226__||window.__GONG_V224__||window.__GONG_V221__||window.__GONG_V219__)?.masteryLevelForId?.('yoonho')?.level||1));}catch(_){}
+  return {build:BUILD,haeinMoney:h?.points||[],seoyeonDance:y?.points||[],yoonhoPersistentBlueTrail:false,yoonhoLv30MasteryTrailSystem:typeof v224DrawMasteryTrails==='function',yoonhoMasteryLevel:yoonhoLevel,latest:window.__GONG_LATEST_BUILD__};
+}};
+window.__GONG_V344_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+console.info('[V344] 엄해인 돈 9 · 서연서 블쉴요정 1초 · 이윤호 상시 파란 트레일 제거 / Lv30 트레일 유지');
+})();</script>
 
 </body>
 </html>
