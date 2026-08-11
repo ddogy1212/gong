@@ -3794,6 +3794,13 @@ let skillSelected='moon';
 let v317SkillRenderedId='';
 let v317SkillForceTop=true;
 const v317SkillScrollPositions=new Map();
+function v354LocalMasteryXp(id){
+  try{return Math.max(0,Number((window.__GONG_V226__||window.__GONG_V224__||window.__GONG_V221__||window.__GONG_V219__)?.mastery?.()?.characters?.[id]?.xp)||0)}catch(_){return 0}
+}
+function v354AttackMultiplier(id){
+  try{return Math.max(1,Number(window.__GONG_V352__?.attackMultiplierForXp?.(v354LocalMasteryXp(id)))||1)}catch(_){return 1}
+}
+function v354AttackLabel(id){return `공격력 ×${v354AttackMultiplier(id).toFixed(1)}`}
 function v317RememberSkillScroll(id=v317SkillRenderedId){
   if(!id||!skillBody)return;
   v317SkillScrollPositions.set(id,Math.max(0,Number(skillBody.scrollTop)||0));
@@ -3819,7 +3826,7 @@ function renderSkillDetail(){
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
       <div>
         <div class="skill-profile-name">${d.name}</div>
-        <div class="skill-profile-meta"><span class="v295-stat-line">체력 ${window.__GONG_V348__?.hpLabel?.(skillSelected,info.hp)||info.hp}</span><span class="v295-stat-line">속도 ${info.speed}</span></div>
+        <div class="skill-profile-meta"><span class="v295-stat-line">체력 ${window.__GONG_V348__?.hpLabel?.(skillSelected,info.hp)||info.hp}</span><span class="v295-stat-line">속도 ${info.speed}</span><span class="v295-stat-line v354-attack-stat">${v354AttackLabel(skillSelected)}</span></div>
       </div>
     </div>
     ${window.__GONG_V221_MASTERY_HTML__?.(skillSelected)||''}
@@ -4220,7 +4227,7 @@ function cardHTML(id){
     <img src="${d.img}" alt="${d.name}" loading="lazy" decoding="async" fetchpriority="low" width="44" height="44" style="object-position:${crop(id)}">
     <div style="min-width:0;flex:1">
       <div class="char-name">${d.name}</div>
-      <div class="char-meta"><span class="v295-stat-line">체력 ${d.hp}</span><span class="v295-stat-line">속도 ${d.speed}</span></div>
+      <div class="char-meta"><span class="v295-stat-line">체력 ${d.hp}</span><span class="v295-stat-line">속도 ${d.speed}</span><span class="v295-stat-line v354-attack-stat">${v354AttackLabel(id)}</span></div>
     </div>
     <button class="card-skill-info" data-info-id="${id}" title="스킬 설명" style="border:0;background:#eee;border-radius:8px;width:28px;height:28px;font-weight:900;cursor:pointer">?</button>
   </div>`;
@@ -30669,7 +30676,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const d=DEFS[id];if(!d)return null;const card=document.createElement('section');card.className='v228-community-card';card.dataset.charId=id;card.dataset.mode='all';card.innerHTML=`<div class="v228-community-head"><div class="v228-community-title">🌐 전체 이용자 통계<small>모드별 최근 최대 500경기 · 전체 탭은 육성모드 포함 모든 모드 합산</small></div><span class="v228-community-state">연결 중</span></div><div class="v228-community-tabs">${['all',...MODE_KEYS].map(key=>`<button type="button" class="v228-community-tab ${key==='all'?'active':''}" data-mode="${key}">${MODE_LABELS[key]}</button>`).join('')}</div><div class="v228-community-body"><div class="v228-community-loading">실시간 통계를 준비하는 중...</div></div>`;card.addEventListener('click',event=>{const btn=event.target.closest('.v228-community-tab');if(btn)loadStats(id,btn.dataset.mode,true)});return card
     }
     function appendCommunityStats(){
-      detachStats();const id=skillSelected;if(!id||!DEFS[id])return;const card=communityCard(id),mastery=skillBody.querySelector('.v221-skill-mastery');if(mastery)mastery.insertAdjacentElement('afterend',card);else skillBody.prepend(card);loadStats(id,'all')
+      detachStats();const id=skillSelected;if(!id||!DEFS[id])return;const card=communityCard(id),profile=skillBody.querySelector('.skill-profile'),mastery=skillBody.querySelector('.v221-skill-mastery');if(profile)profile.insertAdjacentElement('afterend',card);else if(mastery)mastery.insertAdjacentElement('afterend',card);else skillBody.prepend(card);loadStats(id,'all')
     }
     const previousSkillRender=renderSkillDetail;renderSkillDetail=function(){const result=previousSkillRender.apply(this,arguments);try{appendCommunityStats()}catch(error){console.warn('[V229] 커뮤니티 통계 카드 오류를 격리했어.',error)}return result};
     const previousSkillClose=closeSkillModal;closeSkillModal=function(){detachStats();return previousSkillClose.apply(this,arguments)};
@@ -33485,7 +33492,7 @@ window.__GONG_V266_RUNTIME__={
     if(!id||!DEFS[id]||BOSS_IDS.has(id))return false;
     document.querySelectorAll('.v290-mastery-ranking').forEach(node=>node.remove());
     const section=document.createElement('section');section.className='v290-mastery-ranking';section.dataset.characterId=id;section.innerHTML=`<div class="v290-rank-head"><strong>🏆 ${esc(DEFS[id].name)} 숙련도 TOP5</strong></div><div class="v290-rank-list"><div class="v290-rank-empty">랭킹을 불러오는 중…</div></div>`;
-    const masteryCard=skillBody.querySelector('.v221-skill-mastery'),profile=skillBody.querySelector('.skill-profile');if(masteryCard)masteryCard.insertAdjacentElement('afterend',section);else if(profile)profile.insertAdjacentElement('afterend',section);else skillBody.prepend(section);
+    const statsCard=skillBody.querySelector('.v228-community-card'),masteryCard=skillBody.querySelector('.v221-skill-mastery'),profile=skillBody.querySelector('.skill-profile');if(statsCard)statsCard.insertAdjacentElement('afterend',section);else if(masteryCard)masteryCard.insertAdjacentElement('afterend',section);else if(profile)profile.insertAdjacentElement('afterend',section);else skillBody.prepend(section);
     loadRanking(id);return true;
   }
   async function loadRanking(id,{force=false}={}){
@@ -36146,7 +36153,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function masteryCardsHtml(rows,{limit=0}={}){
     const list=limit>0?rows.slice(0,limit):rows;
     if(!list.length)return '<div class="v254-mastery-empty">아직 마스터리 1을 달성한 캐릭터가 없어.<br>숙련도 Lv.10부터 캐릭터 엠블럼과 함께 표시돼.</div>';
-    return list.map(row=>{const reward=row.tier>=12?'공격력 ×1.2':row.tier>=11?'공격력 ×1.1':row.tier>=10?'HP +50':row.tier>=5?`HP +${20+(row.tier-4)*5}`:row.tier===4?'HP +20':row.tier===3?'HP +10':row.tier===2?'사진 광휘':'캐릭터 엠블럼';return `<div class="v254-mastery-row" style="--c:${esc(row.color)}"><img src="${esc(row.img)}" alt="${esc(row.name)}" loading="lazy" decoding="async"><span class="v254-mastery-copy"><b>${esc(row.name)}</b><small>Lv.${row.level} · ${Number(row.xp).toLocaleString('ko-KR')} XP</small></span><span class="v254-mastery-badge m${row.tier}">마스터리 ${row.tier}<small>${reward}</small></span></div>`}).join('');
+    return list.map(row=>{const hpFallback=({3:10,4:20,5:25,6:30,7:35,8:40,9:45,10:50,11:50,12:50})[row.tier]||0,attackFallback=row.tier>=12?1.2:row.tier>=11?1.1:1,hp=window.__GONG_V352__?.hpBonusForXp?.(row.xp)??hpFallback,attack=window.__GONG_V352__?.attackMultiplierForXp?.(row.xp)??attackFallback,reward=`HP +${hp} · 공격력 ×${Number(attack).toFixed(1)}`;return `<div class="v254-mastery-row" style="--c:${esc(row.color)}"><img src="${esc(row.img)}" alt="${esc(row.name)}" loading="lazy" decoding="async"><span class="v254-mastery-copy"><b>${esc(row.name)}</b><small>Lv.${row.level} · ${Number(row.xp).toLocaleString('ko-KR')} XP</small></span><span class="v254-mastery-badge m${row.tier}">마스터리 ${row.tier}<small>${reward}</small></span></div>`}).join('');
   }
   function ensureOwnShowcase(){
     const modal=document.getElementById('v232ProfileModal'),hero=modal?.querySelector('.v232-profile-hero');if(!hero)return null;
@@ -38149,7 +38156,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
 
 
 <style id="v295CleanCharacterMetaStyle">
-/* V295 · character identity UI: absolutely no role/archetype blurbs under names. HP and speed are always two separate rows. */
+/* V355 · character identity UI: no role/archetype blurbs under names. HP, speed, and mastery attack multiplier use separate rows. */
 .char-card .char-mini,
 .skill-profile .char-mini,
 [data-character-role],
@@ -38175,14 +38182,14 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
   const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   function defs(){try{return typeof DEFS!=='undefined'?DEFS:(window.__GONG_V134_DEBUG__?.defs||{})}catch(_){return window.__GONG_V134_DEBUG__?.defs||{}}}
   function infos(){try{return typeof SKILL_INFO!=='undefined'?SKILL_INFO:(window.__GONG_V134_DEBUG__?.skillInfo||{})}catch(_){return window.__GONG_V134_DEBUG__?.skillInfo||{}}}
-  function statHtml(hp,speed){return `<span class="v295-stat-line">체력 ${esc(hp)}</span><span class="v295-stat-line">속도 ${esc(speed)}</span>`}
+  function statHtml(hp,speed,id=''){return `<span class="v295-stat-line">체력 ${esc(hp)}</span><span class="v295-stat-line">속도 ${esc(speed)}</span><span class="v295-stat-line v354-attack-stat">${esc(v354AttackLabel(id))}</span>`}
   function activeSkillId(){return document.querySelector('#skillTabs [data-skill-tab].active')?.dataset?.skillTab||document.querySelector('#skillTabs [aria-selected="true"][data-skill-tab]')?.dataset?.skillTab||''}
   function cleanCard(card){
     const id=card?.dataset?.char,d=defs()[id];
     card?.querySelectorAll?.('.char-mini').forEach(el=>el.remove());
     if(!d)return false;
     const meta=card.querySelector('.char-meta');
-    if(meta){const wanted=statHtml(d.hp,d.speed);if(meta.innerHTML!==wanted)meta.innerHTML=wanted;}
+    if(meta){const wanted=statHtml(d.hp,d.speed,id);if(meta.innerHTML!==wanted)meta.innerHTML=wanted;}
     return true;
   }
   function cleanSkillProfile(profile){
@@ -38191,7 +38198,7 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
     profile.querySelectorAll('.char-mini,[data-character-role],.character-role,.char-role').forEach(el=>el.remove());
     const meta=profile.querySelector('.skill-profile-meta');
     if(meta&&(d||info)){
-      const hp=info?.hp??d?.hp??'-',speed=info?.speed??d?.speed??'-',wanted=statHtml(hp,speed);
+      const hp=info?.hp??d?.hp??'-',speed=info?.speed??d?.speed??'-',wanted=statHtml(hp,speed,id);
       if(meta.innerHTML!==wanted)meta.innerHTML=wanted;
     }
     return true;
@@ -38237,12 +38244,12 @@ body.v293-ui-overlay-open #v289FloatingPlay{display:none!important;opacity:0!imp
     const roleLeak=[...document.querySelectorAll('.skill-profile-meta,.char-meta,.char-mini')].filter(el=>{
       const t=String(el.textContent||'').trim();return [...roleStrings()].some(r=>r&&t.includes(r));
     });
-    const badStats=[...document.querySelectorAll('.char-card[data-char] .char-meta')].filter(el=>el.querySelectorAll('.v295-stat-line').length!==2);
+    const badStats=[...document.querySelectorAll('.char-card[data-char] .char-meta')].filter(el=>el.querySelectorAll('.v295-stat-line').length!==3);
     const skillMeta=document.querySelector('.skill-profile-meta');
     return {build:BUILD,roleLeakCount:roleLeak.length,badCardStatCount:badStats.length,skillMetaLines:skillMeta?.querySelectorAll('.v295-stat-line').length||0,latest:window.__GONG_LATEST_BUILD__};
   }};
   window.__GONG_V295_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
-  console.info('[V295] 캐릭터 이름 아래 역할형 설명 전수 제거 · 체력/속도 2줄 고정');
+  console.info('[V355] 캐릭터 이름 아래 역할형 설명 전수 제거 · 체력/속도/공격력 3줄 고정');
 })();
 </script>
 
@@ -40860,6 +40867,36 @@ if(window.__GONG_V134_DEBUG__)Object.assign(window.__GONG_V134_DEBUG__,{resetBat
 if(window.__GONG_V138_TEST__)Object.assign(window.__GONG_V138_TEST__,{resetBattle,tick,draw});
 window.__GONG_PATCH_NOTES__?.register?.('V353','전 캐릭터 마스터리 HP 재적용 · 권태연&이강은은 이강은 HP만 증가 · 최다은/크로스·합체·변신 HP 초기화 보호 · Lv.5 캐릭터 전용 킬배너 복구 · 프로필 마스터리 한국어 표시 · 캐릭터 설명창 마스터리 제거 · Lv.30 회전 네모 유지 · 마스터리 8~12 전투/프로필 연출 강화 · 중복 트레일/프레임 검사 최적화');
 console.info('[V353] 전 캐릭터 마스터리 HP 보정 · 마스터리 8~12 연출 강화 · Lv.5 킬배너 복구 · UI/렌더링 최적화');
+})();
+</script>
+<!-- =========================================================
+   V355 · community statistics directly below character identity
+========================================================= -->
+<style id="v355CharacterStatisticsOrderStyle">
+#skillBody>.skill-profile+.v228-community-card{margin-top:0!important}
+#skillBody>.v228-community-card+.v290-mastery-ranking{margin-top:0!important}
+.v354-attack-stat{color:#7c2d12!important;font-weight:1000!important}
+@media(max-width:640px){#skillBody>.skill-profile+.v228-community-card{margin-bottom:8px!important}}
+</style>
+<script id="v355CharacterStatisticsOrderScript">
+(()=>{
+'use strict';
+const BUILD='V355_CHARACTER_COMMUNITY_STATS_BELOW_IDENTITY';
+function enforceOrder(){
+  const body=document.getElementById('skillBody'),profile=body?.querySelector(':scope > .skill-profile'),stats=body?.querySelector(':scope > .v228-community-card');
+  if(!body||!profile||!stats)return false;
+  if(profile.nextElementSibling!==stats)profile.insertAdjacentElement('afterend',stats);
+  return profile.nextElementSibling===stats;
+}
+const previousRenderV355=typeof renderSkillDetail==='function'?renderSkillDetail:null;
+if(previousRenderV355)renderSkillDetail=function v355StatisticsOrderRender(){const result=previousRenderV355.apply(this,arguments);enforceOrder();return result};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enforceOrder,{once:true});else enforceOrder();
+window.__GONG_V354__={build:'V354_ATTACK_MULTIPLIER_VISIBLE',masteryXp:v354LocalMasteryXp,attackMultiplier:v354AttackMultiplier,attackLabel:v354AttackLabel};
+window.__GONG_V355__={build:BUILD,enforceOrder,verify(){const body=document.getElementById('skillBody'),profile=body?.querySelector(':scope > .skill-profile'),stats=body?.querySelector(':scope > .v228-community-card');return {build:BUILD,profilePresent:!!profile,statisticsPresent:!!stats,statisticsImmediatelyBelowProfile:!!profile&&profile.nextElementSibling===stats,attackStatLines:body?.querySelectorAll('.v354-attack-stat').length||0,latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V354_BUILD__='V354_ATTACK_MULTIPLIER_VISIBLE';window.__GONG_V355_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V354','캐릭터 선택 카드·설명창·프로필에 마스터리 공격력 배율 표시 · HP 보너스와 공격력 배율 동시 표시');
+window.__GONG_PATCH_NOTES__?.register?.('V355','캐릭터 설명창의 전체 이용자 통계를 이름·사진 카드 바로 아래로 이동 · 숙련도 TOP5는 통계 다음에 표시');
+console.info('[V355] 캐릭터 이름·사진 카드 바로 아래 전체 이용자 통계 고정');
 })();
 </script>
 </body>
