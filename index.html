@@ -3816,7 +3816,7 @@ function renderSkillDetail(){
       <img src="${d.img}" alt="${d.name} 캐릭터 사진" loading="eager" decoding="async" fetchpriority="high" width="58" height="58" style="object-position:${crop(skillSelected)}">
       <div>
         <div class="skill-profile-name">${d.name}</div>
-        <div class="skill-profile-meta"><span class="v295-stat-line">체력 ${info.hp}</span><span class="v295-stat-line">속도 ${info.speed}</span></div>
+        <div class="skill-profile-meta"><span class="v295-stat-line">체력 ${window.__GONG_V348__?.hpLabel?.(skillSelected,info.hp)||info.hp}</span><span class="v295-stat-line">속도 ${info.speed}</span></div>
       </div>
     </div>
     ${window.__GONG_V221_MASTERY_HTML__?.(skillSelected)||''}
@@ -4217,7 +4217,7 @@ function cardHTML(id){
     <img src="${d.img}" alt="${d.name}" loading="lazy" decoding="async" fetchpriority="low" width="44" height="44" style="object-position:${crop(id)}">
     <div style="min-width:0;flex:1">
       <div class="char-name">${d.name}</div>
-      <div class="char-meta"><span class="v295-stat-line">체력 ${d.hp}</span><span class="v295-stat-line">속도 ${d.speed}</span></div>
+      <div class="char-meta"><span class="v295-stat-line">체력 ${window.__GONG_V348__?.hpLabel?.(id,d.hp)||d.hp}</span><span class="v295-stat-line">속도 ${d.speed}</span></div>
     </div>
     <button class="card-skill-info" data-info-id="${id}" title="스킬 설명" style="border:0;background:#eee;border-radius:8px;width:28px;height:28px;font-weight:900;cursor:pointer">?</button>
   </div>`;
@@ -29583,23 +29583,25 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function chooseUserTimeout(){const ids=available();if(!ids.length)return null;const score=state.phase==='ban'?aiBanScore:userAutoPickScore;return ids.map(id=>({id,score:score(id)})).sort((a,b)=>b.score-a.score||DEFS[a.id].name.localeCompare(DEFS[b.id].name,'ko'))[0].id}
   function slotHtml(id,empty='빈칸'){if(!id)return `<div class="draft-slot">${empty}</div>`;const d=DEFS[id];return `<div class="draft-slot filled" style="--c:${d.color}"><img src="${d.img}" alt="${esc(d.name)}" style="object-position:${crop(id)}"><span>${esc(d.name)}</span></div>`}
   function slots(ids,count,empty){return Array.from({length:count},(_,i)=>slotHtml(ids[i],empty)).join('')}
-  function cardState(id){if(state.userBans.includes(id))return ['banned','내가 밴'];if(state.aiBans.includes(id))return ['banned',friendly?'상대 밴':'AI 밴'];if(state.userPicks.includes(id))return ['user-pick','내 팀'];if(state.aiPicks.includes(id))return ['ai-pick',friendly?'상대 팀':'AI 팀'];return ['','']}
-  function actorName(actor){return actor==='user'?'나':friendly?'상대':'AI'}
+  function friendlyMyName(){return String(friendly?.myName||'나').trim().slice(0,12)||'나'}
+  function friendlyOpponentName(){return String(friendly?.opponentName||'상대').trim().slice(0,12)||'상대'}
+  function cardState(id){if(state.userBans.includes(id))return ['banned','내가 밴'];if(state.aiBans.includes(id))return ['banned',friendly?`${friendlyOpponentName()} 밴`:'AI 밴'];if(state.userPicks.includes(id))return ['user-pick',friendly?`${friendlyMyName()} 팀`:'내 팀'];if(state.aiPicks.includes(id))return ['ai-pick',friendly?`${friendlyOpponentName()} 팀`:'AI 팀'];return ['','']}
+  function actorName(actor){return actor==='user'?'나':friendly?friendlyOpponentName():'AI'}
   function phaseActors(){if(!state||state.phase==='done')return [];const first=state.phase==='ban'?state.banFirst:state.pickFirst;return Array.from({length:state.size*2},(_,i)=>i%2===0?first:(first==='user'?'ai':'user'))}
   function completedActions(){if(!state)return 0;return state.phase==='ban'?state.userBans.length+state.aiBans.length:state.phase==='pick'?state.userPicks.length+state.aiPicks.length:state.size*2}
   function renderTurnOrder(){const label=$d('draftSequenceLabel'),root=$d('draftTurnOrder');if(!label||!root||!state)return;if(state.phase==='done'){label.textContent='진행 결과';root.innerHTML='<span class="draft-turn-chip done current">밴픽 완료</span>';return}label.textContent=state.phase==='ban'?'밴 순서':'선택 순서';const done=completedActions();root.innerHTML=phaseActors().map((actor,i)=>`<span class="draft-turn-chip ${i<done?'done':''} ${i===done?'current':''} ${actor==='ai'?'ai':'user'}">${i+1}. ${actorName(actor)}</span>`).join('')}
-  function statusCopy(){if(!state)return;const phase=state.phase,turn=state.turn;if(phase==='done')return ['완료','양 팀 선택 완료',friendly?'같은 경기 코드로 전투를 시작해.':'1초 뒤 자동으로 전투를 시작해.'];const action=phase==='ban'?'밴':'선택',who=turn==='user'?'내 차례':friendly?'상대 차례':'AI 차례';const left=state.size-(turn==='user'?(phase==='ban'?state.userBans.length:state.userPicks.length):(phase==='ban'?state.aiBans.length:state.aiPicks.length));const base=`${turn==='user'?'제한시간 안에 캐릭터를 눌러':friendly?'상대의 선택을 기다리고 있어':'최적 조합을 계산하고 있어'} · 남은 ${Math.max(0,left)}명`;return [phase==='ban'?'BAN':'PICK',`${who} · ${action}`,state.notice?`${state.notice} · ${base}`:base]}
+  function statusCopy(){if(!state)return;const phase=state.phase,turn=state.turn;if(phase==='done')return ['완료','양 팀 선택 완료',friendly?'같은 경기 코드로 전투를 시작해.':'1초 뒤 자동으로 전투를 시작해.'];const action=phase==='ban'?'밴':'선택',opponent=friendlyOpponentName(),who=turn==='user'?'내 차례':friendly?`${opponent} 차례`:'AI 차례';const left=state.size-(turn==='user'?(phase==='ban'?state.userBans.length:state.userPicks.length):(phase==='ban'?state.aiBans.length:state.aiPicks.length));const base=`${turn==='user'?'제한시간 안에 캐릭터를 눌러':friendly?`${opponent}의 선택을 기다리고 있어`:'최적 조합을 계산하고 있어'} · 남은 ${Math.max(0,left)}명`;return [phase==='ban'?'BAN':'PICK',`${who} · ${action}`,state.notice?`${state.notice} · ${base}`:base]}
   function draftNow(){return Date.now()+(friendly?Number(friendly.serverOffset)||0:0)}
   function updateCountdown(){const el=$d('draftCountdown');if(!el||!state)return;if(state.phase==='done'||!state.deadline){el.className='draft-countdown hidden';return}const remain=Math.max(0,Math.ceil((state.deadline-draftNow())/1000));el.className=`draft-countdown ${remain<=5?'urgent':''}`;el.innerHTML=`<b>${remain}</b><span>초</span>`}
   function renderRecentAction(){
     const el=$d('draftRecentAction');if(!el||!state)return;
     const row=state.lastAction,id=row?.id,d=id&&DEFS[id];
     if(!row||!d){el.className='draft-recent-action hidden';el.innerHTML='';return}
-    const actorLabel=row.actor==='ai'?(friendly?'상대 선택':'상대 AI'):'내 선택',actionLabel=row.phase==='ban'?'밴':'픽';
+    const actorLabel=row.actor==='ai'?(friendly?`${friendlyOpponentName()} 선택`:'상대 AI'):'내 선택',actionLabel=row.phase==='ban'?'밴':'픽';
     el.className=`draft-recent-action ${row.actor}`;
     el.innerHTML=`<img src="${d.img}" alt="${esc(d.name)}" loading="eager" decoding="async" style="object-position:${crop(id)}"><span class="draft-recent-copy"><strong>${actorLabel} · ${esc(d.name)}</strong><span>${row.timedOut?'시간 종료로 자동 ':''}${actionLabel} 완료${row.actor==='ai'?' · 상대 팀 변화가 아래에 바로 반영됨':''}</span></span><span class="draft-recent-badge">${actionLabel}</span>`;
   }
-  function render(){if(!state)return;const [badge,title,desc]=statusCopy();$d('draftPhaseBadge').textContent=badge;$d('draftPhaseBadge').className=`draft-phase-badge ${state.phase==='pick'?'pick':state.phase==='done'?'done':''}`;$d('draftTurnText').textContent=title;$d('draftStatusText').textContent=desc;$d('draftUserPickCount').textContent=`${state.userPicks.length}/${state.size}명`;$d('draftAiPickCount').textContent=`${state.aiPicks.length}/${state.size}명`;$d('draftUserPicks').innerHTML=slots(state.userPicks,state.size,'선택');$d('draftAiPicks').innerHTML=slots(state.aiPicks,state.size,'선택');$d('draftUserBans').innerHTML=slots(state.userBans,state.size,'밴');$d('draftAiBans').innerHTML=slots(state.aiBans,state.size,'밴');$d('draftPoolMeta').textContent=state.phase==='done'?'선택이 끝났어.':state.turn==='user'?`${state.phase==='ban'?'밴할':'내 팀으로 선택할'} 캐릭터를 눌러.`:'AI가 다음 수를 계산 중이야.';
+  function render(){if(!state)return;const [badge,title,desc]=statusCopy(),opponent=friendlyOpponentName(),mine=friendlyMyName();$d('draftPhaseBadge').textContent=badge;$d('draftPhaseBadge').className=`draft-phase-badge ${state.phase==='pick'?'pick':state.phase==='done'?'done':''}`;$d('draftTurnText').textContent=title;$d('draftStatusText').textContent=desc;$d('draftUserPickCount').textContent=`${state.userPicks.length}/${state.size}명`;$d('draftAiPickCount').textContent=`${state.aiPicks.length}/${state.size}명`;$d('draftUserPicks').innerHTML=slots(state.userPicks,state.size,'선택');$d('draftAiPicks').innerHTML=slots(state.aiPicks,state.size,'선택');$d('draftUserBans').innerHTML=slots(state.userBans,state.size,'밴');$d('draftAiBans').innerHTML=slots(state.aiBans,state.size,'밴');const myHead=document.querySelector('.draft-team.user-team .draft-team-head strong'),opHead=document.querySelector('.draft-team.ai-team .draft-team-head strong'),poolHead=document.querySelector('.draft-pool-head strong');if(myHead)myHead.textContent=friendly?`🔵 ${mine}`:'🔵 내 팀';if(opHead)opHead.textContent=friendly?`🔴 ${opponent}`:'🔴 AI 팀';if(poolHead)poolHead.textContent=friendly?'이번 친선전 후보 24명':'이번 경쟁전 후보 24명';$d('draftPoolMeta').textContent=state.phase==='done'?'선택이 끝났어.':state.turn==='user'?`${state.phase==='ban'?'밴할':'내 팀으로 선택할'} 캐릭터를 눌러.`:friendly?`${opponent}의 선택을 기다리는 중이야.`:'AI가 다음 수를 계산 중이야.';
     $d('draftPool').innerHTML=state.pool.map(id=>{const d=DEFS[id],[cls,label]=cardState(id),used=!!cls,disabled=used||state.phase==='done'||state.turn!=='user',actionClass=state.phase==='ban'?'ban':'pick',actionText=!disabled?(state.phase==='ban'?'밴':'픽'):'';return `<button type="button" class="draft-card ${cls} ${disabled?'is-disabled':''}" data-draft-char="${id}" data-disabled="${disabled?'1':'0'}" style="--c:${d.color}"><img src="${d.img}" alt="${esc(d.name)}" loading="lazy" decoding="async" style="object-position:${crop(id)}"><span class="draft-card-copy"><span class="draft-card-name">${esc(d.name)}</span><span class="draft-card-meta">HP ${d.hp} · 속도 ${d.speed}</span></span><span class="draft-card-help" role="button" aria-label="${esc(d.name)} 스킬 보기" data-draft-info="${id}">?</span>${actionText?`<span class="draft-card-action ${actionClass}">${actionText}</span>`:''}${used?`<span class="draft-card-state">${label}</span>`:''}</button>`}).join('');
     renderRecentAction();renderTurnOrder();updateCountdown();$d('draftBattleStart').classList.add('hidden');
   }
@@ -29611,10 +29613,10 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   function startDraft(size=selectedSize,{pool=null,schedule=true}={}){friendly=null;clearDraftTimers();if(window.__GONG_V216_COMPETITIVE__?.isLocked?.()){alert(window.__GONG_V216_COMPETITIVE__?.lockMessage?.()||'경쟁전 정산 중이야. 월요일 00:00(KST)에 다시 입장할 수 있어.');window.__GONG_V216_COMPETITIVE__?.render?.();return null}const roster=orderedCharacterIds().filter(id=>DEFS[id]&&!BOSS_IDS.has(id));if(roster.length<POOL_SIZE){alert('경쟁전을 시작하려면 일반 캐릭터가 24명 이상 필요해.');return null}const banFirst=Math.random()<.5?'user':'ai';state={size:Number(size)===5?5:4,pool:pool?.filter(id=>roster.includes(id)).slice(0,POOL_SIZE)||shuffle(roster).slice(0,POOL_SIZE),phase:'ban',turn:banFirst,banFirst,pickFirst:banFirst==='user'?'ai':'user',userBans:[],aiBans:[],userPicks:[],aiPicks:[],deadline:0,notice:'',lastAction:null};if(state.pool.length<POOL_SIZE)state.pool=[...new Set([...state.pool,...shuffle(roster)])].slice(0,POOL_SIZE);draftScreen.classList.add('draft-in-progress');$d('draftSetupCard').classList.add('hidden');$d('draftPlayArea').classList.remove('hidden');render();armTurn({schedule});requestAnimationFrame(()=>window.scrollTo(0,0));return state}
   function openDraft(){friendly=null;clearDraftTimers();setup.classList.add('hidden');document.getElementById('tournamentScreen')?.classList.add('hidden');battle.classList.add('hidden');draftScreen.classList.remove('hidden','draft-in-progress');draftScreen.setAttribute('aria-hidden','false');state=null;$d('draftSetupCard').classList.remove('hidden');$d('draftPlayArea').classList.add('hidden');window.scrollTo(0,0)}
   function closeDraft(){const leaving=friendly;friendly=null;clearDraftTimers();state=null;draftScreen.classList.remove('draft-in-progress');draftScreen.classList.add('hidden');draftScreen.setAttribute('aria-hidden','true');setup.classList.remove('hidden');window.scrollTo(0,0);leaving?.onLeave?.()}
-  function launchBattle(){if(!state||state.phase!=='done')return false;clearDraftTimers();let participants,teams,zoneNames,draftData;if(friendly){const c=friendly.canonical||{};participants=[...(c.hostPicks||[]),...(c.guestPicks||[])];if(participants.length!==state.size*2||new Set(participants).size!==participants.length)return false;teams=Object.fromEntries([...(c.hostPicks||[]).map(id=>[id,'T1']),...(c.guestPicks||[]).map(id=>[id,'T2'])]);zoneNames={T1:'방장 팀',T2:'참가자 팀'};draftData={competitive:false,friendly:true,roomCode:friendly.roomCode,friendlySide:friendly.side==='guest'?'guest':'host',round:Math.max(1,Number(c.round)||1),battleSeed:(Number(c.battleSeed)||1)>>>0,size:state.size,pool:[...state.pool],hostBans:[...(c.hostBans||[])],guestBans:[...(c.guestBans||[])],hostPicks:[...(c.hostPicks||[])],guestPicks:[...(c.guestPicks||[])]};nextBattleSeed=draftData.battleSeed}else{participants=[...state.userPicks,...state.aiPicks];teams=Object.fromEntries([...state.userPicks.map(id=>[id,'T1']),...state.aiPicks.map(id=>[id,'T2'])]);zoneNames={T1:'내 경쟁전 팀',T2:'AI 경쟁전 팀'};draftData={competitive:true,rankBefore:window.__GONG_V215_COMPETITIVE__?.profile?.(),size:state.size,pool:[...state.pool],userBans:[...state.userBans],aiBans:[...state.aiBans],userPicks:[...state.userPicks],aiPicks:[...state.aiPicks]}}currentConfig={mode:'team',participants,teams,zoneNames,draft:draftData};mode='team';paused=false;last=0;document.body.classList.remove('boss-battle');document.body.classList.add('draft-battle','competitive-battle');if(friendly)document.body.classList.add('friendly-battle');else document.body.classList.remove('friendly-battle');draftScreen.classList.add('hidden');battle.classList.remove('hidden');resize();resetBattle();if(game)game.v212Draft=typeof structuredClone==='function'?structuredClone(currentConfig.draft):JSON.parse(JSON.stringify(currentConfig.draft));const title=$d('battleTitle'),badge=$d('modeBadge');if(title)title.textContent=friendly?`친선 경쟁전 ${state.size}대${state.size} · ${friendly.roomCode}`:`경쟁전 ${state.size}대${state.size}`;if(badge)badge.textContent=friendly?'🤝 친선 경쟁전':'🏅 경쟁전';friendly?.onBattleStart?.();v165FocusBattleScreen();return true}
+  function launchBattle(){if(!state||state.phase!=='done')return false;clearDraftTimers();let participants,teams,zoneNames,draftData;if(friendly){const c=friendly.canonical||{},hostName=String(friendly.hostName||c.hostName||'방장').trim().slice(0,12)||'방장',guestName=String(friendly.guestName||c.guestName||'참가자').trim().slice(0,12)||'참가자';participants=[...(c.hostPicks||[]),...(c.guestPicks||[])];if(participants.length!==state.size*2||new Set(participants).size!==participants.length)return false;teams=Object.fromEntries([...(c.hostPicks||[]).map(id=>[id,'T1']),...(c.guestPicks||[]).map(id=>[id,'T2'])]);zoneNames={T1:hostName,T2:guestName};draftData={competitive:false,friendly:true,roomCode:friendly.roomCode,friendlySide:friendly.side==='guest'?'guest':'host',hostUid:String(c.hostUid||''),guestUid:String(c.guestUid||''),hostName,guestName,round:Math.max(1,Number(c.round)||1),battleSeed:(Number(c.battleSeed)||1)>>>0,size:state.size,pool:[...state.pool],hostBans:[...(c.hostBans||[])],guestBans:[...(c.guestBans||[])],hostPicks:[...(c.hostPicks||[])],guestPicks:[...(c.guestPicks||[])]};nextBattleSeed=draftData.battleSeed}else{participants=[...state.userPicks,...state.aiPicks];teams=Object.fromEntries([...state.userPicks.map(id=>[id,'T1']),...state.aiPicks.map(id=>[id,'T2'])]);zoneNames={T1:'내 경쟁전 팀',T2:'AI 경쟁전 팀'};draftData={competitive:true,rankBefore:window.__GONG_V215_COMPETITIVE__?.profile?.(),size:state.size,pool:[...state.pool],userBans:[...state.userBans],aiBans:[...state.aiBans],userPicks:[...state.userPicks],aiPicks:[...state.aiPicks]}}currentConfig={mode:'team',participants,teams,zoneNames,draft:draftData};mode='team';paused=false;last=0;document.body.classList.remove('boss-battle');document.body.classList.add('draft-battle','competitive-battle');if(friendly)document.body.classList.add('friendly-battle');else document.body.classList.remove('friendly-battle');draftScreen.classList.add('hidden');battle.classList.remove('hidden');resize();resetBattle();if(game)game.v212Draft=typeof structuredClone==='function'?structuredClone(currentConfig.draft):JSON.parse(JSON.stringify(currentConfig.draft));const title=$d('battleTitle'),badge=$d('modeBadge');if(title)title.textContent=friendly?`친선 경쟁전 ${state.size}대${state.size} · ${friendlyMyName()} vs ${friendlyOpponentName()}`:`경쟁전 ${state.size}대${state.size}`;if(badge)badge.textContent=friendly?'🤝 친선 경쟁전':'🏅 경쟁전';friendly?.onBattleStart?.();v165FocusBattleScreen();return true}
 
   function hydrateFriendly(payload){
-    if(!payload?.canonical)return false;clearDraftTimers();const c=payload.canonical,side=payload.side==='guest'?'guest':'host',mine=side==='host';friendly={...payload,side,roomCode:String(payload.roomCode||''),canonical:c};
+    if(!payload?.canonical)return false;clearDraftTimers();const c=payload.canonical,side=payload.side==='guest'?'guest':'host',mine=side==='host',hostName=String(payload.hostName||c.hostName||'방장').trim().slice(0,12)||'방장',guestName=String(payload.guestName||c.guestName||'참가자').trim().slice(0,12)||'참가자';friendly={...payload,side,roomCode:String(payload.roomCode||''),canonical:c,hostName,guestName,myName:mine?hostName:guestName,opponentName:mine?guestName:hostName};
     setup.classList.add('hidden');document.getElementById('tournamentScreen')?.classList.add('hidden');battle.classList.add('hidden');draftScreen.classList.remove('hidden');draftScreen.classList.add('draft-in-progress');draftScreen.setAttribute('aria-hidden','false');$d('draftSetupCard').classList.add('hidden');$d('draftPlayArea').classList.remove('hidden');
     const mapActor=actor=>actor===side?'user':actor?'ai':null,last=c.lastAction?{...c.lastAction,actor:mapActor(c.lastAction.actor)}:null;
     state={size:Number(c.size)===5?5:4,pool:[...(c.pool||[])],phase:c.phase||'ban',turn:mapActor(c.turn),banFirst:mapActor(c.banFirst),pickFirst:mapActor(c.pickFirst),userBans:[...((mine?c.hostBans:c.guestBans)||[])],aiBans:[...((mine?c.guestBans:c.hostBans)||[])],userPicks:[...((mine?c.hostPicks:c.guestPicks)||[])],aiPicks:[...((mine?c.guestPicks:c.hostPicks)||[])],deadline:Number(c.deadline)||0,notice:c.notice||'',lastAction:last};
@@ -29945,15 +29947,21 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     function v219KstDay(){return v226KstParts().date}
     function v226DailySlot(){return v226KstParts().slot}
     function v226DailySlotLabel(daily=v219Daily){const p=daily?.period==='PM'?'오후 임무':'오전 임무';return `${daily?.date||v219KstDay()} · ${p}`}
-    let v219Mastery=v219Store.get(MASTERY_KEY,{version:1,characters:{}});if(!v219Mastery?.characters)v219Mastery={version:1,characters:{}};
+    let v219Mastery=v219Store.get(MASTERY_KEY,{version:2,characters:{}});if(!v219Mastery?.characters)v219Mastery={version:2,characters:{}};for(const row of Object.values(v219Mastery.characters||{})){if(row&&typeof row==='object')row.xp=Math.max(0,Math.min(V224_MASTERY_MAX_XP,Number(row.xp)||0))}v219Mastery.version=2;v219Store.set(MASTERY_KEY,v219Mastery);
     function v219MasteryEntry(id){return v219Mastery.characters[id]||(v219Mastery.characters[id]={games:0,wins:0,kills:0,damage:0,healing:0,xp:0,bestDamage:0,lastPlayed:null})}
-    const V224_MASTERY_MAX_LEVEL=30,V224_MASTERY_MAX_XP=176155;
+    const V224_MASTERY_MAX_LEVEL=40,V224_MASTERY_MAX_XP=270000,V224_MASTERY_LV30_XP=176155;
     function v224MasteryThreshold(level){
       level=Math.max(1,Math.min(V224_MASTERY_MAX_LEVEL,Math.floor(Number(level)||1)));
       if(level<=1)return 0;
+      // V348: Lv.1~30의 기존 XP 곡선/176,155 XP 기준은 그대로 보존한다.
+      if(level<=30){
+        if(level===30)return V224_MASTERY_LV30_XP;
+        const q=(level-1)/29;
+        return Math.round(V224_MASTERY_LV30_XP*q*q)
+      }
       if(level>=V224_MASTERY_MAX_LEVEL)return V224_MASTERY_MAX_XP;
-      const q=(level-1)/(V224_MASTERY_MAX_LEVEL-1);
-      return Math.round(V224_MASTERY_MAX_XP*q*q)
+      // Lv.31~40은 기존 Lv.30에서 새 Lv.40(270,000 XP)까지 균등 확장.
+      return Math.round(V224_MASTERY_LV30_XP+(V224_MASTERY_MAX_XP-V224_MASTERY_LV30_XP)*((level-30)/10))
     }
     function v219LevelInfo(totalXp){
       totalXp=Math.max(0,Math.floor(Number(totalXp)||0));
@@ -29999,9 +30007,10 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
           gain=v221RankedXp({bossMode,playerCount:players.length,eligibleCount,rankIndex,win,contribution:v220ContributionScore(p)});
         }
         if(gain>0){
-          e.xp+=gain;
+          const appliedGain=Math.max(0,Math.min(gain,V224_MASTERY_MAX_XP-Math.max(0,Number(e.xp)||0)));
+          e.xp=Math.min(V224_MASTERY_MAX_XP,Math.max(0,Number(e.xp)||0)+appliedGain);
           const after=v219LevelInfo(e.xp).level;
-          gains.push({id:p.id,name:p.name,gain,before,after,level:after,bossContributor:bossMode,won:win,contribution:v220ContributionScore(p),placement,eligibleCount,totalPlayers:players.length,lastPlace:!bossMode&&placement===players.length});
+          if(appliedGain>0)gains.push({id:p.id,name:p.name,gain:appliedGain,before,after,level:after,bossContributor:bossMode,won:win,contribution:v220ContributionScore(p),placement,eligibleCount,totalPlayers:players.length,lastPlace:!bossMode&&placement===players.length});
         }
       }
       game.v219MasteryGains=gains;v219Store.set(MASTERY_KEY,v219Mastery);return gains
@@ -30044,7 +30053,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const reward=v226PendingReward();
       if(!reward||!id||!defs()[id]||BOSS_IDS.has(id))return false;
       const e=v219MasteryEntry(id),beforeXp=Math.max(0,Number(e.xp)||0),before=v219LevelInfo(beforeXp).level,gain=Math.max(1,Number(reward.xp)||200);
-      e.xp=beforeXp+gain;
+      e.xp=Math.min(V224_MASTERY_MAX_XP,beforeXp+gain);
       e.lastPlayed=e.lastPlayed||new Date().toISOString();
       reward.claimed=true;
       reward.characterId=id;
@@ -30059,7 +30068,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       setTimeout(()=>{if(v226PendingReward())v226OpenMasteryReward(true)},160);
       return true
     }
-    function v221MasteryEffectName(stage,level=1){return level>=30?'마스터리 3 · MAX · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=15?'마스터리 2 · 광휘 킬 배너 · 사진 반짝임':level>=5?'마스터리 1 · 캐릭터 전용 킬 배너':'Lv.5에서 마스터리 1 · 전용 킬 배너 해금'}
+    function v221MasteryEffectName(stage,level=1){return level>=40?'마스터리 3 · MAX · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=30?'마스터리 3 · 승천 킬 배너 · 사진·테두리 광택 · 트레일':level>=15?'마스터리 2 · 광휘 킬 배너 · 사진 반짝임':level>=5?'마스터리 1 · 캐릭터 전용 킬 배너':'Lv.5에서 마스터리 1 · 전용 킬 배너 해금'}
     function v221MasteryHtml(id){
       const d=DEFS[id];if(!d)return '';
       const e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp),stage=v220MasteryStage(id),winRate=e.games?Math.round(e.wins/e.games*100):0;
@@ -30095,7 +30104,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const v219ResultObserver=new MutationObserver(()=>{if(!resultModal.classList.contains('hidden')){setTimeout(v219AppendResultExtras,0)}});v219ResultObserver.observe(resultModal,{attributes:true,attributeFilter:['class']});
     const v219TournamentModal=document.getElementById('tournamentModal');if(v219TournamentModal){const observer=new MutationObserver(()=>{const body=document.getElementById('tournamentModalBody'),title=document.getElementById('tournamentModalTitle')?.textContent||'';if(v219TournamentModal.classList.contains('hidden')||!body||body.querySelector('.v219-result-actions')||!/결과|종료|우승|승리/.test(title))return;v219SettleAll();body.appendChild(v219ActionBlock());v219UpdateMediaButtons()});observer.observe(v219TournamentModal,{attributes:true,subtree:true,childList:true,attributeFilter:['class']})}
     v219RenderDaily();
-    const v220Api={build:'V226_HALF_DAY_DAILY_MASTERY_REWARD',mastery:()=>v219Clone(v219Mastery),daily:()=>v219Clone(v219Daily),dailySlot:()=>v226DailySlot(),slotAt:timestamp=>v226KstParts(timestamp),pendingDailyRewards:()=>v219Clone(v226RewardQueue.rewards.filter(r=>!r.claimed)),openDailyMasteryReward:()=>v226OpenMasteryReward(true),claimDailyMasteryReward:id=>v226ClaimMasteryReward(id),openMastery:v219OpenMastery,masteryHtml:v221MasteryHtml,levelInfo:v219LevelInfo,masteryLevelForId:v224MasteryLevelForId,masteryThreshold:v224MasteryThreshold,maxLevel:V224_MASTERY_MAX_LEVEL,maxXp:V224_MASTERY_MAX_XP,masteryStage:v220MasteryStage,previewRankedXp:v221RankedXp,recording:()=>({status:'removed',size:0,mime:''}),stopRecording:()=>{},shareStory:v219ShareStory,awardDaily:v219AwardDaily,refreshDaily:v220CheckDailyRollover,setMasteryXp(id,xp){v219MasteryEntry(id).xp=Math.max(0,Number(xp)||0);v219Store.set(MASTERY_KEY,v219Mastery);return v220MasteryStage(id)},completeDailyForTest(){v219Daily.claimed={battles:true,damage:true,competitive:true,all:true};const reward=v226QueueMasteryReward(v219Daily.slot),shield=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.grantDailyShield?.(v219Daily.date)||null;v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();return {panelHidden:document.getElementById('v219DailyPanel')?.hidden===true,modalOpen:!!document.getElementById('v226MasteryRewardModal')&&!document.getElementById('v226MasteryRewardModal')?.classList.contains('hidden'),couponReceipt:reward?.receipt||'',couponXp:reward?.xp||200,shield}},rollDailyForTest(){v219Daily.slot='2000-01-01-AM';v220CheckDailyRollover();return document.getElementById('v219DailyPanel')?.hidden===false}};window.__GONG_V219__=v220Api;window.__GONG_V220__=v220Api;window.__GONG_V221__=v220Api;window.__GONG_V226__=v220Api;window.__GONG_V220_MASTERY_STAGE__=v220MasteryStage;
+    const v220Api={build:'V226_HALF_DAY_DAILY_MASTERY_REWARD',mastery:()=>v219Clone(v219Mastery),daily:()=>v219Clone(v219Daily),dailySlot:()=>v226DailySlot(),slotAt:timestamp=>v226KstParts(timestamp),pendingDailyRewards:()=>v219Clone(v226RewardQueue.rewards.filter(r=>!r.claimed)),openDailyMasteryReward:()=>v226OpenMasteryReward(true),claimDailyMasteryReward:id=>v226ClaimMasteryReward(id),openMastery:v219OpenMastery,masteryHtml:v221MasteryHtml,levelInfo:v219LevelInfo,masteryLevelForId:v224MasteryLevelForId,masteryThreshold:v224MasteryThreshold,maxLevel:V224_MASTERY_MAX_LEVEL,maxXp:V224_MASTERY_MAX_XP,masteryStage:v220MasteryStage,previewRankedXp:v221RankedXp,recording:()=>({status:'removed',size:0,mime:''}),stopRecording:()=>{},shareStory:v219ShareStory,awardDaily:v219AwardDaily,refreshDaily:v220CheckDailyRollover,setMasteryXp(id,xp){v219MasteryEntry(id).xp=Math.max(0,Math.min(V224_MASTERY_MAX_XP,Number(xp)||0));v219Store.set(MASTERY_KEY,v219Mastery);return v220MasteryStage(id)},completeDailyForTest(){v219Daily.claimed={battles:true,damage:true,competitive:true,all:true};const reward=v226QueueMasteryReward(v219Daily.slot),shield=(window.__GONG_V216_COMPETITIVE__||window.__GONG_V215_COMPETITIVE__)?.grantDailyShield?.(v219Daily.date)||null;v219Store.set(DAILY_KEY,v219Daily);v219RenderDaily();return {panelHidden:document.getElementById('v219DailyPanel')?.hidden===true,modalOpen:!!document.getElementById('v226MasteryRewardModal')&&!document.getElementById('v226MasteryRewardModal')?.classList.contains('hidden'),couponReceipt:reward?.receipt||'',couponXp:reward?.xp||200,shield}},rollDailyForTest(){v219Daily.slot='2000-01-01-AM';v220CheckDailyRollover();return document.getElementById('v219DailyPanel')?.hidden===false}};window.__GONG_V219__=v220Api;window.__GONG_V220__=v220Api;window.__GONG_V221__=v220Api;window.__GONG_V226__=v220Api;window.__GONG_V220_MASTERY_STAGE__=v220MasteryStage;
     window.__GONG_LATEST_BUILD__=BUILD;
     console.info('[V223] 영상 녹화 제거 · 모바일 화질 및 프레임 복원 · 쵸텐 최대 3명');
   }
@@ -30133,7 +30142,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
   /* ---------- V224 · mastery battle effects and Lv.30 cap ---------- */
   {
 
-  const BUILD='V224_MASTERY_BATTLE_EFFECTS_LV30',MAX_LEVEL=30,MAX_XP=176155;
+  const BUILD='V224_MASTERY_BATTLE_EFFECTS_LV30',MAX_LEVEL=40,MAX_XP=270000;
   const stats={frames:0,trailCalls:0,lastLabels:0,lastTrails:0,trailPoints:0,specialKills:0};
   function api(){return window.__GONG_V219__||window.__GONG_V220__||window.__GONG_V221__}
   function levelInfo(id){try{return api()?.masteryLevelForId?.(id)||{level:1}}catch(_){return {level:1}}}
@@ -30195,7 +30204,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(centerKill){centerKill.classList.add('v224-mastery-center');centerKill.dataset.v224MasteryId=root?.id||'';centerKill.dataset.v224MasteryLevel=String(lv);centerKill.style.setProperty('--v224-accent',theme.accent);centerKill.innerHTML=`<span class="v224-center-icon">${theme.icon}</span><b class="v224-center-name">${root.name}</b> <span>SPECIAL KILL</span> ${victim.name}`;setTimeout(()=>centerKill.classList.remove('v224-mastery-center'),1600)}stats.specialKills++
     }catch(_){}return result
   };
-  function setAllForTest(level=30){const xp=level>=30?MAX_XP:api()?.masteryThreshold?.(level)||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
+  function setAllForTest(level=30){const xp=api()?.masteryThreshold?.(Math.max(1,Math.min(MAX_LEVEL,Number(level)||30)))||0;for(const id of orderedCharacterIds())api()?.setMasteryXp?.(id,xp);return xp}
   window.__GONG_V224__={build:BUILD,maxLevel:MAX_LEVEL,maxXp:MAX_XP,levelInfo:xp=>api()?.levelInfo?.(xp),threshold:lv=>api()?.masteryThreshold?.(lv),stats:()=>({...stats}),debugPlayers:()=>((game?.players||[]).map(p=>({id:p.id,alive:p.alive,hidden:p.hidden,level:levelInfo(p.id).level,trail:p.data?.v224MasteryTrail?.length||0,x:p.x,y:p.y}))),theme:id=>themeFor({id}),setAllForTest,testKillLog(){const list=(game?.players||[]).filter(eligible);if(list.length<2)return null;showKill(list[0],list[1],'숙련도 테스트');const item=killfeed?.firstElementChild;return {className:item?.className||'',text:item?.textContent||'',specialKills:stats.specialKills}}};
   window.__GONG_V224_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
   console.info('[V224] 숙련도 최대 Lv.30 · Lv.5 마스터리 1 · Lv.15 마스터리 2 · Lv.30 마스터리 3 및 트레일');
@@ -30662,7 +30671,8 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
     const LEADERBOARD_LIMIT=10;
     const LEADERBOARD_FETCH_LIMIT=50;
     const ui={leaderboard:null,leaderboardBody:null,friendly:null,status:null,code:null,joinInput:null,createBtn:null,joinBtn:null,copyBtn:null,leaveBtn:null};
-    const live={leaderboardOff:null,leaderboardSeason:'',leaderboardRows:[],ownRow:null,roomOff:null,roomRef:null,disconnectOp:null,serverOffsetOff:null,serverOffset:0,roomCode:'',side:'',room:null,launching:false,leaving:false,restoring:false,storedSessionDiscarded:false,autoRestoreBlocked:0,lastProfileSignature:'',syncBusy:false,pendingSync:false,lastError:'',lastSyncVerified:false,lastJoinPreflightVerified:false,legacyDuplicatesHidden:0,legacyCleanupBusy:false,legacyCleanupAttempted:new Set(),legacyCleanupRemoved:0};
+    const live={leaderboardOff:null,leaderboardSeason:'',leaderboardRows:[],ownRow:null,roomOff:null,roomRef:null,disconnectOp:null,serverOffsetOff:null,serverOffset:0,roomCode:'',side:'',room:null,launching:false,leaving:false,restoring:false,storedSessionDiscarded:false,autoRestoreBlocked:0,lastProfileSignature:'',syncBusy:false,pendingSync:false,lastError:'',lastSyncVerified:false,lastJoinPreflightVerified:false,legacyDuplicatesHidden:0,legacyCleanupBusy:false,legacyCleanupAttempted:new Set(),legacyCleanupRemoved:0,friendlyNameSeq:0};
+    const friendlyNameCache=new Map();
 
     function esc(value){return String(value??'').replace(/[&<>\"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]))}
     function backend(){return window.__GONG_V230__?.backend?.()||null}
@@ -30741,6 +30751,18 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       if(record&&newUid&&record.uid===newUid)return restoreAccountSwitch(record);saveAccountSwitch(null);live.ownRow=null;live.lastProfileSignature='';return true
     }
 
+    function cleanFriendlyName(value,fallback='플레이어'){return String(value||fallback).replace(/[<>&"'\/]/g,'').replace(/\s+/g,' ').trim().slice(0,12)||fallback}
+    async function friendlyDisplayName(uid,fallback='플레이어'){
+      uid=String(uid||'');if(!uid)return fallback;
+      const cached=friendlyNameCache.get(uid);if(cached)return cached;
+      const b=backend();if(b?.user?.uid===uid){const own=cleanFriendlyName(nickname(b.user),solianName(uid));friendlyNameCache.set(uid,own);try{const chars=(window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V219__)?.mastery?.()?.characters||{},cache=window.__GONG_V348_FRIEND_MASTERY_CACHE__||(window.__GONG_V348_FRIEND_MASTERY_CACHE__={});cache[uid]=Object.fromEntries(Object.entries(chars).map(([id,row])=>[id,{xp:Math.max(0,Number(row?.xp)||0)}]));}catch(_){}return own}
+      if(b){try{const snap=await b.dbmod.get(b.dbmod.ref(b.db,`publicPlayerProfiles/v1/${uid}`)),profile=snap.val(),name=cleanFriendlyName(profile?.nickname||'',solianName(uid)),cache=window.__GONG_V348_FRIEND_MASTERY_CACHE__||(window.__GONG_V348_FRIEND_MASTERY_CACHE__={});cache[uid]=profile?.mastery&&typeof profile.mastery==='object'?profile.mastery:{};friendlyNameCache.set(uid,name);return name}catch(error){live.lastError=String(error?.code||error?.message||error);return cleanFriendlyName(solianName(uid),fallback)}}
+      const generated=cleanFriendlyName(solianName(uid),fallback);friendlyNameCache.set(uid,generated);return generated
+    }
+    async function resolveFriendlyNames(room){
+      const [hostName,guestName]=await Promise.all([friendlyDisplayName(room?.hostUid,'방장'),friendlyDisplayName(room?.guestUid,'참가자')]);
+      return {hostName,guestName};
+    }
     function makeRoom(code,size,uid,now=serverNow(),seed=(Math.random()*0xffffffff)>>>0){
       seed=(Number(seed)>>>0)||1;return {version:1,code,hostUid:uid,guestUid:'',size:Number(size)===5?5:4,pool:shuffledRoster(seed),status:'waiting',phase:'waiting',turn:'',banFirst:'',pickFirst:'',actionCount:0,deadline:0,battleSeed:0,roomSeed:seed,round:1,hostReplay:false,guestReplay:false,createdAt:now,updatedAt:now,expiresAt:now+ROOM_TTL};
     }
@@ -30765,7 +30787,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       live.roomOff=b.dbmod.onValue(live.roomRef,snap=>handleRoomSnapshot(snap.val()),error=>{live.roomOff?.();live.roomOff=null;setFriendlyStatus(`방 연결 오류 · ${error?.code||error?.message||error}`,'error')});setFriendlyStatus(side==='host'?`방 ${code} 생성 완료 · 상대가 코드를 입력할 때까지 기다리는 중`:`방 ${code} 참가 완료 · 밴픽 동기화 중`,'connected');return true
     }
     async function createRoom(size=selectedSize()){
-      const b=backend();if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 방을 만들 수 있어.','error');return false}if(live.roomCode)return false;setFriendlyStatus('사용 가능한 방 코드를 만들고 있어.');
+      const b=backend();if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 방을 만들 수 있어.','error');return false}if(live.roomCode)return false;try{await window.__GONG_V254__?.syncPublicProfile?.({force:true})}catch(_){}setFriendlyStatus('사용 가능한 방 코드를 만들고 있어.');
       for(let attempt=0;attempt<6;attempt++){const code=roomCode(),room=makeRoom(code,size,b.user.uid);try{const result=await b.dbmod.runTransaction(b.dbmod.ref(b.db,`friendlyRooms/v1/${code}`),current=>current==null?room:undefined,{applyLocally:false});if(result.committed){await attachRoom(code,'host');return code}}catch(error){live.lastError=String(error?.code||error?.message||error)}}setFriendlyStatus(`방 생성 실패 · ${live.lastError||'잠시 후 다시 시도해.'}`,'error');return false
     }
     function buildFriendlyJoinRoom(current,preflightRoom,uid,now=serverNow()){
@@ -30777,7 +30799,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       return {...room,guestUid:uid,status:'draft',phase:'ban',banFirst:first,pickFirst:first==='host'?'guest':'host',turn:first,actionCount:0,deadline:now+TURN_MS,battleSeed:0,updatedAt:now};
     }
     async function joinRoom(input){
-      const b=backend(),code=normalizeCode(input);if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 참가할 수 있어.','error');return false}if(code.length!==ROOM_CODE_LENGTH){setFriendlyStatus('6자리 방 코드를 정확히 입력해.','error');return false}if(live.roomCode)return false;setFriendlyStatus(`방 ${code}을 찾고 있어.`);
+      const b=backend(),code=normalizeCode(input);if(!b){setFriendlyStatus('Firebase 연결이 완료된 뒤 참가할 수 있어.','error');return false}try{await window.__GONG_V254__?.syncPublicProfile?.({force:true})}catch(_){}if(code.length!==ROOM_CODE_LENGTH){setFriendlyStatus('6자리 방 코드를 정확히 입력해.','error');return false}if(live.roomCode)return false;setFriendlyStatus(`방 ${code}을 찾고 있어.`);
       live.lastJoinPreflightVerified=false;
       try{
         const target=b.dbmod.ref(b.db,`friendlyRooms/v1/${code}`),preflight=await b.dbmod.get(target),serverRoom=preflight.val(),now=serverNow();
@@ -30817,17 +30839,18 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       const b=backend();if(!b||!live.roomRef||!live.side)return false;setFriendlyStatus(`방 ${live.roomCode} · 다시 플레이 요청을 보내는 중`,'pending');
       try{const result=await b.dbmod.runTransaction(live.roomRef,current=>reduceRoomReplay(current,live.side,serverNow())||undefined,{applyLocally:false});if(!result.committed)throw new Error('friendly-replay-not-committed');const room=result.snapshot.val();if(room?.status==='draft')setFriendlyStatus(`방 ${live.roomCode} · 새 후보 24명 추첨 완료 · 새 밴픽 시작`,'connected');else setFriendlyStatus(`방 ${live.roomCode} · 상대의 다시 플레이 선택을 기다리는 중`,'connected');return true}catch(error){setFriendlyStatus(`다시 플레이 요청 실패 · ${error?.code||error?.message||error}`,'error');return false}
     }
-    function handleRoomSnapshot(room){
-      live.room=room;if(!room){const wasLaunching=live.launching;cleanupRoomState(false);if(!wasLaunching)setFriendlyStatus('친선방이 종료됐어. 새 방을 만들거나 다른 코드로 참가해.','error');return}
+    async function handleRoomSnapshot(room){
+      live.room=room;const nameSeq=++live.friendlyNameSeq;if(!room){const wasLaunching=live.launching;cleanupRoomState(false);if(!wasLaunching)setFriendlyStatus('친선방이 종료됐어. 새 방을 만들거나 다른 코드로 참가해.','error');return}
       if(room.status==='waiting'){setFriendlyStatus(`방 ${live.roomCode} · 상대 참가 대기 중 · 코드를 공유해.`,'connected');return}
       if(!['draft','battle'].includes(room.status)){setFriendlyStatus('방 상태를 확인할 수 없어.','error');return}
       if(live.launching&&room.status==='battle'&&room.phase==='done')return;
       if(live.launching&&room.status==='draft'){live.launching=false;paused=true;last=0;battleGeneration++;resultModal.classList.add('hidden');resultModal.setAttribute('aria-hidden','true');openResultsBtn.classList.add('hidden');setFriendlyStatus(`방 ${live.roomCode} · 새 후보 24명으로 다시 플레이 시작`,'connected')}
       const draft=window.__GONG_V212_DRAFT__;if(!draft?.hydrateFriendly){setFriendlyStatus('친선전 밴픽 엔진을 불러오지 못했어.','error');return}
-      draft.hydrateFriendly({canonical:room,side:live.side,roomCode:live.roomCode,serverOffset:live.serverOffset,onSelect:submitFriendlyAction,onLeave:()=>leaveRoom(true),onBattleStart:()=>setFriendlyStatus(`방 ${live.roomCode} · 같은 경기 시드로 친선전 진행 중`,'connected')});
+      const {hostName,guestName}=await resolveFriendlyNames(room);if(nameSeq!==live.friendlyNameSeq||live.room!==room)return;
+      draft.hydrateFriendly({canonical:room,side:live.side,roomCode:live.roomCode,serverOffset:live.serverOffset,hostName,guestName,onSelect:submitFriendlyAction,onLeave:()=>leaveRoom(true),onBattleStart:()=>setFriendlyStatus(`방 ${live.roomCode} · ${live.side==='host'?guestName:hostName}님과 친선전 진행 중`,'connected')});
       if(room.phase==='done'&&room.battleSeed){live.launching=true;setTimeout(()=>{const launched=draft.launchFriendly?.();if(!launched){live.launching=false;setFriendlyStatus('전투 시작 준비를 다시 맞추고 있어. 잠시만 기다려.','error');setTimeout(()=>handleRoomSnapshot(live.room),400)}},650)}
     }
-    function cleanupRoomState(resetUi=true){live.roomOff?.();live.roomOff=null;live.roomRef=null;live.disconnectOp=null;live.roomCode='';live.side='';live.room=null;live.launching=false;live.leaving=false;saveRoomSession('','');if(resetUi)setFriendlyStatus(backend()?'방 만들기 또는 6자리 코드로 참가할 수 있어.':'Firebase 연결을 기다리고 있어.',backend()?'connected':'pending')}
+    function cleanupRoomState(resetUi=true){live.friendlyNameSeq++;live.roomOff?.();live.roomOff=null;live.roomRef=null;live.disconnectOp=null;live.roomCode='';live.side='';live.room=null;live.launching=false;live.leaving=false;saveRoomSession('','');if(resetUi)setFriendlyStatus(backend()?'방 만들기 또는 6자리 코드로 참가할 수 있어.':'Firebase 연결을 기다리고 있어.',backend()?'connected':'pending')}
     async function leaveRoom(removeRemote=true){
       if(live.leaving)return;live.leaving=true;const b=backend(),target=live.roomRef;try{await live.disconnectOp?.cancel?.();if(removeRemote&&b&&target)await b.dbmod.remove(target)}catch(_){}finally{cleanupRoomState(true)}
     }
@@ -30838,7 +30861,7 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
 
     window.addEventListener('gong-v230-online-ready',()=>setTimeout(()=>{live.lastProfileSignature='';onlineReady();syncLeaderboard({force:true})},0));window.addEventListener('gong-v232-auth-changed',event=>{live.lastProfileSignature='';live.ownRow=null;if(live.roomCode&&event.detail?.initial!==true)cleanupRoomState(true);setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});window.addEventListener('gong-competitive-profile-change',()=>setTimeout(syncLeaderboard,0));window.addEventListener('gong-v232-nickname-ready',()=>{live.lastProfileSignature='';setTimeout(()=>syncLeaderboard({force:true}),0)});document.addEventListener('visibilitychange',()=>{if(!document.hidden){onlineReady();syncLeaderboard({force:true})}});window.addEventListener('pagehide',()=>{live.leaderboardOff?.();live.leaderboardOff=null;live.roomOff?.();live.roomOff=null;live.serverOffsetOff?.();live.serverOffsetOff=null});window.addEventListener('pageshow',()=>{live.lastProfileSignature='';setTimeout(()=>{onlineReady();syncLeaderboard({force:true})},0)});setInterval(()=>{if(backend()){onlineReady();syncLeaderboard();if(!live.roomCode)setFriendlyStatus('방 만들기 또는 6자리 코드로 참가할 수 있어.','connected')}},12000);
     discardStoredRoomSession();installUi();onlineReady();
-    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,buildFriendlyJoinRoom,leaveRoom,restoreRoom,discardStoredRoomSession,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,storedSessionDiscarded:live.storedSessionDiscarded,autoRestoreBlocked:live.autoRestoreBlocked,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
+    window.__GONG_V231__={build:BUILD,syncLeaderboard,startLeaderboardListener,loadOwnLeaderboardRow,renderLeaderboard,retireLegacyDuplicates,prepareAccountSwitch,restoreAccountSwitch,completeAccountSwitch,createRoom,joinRoom,buildFriendlyJoinRoom,leaveRoom,restoreRoom,discardStoredRoomSession,submitFriendlyAction,requestFriendlyReplay,reduceRoomAction,reduceRoomReplay,makeRoom,friendlyDisplayName,resolveFriendlyNames,status:()=>({roomCode:live.roomCode,side:live.side,roomStatus:live.room?.status||'',phase:live.room?.phase||'',round:Math.max(1,Number(live.room?.round)||1),battleSeed:(Number(live.room?.battleSeed)||0)>>>0,hostReplay:!!live.room?.hostReplay,guestReplay:!!live.room?.guestReplay,launching:live.launching,storedSessionDiscarded:live.storedSessionDiscarded,autoRestoreBlocked:live.autoRestoreBlocked,leaderboardSeason:live.leaderboardSeason,serverOffset:live.serverOffset,lastProfileSignature:live.lastProfileSignature,lastSyncVerified:live.lastSyncVerified,lastJoinPreflightVerified:live.lastJoinPreflightVerified,legacyDuplicatesHidden:live.legacyDuplicatesHidden,legacyCleanupRemoved:live.legacyCleanupRemoved,ownRow:live.ownRow,lastError:live.lastError}),constants:{roomCodeLength:ROOM_CODE_LENGTH,turnMs:TURN_MS,roomTtl:ROOM_TTL,roomSessionKey:ROOM_SESSION_KEY,leaderboardLimit:LEADERBOARD_LIMIT,leaderboardFetchLimit:LEADERBOARD_FETCH_LIMIT}};
     window.__GONG_V231_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;console.info('[V242] 친선 경쟁전은 방 만들기 또는 코드 입장 이후에만 열림 · 현재 화면 재연결 유지');
   })();
 
@@ -33394,8 +33417,8 @@ window.__GONG_V266_RUNTIME__={
   const backend=()=>window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null;
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const cleanName=value=>String(value||'').replace(/\s+/g,' ').trim().slice(0,24)||'솔리언';
-  function levelForXp(xp){try{return Math.max(1,Math.min(30,Number(masteryApi()?.levelInfo?.(Math.max(0,Number(xp)||0))?.level)||1))}catch(_){return 1}}
-  function masteryXp(id){try{return Math.max(0,Math.min(176155,Math.floor(Number(masteryApi()?.mastery?.()?.characters?.[id]?.xp)||0)))}catch(_){return 0}}
+  function levelForXp(xp){try{return Math.max(1,Math.min(40,Number(masteryApi()?.levelInfo?.(Math.max(0,Number(xp)||0))?.level)||1))}catch(_){return 1}}
+  function masteryXp(id){try{return Math.max(0,Math.min(270000,Math.floor(Number(masteryApi()?.mastery?.()?.characters?.[id]?.xp)||0)))}catch(_){return 0}}
   function masteryLevel(id){try{const x=masteryApi()?.masteryLevelForId?.(id);return Math.max(1,Number(x?.level||x)||1)}catch(_){return 1}}
   function rankNickname(b=backend()){try{return cleanName(window.__GONG_V232__?.nickname?.(b?.user)||`솔리언 ${window.__GONG_V232__?.solianNumber?.(b?.user)||1}`)}catch(_){return '솔리언'}}
   function rankEligiblePlayer(p){return !!(p&&p.alive!==false&&!p.hidden&&!p.isBoss&&!p.isBossSummon&&DEFS[p.id]&&!BOSS_IDS.has(p.id)&&masteryLevel(p.id)>=30)}
@@ -33460,7 +33483,7 @@ window.__GONG_V266_RUNTIME__={
   function syncHash(){const b=backend(),chars=masteryApi()?.mastery?.()?.characters||{},name=rankNickname(b),parts=[b?.user?.uid||'',name];for(const id of orderedCharacterIds()){const xp=Math.max(0,Math.floor(Number(chars?.[id]?.xp)||0));if(xp>0)parts.push(`${id}:${xp}`)}return parts.join('|')}
   async function syncMyRankings({force=false,onlyId=''}={}){
     const b=backend();if(!b?.user?.uid||!b.dbmod?.update)return false;if(rankState.syncing){rankState.pending=true;return false}const hash=syncHash();if(!force&&!onlyId&&hash===rankState.lastHash)return true;rankState.syncing=true;
-    try{const chars=masteryApi()?.mastery?.()?.characters||{},name=rankNickname(b),updates={},ids=onlyId?[onlyId]:orderedCharacterIds();for(const id of ids){if(!DEFS[id]||BOSS_IDS.has(id))continue;const xp=Math.max(0,Math.min(176155,Math.floor(Number(chars?.[id]?.xp)||0))),path=`${RANK_ROOT}/${id}/${b.user.uid}`;updates[path]=xp>0?{uid:b.user.uid,characterId:id,nickname:name,xp,level:levelForXp(xp),updatedAt:b.dbmod.serverTimestamp(),version:1}:null}if(Object.keys(updates).length)await b.dbmod.update(b.dbmod.ref(b.db),updates);rankState.lastHash=syncHash();rankState.lastSyncAt=Date.now();rankState.lastError='';if(onlyId)rankState.cache.delete(onlyId);return true}catch(error){rankState.lastError=String(error?.code||error?.message||error);console.warn('[V290 마스터리 랭킹 동기화]',error);return false}finally{rankState.syncing=false;if(rankState.pending){rankState.pending=false;setTimeout(()=>syncMyRankings({force:true}),250)}}
+    try{const chars=masteryApi()?.mastery?.()?.characters||{},name=rankNickname(b),updates={},ids=onlyId?[onlyId]:orderedCharacterIds();for(const id of ids){if(!DEFS[id]||BOSS_IDS.has(id))continue;const xp=Math.max(0,Math.min(270000,Math.floor(Number(chars?.[id]?.xp)||0))),path=`${RANK_ROOT}/${id}/${b.user.uid}`;updates[path]=xp>0?{uid:b.user.uid,characterId:id,nickname:name,xp,level:levelForXp(xp),updatedAt:b.dbmod.serverTimestamp(),version:1}:null}if(Object.keys(updates).length)await b.dbmod.update(b.dbmod.ref(b.db),updates);rankState.lastHash=syncHash();rankState.lastSyncAt=Date.now();rankState.lastError='';if(onlyId)rankState.cache.delete(onlyId);return true}catch(error){rankState.lastError=String(error?.code||error?.message||error);console.warn('[V290 마스터리 랭킹 동기화]',error);return false}finally{rankState.syncing=false;if(rankState.pending){rankState.pending=false;setTimeout(()=>syncMyRankings({force:true}),250)}}
   }
 
   const oldRenderSkillDetailV290=renderSkillDetail;renderSkillDetail=function(){const r=oldRenderSkillDetailV290.apply(this,arguments);try{mountRanking(skillSelected)}catch(error){console.warn('[V290 mastery ranking UI]',error)}return r};
@@ -36113,7 +36136,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     for(const row of rows.slice(0,100))mastery[row.id]={xp:row.xp,level:row.level,tier:row.tier};
     const totalMasteryXp=Object.values(all).reduce((sum,row)=>sum+Math.max(0,Number(row?.xp)||0),0),rankIndex=Math.max(0,Math.min(18,Number(profile.rankIndex)||0)),points=Math.max(0,rankIndex===18?Math.floor(Number(profile.points)||0):Math.min(49,Number(profile.points)||0)),wins=Math.max(0,Math.floor(Number(profile.wins)||0)),losses=Math.max(0,Math.floor(Number(profile.losses)||0)),matches=Math.max(wins+losses,Math.floor(Number(profile.matches)||0));
     const achievementProfile=window.__GONG_V260__?.publicProfile?.()||{};
-    const payload={uid:b?.user?.uid||'',nickname:String(nickname()||'솔리언').slice(0,24),rankIndex,points,wins,losses,matches,totalMasteryXp:Math.min(20000000,Math.floor(totalMasteryXp)),masteryCount:Object.keys(mastery).length,representativeTitle:String(achievementProfile.title||'').slice(0,40),achievementCount:Math.max(0,Math.min(75,Number(achievementProfile.unlocked)||0)),achievementTotal:75,updatedAt:b?.dbmod?.serverTimestamp?.()||Date.now(),version:1};
+    const payload={uid:b?.user?.uid||'',nickname:String(nickname()||'솔리언').slice(0,24),rankIndex,points,wins,losses,matches,totalMasteryXp:Math.min(30000000,Math.floor(totalMasteryXp)),masteryCount:Object.keys(mastery).length,representativeTitle:String(achievementProfile.title||'').slice(0,40),achievementCount:Math.max(0,Math.min(75,Number(achievementProfile.unlocked)||0)),achievementTotal:75,updatedAt:b?.dbmod?.serverTimestamp?.()||Date.now(),version:1};
     if(Object.keys(mastery).length)payload.mastery=mastery;
     return payload;
   }
@@ -36233,7 +36256,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
   function updateBatteryUi(){const el=document.getElementById('v255Battery'),b=state.battery;if(!el)return;if(!b){el.textContent='30FPS · 효과 축소';el.classList.remove('low');return}const pct=Math.round(b.level*100);el.textContent=`${b.charging?'충전 중 · ':''}${pct}% · ${window.__GONG_V255_ECO_ACTIVE__?'30FPS':'일반'}`;el.classList.toggle('low',!b.charging&&pct<=20)}
 
   function topMastery(){const rows=window.__GONG_V254__?.masteryRows?.()||[];return rows.sort((a,b)=>b.tier-a.tier||b.xp-a.xp)[0]||null}
-  function decorateProfile(){const modal=document.getElementById('v232ProfileModal'),card=modal?.querySelector('.v232-profile-card'),name=modal?.querySelector('.v232-profile-name');if(!card||!name)return false;const top=topMastery(),tier=Number(top?.tier)||0,level=Number(top?.level)||0;card.classList.remove('v255-profile-m2','v255-profile-m3','v255-profile-max');if(tier>=3)card.classList.add('v255-profile-m3');else if(tier>=2)card.classList.add('v255-profile-m2');if(level>=30)card.classList.add('v255-profile-max');let plate=modal.querySelector('#v255MasteryPlate');if(tier<2){plate?.remove();return true}if(!plate){plate=document.createElement('div');plate.id='v255MasteryPlate';plate.className='v255-mastery-plate';name.insertAdjacentElement('afterend',plate)}plate.className=`v255-mastery-plate ${level>=30?'max':tier>=3?'m3':'m2'}`;plate.textContent=`${level>=30?'MASTERY 3 · MAX':`MASTERY ${tier}`} · ${top.name}`;return true}
+  function decorateProfile(){const modal=document.getElementById('v232ProfileModal'),card=modal?.querySelector('.v232-profile-card'),name=modal?.querySelector('.v232-profile-name');if(!card||!name)return false;const top=topMastery(),tier=Number(top?.tier)||0,level=Number(top?.level)||0;card.classList.remove('v255-profile-m2','v255-profile-m3','v255-profile-max');if(tier>=3)card.classList.add('v255-profile-m3');else if(tier>=2)card.classList.add('v255-profile-m2');if(level>=40)card.classList.add('v255-profile-max');let plate=modal.querySelector('#v255MasteryPlate');if(tier<2){plate?.remove();return true}if(!plate){plate=document.createElement('div');plate.id='v255MasteryPlate';plate.className='v255-mastery-plate';name.insertAdjacentElement('afterend',plate)}plate.className=`v255-mastery-plate ${level>=40?'max':tier>=3?'m3':'m2'}`;plate.textContent=`${level>=40?'MASTERY 3 · MAX':`MASTERY ${tier}`} · ${top.name}`;return true}
   function eligibleMastery3(p){return isMain(p)&&levelFor(p.id)>=30}
   let entryFx=null;
   function prepareEntryFx(players=[]){if(window.__GONG_V255_ECO_ACTIVE__)return;const rows=(players||[]).filter(eligibleMastery3);if(!rows.length){entryFx=null;return}entryFx={started:performance.now(),ids:rows.map(p=>p.id)};document.querySelector('.v255-entry-banner')?.remove();const el=document.createElement('div');el.className='v255-entry-banner';el.textContent=`✦ MASTERY III 등장 · ${rows.slice(0,3).map(p=>p.name).join(' · ')}`;document.body.appendChild(el);setTimeout(()=>el.remove(),1800)}
@@ -40243,6 +40266,115 @@ if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.damage=damage;window._
 if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.damage=damage;window.__GONG_V138_TEST__.tick=tick;window.__GONG_V138_TEST__.resetBattle=resetBattle;}
 console.info('[V346] 이지원 알파메일 각성 · 25초 생존 2페이즈 active');
 })();</script>
+
+
+<!-- =========================================================
+   V347 · friendly opponent real nickname labels
+========================================================= -->
+<script id="v347FriendlyOpponentNickname">
+(()=>{
+'use strict';
+const BUILD='V347_FRIENDLY_OPPONENT_NICKNAME';
+window.__GONG_V347__={
+  build:BUILD,
+  verify(){
+    const api=window.__GONG_V231__,draft=window.__GONG_V212_DRAFT__;
+    return {
+      build:BUILD,
+      nicknameResolver:typeof api?.friendlyDisplayName==='function',
+      roomNameResolver:typeof api?.resolveFriendlyNames==='function',
+      friendlyDraft:typeof draft?.hydrateFriendly==='function',
+      firebaseRulesChanged:false,
+      latest:window.__GONG_LATEST_BUILD__
+    };
+  }
+};
+window.__GONG_V347_BUILD__=BUILD;
+window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V347','친선전 AI 표기 제거 · 상대 UID의 공개 프로필 닉네임 표시 · 밴픽/전투 HUD/승리 팀 이름 닉네임 동기화 · 게스트는 솔리언 닉네임 fallback');
+console.info('[V347] 친선전 상대 AI 표기 제거 · 실제 닉네임 표시');
+})();
+</script>
+
+
+<!-- =========================================================
+   V348 · mastery Lv35/Lv40 permanent HP bonuses + Lv40 cap
+========================================================= -->
+<script id="v348MasteryHp40">
+(()=>{
+'use strict';
+const BUILD='V348_MASTERY_HP35_HP40_LEVEL40_270K';
+const LV35=35,LV40=40,LV35_HP=10,LV40_HP=20,MAX_XP=270000,BOSS_SET=new Set(['mrbeyblade','james','seominji_boss','yoogeon','youngsik','naeonseong','julia']);
+const FRIEND_CACHE=window.__GONG_V348_FRIEND_MASTERY_CACHE__||(window.__GONG_V348_FRIEND_MASTERY_CACHE__={});
+function masteryApi(){return window.__GONG_V226__||window.__GONG_V221__||window.__GONG_V219__}
+function backend(){return window.__GONG_V230__?.backend?.()||window.__GONG_V228__?.backend?.()||null}
+function levelForXp(xp){try{return Math.max(1,Math.min(LV40,Number(masteryApi()?.levelInfo?.(Math.max(0,Number(xp)||0))?.level)||1))}catch(_){return 1}}
+function localLevel(id){try{const x=masteryApi()?.masteryLevelForId?.(id);return Math.max(1,Math.min(LV40,Number(x?.level||x)||1))}catch(_){return 1}}
+function hpBonusForLevel(level){level=Math.max(1,Number(level)||1);return level>=LV40?LV40_HP:level>=LV35?LV35_HP:0}
+function remoteLevel(uid,id){const row=FRIEND_CACHE?.[String(uid||'')]?.[id];if(!row)return 1;return Math.max(1,Math.min(LV40,Number(row?.level)||levelForXp(row?.xp)))}
+function battleLevelFor(p){
+  if(!p||!DEFS?.[p.id]||BOSS_SET.has(p.id)||p.isBoss||p.isBossSummon)return 1;
+  const draft=currentConfig?.draft||game?.v212Draft||null;
+  if(draft?.friendly||document.body.classList.contains('friendly-battle')){
+    const uid=String(p.team==='T2'?draft?.guestUid:draft?.hostUid||'');
+    const myUid=String(backend()?.user?.uid||'');
+    return uid&&uid===myUid?localLevel(p.id):remoteLevel(uid,p.id)
+  }
+  if(draft?.competitive===true||document.body.classList.contains('competitive-battle'))return p.team==='T1'?localLevel(p.id):1;
+  return localLevel(p.id)
+}
+function hpLabel(id,fallback){
+  const base=Number(DEFS?.[id]?.hp),level=localLevel(id),bonus=hpBonusForLevel(level);
+  const shown=Number.isFinite(base)?Math.round(base):fallback;
+  return bonus>0?`${shown} + ${bonus}`:String(fallback??shown)
+}
+function mainPlayer(p){return !!(p&&DEFS?.[p.id]&&!BOSS_SET.has(p.id)&&!p.isBoss&&!p.isBossSummon&&!p.data?.v151Hormone&&!p.data?.v151MentorYoon&&!p.data?.v207Banjunseo)}
+function applySingle(p,bonus){
+  if(!mainPlayer(p)||bonus<=0||p.data?.v348MasteryHpApplied)return false;
+  p.data||(p.data={});
+  p.maxHp=Math.max(1,Number(p.maxHp)||Number(DEFS[p.id]?.hp)||1)+bonus;
+  p.hp=Math.min(p.maxHp,Math.max(0,Number(p.hp)||0)+bonus);
+  p.data.v348MasteryHpApplied=bonus;
+  p.data.v348MasteryLevel=battleLevelFor(p);
+  if(p.id==='jiwon'&&p.data.v346Phase1MaxHp!=null)p.data.v346Phase1MaxHp=p.maxHp;
+  return true
+}
+function groupObjects(){
+  const out=[],seen=new Set(),push=g=>{if(!g||seen.has(g)||!Array.isArray(g.members)||g.members.length<2)return;seen.add(g);out.push(g)};
+  push(game?.v158MentorCross);push(game?.v326DaughterCross);for(const g of game?.v311CrossGroups||[])push(g);return out
+}
+function applyMasteryHp(){
+  if(!game?.players)return {players:0,groups:0,totalBonus:0};
+  let players=0,groups=0,totalBonus=0;const grouped=new Set();
+  for(const g of groupObjects()){
+    if(g.v348MasteryHpApplied)continue;
+    const members=g.members.filter(mainPlayer);if(!members.length)continue;
+    const rows=members.map(p=>({p,level:battleLevelFor(p)})),bonus=rows.reduce((sum,row)=>sum+hpBonusForLevel(row.level),0);
+    if(bonus<=0)continue;
+    g.maxHp=Math.max(1,Number(g.maxHp)||1)+bonus;g.hp=Math.min(g.maxHp,Math.max(0,Number(g.hp)||0)+bonus);g.v348MasteryHpApplied=bonus;
+    for(const row of rows){const p=row.p;grouped.add(p);p.data||(p.data={});p.data.v348MasteryHpApplied=hpBonusForLevel(row.level);p.data.v348MasteryLevel=row.level;p.maxHp=g.maxHp;p.hp=g.hp;if(p.id==='jiwon'&&p.data.v346Phase1MaxHp!=null)p.data.v346Phase1MaxHp=p.maxHp;players++}
+    groups++;totalBonus+=bonus;
+  }
+  for(const p of game.players){if(grouped.has(p)||!mainPlayer(p))continue;const level=battleLevelFor(p),bonus=hpBonusForLevel(level);if(applySingle(p,bonus)){players++;totalBonus+=bonus}}
+  try{renderScores();renderBossAllies();updateUI()}catch(_){}
+  return {players,groups,totalBonus}
+}
+const previousReset=resetBattle;
+resetBattle=function(){const result=previousReset.apply(this,arguments);try{game.v348MasteryHp=applyMasteryHp()}catch(error){console.warn('[V348 숙련도 HP 적용]',error)}return result};
+// The local mastery API is authoritative for the new cap/levels.
+const api=masteryApi();if(api){api.maxLevel=LV40;api.maxXp=MAX_XP}
+window.__GONG_V348__={
+  build:BUILD,maxLevel:LV40,maxXp:MAX_XP,level35:LV35,level40:LV40,hpBonusForLevel,levelForXp,localLevel,battleLevelFor,hpLabel,applyMasteryHp,
+  thresholds:{lv30:masteryApi()?.masteryThreshold?.(30),lv35:masteryApi()?.masteryThreshold?.(35),lv40:masteryApi()?.masteryThreshold?.(40)},
+  verify(){return {build:BUILD,maxLevel:masteryApi()?.maxLevel,maxXp:masteryApi()?.maxXp,lv30:masteryApi()?.masteryThreshold?.(30),lv35:masteryApi()?.masteryThreshold?.(35),lv40:masteryApi()?.masteryThreshold?.(40),hp34:hpBonusForLevel(34),hp35:hpBonusForLevel(35),hp39:hpBonusForLevel(39),hp40:hpBonusForLevel(40),friendlyCacheUids:Object.keys(FRIEND_CACHE).length,latest:window.__GONG_LATEST_BUILD__}}
+};
+window.__GONG_V348_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V348','숙련도 Lv.35 해당 캐릭터 HP 영구 +10 · Lv.40 총 +20 · 최대 Lv.40/270,000 XP · 기존 1~30 XP 구간 보존 및 기존 누적 XP 재계산 · 친선전 양쪽 개인 숙련도/경쟁전 내 팀 적용');
+if(window.__GONG_V134_DEBUG__){window.__GONG_V134_DEBUG__.resetBattle=resetBattle}
+if(window.__GONG_V138_TEST__){window.__GONG_V138_TEST__.build=BUILD;window.__GONG_V138_TEST__.resetBattle=resetBattle}
+console.info('[V348] 숙련도 Lv35 HP+10 · Lv40 HP+20 · Lv40=270,000 XP');
+})();
+</script>
 
 </body>
 </html>
