@@ -1,0 +1,18 @@
+공게임 V356 최소 적용 안내
+
+1. GitHub 운영 저장소의 index.html을 이 폴더의 index.html로 교체합니다.
+2. service-worker.js도 함께 교체합니다.
+3. V352 이상의 Firebase Realtime Database Rules를 이미 적용했다면 Rules는 다시 적용하지 않아도 됩니다.
+4. 더 오래된 Rules를 사용 중이면 FIREBASE_REALTIME_DATABASE_RULES_V356.json을 한 번 게시합니다.
+5. 배포 후 게임을 완전히 종료했다가 다시 열거나 강력 새로고침합니다.
+
+V356 화면 순서
+- 캐릭터 이름·사진 카드
+- 전체 이용자 통계
+- 레벨·XP 진행 바
+- 숙련도 TOP5
+- 스킬 설명
+
+캐릭터 설명창에는 M4/마스터리 4 같은 마스터리 명칭과 효과를 표시하지 않습니다.
+공개 프로필의 한국어 마스터리 표기는 유지됩니다.
+Firebase Rules는 V353/V354/V355와 바이트 단위로 동일합니다.

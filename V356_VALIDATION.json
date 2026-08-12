@@ -1,0 +1,29 @@
+{
+  "version": "V356",
+  "build": "V356_CHARACTER_LEVEL_XP_PROGRESS_RESTORED",
+  "inline_script_syntax": {
+    "passed": 152,
+    "failed": 0,
+    "structured_data_blocks_excluded": 1
+  },
+  "service_worker_syntax": "passed",
+  "level_progress_cases": {
+    "xp_0": "passed",
+    "mid_level_50": "passed",
+    "level_120": "passed"
+  },
+  "ui_order": [
+    "skill-profile",
+    "v228-community-card",
+    "v356-level-progress",
+    "v290-mastery-ranking",
+    "skill-section"
+  ],
+  "statistics_immediately_below_profile": true,
+  "level_progress_present": true,
+  "ranking_after_level_progress": true,
+  "character_description_mastery_label_hidden": true,
+  "profile_mastery_label_preserved": true,
+  "attack_multiplier_visible": true,
+  "firebase_rules_changed": false
+}

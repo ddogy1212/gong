@@ -30097,8 +30097,13 @@ console.info('[V200] 김규원 HP 240 · 김성훈 HP 190/패시브명 수정 ·
       return 'Lv.10에서 마스터리 1 · 캐릭터 엠블럼 해금'
     }
     function v221MasteryHtml(id){
-      // V353: 캐릭터 설명창에서는 마스터리 정보를 노출하지 않는다.
-      return ''
+      // V356: 설명창에는 마스터리 명칭/효과/전적 없이 레벨·XP 진행만 표시한다.
+      const d=DEFS[id];if(!d)return '';
+      const e=v219MasteryEntry(id),lv=v219LevelInfo(e.xp),remaining=lv.max?0:Math.max(0,lv.next-lv.current);
+      const xpText=lv.max
+        ? `최고 레벨 · 누적 ${lv.totalXp.toLocaleString()} XP · XP 계속 누적`
+        : `XP ${lv.current.toLocaleString()} / ${lv.next.toLocaleString()} · 다음 Lv.${lv.level+1}까지 ${remaining.toLocaleString()} XP`;
+      return `<section class="v356-level-progress" style="--c:${d.color}" aria-label="${d.name} 레벨 진행"><div class="v356-level-progress-head"><span>캐릭터 레벨</span><b>Lv.${lv.level}</b></div><div class="v221-mastery-progress" role="progressbar" aria-label="다음 레벨까지 XP" aria-valuemin="0" aria-valuemax="${lv.max?100:lv.next}" aria-valuenow="${lv.max?100:lv.current}"><span style="width:${lv.percent}%"></span></div><div class="v221-mastery-xp">${xpText}</div></section>`
     }
     window.__GONG_V221_MASTERY_HTML__=v221MasteryHtml;
     document.getElementById('v219MasteryOpen')?.remove();
@@ -40860,7 +40865,7 @@ function auditHp(){
   const match=liveGame(),rows=(match?.players||[]).filter(mainRoster).map(p=>({id:realId(p),name:p.name,maxHp:Number(p.maxHp)||0,hp:Number(p.hp)||0,bonus:masteryBonus(p),applied:Number(p.data?.v348MasteryHpApplied)||0,gangeunMax:realId(p)==='duo'?Number(p.data?.gangeunMax)||0:undefined,taeyeonMax:realId(p)==='duo'?Number(p.data?.taeyeonMax)||0:undefined}));
   return {build:BUILD,rows,mismatches:rows.filter(r=>r.bonus!==r.applied),daughterCross:match?.v326DaughterCross?{hp:match.v326DaughterCross.hp,maxHp:match.v326DaughterCross.maxHp,bonus:match.v326DaughterCross.v348MasteryHpBonus||0}:null,mentorCross:match?.v158MentorCross?{hp:match.v158MentorCross.hp,maxHp:match.v158MentorCross.maxHp,bonus:match.v158MentorCross.v348MasteryHpBonus||0}:null};
 }
-function verify(){return {build:BUILD,hp:auditHp(),level5KillBannerRestored:document.querySelector('.center-kill.v253-character-kill')?.classList.contains('show')||false,level30SquarePersists:true,eliteStages:[8,9,10,11,12],profileLabel:document.getElementById('v255MasteryPlate')?.textContent||'',characterDescriptionMasteryHidden:typeof window.__GONG_V221_MASTERY_HTML__==='function'&&window.__GONG_V221_MASTERY_HTML__('choidaeun')==='',latest:window.__GONG_LATEST_BUILD__}}
+function verify(){const descriptionHtml=typeof window.__GONG_V221_MASTERY_HTML__==='function'?window.__GONG_V221_MASTERY_HTML__('choidaeun'):'';return {build:BUILD,hp:auditHp(),level5KillBannerRestored:document.querySelector('.center-kill.v253-character-kill')?.classList.contains('show')||false,level30SquarePersists:true,eliteStages:[8,9,10,11,12],profileLabel:document.getElementById('v255MasteryPlate')?.textContent||'',characterDescriptionMasteryHidden:!!descriptionHtml&&!/(?:마스터리|\bM\d+)/.test(descriptionHtml),latest:window.__GONG_LATEST_BUILD__}}
 window.__GONG_V353__={build:BUILD,applyAllMasteryHp,repairDynamicHp,auditHp,stageFor,drawEliteMasteryFx,verify};
 window.__GONG_V353_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
 if(window.__GONG_V134_DEBUG__)Object.assign(window.__GONG_V134_DEBUG__,{resetBattle,tick,draw});
@@ -40897,6 +40902,41 @@ window.__GONG_V354_BUILD__='V354_ATTACK_MULTIPLIER_VISIBLE';window.__GONG_V355_B
 window.__GONG_PATCH_NOTES__?.register?.('V354','캐릭터 선택 카드·설명창·프로필에 마스터리 공격력 배율 표시 · HP 보너스와 공격력 배율 동시 표시');
 window.__GONG_PATCH_NOTES__?.register?.('V355','캐릭터 설명창의 전체 이용자 통계를 이름·사진 카드 바로 아래로 이동 · 숙련도 TOP5는 통계 다음에 표시');
 console.info('[V355] 캐릭터 이름·사진 카드 바로 아래 전체 이용자 통계 고정');
+})();
+</script>
+<!-- =========================================================
+   V356 · character level/XP progress restoration
+========================================================= -->
+<style id="v356CharacterLevelProgressStyle">
+.v356-level-progress{position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--c,#7c3aed) 38%,#d7dbe5);border-radius:14px;background:linear-gradient(145deg,#fff,#f7f8fc);padding:10px 11px;margin:0 0 10px;box-shadow:0 3px 10px #1111110d}
+.v356-level-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#34313c;font-size:11px;font-weight:950}
+.v356-level-progress-head b{color:var(--c,#6d28d9);font-size:17px;font-weight:1000}
+.v356-level-progress .v221-mastery-progress{height:10px;margin-top:7px;background:#e5e7eb;box-shadow:inset 0 1px 2px #0002}
+.v356-level-progress .v221-mastery-progress span{background:linear-gradient(90deg,var(--c,#6d28d9),#f59e0b);transition:width .25s ease}
+.v356-level-progress .v221-mastery-xp{margin-top:6px;color:#5d6270;font-size:9px;font-weight:900;line-height:1.35}
+@media(max-width:640px){.v356-level-progress{padding:9px 10px}.v356-level-progress-head b{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.v356-level-progress .v221-mastery-progress span{transition:none}}
+</style>
+<script id="v356CharacterLevelProgressScript">
+(()=>{
+'use strict';
+const BUILD='V356_CHARACTER_LEVEL_XP_PROGRESS_RESTORED';
+function enforceOrder(){
+  const body=document.getElementById('skillBody'),profile=body?.querySelector(':scope > .skill-profile'),stats=body?.querySelector(':scope > .v228-community-card'),level=body?.querySelector(':scope > .v356-level-progress'),ranking=body?.querySelector(':scope > .v290-mastery-ranking');
+  if(!body||!profile||!level)return false;
+  let anchor=profile;
+  if(stats){if(anchor.nextElementSibling!==stats)anchor.insertAdjacentElement('afterend',stats);anchor=stats}
+  if(anchor.nextElementSibling!==level)anchor.insertAdjacentElement('afterend',level);
+  if(ranking&&level.nextElementSibling!==ranking)level.insertAdjacentElement('afterend',ranking);
+  return (!stats||profile.nextElementSibling===stats)&&(stats?stats.nextElementSibling===level:profile.nextElementSibling===level)&&(!ranking||level.nextElementSibling===ranking);
+}
+const previousRenderV356=typeof renderSkillDetail==='function'?renderSkillDetail:null;
+if(previousRenderV356)renderSkillDetail=function v356LevelProgressRender(){const result=previousRenderV356.apply(this,arguments);enforceOrder();requestAnimationFrame(enforceOrder);return result};
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>requestAnimationFrame(enforceOrder),{once:true});else requestAnimationFrame(enforceOrder);
+window.__GONG_V356__={build:BUILD,enforceOrder,verify(){const body=document.getElementById('skillBody'),profile=body?.querySelector(':scope > .skill-profile'),stats=body?.querySelector(':scope > .v228-community-card'),level=body?.querySelector(':scope > .v356-level-progress'),ranking=body?.querySelector(':scope > .v290-mastery-ranking'),html=window.__GONG_V221_MASTERY_HTML__?.('choidaeun')||'';return {build:BUILD,profilePresent:!!profile,statisticsPresent:!!stats,levelProgressPresent:!!level,rankingPresent:!!ranking,orderCorrect:enforceOrder(),progressbarPresent:!!level?.querySelector('[role="progressbar"]'),masteryLabelHidden:!/마스터리|\bM\d+/.test(html),latest:window.__GONG_LATEST_BUILD__}}};
+window.__GONG_V356_BUILD__=BUILD;window.__GONG_LATEST_BUILD__=BUILD;
+window.__GONG_PATCH_NOTES__?.register?.('V356','캐릭터 설명창 레벨·XP 진행 바 복구 · 마스터리 명칭/효과/전적은 계속 숨김 · 이름/통계/레벨/TOP5/스킬 순서 고정');
+console.info('[V356] 캐릭터 레벨·XP 진행 바 복구 · 설명창 마스터리 표기 숨김 유지');
 })();
 </script>
 </body>
