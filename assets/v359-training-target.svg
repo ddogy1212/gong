@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="훈련 표적">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="30%" r="72%">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#dfe7f3"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="118" fill="url(#bg)" stroke="#172033" stroke-width="12"/>
+  <circle cx="128" cy="128" r="83" fill="#ff5d73" stroke="#fff" stroke-width="12"/>
+  <circle cx="128" cy="128" r="50" fill="#fff" stroke="#172033" stroke-width="9"/>
+  <circle cx="128" cy="128" r="20" fill="#ffcc3d" stroke="#172033" stroke-width="7"/>
+</svg>
