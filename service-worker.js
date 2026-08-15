@@ -1,19 +1,17 @@
-const CACHE_NAME='gonggame-v356-character-level-progress-restored';
-const CORE=['./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png','./characters/lee_eunho.jpeg','./characters/yoon_juhyeong.jpg','./characters/lee_seohyun_v277.png','./characters/kang_yeonwoo_v311.png','./characters/choi_daeun_v311.png','./characters/seoyeonseo_v316.png','./characters/kim_taerin_v323.jpg','./characters/eom_haein_v343.png'];
+const CACHE_NAME='gonggame-v360-achievement-lifetime-counters';
+const CORE=['./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png'];
 
 async function fresh(request){
-  return fetch(request,{cache:'no-store'});
+  return fetch(request,{cache:'no-cache'});
 }
 
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE_NAME);
-    for(const url of CORE){
-      try{
-        const res=await fresh(new Request(url,{cache:'reload'}));
-        if(res&&res.ok)await cache.put(url,res.clone());
-      }catch(_){/* install must not fail because of one optional asset */}
-    }
+    await Promise.allSettled(CORE.map(async url=>{
+      const res=await fresh(new Request(url,{cache:'reload'}));
+      if(res&&res.ok)await cache.put(url,res.clone());
+    }));
     await self.skipWaiting();
   })());
 });
@@ -45,16 +43,20 @@ self.addEventListener('fetch',event=>{
     })());
     return;
   }
-  event.respondWith((async()=>{
-    try{
-      const response=await fresh(event.request);
-      if(response&&response.ok&&['style','script','image','manifest'].includes(event.request.destination)){
-        const cache=await caches.open(CACHE_NAME);
-        await cache.put(event.request,response.clone());
-      }
-      return response;
-    }catch(_){
-      return (await caches.match(event.request)) || Response.error();
-    }
-  })());
+  if(['style','script','image','font','manifest'].includes(event.request.destination)||url.pathname.includes('/assets/v359-inline/')){
+    event.respondWith((async()=>{
+      const cached=await caches.match(event.request);
+      const refresh=fresh(event.request).then(async response=>{
+        if(response&&response.ok){
+          const cache=await caches.open(CACHE_NAME);
+          await cache.put(event.request,response.clone());
+        }
+        return response;
+      }).catch(()=>null);
+      if(cached){event.waitUntil(refresh);return cached}
+      return (await refresh)||Response.error();
+    })());
+    return;
+  }
+  event.respondWith(fresh(event.request).catch(()=>caches.match(event.request).then(hit=>hit||Response.error())));
 });
