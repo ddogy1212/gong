@@ -56,6 +56,25 @@ function addOptions(){
   return true;
 }
 function moveToBottom(){const hub=byId('modeHub'),btn=byId('v359TrainingModeBtn');if(hub&&btn&&hub.lastElementChild!==btn)hub.appendChild(btn)}
+function placeTrainingTargetLast(){
+  // Some legacy selectors include every DEFS entry; keep this training-only
+  // target at the very end even in those fallback menus.
+  const def=DEFS?.[DUMMY];
+  if(def){def.generation=999;def.role='훈련장 전용 · 내구도·회피·반격·기록 실험';def.skills='내구도 테스트 · 회피 연습 · 반격 연습 · DPS 도전';}
+  const info=SKILL_INFO?.[DUMMY];
+  if(info){
+    info.summary='훈련 실험 전용 표적 · 일반 경기 선택 불가';
+    info.hp='내구도 500 / 1,000 / 3,000';
+    info.speed='고정 / 이동 / 회피';
+    info.skills=[
+      {kind:'훈련 기능',type:'passive',name:'내구도 테스트',desc:'일정 피해량을 누적할 때마다 격파 횟수 +1.',points:['표적은 쓰러지지 않고 계속 훈련 가능','500·1,000·3,000 내구도 중 선택']},
+      {kind:'훈련 기능',type:'passive',name:'회피 연습',desc:'캐릭터를 피해 방향을 바꾸며 빠르게 움직여 명중률과 추적 스킬을 연습한다.',points:['고정·느린 이동·빠른 회피 중 선택 가능']},
+      {kind:'훈련 기능',type:'passive',name:'반격 연습',desc:'3초마다 12의 피해를 주는 공격으로 방어 능력과 회복을 테스트한다.',points:['실제 전투 피해 판정 적용','훈련장 전적·XP 미반영']},
+      {kind:'훈련 기능',type:'passive',name:'30·60초 기록 도전',desc:'주어진 시간 동안 누적 피해와 스킬별 피해, DPS, 표적 격파 횟수를 측정하고 개인 최고기록을 남긴다.',points:['캐릭터·표적 유형·도전 시간별 최고기록 분리','기록은 기기 내부에만 저장']}
+    ];
+  }
+}
+
 function ensureHud(){
   let hud=byId('v362TrainingHud');if(hud)return hud;
   const base=byId('v359TrainingHud');if(!base)return null;
@@ -180,7 +199,7 @@ document.addEventListener('click',event=>{
   const button=event.target?.closest?.('#v359TrainingModeBtn');if(button)setTimeout(()=>{addOptions();moveToBottom()},0);
 });
 function init(){
-  addOptions();moveToBottom();
+  placeTrainingTargetLast();addOptions();moveToBottom();
   if(!byId('v359TrainingModal')&&Date.now()>retryAt){retryAt=Date.now()+100;setTimeout(init,100)}
   window.__GONG_PATCH_NOTES__?.register?.('V362','훈련장 맨 아래 배치 · 고정/이동/회피/반격 표적 · 30/60초 측정 · 내구도 격파 · 스킬 피해 분석 · 개인 최고기록');
 }
