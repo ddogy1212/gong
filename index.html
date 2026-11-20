@@ -6967,6 +6967,11 @@ function damage(target,amount,source,skill='공격',opts={}){
     amount=Math.round(amount*4)/10;
   }
 
+  // V361 · 천생연분: apply at the final HP-damage stage, after random
+  // damage generation and existing damage boosts, without modifying heals.
+  const v361PairFactor=window.__GONG_V361__?.damageFactor?.(source,target,opts)??1;
+  if(v361PairFactor!==1)amount=Math.round(amount*v361PairFactor*10000)/10000;
+
   const hpBefore=target.hp;
 
   if(target.id==='duo'){
@@ -35741,7 +35746,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=360',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V360] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=361',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V360] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -40983,5 +40988,6 @@ console.info('[V356] 캐릭터 레벨·XP 진행 바 복구 · 설명창 마스�
 <link rel="stylesheet" href="assets/v359-features.css?v=359">
 <script src="assets/v359-features.js?v=359" defer></script>
 <script src="assets/v360-achievement-lifetime.js?v=360" defer></script>
+<script src="assets/v361-soulmates.js?v=361" defer></script>
 </body>
 </html>

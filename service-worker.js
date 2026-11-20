@@ -1,5 +1,5 @@
-const CACHE_NAME='gonggame-v360-achievement-lifetime-counters';
-const CORE=['./index.html','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png'];
+const CACHE_NAME='gonggame-v361-soulmate-pair-synergy';
+const CORE=['./index.html','./assets/v361-soulmates.js','./manifest.webmanifest','./icons/gonggame-192.png','./icons/gonggame-512.png','./icons/gonggame-maskable-512.png'];
 
 async function fresh(request){
   return fetch(request,{cache:'no-cache'});
