@@ -16905,6 +16905,11 @@ function updateShots(dt){
 
       {const dx=q.x-s.x,dy=q.y-s.y,rr=s.r+q.r;if(dx*dx+dy*dy>=rr*rr)continue;}
 
+      // V363: counted only for the basic game.shots projectile pipeline.
+      if(q.id==='v359_training_target'&&currentConfig?.v359TrainingRoom){
+        window.__GONG_V363__?.projectileContact?.(s,q);
+      }
+
       if(isChaewonDashing(q))continue;
 
       if(tryChaewonEatProjectile(q,s))break;
@@ -35746,7 +35751,7 @@ body.v248-training-battle #restart,body.v248-training-battle #back,body.v248-tra
     ensureInstallHelp().classList.remove('hidden');
   }
   function registerPwa(){
-    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=362',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V360] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
+    if('serviceWorker' in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('./service-worker.js?v=363',{scope:'./',updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(_){}return navigator.serviceWorker.ready}).then(()=>armInstallFallback()).catch(error=>{console.warn('[V360] service worker registration failed',error);installFallbackReady=true;updateInstallCard()});
     else{installFallbackReady=true;updateInstallCard()}
   }
   function wrapTrainingApi(){
@@ -40986,10 +40991,10 @@ console.info('[V356] 캐릭터 레벨·XP 진행 바 복구 · 설명창 마스�
 })();
 </script>
 <link rel="stylesheet" href="assets/v359-features.css?v=359">
-<link rel="stylesheet" href="assets/v362-training-upgrade.css?v=362">
+<link rel="stylesheet" href="assets/v363-training-stability.css?v=363">
 <script src="assets/v359-features.js?v=359" defer></script>
 <script src="assets/v360-achievement-lifetime.js?v=360" defer></script>
 <script src="assets/v361-soulmates.js?v=361" defer></script>
-<script src="assets/v362-training-upgrade.js?v=362" defer></script>
+<script src="assets/v363-training-stability.js?v=363" defer></script>
 </body>
 </html>

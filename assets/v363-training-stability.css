@@ -1,0 +1,30 @@
+/* V363 training-room experiment panel — self contained, mobile friendly. */
+#modeHub .v359-training-mode{order:9999;grid-column:1 / -1}
+body:not(.v359-training-battle) #v359TrainingHud,body:not(.v359-training-battle) #v363TrainingHud{display:none!important}
+.v359-training-hud{margin-bottom:6px}
+.v359-training-target-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.v359-training-target-options label{min-width:0;min-height:43px;font-size:11px}
+.v363-config{margin:11px 0;padding:11px 12px;border:1px solid #b8d9e5;border-radius:13px;background:#f0fcff;color:#183d53}
+.v363-config>strong,.v363-config>label{display:block;font-size:12px;font-weight:1000;margin:0 0 7px}
+.v363-config>label{margin-top:12px}
+.v363-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.v363-options label{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 5px;border:1px solid #acd0d8;border-radius:9px;background:white;font-size:10px;font-weight:900;cursor:pointer}
+.v363-config select{height:40px;width:100%;border:1px solid #8cb6c6;border-radius:9px;padding:0 10px;background:white;color:#183d53;font-weight:900}
+.v363-config p{margin:9px 0 0;font-size:10px;line-height:1.55;color:#4e6874}
+.v363-training-panel{min-width:0;border:2px solid #0891b2;border-radius:15px;padding:11px;margin:0 0 10px;background:linear-gradient(135deg,#f0fdff,#eff6ff);color:#16344a}
+.v363-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;font-size:13px;font-weight:900;margin-bottom:7px}
+.v363-header span{display:block;border-radius:8px;background:#cffafe;padding:5px 8px;font-size:10px;color:#155e75}
+.v363-progress{height:11px;border-radius:99px;overflow:hidden;background:#d7e6ee;margin:6px 0 9px}
+.v363-progress span{display:block;width:100%;height:100%;border-radius:99px;background:linear-gradient(90deg,#0ea5e9,#22c55e);transition:width .12s linear}
+.v363-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px}
+.v363-grid div{min-width:0;background:#fff;border-radius:9px;padding:7px 4px;text-align:center;font-size:9px;font-weight:800;color:#64748b}
+.v363-grid b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:4px;color:#153247;font-size:13px;font-weight:1000}
+.v363-detail{font-size:10px;margin-top:8px;color:#526576;line-height:1.5}
+.v363-skills{font-size:10px;line-height:1.55;margin-top:7px;padding:8px;border-radius:9px;background:#fff;font-weight:900}
+.v363-summary{font-size:11px;line-height:1.55;margin-top:8px;padding:9px;border-radius:10px;background:#d6f5ff;font-weight:950;color:#064e67}
+.v363-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.v363-actions button{min-height:38px;border:1px solid #3c8eae;border-radius:9px;background:#fff;color:#065475;font-size:11px;font-weight:1000;cursor:pointer}
+.v363-actions button:first-child{background:#086d93;color:white;border-color:#086d93}
+@media(max-width:760px){.v363-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.v363-training-panel{padding:8px}.v363-grid div{padding:6px 3px}.v363-grid b{font-size:12px}}
+@media(max-width:420px){.v363-options{grid-template-columns:1fr 1fr 1fr}.v363-options label{padding:8px 3px;font-size:9px}.v359-training-target-options label{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.v363-progress span{transition:none}}
